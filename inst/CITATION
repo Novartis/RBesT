@@ -1,0 +1,22 @@
+bibentry(bibtype = "Article",
+  title        = "Applying Meta-Analytic-Predictive Priors with the {R} {B}ayesian Evidence Synthesis Tools",
+  author       = c(person(given = "Sebastian",
+                          family = "Weber",
+                          email = "sebastian.weber@novartis.com"),
+                   person(given = "Yue",
+                          family = "Li"),
+                   person(given = c("John", "W."),
+                          family = "Seaman"),
+                   person(given = "Tomoyuki",
+                          family = "Kakizume"),
+                   person(given = "Heinz",
+                          family = "Schmidli")),
+  journal      = "Journal of Statistical Software",
+  year         = "2021",
+  volume       = "100",
+  number       = "19",
+  pages        = "1--32",
+  doi          = "10.18637/jss.v100.i19",
+  header       = "To cite RBesT in publications use:"
+)
+

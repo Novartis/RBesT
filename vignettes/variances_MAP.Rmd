@@ -1,0 +1,327 @@
+---
+title: "Meta-Analytic-Predictive Priors for Variances"
+author: "Sebastian Weber"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meta-Analytic-Predictive Priors for Variances}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+  
+```{r, include=FALSE}
+library(RBesT)
+library(dplyr)
+library(purrr)
+library(knitr)
+library(bayesplot)
+library(ggplot2)
+theme_set(theme_bw())
+set.seed(3453456)
+knitr::opts_chunk$set(
+    fig.width = 1.62*4,
+    fig.height = 4
+    )
+## setup up fast sampling when run on CRAN
+is_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
+## NOTE: for running this vignette locally, please uncomment the
+## following line:
+## is_CRAN <- FALSE
+.user_mc_options <- list()
+if (is_CRAN) {
+    .user_mc_options <- options(RBesT.MC.warmup=50, RBesT.MC.iter=100, RBesT.MC.chains=2, RBesT.MC.thin=1)
+}
+```
+
+Applying the meta-analytic-predictive (MAP) prior approach to
+historical data on variances has been suggested in [1]. The utility is
+a better informed planning of future trials which use a normal
+endpoint. For these reliable information on the sampling standard
+deviation is crucial for planning the trial.
+
+Under a normal sampling distribution the (standard) unbiased variance
+estimator for a sample $y_j$ of size $n_j$ is
+
+$$ s^2_j = \frac{1}{n_j-1} \sum_{i=1}^{n_j} (y_{j,i} - \bar{y}_j)^2, $$
+
+which follows a $\chi^2_\nu$ distribution with $\nu_j = n_j-1$ degrees
+of freedom. The $\chi^2_\nu$ can be rewritten as a $\Gamma$ distribution
+
+$$ s^2_j|\nu_j,\sigma_j \sim \Gamma(\nu_j/2, \nu_j/(2\,\sigma^2_j)) $$
+$$ \Leftrightarrow s^2_j \, \nu_j /2 |\nu_j,\sigma_j \sim \Gamma(\nu_j/2, 1/\sigma^2_j), $$
+
+where $\sigma_j$ is the (unknown) sampling standard deviation for the
+data $y_j$.
+
+While this is not directly supported in `RBesT`, a normal
+approximation of the $\log$ transformed $\Gamma$ variate can be
+applied. When $\log$ transforming a $\Gamma(\alpha,\beta)$ variate
+it's moment and variance can analytically be shown to be (see [2], for
+example)
+
+$$ E[\log(X)] = \psi(\alpha) - \log(\beta)$$
+$$ Var[\log(X)] = \psi^{(1)}(\alpha).$$
+
+Here, $\psi(x)$ is the digamma function and $\psi^{(1)}(x)$ is the
+polygamma function of order 1 (second derivative of the $\log$ of the
+$\Gamma$ function).
+
+Thus, by approximating the $\log$ transformed $\Gamma$ distribution
+with a normal approximation, we can apply `gMAP` as if we were using a
+normal endpoint. Specifically, we apply the transform $Y_j=\log(s^2_j
+\, \nu_j /2) - \psi(\nu_j/2)$ such that the meta-analytic model
+directly considers $\log \sigma_j$ as random variate. The normal
+approximation becomes more accurate, the larger the degrees of freedom
+are. The section at the bottom of this vignette discusses this
+approximation accuracy and concludes that independent of the true
+$\sigma$ value for 10 observations the approxmation is useful and a
+very good one for more than 20 observations.
+
+In the following we reanalyze the main example of reference [1] which
+is shown in table 2:
+
+```{r,results="asis",echo=FALSE}
+hdata <- data.frame(study=1:6,
+                    sd=c(12.11, 10.97, 10.94, 9.41, 10.97, 10.95),
+                    df=c(597, 60, 548, 307, 906, 903)
+                    )
+kable(hdata, digits=2)
+```
+
+Using the above equations (and using plug-in estimates for $\sigma_j$)
+this translates into an approximate normal distribution for the $\log$
+variance as:
+
+```{r}
+hdata <- mutate(hdata,
+                alpha=df/2,
+                beta=alpha/sd^2,
+                logvar_mean=log(sd^2 * alpha) - digamma(alpha),
+                logvar_var=psigamma(alpha,1))
+```
+
+```{r,results="asis",echo=FALSE}
+kable(hdata, digits=4)
+```
+
+
+In order to run the MAP analysis a prior for the heterogeniety
+parameter $\tau$ and the intercept $\beta$ is needed. In reference [3]
+it is demonstrated that the (approximate) sampling standard deviation
+of the $\log$ variance is $\sqrt{2}$. Thus, a
+`HalfNormal(0,sqrt(2)/2)` is a very conservative choice for the
+between-study heterogeniety parameter. A less conservative choice is
+`HalfNormal(0,sqrt(2)/4)`, which gives very similar results in this
+case. For the intercept $\beta$ a very wide prior is used with a
+standard deviation of $100$ which is in line with reference [1]:
+
+```{r}
+map_mc <- gMAP(cbind(logvar_mean, sqrt(logvar_var)) ~ 1 | study, data=hdata,
+               tau.dist="HalfNormal", tau.prior=sqrt(2)/2,
+               beta.prior=cbind(4.8, 100))
+
+
+map_mc
+
+summary(map_mc)
+
+plot(map_mc)$forest_model
+```
+
+In reference [1] the correct $\Gamma$ likelihood is used in contrast
+to the approximate normal approach above. Still, the results match
+very close, even for the outer quantiles.
+
+
+# MAP prior for the sampling standard deviation
+
+While the MAP analysis is performed for the $\log$ variance, we are
+actually interested in the MAP of the respective sampling standard
+deviation. Since the sampling standard deviation is a strictly
+positive quantity it is suitable to approximate the MCMC posterior of
+the MAP prior using a mixture of $\Gamma$ variates, which can be done
+using `RBesT` as:
+
+```{r}
+map_mc_post <- as.matrix(map_mc)
+sd_trans <- compose(sqrt, exp)
+mcmc_intervals(map_mc_post, regex_pars="theta", transformation=sd_trans)
+
+map_sigma_mc <- sd_trans(map_mc_post[,c("theta_pred")])
+map_sigma <- automixfit(map_sigma_mc, type="gamma")
+
+plot(map_sigma)$mix
+
+## 95% interval MAP for the sampling standard deviation
+summary(map_sigma)
+```
+
+
+# Normal approximation of a $\log\Gamma$ variate
+
+For a $\Gamma(y|\alpha, \beta)$ variate $y$, which is $\log$
+transformed, $z = \log(y)$, we have by the law of transformations for
+univariate densities:
+
+$$ y|\alpha,\beta \sim \Gamma(\alpha,\beta) $$
+$$ p(z) = p(y) \, y = p(\exp(z)) \, \exp(z) $$
+$$ z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)$$
+$$\Leftrightarrow \exp(z)|\alpha,\beta \sim \Gamma(\alpha,\beta) \, \exp(z) $$
+
+The first and second moment of $z$ is then
+$$ E[z] = \psi(\alpha) - \log(\beta)$$
+$$ Var[z] = \psi^{(1)}(\alpha).$$
+
+A short simulation demonstrates the above results:
+
+```{r}
+gamma_dist <- mixgamma(c(1, 18, 6))
+
+## logGamma density
+dlogGamma <- function(z, a, b, log=FALSE) {
+    n <- exp(z)
+    if(!log) {
+        return(dgamma(n, a, b) * n)
+    } else {
+        return(dgamma(n, a, b, log=TRUE) + z)
+    }
+}
+
+a <- gamma_dist[2,1]
+b <- gamma_dist[3,1]
+m <- digamma(a) - log(b)
+v <- psigamma(a,1)
+
+## compare simulated histogram of log transformed Gamma variates to
+## analytic density and approximate normal
+sim <- rmix(gamma_dist, 1E5)
+mcmc_hist(data.frame(logGamma=log(sim)), freq=FALSE, binwidth=0.1) +
+    overlay_function(fun=dlogGamma, args=list(a=a,b=b), aes(linetype="LogGamma")) +
+    overlay_function(fun=dnorm, args=list(mean=m, sd=sqrt(v)), aes(linetype="NormalApprox"))
+
+```
+
+We see that for $\nu=9$ only, the approximation with a normal density
+is reasonable. However, by comparing as a function of $\nu$ the
+$2.5$%, $50$% and $97.5$% quantiles of the correct distribution with
+the respective approximate distribution we can assess the adequatness
+of the approximation. The respective R code is accessible via the
+vignette overview page while here the graphical result is presented
+for two different $\sigma$ values:
+
+
+```{r,echo=FALSE}
+qgammaLog <- function(p, a, b) {
+    log(qgamma(p, a, b))
+}
+VqgammaLog <- Vectorize(qgammaLog)
+
+var2gamma <- function(nu, sigma) {
+    c(a=nu/2, b=nu/(2*sigma^2))
+}
+
+var2logNormal <- function(nu, sigma) {
+    gamma <- var2gamma(nu, sigma)
+    res <- c(mu=digamma(gamma["a"]) - log(gamma["b"]), sigma=sqrt(psigamma(gamma["a"],1)))
+    names(res) <- c("mu", "sigma")
+    res
+}
+
+dlogvar <- function(z, nu, sigma, log=FALSE) {
+    ga <- var2gamma(nu, sigma)
+    dlogGamma(z, ga["a"], ga["b"], log=log)
+}
+
+qlogvar <- function(p, nu, sigma) {
+    ga <- var2gamma(nu, sigma)
+    VqgammaLog(p, ga["a"], ga["b"])
+}
+Vqlogvar <- Vectorize(qlogvar)
+
+qlogvarApprox <- function(p, nu, sigma) {
+    ga <- var2logNormal(nu, sigma)
+    qnorm(p, ga["mu"], ga["sigma"])
+}
+VqlogvarApprox <- Vectorize(qlogvarApprox)
+
+compare_quantiles <- function(nuLow, nuHigh, sigma, quants) {
+    q1 <- quants[1]
+    yv <- c(Vqlogvar(quants, nuHigh, sigma), Vqlogvar(quants, nuLow, sigma))
+    ymax <- max(yv)
+    ymin <- min(yv)
+    qtext <- paste("quantiles:", paste(quants, collapse=", "))
+    curve(Vqlogvar(q1, x, sigma), nuLow, nuHigh, ylim=c(ymin, ymax), ylab="log(sigma^2)", xlab="Sample Size nu")
+    curve(VqlogvarApprox(q1, x, sigma), add=TRUE, lty=2)
+    for(q in quants[-1]) {
+        curve(Vqlogvar(q, x, sigma), add=TRUE)
+        curve(VqlogvarApprox(q, x, sigma), add=TRUE, lty=2)
+    }
+    title(paste0("Log-Gamma (solid) vs Normal Approx (dashed)\nsigma=", sigma, "; ", qtext))
+}
+
+compare_quantiles(10, 100, 1, c(0.025, 0.5, 0.975))
+compare_quantiles(10, 100, 10, c(0.025, 0.5, 0.975))
+
+## calculate the KL distance of the approximation to the exact
+## distribution using quadrature integration
+kl_distance <- function(nu, sigma) {
+    ln <- var2logNormal(nu, sigma)
+    ga <- var2gamma(nu, sigma)
+    lims <- log(qgamma(c(1E-5, 1-1E-5), ga["a"], ga["b"]))
+    kl <- integrate(function(z) dlogvar(z, nu, sigma) * (dlogvar(z, nu, sigma, log=TRUE) - dnorm(z, ln["mu"], ln["sigma"], log=TRUE)), lims[1], lims[2])$value
+    ## this transform is needed to let the scale represent in a
+    ## physical sense distance, see PC priors paper from Daniel
+    ## Simpson et al.
+    sqrt(2 * kl)
+}
+Vkl_distance <- Vectorize(kl_distance)
+
+compare_densities <- function(nu, sigma) {
+    ln <- var2logNormal(nu, sigma)
+    low <- qnorm(1E-5, ln["mu"], ln["sigma"])
+    high <- qnorm(1-1E-5, ln["mu"], ln["sigma"])
+    ##curve(dlogvar(x, nu, sigma), low, high, axes=FALSE, frame.plot=TRUE, xlab="", ylab="", xaxt='n', yaxt='n')
+    ##curve(dnorm(x, ln["mu"], ln["sigma"]), add=TRUE, lty=2)
+    ##title(paste0("LogGamma (solid) vs Normal Approx (dashed)\nsigma=", sigma, ", nu=", nu))
+    ggplot(data.frame(x=c(low,high)), aes(x)) +
+        stat_function(fun=dlogvar, args=list(nu=nu, sigma=sigma), linetype=1) +
+            stat_function(fun=dnorm, args=list(mean=ln["mu"], sd=ln["sigma"]), linetype=2) +
+                ggtitle(paste0("sigma=", sigma, ", nu=", nu), "Log-Gamma (solid) vs Normal Approx (dashed)") + xlab(NULL) + ylab(NULL)
+}
+
+
+pl1 <- compare_densities(10, 1)
+pl2 <- compare_densities(20, 1)
+pl3 <- compare_densities(10, 10)
+pl4 <- compare_densities(20, 10)
+bayesplot_grid(pl1, pl2, pl3, pl4)
+
+ggplot(data.frame(nu=c(10, 100)), aes(nu)) +
+    stat_function(fun=Vkl_distance, args=list(sigma=1)) +
+        ylab("KLD(LogGamma||NormalApprox)") +
+            ggtitle("KL Distance of approximate to exact distribution") +
+                scale_y_continuous(breaks=seq(0.05,0.25,by=0.025))
+
+```
+
+## Acknowledgements
+
+Many thanks to Ping Chen and Simon Wandel for pointing out an issue
+with the transformation as used earlier in this vignette.
+
+## References
+
+[1] Schmidli, H., et. al, Comp. Stat. and Data Analysis, 2017, 113:100-110  
+[2] https://en.wikipedia.org/wiki/Gamma_distribution#Logarithmic_expectation_and_variance  
+[3] Gelman A, et. al, Bayesian Data Analysis. Third edit., 2014., Chapter 4, p. 84  
+
+## R Session Info
+
+```{r}
+sessionInfo()
+```
+
+
+```{r,include=FALSE}
+options(.user_mc_options)
+```

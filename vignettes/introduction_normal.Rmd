@@ -1,0 +1,358 @@
+---
+title: "RBesT for a Normal Endpoint"
+author: "Yue Li"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RBesT for a Normal Endpoint}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+  
+```{r init, include=FALSE}
+library(RBesT)
+library(ggplot2)
+theme_set(theme_bw())
+library(knitr)
+knitr::opts_chunk$set(
+    fig.width = 1.62*4,
+    fig.height = 4
+)
+## setup up fast sampling when run on CRAN
+is_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
+## NOTE: for running this vignette locally, please uncomment the
+## following line:
+## is_CRAN <- FALSE
+.user_mc_options <- list()
+if (is_CRAN) {
+    .user_mc_options <- options(RBesT.MC.warmup=50, RBesT.MC.iter=100, RBesT.MC.chains=2, RBesT.MC.thin=1)
+}
+```
+
+# Introduction
+
+The R Bayesian evidence synthesis Tools (RBesT) have been created to
+facilitate the use of historical information in clinical trials. Once
+relevant historical information has been identified, RBesT supports
+the derivation of informative priors via the Meta-Analytic-Predictive
+(MAP) approach [1], the evaluation of the trial's operating
+characteristics, and the data analysis with the actual trial data. RBesT
+has been developed for endpoints from a number of well known
+distributions. Here we consider an example for a normally distributed
+response variable.
+
+
+# Trial Design with Historical Control Data
+
+## Historical Data
+
+Let's look at the Crohn's disease example data [2] (data-set `crohn`
+in RBesT). The primary endpoint is the change from baseline in Crohn's
+Disease Activity Index (CDAI), which is assumed to be normally
+distributed. Note that for CDAI, an improved outcome corresponds to a
+negative change from baseline.
+
+First from historical studies we get the estimated standard deviation
+of the response variable as $\sigma$ = 88, which is used to obtain the
+standard errors of the effect estimates.
+
+
+```{r data}
+dat <- crohn
+crohn_sigma <- 88
+dat$y.se <- crohn_sigma/sqrt(dat$n)
+```
+
+```{r dataprint,results="asis",echo=FALSE}
+kable(dat, digits=2)
+```
+
+
+## Derivation of MAP Prior
+
+The MAP prior can be derived with the function **`gMAP`**. The
+between-trial heterogeneity parameter $\tau$ governs how much
+information will be shared from the historical trials into the design
+and analysis of the future trials. In the normal case with a known
+sampling standard deviation $\sigma$, the amount of borrowing from
+historical data depends on the ratio $\tau/\sigma$. A conservative
+choice for the prior on $\tau$ is a **`HalfNormal(0,`**
+$\sigma/2$**`)`** distribution. For the prior on the intercept we
+recommend a "unit-information" prior [3] which is set to a precision
+corresponding to a single observation and centered here at no change
+from baseline. Please refer to the help page **`?gMAP`** for detailed
+information. The **`set.seed`** function is used to make the results
+exactly reproducible.
+
+```{r gMAP}
+library(RBesT)
+set.seed(689654)
+map_mcmc <- gMAP(cbind(y, y.se) ~ 1 | study, 
+                 weights=n,data=dat,
+                 family=gaussian,
+                 beta.prior=cbind(0, crohn_sigma),
+                 tau.dist="HalfNormal",tau.prior=cbind(0,crohn_sigma/2))
+print(map_mcmc)
+
+## a graphical representation is also available
+pl <- plot(map_mcmc)
+
+## a number of plots are immediately defined
+names(pl)
+
+## forest plot with model estimates
+print(pl$forest_model)
+```
+
+
+## Approximation of MAP Prior using a Mixture Distribution
+
+Next, the MCMC MAP prior from the previous section is converted to a
+parametric representation with the **`automixfit`** function. This
+function fits a parametric mixture representation using
+expectation-maximization (EM). The number of mixture components is
+chosen automatically using AIC. One can also specify the number of
+components for the mixture via **`mixfit`** function and compare with
+the **`automixfit`** outcome.
+
+```{r EM}
+map <- automixfit(map_mcmc)
+print(map)
+## check accuracy of mixture fit
+plot(map)$mix
+```
+
+## Effective Sample Size (ESS)
+
+The main advantage of using historical information is the possibility
+to reduce the number of control patients, as the informative prior is
+effectively equivalent to a certain number of control patients. This
+is called the effective sample size (ESS) and can be calculated in
+RBesT with the **`ess`** function.
+
+In the study protocol of this Crohn's disease data example, the very
+conservative moment-based ESS of 20 was used to reduce the planned
+sample size of the control group.
+
+```{r ESS}
+round(ess(map))                  ## default elir method
+round(ess(map, method="morita"))
+round(ess(map, method="moment"))
+```
+
+## Robustification of MAP Prior
+
+We recommend robustifying [5] the prior with the **`robustify`**
+function, which protects against type-I error inflation in presence of
+prior-data conflict. For the normal case we strongly recommend
+explicitly choosing the mean of the robust component. We use $-50$
+consistent with the mean of the MAP prior. Furthermore, 20%
+probability is used for the additional robust (unit-information)
+mixture component. The choice of such probability reflects the
+confidence about the validitiy of the model assumptions, i.e. the
+possibility of a non-exchangable control group to be enrolled per
+inclusion/exclusion criteria in the current trial as compared to the
+historical control group population. Note that robustification
+decreases the ESS.
+
+```{r ROBUST}
+## add a 20% non-informative mixture component
+map_robust <- robustify(map, weight=0.2, mean=-50)
+print(map_robust)
+round(ess(map_robust)) 
+```
+
+
+## Operating Characteristics of Design Options
+
+Typically, operating characteristics are required to evaluate the
+proposed design or compare a few design options. RBesT requires the
+input of decision rules via **`decision2S`** function and then
+calculates the operating characteristics with the **`oc2S`**
+function. The calculation is expedited based on analytic
+expressions. In the following we compare a few design options, which
+differ in the choice of the control priors and the sample size of the
+control group for the planned trial. There may be other design factors
+(such as the outcome standard deviation), which should be considered
+when comparing design options. Such factors are not considered here
+for simplicity purpose.
+
+### Decision Rules
+
+Consider this 2-arm design of placebo (with an informative prior) against
+an experimental treatment. The dual-criterion for success is defined as follows:
+$$
+\begin{align*}
+\textrm{Criterion 1:} &  \Pr(\theta_{act} - \theta_{pbo} \lt 0) &> 0.95 \\
+\textrm{Criterion 2:} & \Pr(\theta_{act} - \theta_{pbo} \lt -50) &> 0.50.
+\end{align*}
+$$
+
+Equivalently, the second criterion requires that the posterior median
+difference exceeds -50. The dual-criteria account for statistical
+significance as well as clinical relevance. Note that a negative
+change from baseline in CDAI corresponds to improvement.
+
+```{r rules}
+## dual decision criteria
+## pay attention to "lower.tail" argument and the order of active and pbo
+poc <- decision2S(pc=c(0.95,0.5), qc=c(0,-50), lower.tail=TRUE)
+print(poc)
+```
+
+### Design Options
+
+For the active group we use the same weakly informative
+(unit-information) prior as used in the robustification step of the
+MAP prior. Also, we set up the few design options with different
+choices of control prior and different sizes of control group.
+
+```{r design_options}
+## set up prior for active group
+weak_prior <- mixnorm(c(1,-50,1), sigma=crohn_sigma, param = 'mn')
+n_act <- 40
+n_pbo <- 20
+
+## four designs
+## "b" means a balanced design, 1:1
+## "ub" means 40 in active and 20 in placebo
+design_noprior_b  <- oc2S(weak_prior, weak_prior, n_act, n_act, poc,
+                          sigma1=crohn_sigma, sigma2=crohn_sigma)
+design_noprior_ub <- oc2S(weak_prior, weak_prior, n_act, n_pbo, poc,
+                          sigma1=crohn_sigma, sigma2=crohn_sigma)
+design_nonrob_ub  <- oc2S(weak_prior, map, n_act, n_pbo, poc,
+                          sigma1=crohn_sigma, sigma2=crohn_sigma)
+design_rob_ub     <- oc2S(weak_prior, map_robust, n_act, n_pbo, poc,
+                          sigma1=crohn_sigma, sigma2=crohn_sigma)
+```
+
+
+### Type I Error
+
+The type I can be increased compared to the nominal $\alpha$ level in
+case of a conflict between the trial data and the prior. The
+robustified MAP prior can reduce the type I error inflation in this
+case to a lower level.
+
+```{r typeI}
+# the range for true values
+cfb_truth <- seq(-120, -40, by=1)
+
+typeI1 <- design_noprior_b(cfb_truth, cfb_truth)
+typeI2 <- design_noprior_ub(cfb_truth, cfb_truth)
+typeI3 <- design_nonrob_ub(cfb_truth, cfb_truth)
+typeI4 <- design_rob_ub(cfb_truth, cfb_truth)
+
+ocI <- rbind(data.frame(cfb_truth=cfb_truth, typeI=typeI1,
+                        design="40:40 with non-informative priors"),
+             data.frame(cfb_truth=cfb_truth, typeI=typeI2,
+                        design="40:20 with non-informative priors"),
+             data.frame(cfb_truth=cfb_truth, typeI=typeI3,
+                        design="40:20 with non-robust prior for placebo"),
+             data.frame(cfb_truth=cfb_truth, typeI=typeI4,
+                        design="40:20 with robust prior for placebo")
+)
+qplot(cfb_truth, typeI, data=ocI, colour=design, geom="line", main="Type I Error") +
+    xlab(expression(paste('True value of change from baseline ', mu[act] == mu[pbo]))) +
+        ylab('Type I error') +
+            coord_cartesian(ylim=c(0,0.2)) +
+  theme(legend.justification=c(1,1),legend.position=c(0.95,0.85))
+```
+
+
+### Power
+
+The power shows the gain of using an informative prior for the control arm; i.e. 90% power
+is reached for smaller $\delta$ values compared to the design
+with weakly informative priors for both arms or the balanced
+design.
+
+```{r power}
+delta <- seq(-80,0,by=1)
+m <- summary(map)["mean"]
+cfb_truth1 <- m + delta   # active for 1
+cfb_truth2 <- m + 0*delta # pbo for 2
+
+power1 <- design_noprior_b(cfb_truth1, cfb_truth2)
+power2 <- design_noprior_ub(cfb_truth1, cfb_truth2)
+power3 <- design_nonrob_ub(cfb_truth1, cfb_truth2)
+power4 <- design_rob_ub(cfb_truth1, cfb_truth2)
+
+ocP <- rbind(data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
+                        delta=delta, power=power1,
+                        design="40:40 with non-informative priors"),
+             data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
+                        delta=delta, power=power2,
+                        design="40:20 with non-informative priors"),
+             data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
+                        delta=delta, power=power3,
+                        design="40:20 with non-robust prior for placebo"),
+             data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
+                        delta=delta, power=power4,
+                        design="40:20 with robust prior for placebo")
+)
+
+qplot(delta, power, data=ocP, colour=design, geom="line", main="Power") +
+  xlab('True value of difference (act - pbo)')+ ylab('Power') +
+  scale_y_continuous(breaks=c(seq(0,1,0.2),0.9)) +
+  scale_x_continuous(breaks=c(seq(-80,0,20),-70)) +
+  geom_hline(yintercept=0.9,linetype=2) + 
+  geom_vline(xintercept=-70,linetype=2) +
+  theme(legend.justification=c(1,1),legend.position=c(0.95,0.85))
+ 
+```
+
+
+# Final Analysis with Trial Data
+
+When the actual trial data are available, the final analysis can be
+run with RBesT via the **`postmix`** function. The real data are used
+for this example, where the trial data led to a negative
+conclusion. However, note that **`postmix`** assumes that the sampling
+standard deviation is known and fixed. Therefore, no uncertainty in
+its estimate is taken into account.
+
+```{r final}
+## one can either use summary data or individual data. See ?postmix.
+y.act <- -29.2
+y.act.se <- 14.0
+n.act <- 39
+
+y.pbo <- -63.1
+y.pbo.se <- 13.9
+n.pbo <- 20
+
+## first obtain posterior distributions
+post_act <- postmix(weak_prior, m=y.act, se=y.act.se)
+post_pbo <- postmix(map_robust, m=y.pbo, se=y.pbo.se)
+
+## then calculate probability for the dual criteria
+## and compare to the predefined threshold values
+p1 <- pmixdiff(post_act, post_pbo, 0); print(p1)
+p2 <- pmixdiff(post_act, post_pbo, -50); print(p2)
+
+print(p1>0.95 & p2>0.5)
+
+## or we can use the decision function
+poc(post_act, post_pbo)
+
+```
+
+### References
+
+[1] Neuenschwander B et. al, _Clin Trials_. 2010; 7(1):5-18  
+[2] Hueber W. et. al, _Gut_, 2012, 61(12):1693-1700  
+[3] Kass RE, Wasserman L, _J Amer Statist Assoc_; 1995, 90(431):928-934.  
+[4] Morita S. et. al, _Biometrics_ 2008;64(2):595-602  
+[5] Schmidli H. et. al, _Biometrics_ 2014;70(4):1023-1032  
+
+### R Session Info
+
+```{r session}
+sessionInfo()
+```
+
+
+```{r,include=FALSE}
+options(.user_mc_options)
+```

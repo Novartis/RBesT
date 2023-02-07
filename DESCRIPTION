@@ -1,0 +1,69 @@
+Package: RBesT
+Type: Package
+Title: R Bayesian Evidence Synthesis Tools
+Description: Tool-set to support Bayesian evidence synthesis.  This
+    includes meta-analysis, (robust) prior derivation from historical
+    data, operating characteristics and analysis (1 and 2 sample
+    cases). Please refer to Weber et al. (2021) <doi:10.18637/jss.v100.i19>
+    for details on applying this package while Neuenschwander et al. (2010)
+    <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
+    <doi:10.1111/biom.12242> explain details on the methodology.
+Version: 1.6-5
+Date: 2023-01-23
+Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
+            ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
+            ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
+            ,person("Heinz", "Schmidli", email="heinz.schmidli@novartis.com", role="ctb")
+            ,person("Baldur", "Magnusson", email="baldur.magnusson@novartis.com", role="ctb")
+            ,person("Yue", "Li", email="yue-1.li@novartis.com", role="ctb")
+            ,person("Satrajit", "Roychoudhury", email="satrajit.roychoudhury@novartis.com", role="ctb")
+            ,person("Trustees of", "Columbia University", role="cph", comment="R/stanmodels.R, configure, configure.win")
+	    )
+Depends:
+    R (>= 3.5.0)
+Imports:
+    methods,
+    Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.19.3),
+    rstantools (>= 2.1.1),
+    assertthat,
+    mvtnorm,
+    Formula,
+    checkmate,
+    bayesplot (>= 1.4.0),
+    ggplot2,
+    dplyr,
+    stats,
+    utils,
+    matrixStats
+LinkingTo:
+    BH (>= 1.72.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.19.3),
+    StanHeaders (>= 2.19.0)
+License: GPL (>=3)
+LazyData: true
+Biarch: true
+NeedsCompilation: yes
+UseLTO: true
+BugReports: https://github.com/Novartis/RBesT/issues
+Suggests:
+    rmarkdown,
+    knitr,
+    testthat (>= 2.0.0),
+    foreach,
+    purrr,
+    rstanarm (>= 2.17.2),
+    scales,
+    tools,
+    broom,
+    tidyr,
+    parallel
+VignetteBuilder: knitr
+SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+ReleaseSHA1: 23ae246
