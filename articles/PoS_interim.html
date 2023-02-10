@@ -95,11 +95,11 @@ studies, how likely a new Ph3 study would be successful is of great
 interest. Another example, at an interim analysis (IA) of a PoC study,
 one would also be interested to understand the probability of success at
 the end of the study given the partial data observed.
-<strong><code>pos1S()</code></strong> and
-<strong><code>pos2S()</code></strong> are constructed to calculate
+<strong><code><a href="../reference/pos1S.html">pos1S()</a></code></strong> and
+<strong><code><a href="../reference/pos2S.html">pos2S()</a></code></strong> are constructed to calculate
 predictive probabilities for this purpose to inform quantitative
 decision making. This vignette shows an example from an IA in a PoC
-study, where <strong><code>pos2S()</code></strong> was used to explore
+study, where <strong><code><a href="../reference/pos2S.html">pos2S()</a></code></strong> was used to explore
 the probability of success for the final analysis given the interim
 data.</p>
 <p>The primary endpoint for this study is log transformed facial lesion
@@ -150,7 +150,7 @@ summary statistics of this primary endpoint by group at the interim.</p>
 <p>The predefined dual PoC criteria is as follows,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">21</span> <span class="co"># planned total n per arm</span></span>
-<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu">decision2S</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="op">-</span><span class="fl">0.357</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/decision2S.html">decision2S</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="op">-</span><span class="fl">0.357</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rules</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 2 sample decision function</span></span>
 <span><span class="co">## Conditions for acceptance:</span></span>
@@ -163,27 +163,27 @@ not met, although it seemed to show some benefit of the active treatment
 over placebo numerically. The variability of this endpoint is higher
 than what was assumed for study sample size calculation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">priorP</span> <span class="op">&lt;-</span> <span class="va">priorT</span> <span class="op">&lt;-</span> <span class="fu">mixnorm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">0.47</span>, param <span class="op">=</span> <span class="st">'mn'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">priorP</span> <span class="op">&lt;-</span> <span class="va">priorT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">0.47</span>, param <span class="op">=</span> <span class="st">'mn'</span><span class="op">)</span></span>
 <span><span class="co">## posterior at IA data</span></span>
-<span><span class="va">postT_interim</span> <span class="op">&lt;-</span> <span class="fu">postmix</span><span class="op">(</span><span class="va">priorT</span>, m<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"mean_log"</span><span class="op">]</span>, se<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">postP_interim</span> <span class="op">&lt;-</span> <span class="fu">postmix</span><span class="op">(</span><span class="va">priorP</span>, m<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"mean_log"</span><span class="op">]</span>, se<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu">pmixdiff</span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>, <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">postT_interim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">priorT</span>, m<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"mean_log"</span><span class="op">]</span>, se<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">postP_interim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">priorP</span>, m<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"mean_log"</span><span class="op">]</span>, se<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>, <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.5900663</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">pmixdiff</span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>,<span class="op">-</span><span class="fl">0.357</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>,<span class="op">-</span><span class="fl">0.357</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.12637</span></span></code></pre>
 <p>The probability of success at the final analysis, i.e. the
 probability of meeting PoC criteria at trial completion given observed
 interim data, was computed using function
-<strong><code>pos2S()</code></strong>. One could assume that the new
+<strong><code><a href="../reference/pos2S.html">pos2S()</a></code></strong>. One could assume that the new
 data after the interim would be from the same distribution as the
 interim data. If the <span class="math inline">\(\sigma_{1}\)</span> and
 <span class="math inline">\(\sigma_{2}\)</span> in
-<strong><code>pos2S()</code></strong> were not specified, i.e. the
+<strong><code><a href="../reference/pos2S.html">pos2S()</a></code></strong> were not specified, i.e. the
 previously assumed <span class="math inline">\(\sigma\)</span> would be
 used.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pos_final</span> <span class="op">&lt;-</span> <span class="fu">pos2S</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">pos_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pos2S.html">pos2S</a></span><span class="op">(</span></span>
 <span>  <span class="va">postT_interim</span>,</span>
 <span>  <span class="va">postP_interim</span>,</span>
 <span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"n"</span><span class="op">]</span>,</span>
@@ -192,7 +192,7 @@ used.</p>
 <span>  sigma1 <span class="op">=</span> <span class="va">sd_log_pooled</span>,</span>
 <span>  sigma2 <span class="op">=</span> <span class="va">sd_log_pooled</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p>The function constructed by <strong><code>pos2S()</code></strong> can
+<p>The function constructed by <strong><code><a href="../reference/pos2S.html">pos2S()</a></code></strong> can
 produce the predictive probability given any defined distribution for
 the two groups. For example, if the interim posterior distributions are
 used, the calculated probability is small, suggesting a low chance of
@@ -200,10 +200,10 @@ success at the final analysis given observed IA data.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pos_final</span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.02413245</span></span></code></pre>
-<p>One can also use <strong><code>oc2S()</code></strong> to compute
+<p>One can also use <strong><code><a href="../reference/oc2S.html">oc2S()</a></code></strong> to compute
 conditional power for any given treatment effect.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ia_oc</span> <span class="op">&lt;-</span> <span class="fu">oc2S</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">ia_oc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oc2S.html">oc2S</a></span><span class="op">(</span></span>
 <span>    <span class="va">postT_interim</span>,</span>
 <span>    <span class="va">postP_interim</span>,</span>
 <span>    <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"n"</span><span class="op">]</span>,</span>
@@ -227,9 +227,9 @@ conditional power for any given treatment effect.</p>
 <span>        cp <span class="op">=</span> <span class="fu">ia_oc</span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span><span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span>  </span>
-<span><span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">out</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">diff_pct</span>, y <span class="op">=</span> <span class="va">cp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">scale_x_continuous</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">'Conditional power'</span>,</span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">diff_pct</span>, y <span class="op">=</span> <span class="va">cp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">'Conditional power'</span>,</span>
 <span>             x <span class="op">=</span> <span class="st">'True percentage difference from placebo in lesion count'</span>,</span>
 <span>             title <span class="op">=</span> <span class="st">'Conditional power at interim for success at final analysis'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PoS_interim_files/figure-html/oc-1.png" width="622.08"></p>
