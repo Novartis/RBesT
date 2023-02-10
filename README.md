@@ -17,9 +17,3 @@ to the introductory [vignettes](articles/index.html). We recommend
 starting with the [Getting started with `RBesT`
 (binary)](articles/introduction.html) vignette as a first read.
 
-
-## Resources
-
-- [RBesT reference manual PDF](RBesT.pdf) (useful for
-  offline reading)
-
