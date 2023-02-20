@@ -13,6 +13,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
+    if: github.repository_owner == 'Novartis'
     runs-on: ubuntu-latest
     # Only restrict concurrency for non-PR jobs
     concurrency:
