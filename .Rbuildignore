@@ -30,3 +30,4 @@ src/stan_files/.*\.hpp$
 ^man/package-doc$
 ^src/package-binary$
 ^Makefile$
+^LICENSE$

@@ -49,7 +49,7 @@ LazyData: true
 Biarch: true
 NeedsCompilation: yes
 UseLTO: true
-URL: http://opensource.nibr.com/RBesT/
+URL: https://opensource.nibr.com/RBesT/
 BugReports: https://github.com/Novartis/RBesT/issues
 Suggests:
     rmarkdown,
@@ -66,4 +66,4 @@ Suggests:
 VignetteBuilder: knitr
 SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3

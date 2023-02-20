@@ -108,6 +108,9 @@ r-source-release : build/r-source-release
 PHONY += binary
 binary : NAMESPACE src/package-binary
 
+PHONY += derived
+derived : NAMESPACE $(BIN_OBJS) $(DOC_OBJS)
+
 #$(DIR_OBJ)/%.o: %.c $(INCS)
 #    mkdir -p $(@D)
 #    $(CC) -o $@ $(CFLAGS) -c $< $(INC_DIRS)

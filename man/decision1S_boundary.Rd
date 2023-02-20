@@ -67,10 +67,10 @@ aligned with the cumulative density function definition within R
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{betaMix}: Applies for binomial model with a mixture
+\item \code{decision1S_boundary(betaMix)}: Applies for binomial model with a mixture
 beta prior. The calculations use exact expressions.
 
-\item \code{normMix}: Applies for the normal model with known
+\item \code{decision1S_boundary(normMix)}: Applies for the normal model with known
 standard deviation \eqn{\sigma} and a normal mixture prior for the
 mean. As a consequence from the assumption of a known standard
 deviation, the calculation discards sampling uncertainty of the
@@ -79,13 +79,13 @@ argument \code{eps} (defaults to \eqn{10^{-6}}). The critical value
 \eqn{y_c} is searched in the region of probability mass
 \code{1-eps} for \eqn{y}.
 
-\item \code{gammaMix}: Applies for the Poisson model with a gamma
+\item \code{decision1S_boundary(gammaMix)}: Applies for the Poisson model with a gamma
 mixture prior for the rate parameter.  The function
 \code{decision1S_boundary} takes an extra argument \code{eps} (defaults to \eqn{10^{-6}})
 which determines the region of probability mass \code{1-eps} where
 the boundary is searched for \eqn{y}.
-}}
 
+}}
 \examples{
 
 # non-inferiority example using normal approximation of log-hazard

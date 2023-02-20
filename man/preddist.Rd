@@ -54,18 +54,18 @@ it is the mean\eqn{\bar{y}_n = 1/n \sum_{i=1}^n y_i}.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{betaMix}: Obtain the matching predictive distribution
+\item \code{preddist(betaMix)}: Obtain the matching predictive distribution
 for a beta distribution, the BetaBinomial.
 
-\item \code{normMix}: Obtain the matching predictive distribution
+\item \code{preddist(normMix)}: Obtain the matching predictive distribution
 for a Normal with constant standard deviation. Note that the
 reference scale of the returned Normal mixture is meaningless as the
 individual components are updated appropriatley.
 
-\item \code{gammaMix}: Obtain the matching predictive distribution
+\item \code{preddist(gammaMix)}: Obtain the matching predictive distribution
 for a Gamma. Only Poisson likelihoods are supported.
-}}
 
+}}
 \section{Supported Conjugate Prior-Likelihood Pairs}{
 
 

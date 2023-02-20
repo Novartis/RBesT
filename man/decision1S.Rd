@@ -60,10 +60,10 @@ boundary, OC or PoS calculations using \code{\link{oc1S}} or
 }
 \section{Functions}{
 \itemize{
-\item \code{oc1Sdecision}: Deprecated old function name. Please use
+\item \code{oc1Sdecision()}: Deprecated old function name. Please use
 \code{decision1S} instead.
-}}
 
+}}
 \examples{
 
 # see Neuenschwander et al., 2011

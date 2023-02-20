@@ -80,13 +80,13 @@ implemented conjugate mixture prior densities.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{betaMix}: Calculates the posterior beta mixture
+\item \code{postmix(betaMix)}: Calculates the posterior beta mixture
 distribution. The individual data vector is expected to be a vector
 of 0 and 1, i.e. a series of Bernoulli experiments. Alternatively,
 the sufficient statistics \code{n} and \code{r} can be given,
 i.e. number of trials and successes, respectively.
 
-\item \code{normMix}: Calculates the posterior normal mixture
+\item \code{postmix(normMix)}: Calculates the posterior normal mixture
 distribution with the sampling likelihood being a normal with fixed
 standard deviation. Either an individual data vector \code{data}
 can be given or the sufficient statistics which are the standard
@@ -98,11 +98,11 @@ given, then the reference scale of the prior is updated; however it
 is recommended to use the command \code{\link{sigma}} to set the
 reference standard deviation.
 
-\item \code{gammaMix}: Calculates the posterior gamma mixture
+\item \code{postmix(gammaMix)}: Calculates the posterior gamma mixture
 distribution for Poisson and exponential likelihoods. Only the
 Poisson case is supported in this version.
-}}
 
+}}
 \section{Supported Conjugate Prior-Likelihood Pairs}{
 
 

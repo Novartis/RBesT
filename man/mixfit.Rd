@@ -74,10 +74,10 @@ alleviate the issue.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Performs an EM fit for the given
+\item \code{mixfit(default)}: Performs an EM fit for the given
 sample. Thinning is applied only if thin is specified.
 
-\item \code{gMAP}: Fits the default predictive distribution from a
+\item \code{mixfit(gMAP)}: Fits the default predictive distribution from a
 gMAP analysis. Automatically obtains the predictive distribution of
 the intercept only case on the response scale mixture from the
 \code{\link{gMAP}} object. For the binomial case a beta mixture,
@@ -86,17 +86,17 @@ gamma mixture will be used. In the gaussian case, the resulting
 normal mixture will set the reference scale to the estimated
 sigma in \code{\link{gMAP}} call.
 
-\item \code{gMAPpred}: Fits a mixture density for each prediction from
+\item \code{mixfit(gMAPpred)}: Fits a mixture density for each prediction from
 the \code{\link{gMAP}} prediction.
 
-\item \code{array}: Fits a mixture density for an MCMC sample. It is
+\item \code{mixfit(array)}: Fits a mixture density for an MCMC sample. It is
 recommended to provide a thinning argument which roughly yields
 independent draws (i.e. use \code{\link{acf}} to identify a
 thinning lag with small auto-correlation). The input array is
 expected to have 3 dimensions which are nested as iterations,
 chains, and draws.
-}}
 
+}}
 \examples{
 bmix <- mixbeta(rob=c(0.2, 1, 1), inf=c(0.8, 10, 2))
 

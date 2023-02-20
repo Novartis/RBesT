@@ -84,10 +84,10 @@ quantiles \code{qc} must be given on the transformed scale.
 }
 \section{Functions}{
 \itemize{
-\item \code{oc2Sdecision}: Deprecated old function name. Please use
+\item \code{oc2Sdecision()}: Deprecated old function name. Please use
 \code{decision2S} instead.
-}}
 
+}}
 \examples{
 
 # see Gsponer et al., 2010

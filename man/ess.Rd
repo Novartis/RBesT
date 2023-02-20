@@ -73,13 +73,13 @@ restrict the ESS to be an integer.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{betaMix}: ESS for beta mixtures.
+\item \code{ess(betaMix)}: ESS for beta mixtures.
 
-\item \code{gammaMix}: ESS for gamma mixtures.
+\item \code{ess(gammaMix)}: ESS for gamma mixtures.
 
-\item \code{normMix}: ESS for normal mixtures.
+\item \code{ess(normMix)}: ESS for normal mixtures.
+
 }}
-
 \section{Supported Conjugate Prior-Likelihood Pairs}{
 
 

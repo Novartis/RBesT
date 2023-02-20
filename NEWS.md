@@ -1,3 +1,10 @@
+# RBesT 1.6-6 - February 20th, 2023
+
+## Bug fixes
+
+* drop C++17 system requirement as per CRAN (triggers issue with clang 16)
+* fix links in README.md to now link to new public pkgdown web-site
+
 # RBesT 1.6-5 - February 8th, 2023
 
 ## Enhancements

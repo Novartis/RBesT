@@ -87,7 +87,7 @@ y_{2,i}} and for the normal case as the mean \eqn{\bar{y}_2 = 1/n_2
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{betaMix}: Applies for binomial model with a mixture
+\item \code{decision2S_boundary(betaMix)}: Applies for binomial model with a mixture
 beta prior. The calculations use exact expressions.  If the
 optional argument \code{eps} is defined, then an approximate method
 is used which limits the search for the decision boundary to the
@@ -95,7 +95,7 @@ region of \code{1-eps} probability mass. This is useful for designs
 with large sample sizes where an exact approach is very costly to
 calculate.
 
-\item \code{normMix}: Applies for the normal model with known
+\item \code{decision2S_boundary(normMix)}: Applies for the normal model with known
 standard deviation \eqn{\sigma} and normal mixture priors for the
 means. As a consequence from the assumption of a known standard
 deviation, the calculation discards sampling uncertainty of the
@@ -109,13 +109,13 @@ is determined by a spacing with \eqn{\delta_2 =
 at the discrete steps, a spline is used to inter-polate the
 decision boundary at intermediate points.
 
-\item \code{gammaMix}: Applies for the Poisson model with a gamma
+\item \code{decision2S_boundary(gammaMix)}: Applies for the Poisson model with a gamma
 mixture prior for the rate parameter.  The function
 \code{decision2S_boundary} takes an extra argument \code{eps} (defaults to \eqn{10^{-6}}) which
 determines the region of probability mass \code{1-eps} where the
 boundary is searched for \eqn{y_1} and \eqn{y_2}, respectively.
-}}
 
+}}
 \examples{
 
 # see ?decision2S for details of example
