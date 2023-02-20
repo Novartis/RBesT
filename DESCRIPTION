@@ -9,7 +9,7 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
 Version: 1.6-5
-Date: 2023-01-23
+Date: 2023-02-08
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
@@ -49,6 +49,7 @@ LazyData: true
 Biarch: true
 NeedsCompilation: yes
 UseLTO: true
+URL: http://opensource.nibr.com/RBesT/
 BugReports: https://github.com/Novartis/RBesT/issues
 Suggests:
     rmarkdown,
@@ -63,8 +64,6 @@ Suggests:
     tidyr,
     parallel
 VignetteBuilder: knitr
-SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc
+SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc, C++17
 Encoding: UTF-8
 RoxygenNote: 7.1.1
-ReleaseSHA1: 23ae246
-URL: http://opensource.nibr.com/RBesT/

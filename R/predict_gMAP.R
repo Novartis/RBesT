@@ -22,6 +22,7 @@
 #'
 #' @seealso \code{\link{gMAP}}, \code{\link{predict.glm}}
 #'
+#' @template example-start
 #' @examples
 #' # create a fake data set with a covariate
 #' trans_cov <- transform(transplant, country=cut(1:11, c(0,5,8,Inf), c("CH", "US", "DE")))
@@ -57,6 +58,7 @@
 #' pred_new <- predict(map, data.frame(country="CH", study=12))
 #' pred_new
 #'
+#' @template example-stop
 #' @rdname predict.gMAP
 #' @method predict gMAP
 #' @export

@@ -1,4 +1,10 @@
-# RBesT 1.6-5 - January 23rd, 2023
+# RBesT 1.6-5 - February 8th, 2023
+
+## Enhancements
+
+* upon package load `RBesT` will now report the date of the release
+  and the respective git commit hash used to create the sources of the
+  package.
 
 ## Bug fixes
 
