@@ -9,7 +9,7 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
 Version: 1.6-6
-Date: 2023-02-20
+Date: 2023-02-24
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
@@ -64,6 +64,6 @@ Suggests:
     tidyr,
     parallel
 VignetteBuilder: knitr
-SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc
+SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc, C++14
 Encoding: UTF-8
 RoxygenNote: 7.2.3

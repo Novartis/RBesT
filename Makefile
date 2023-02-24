@@ -126,6 +126,9 @@ clean:
 	rm -f man/package-doc
 	rm -f src/package-binary
 	rm -f R/sysdata.rda
+	rm -f demo/*.html
+	rm -f vignettes/*.html
+	rm -f vignettes/*.docx
 	rm -rf .Rd2pdf*
 
 PHONY += doc
