@@ -2,8 +2,8 @@
 
 ## Bug fixes
 
-* drop C++17 system requirement as per CRAN (triggers issue with clang
-  16), use required minimal C++14 instead 
+* drop C++17 system requirement as per CRAN (triggers an issue with
+  clang 16), use required minimal C++14 instead
 * fix links in README.md to now link to new public pkgdown web-site
 
 # RBesT 1.6-5 - February 8th, 2023
