@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -128,17 +128,17 @@ given.</p>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
     
-<ul><li><p><code>betaMix</code>: The default <code>mean</code> is set to 1/2 which
+<ul><li><p><code>robustify(betaMix)</code>: The default <code>mean</code> is set to 1/2 which
 represents no difference between the occurrence rates for one of the
 two outcomes. As the uniform <code>Beta(1,1)</code> is more appropriate in
 practical applications, <code>RBesT</code> uses <code>n+1</code> as the sample
 size such that the default robust prior is the uniform instead of
 the <code>Beta(1/2,1/2)</code> which strictly defined would be the unit
 information prior in this case.</p></li>
-<li><p><code>gammaMix</code>: The default <code>mean</code> is set to the mean of the
+<li><p><code>robustify(gammaMix)</code>: The default <code>mean</code> is set to the mean of the
 prior mixture. It is strongly recommended to explicitly set the
 mean to the location of the null hypothesis.</p></li>
-<li><p><code>normMix</code>: The default <code>mean</code> is set to the mean
+<li><p><code>robustify(normMix)</code>: The default <code>mean</code> is set to the mean
 of the prior mixture. It is strongly recommended to explicitly set
 the mean to the location of the null hypothesis, which is very
 often equal to 0. It is also recommended to explicitly set the

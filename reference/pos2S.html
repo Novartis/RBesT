@@ -18,7 +18,7 @@ parameters are distributed according to the given distributions."><!-- mathjax -
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -182,14 +182,14 @@ calculation are as for the 2-sample operating characteristics, see
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
     
-<ul><li><p><code>betaMix</code>: Applies for binomial model with a mixture
+<ul><li><p><code>pos2S(betaMix)</code>: Applies for binomial model with a mixture
 beta prior. The calculations use exact expressions.  If the
 optional argument <code>eps</code> is defined, then an approximate method
 is used which limits the search for the decision boundary to the
 region of <code>1-eps</code> probability mass. This is useful for designs
 with large sample sizes where an exact approach is very costly to
 calculate.</p></li>
-<li><p><code>normMix</code>: Applies for the normal model with known
+<li><p><code>pos2S(normMix)</code>: Applies for the normal model with known
 standard deviation \(\sigma\) and normal mixture priors for the
 means. As a consequence from the assumption of a known standard
 deviation, the calculation discards sampling uncertainty of the
@@ -202,7 +202,7 @@ is determined by a spacing with \(\delta_2 =
 \sigma_2/\sqrt{N_{grid}}\). Once the decision boundary is evaluated
 at the discrete steps, a spline is used to inter-polate the
 decision boundary at intermediate points.</p></li>
-<li><p><code>gammaMix</code>: Applies for the Poisson model with a gamma
+<li><p><code>pos2S(gammaMix)</code>: Applies for the Poisson model with a gamma
 mixture prior for the rate parameter.  The function
 <code>pos2S</code> takes an extra argument <code>eps</code> (defaults to \(10^{-6}\)) which
 determines the region of probability mass <code>1-eps</code> where the

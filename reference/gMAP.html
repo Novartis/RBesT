@@ -16,7 +16,7 @@ glm conventions."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +78,8 @@ specification and overall syntax follows mainly
 <span>  <span class="va">weights</span>,</span>
 <span>  <span class="va">offset</span>,</span>
 <span>  <span class="va">tau.strata</span>,</span>
-<span>  tau.dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HalfNormal"</span>, <span class="st">"TruncNormal"</span>, <span class="st">"Uniform"</span>, <span class="st">"Gamma"</span>, <span class="st">"InvGamma"</span>,</span>
-<span>    <span class="st">"LogNormal"</span>, <span class="st">"TruncCauchy"</span>, <span class="st">"Exp"</span>, <span class="st">"Fixed"</span><span class="op">)</span>,</span>
+<span>  tau.dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HalfNormal"</span>, <span class="st">"TruncNormal"</span>, <span class="st">"Uniform"</span>, <span class="st">"Gamma"</span>, <span class="st">"InvGamma"</span>, <span class="st">"LogNormal"</span>,</span>
+<span>    <span class="st">"TruncCauchy"</span>, <span class="st">"Exp"</span>, <span class="st">"Fixed"</span><span class="op">)</span>,</span>
 <span>  <span class="va">tau.prior</span>,</span>
 <span>  tau.strata.pred <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">beta.prior</span>,</span>
@@ -348,15 +348,15 @@ exposure unit must be given as log-offset.</p></dd>
     <div class="section level2">
     <h2 id="methods-by-generic-">Methods (by generic)<a class="anchor" aria-label="anchor" href="#methods-by-generic-"></a></h2>
     
-<ul><li><p><code>print</code>: displays a summary of the gMAP analysis.</p></li>
-<li><p><code>fitted</code>: returns the quantiles of the posterior shrinkage
+<ul><li><p><code>print(gMAP)</code>: displays a summary of the gMAP analysis.</p></li>
+<li><p><code>fitted(gMAP)</code>: returns the quantiles of the posterior shrinkage
 estimates for each data item used during the analysis of the given
 <code>gMAP</code> object.</p></li>
-<li><p><code>coef</code>: returns the quantiles of the predictive
+<li><p><code>coef(gMAP)</code>: returns the quantiles of the predictive
 distribution. User can choose with <code>type</code> if the result is on
 the response or the link scale.</p></li>
-<li><p><code>as.matrix</code>: extracts the posterior sample of the model.</p></li>
-<li><p><code>summary</code>: returns the summaries of a gMAP.
+<li><p><code>as.matrix(gMAP)</code>: extracts the posterior sample of the model.</p></li>
+<li><p><code>summary(gMAP)</code>: returns the summaries of a gMAP.
 analysis. Output is a <code>gMAPsummary</code> object, which is a list containing</p><dl><dt><code>tau</code></dt>
 <dd><p>posterior summary of the heterogeneity standard deviation</p></dd>
 
