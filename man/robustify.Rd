@@ -56,7 +56,7 @@ given.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{betaMix}: The default \code{mean} is set to 1/2 which
+\item \code{robustify(betaMix)}: The default \code{mean} is set to 1/2 which
 represents no difference between the occurrence rates for one of the
 two outcomes. As the uniform \code{Beta(1,1)} is more appropriate in
 practical applications, \code{RBesT} uses \code{n+1} as the sample
@@ -64,17 +64,17 @@ size such that the default robust prior is the uniform instead of
 the \code{Beta(1/2,1/2)} which strictly defined would be the unit
 information prior in this case.
 
-\item \code{gammaMix}: The default \code{mean} is set to the mean of the
+\item \code{robustify(gammaMix)}: The default \code{mean} is set to the mean of the
 prior mixture. It is strongly recommended to explicitly set the
 mean to the location of the null hypothesis.
 
-\item \code{normMix}: The default \code{mean} is set to the mean
+\item \code{robustify(normMix)}: The default \code{mean} is set to the mean
 of the prior mixture. It is strongly recommended to explicitly set
 the mean to the location of the null hypothesis, which is very
 often equal to 0. It is also recommended to explicitly set the
 sampling standard deviation using the \code{sigma} argument.
-}}
 
+}}
 \examples{
 bmix <- mixbeta(inf1=c(0.2, 8, 3), inf2=c(0.8, 10, 2))
 plot(bmix)

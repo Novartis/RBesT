@@ -16,8 +16,8 @@ gMAP(
   weights,
   offset,
   tau.strata,
-  tau.dist = c("HalfNormal", "TruncNormal", "Uniform", "Gamma", "InvGamma",
-    "LogNormal", "TruncCauchy", "Exp", "Fixed"),
+  tau.dist = c("HalfNormal", "TruncNormal", "Uniform", "Gamma", "InvGamma", "LogNormal",
+    "TruncCauchy", "Exp", "Fixed"),
   tau.prior,
   tau.strata.pred = 1,
   beta.prior,
@@ -252,19 +252,19 @@ exposure unit must be given as log-offset.}
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{print}: displays a summary of the gMAP analysis.
+\item \code{print(gMAP)}: displays a summary of the gMAP analysis.
 
-\item \code{fitted}: returns the quantiles of the posterior shrinkage
+\item \code{fitted(gMAP)}: returns the quantiles of the posterior shrinkage
 estimates for each data item used during the analysis of the given
 \code{gMAP} object.
 
-\item \code{coef}: returns the quantiles of the predictive
+\item \code{coef(gMAP)}: returns the quantiles of the predictive
 distribution. User can choose with \code{type} if the result is on
 the response or the link scale.
 
-\item \code{as.matrix}: extracts the posterior sample of the model.
+\item \code{as.matrix(gMAP)}: extracts the posterior sample of the model.
 
-\item \code{summary}: returns the summaries of a gMAP.
+\item \code{summary(gMAP)}: returns the summaries of a gMAP.
 analysis. Output is a \code{gMAPsummary} object, which is a list containing
 \describe{
 \item{\code{tau}}{posterior summary of the heterogeneity standard deviation}
@@ -272,8 +272,8 @@ analysis. Output is a \code{gMAPsummary} object, which is a list containing
 \item{\code{theta.pred}}{summary of the predictive distribution (given in dependence on the \code{type} argument either on \code{response} or \code{link} scale)}
 \item{\code{theta}}{posterior summary of the mean estimate (also depends on the \code{type} argument)}
 }
-}}
 
+}}
 \section{Differential Discounting}{
 
 

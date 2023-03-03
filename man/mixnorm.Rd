@@ -75,9 +75,9 @@ functions which require a reference scale.
 }
 \section{Functions}{
 \itemize{
-\item \code{sigma<-}: Allows to assign a new reference scale \code{sigma}.
-}}
+\item \code{sigma(object) <- value}: Allows to assign a new reference scale \code{sigma}.
 
+}}
 \examples{
 
 nm <- mixnorm(rob=c(0.2, 0, 2), inf=c(0.8, 2, 2), sigma=5)

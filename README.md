@@ -13,7 +13,7 @@ methodology.
 ## Getting Started
 
 To get a quick overview over the package functionality, please refer
-to the introductory [vignettes](articles/index.html). We recommend
+to the introductory [vignettes](https://opensource.nibr.com/RBesT/articles/index.html). We recommend
 starting with the [Getting started with `RBesT`
-(binary)](articles/introduction.html) vignette as a first read.
+(binary)](https://opensource.nibr.com/RBesT/articles/introduction.html) vignette as a first read.
 
