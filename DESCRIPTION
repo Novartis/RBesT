@@ -64,6 +64,6 @@ Suggests:
     tidyr,
     parallel
 VignetteBuilder: knitr
-SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc
+SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc, C++17
 Encoding: UTF-8
 RoxygenNote: 7.2.3
