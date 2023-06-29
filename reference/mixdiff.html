@@ -116,12 +116,12 @@ numbers.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>If \(x_1 \sim f_1(x)\) and \(x_2 \sim
-f_2(x)\), the density of the difference \(x
-\equiv x_1 - x_2\) is given by the convolution</p>
-<p>$$f(x) = \int f_1(x) \, f_2(x - u) \, du = (f_1 \ast f_2)(x).$$</p>
+    <p>If \(x_1 \sim f_1(x_1)\) and \(x_2 \sim
+f_2(x_2)\), the density of the difference \(d
+\equiv x_1 - x_2\) is given by</p>
+<p>$$f_d(d) = \int f_1(u) \, f_2(u - d) \, du.$$</p>
 <p>The cumulative distribution function equates to</p>
-<p>$$F(x) = \int F_1(x+u) \, f_2(u) \, du.$$</p>
+<p>$$F_d(d) = \int f_1(u) \, (1-F_2(u-d)) \, du.$$</p>
 <p>Both integrals are performed over the full support of the
 densities and use the numerical integration function
 <code><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">integrate</a></code>.</p>

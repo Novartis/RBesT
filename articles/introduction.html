@@ -259,11 +259,11 @@ analysis, but with modified arguments of
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.3320 0.1760 0.0351 0.3110 0.7270 </span></span>
+<span><span class="co">## 0.3350 0.1770 0.0368 0.3130 0.7370 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.2570 0.0795 0.1210 0.2480 0.4450</span></span></code></pre>
+<span><span class="co">## 0.2560 0.0805 0.1180 0.2480 0.4440</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="parametric-approximation">Parametric Approximation<a class="anchor" aria-label="anchor" href="#parametric-approximation"></a>
@@ -287,8 +287,8 @@ histogram of the MAP MCMC sample.</p>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1      comp2     </span></span>
 <span><span class="co">## w  0.6167463  0.3832537</span></span>
-<span><span class="co">## a 19.1916387  3.5278745</span></span>
-<span><span class="co">## b 57.7779317  9.3735980</span></span></code></pre>
+<span><span class="co">## a 19.1916388  3.5278745</span></span>
+<span><span class="co">## b 57.7779319  9.3735980</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-5-1.png" width="622.08"></p>
@@ -338,7 +338,7 @@ the historical control information.</p>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1     comp2     robust   </span></span>
 <span><span class="co">## w  0.493397  0.306603  0.200000</span></span>
-<span><span class="co">## a 19.191639  3.527874  1.000000</span></span>
+<span><span class="co">## a 19.191639  3.527875  1.000000</span></span>
 <span><span class="co">## b 57.777932  9.373598  1.000000</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map_robust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
