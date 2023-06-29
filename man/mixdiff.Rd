@@ -41,15 +41,15 @@ function and random number generation for the difference of two mixture
 distributions.
 }
 \details{
-If \eqn{x_1 \sim f_1(x)}{x_1 ~ f_1(x)} and \eqn{x_2 \sim
-f_2(x)}{x_2 ~ f_2(x)}, the density of the difference \eqn{x
-\equiv x_1 - x_2}{x = x_1 - x_2} is given by the convolution
+If \eqn{x_1 \sim f_1(x_1)}{x_1 ~ f_1(x_1)} and \eqn{x_2 \sim
+f_2(x_2)}{x_2 ~ f_2(x)}, the density of the difference \eqn{d
+\equiv x_1 - x_2}{d = x_1 - x_2} is given by
 
-\deqn{f(x) = \int f_1(x) \, f_2(x - u) \, du = (f_1 \ast f_2)(x).}{f(x) = \int f_1(x) f_2(x - u)  du = (f_1 * f_2)(x).}
+\deqn{f_d(d) = \int f_1(u) \, f_2(u - d) \, du.}{f_d(d) = \int f_1(u) f_2(u - d)  du.}
 
 The cumulative distribution function equates to
 
-\deqn{F(x) = \int F_1(x+u) \, f_2(u) \, du.}{F(x) = \int F_1(x+u) f_2(u) du.}
+\deqn{F_d(d) = \int f_1(u) \, (1-F_2(u-d)) \, du.}{F_d(d) = \int f_1(u) (1-F_2(u-d)) du.}
 
 Both integrals are performed over the full support of the
 densities and use the numerical integration function
