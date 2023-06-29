@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="" class="logo" alt=""><h1>RBesT for a Normal Endpoint</h1>
                         <h4 data-toc-skip class="author">Yue Li</h4>
             
-            <h4 data-toc-skip class="date">2023-03-03</h4>
+            <h4 data-toc-skip class="date">2023-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/HEAD/vignettes/introduction_normal.Rmd" class="external-link"><code>vignettes/introduction_normal.Rmd</code></a></small>
       <div class="d-none name"><code>introduction_normal.Rmd</code></div>
@@ -205,11 +205,11 @@ function is used to make the results exactly reproducible.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
 <span><span class="co">##  mean    sd  2.5%   50% 97.5% </span></span>
-<span><span class="co">## 14.50 10.00  1.19 12.50 39.20 </span></span>
+<span><span class="co">## 14.70 10.00  1.66 12.70 39.50 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
 <span><span class="co">##  mean    sd  2.5%   50% 97.5% </span></span>
-<span><span class="co">## -50.0  19.2 -91.6 -48.7 -13.4</span></span></code></pre>
+<span><span class="co">## -50.2  19.6 -91.9 -48.8 -12.8</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## a graphical representation is also available</span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
@@ -237,15 +237,15 @@ can also specify the number of components for the mixture via
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -17007.44</span></span>
+<span><span class="co">## Log-Likelihood = -17150.82</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 88</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1        comp2        comp3       </span></span>
-<span><span class="co">## w   0.50211765   0.47187303   0.02600932</span></span>
-<span><span class="co">## m -52.87773410 -47.33641569 -43.90720135</span></span>
-<span><span class="co">## s  21.87731545   7.73071395  59.70377117</span></span></code></pre>
+<span><span class="co">##   comp1       comp2       comp3       comp4      </span></span>
+<span><span class="co">## w   0.5337693   0.2919489   0.1036433   0.0706384</span></span>
+<span><span class="co">## m -53.9071644 -46.7957807 -52.6857032 -32.9867605</span></span>
+<span><span class="co">## s  16.6267034   5.8400681  41.9546778  12.8736086</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## check accuracy of mixture fit</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></code></pre></div>
@@ -269,11 +269,11 @@ sample size of the control group.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method<span class="op">=</span><span class="st">"morita"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 88</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 98</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 141</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method<span class="op">=</span><span class="st">"moment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 88</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 21</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 20</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="robustification-of-map-prior">Robustification of MAP Prior<a class="anchor" aria-label="anchor" href="#robustification-of-map-prior"></a>
@@ -299,14 +299,14 @@ group population. Note that robustification decreases the ESS.</p>
 <pre><code><span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 88</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1        comp2        comp3        robust      </span></span>
-<span><span class="co">## w   0.40169412   0.37749842   0.02080745   0.20000000</span></span>
-<span><span class="co">## m -52.87773410 -47.33641569 -43.90720135 -50.00000000</span></span>
-<span><span class="co">## s  21.87731545   7.73071395  59.70377117  88.00000000</span></span></code></pre>
+<span><span class="co">##   comp1        comp2        comp3        comp4        robust      </span></span>
+<span><span class="co">## w   0.42701546   0.23355915   0.08291467   0.05651072   0.20000000</span></span>
+<span><span class="co">## m -53.90716444 -46.79578074 -52.68570324 -32.98676046 -50.00000000</span></span>
+<span><span class="co">## s  16.62670343   5.84006809  41.95467783  12.87360863  88.00000000</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map_robust</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 88</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 31</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 30</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="operating-characteristics-of-design-options">Operating Characteristics of Design Options<a class="anchor" aria-label="anchor" href="#operating-characteristics-of-design-options"></a>
@@ -404,7 +404,10 @@ reduce the type I error inflation in this case to a lower level.</p>
 <span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">'Type I error'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>            <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.justification<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,legend.position<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.95</span>,<span class="fl">0.85</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: `qplot()` was deprecated in ggplot2 3.4.0.</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: `qplot()` was deprecated in ggplot2 3.4.0.</span></span>
+<span><span class="co">## <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
 <p><img src="introduction_normal_files/figure-html/typeI-1.png" width="622.08"></p>
 </div>
 <div class="section level4">
@@ -476,10 +479,10 @@ is taken into account.</p>
 <span><span class="co">## then calculate probability for the dual criteria</span></span>
 <span><span class="co">## and compare to the predefined threshold values</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">post_act</span>, <span class="va">post_pbo</span>, <span class="fl">0</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.06315548</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.06130469</span></span></code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">post_act</span>, <span class="va">post_pbo</span>, <span class="op">-</span><span class="fl">50</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 3.725917e-06</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 3.838598e-06</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p1</span><span class="op">&gt;</span><span class="fl">0.95</span> <span class="op">&amp;</span> <span class="va">p2</span><span class="op">&gt;</span><span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] FALSE</span></span></code></pre>
@@ -503,13 +506,13 @@ is taken into account.</p>
 </h4>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.2.2 (2022-10-31)</span></span>
+<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
 <span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3</span></span>
-<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">##  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
@@ -517,40 +520,43 @@ is taken into account.</p>
 <span><span class="co">##  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
 <span><span class="co">## [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
 <span><span class="co">## </span></span>
+<span><span class="co">## time zone: UTC</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
+<span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] knitr_1.42    ggplot2_3.4.1 RBesT_1.6-6  </span></span>
+<span><span class="co">## [1] knitr_1.43    ggplot2_3.4.2 RBesT_1.6-7  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] Rcpp_1.0.10          mvtnorm_1.1-3        prettyunits_1.1.1   </span></span>
-<span><span class="co">##  [4] ps_1.7.2             assertthat_0.2.1     rprojroot_2.0.3     </span></span>
-<span><span class="co">##  [7] digest_0.6.31        utf8_1.2.3           plyr_1.8.8          </span></span>
-<span><span class="co">## [10] R6_2.5.1             backports_1.4.1      stats4_4.2.2        </span></span>
-<span><span class="co">## [13] evaluate_0.20        highr_0.10           pillar_1.8.1        </span></span>
-<span><span class="co">## [16] rlang_1.0.6          callr_3.7.3          jquerylib_0.1.4     </span></span>
-<span><span class="co">## [19] checkmate_2.1.0      rmarkdown_2.20       pkgdown_2.0.7       </span></span>
-<span><span class="co">## [22] labeling_0.4.2       textshaping_0.3.6    desc_1.4.2          </span></span>
-<span><span class="co">## [25] stringr_1.5.0        loo_2.5.1            munsell_0.5.0       </span></span>
-<span><span class="co">## [28] compiler_4.2.2       xfun_0.37            rstan_2.21.8        </span></span>
-<span><span class="co">## [31] pkgconfig_2.0.3      systemfonts_1.0.4    pkgbuild_1.4.0      </span></span>
-<span><span class="co">## [34] rstantools_2.2.0     htmltools_0.5.4      tidyselect_1.2.0    </span></span>
-<span><span class="co">## [37] tensorA_0.36.2       tibble_3.1.8         gridExtra_2.3       </span></span>
-<span><span class="co">## [40] codetools_0.2-18     matrixStats_0.63.0   fansi_1.0.4         </span></span>
-<span><span class="co">## [43] withr_2.5.0          crayon_1.5.2         dplyr_1.1.0         </span></span>
-<span><span class="co">## [46] distributional_0.3.1 grid_4.2.2           jsonlite_1.8.4      </span></span>
-<span><span class="co">## [49] gtable_0.3.1         lifecycle_1.0.3      posterior_1.4.0     </span></span>
-<span><span class="co">## [52] magrittr_2.0.3       StanHeaders_2.21.0-7 scales_1.2.1        </span></span>
-<span><span class="co">## [55] RcppParallel_5.1.7   cli_3.6.0            stringi_1.7.12      </span></span>
-<span><span class="co">## [58] cachem_1.0.7         farver_2.1.1         reshape2_1.4.4      </span></span>
-<span><span class="co">## [61] fs_1.6.1             bslib_0.4.2          ragg_1.2.5          </span></span>
-<span><span class="co">## [64] generics_0.1.3       vctrs_0.5.2          Formula_1.2-5       </span></span>
-<span><span class="co">## [67] tools_4.2.2          glue_1.6.2           purrr_1.0.1         </span></span>
-<span><span class="co">## [70] abind_1.4-5          processx_3.8.0       parallel_4.2.2      </span></span>
-<span><span class="co">## [73] fastmap_1.1.1        yaml_2.3.7           inline_0.3.19       </span></span>
-<span><span class="co">## [76] colorspace_2.1-0     bayesplot_1.10.0     memoise_2.0.1       </span></span>
-<span><span class="co">## [79] sass_0.4.5</span></span></code></pre>
+<span><span class="co">##  [1] tensorA_0.36.2       gtable_0.3.3         xfun_0.39           </span></span>
+<span><span class="co">##  [4] bslib_0.5.0          processx_3.8.1       inline_0.3.19       </span></span>
+<span><span class="co">##  [7] callr_3.7.3          vctrs_0.6.3          tools_4.3.1         </span></span>
+<span><span class="co">## [10] ps_1.7.5             generics_0.1.3       stats4_4.3.1        </span></span>
+<span><span class="co">## [13] parallel_4.3.1       tibble_3.2.1         fansi_1.0.4         </span></span>
+<span><span class="co">## [16] highr_0.10           pkgconfig_2.0.3      checkmate_2.2.0     </span></span>
+<span><span class="co">## [19] desc_1.4.2           distributional_0.3.2 RcppParallel_5.1.7  </span></span>
+<span><span class="co">## [22] assertthat_0.2.1     lifecycle_1.0.3      farver_2.1.1        </span></span>
+<span><span class="co">## [25] compiler_4.3.1       stringr_1.5.0        textshaping_0.3.6   </span></span>
+<span><span class="co">## [28] munsell_0.5.0        codetools_0.2-19     htmltools_0.5.5     </span></span>
+<span><span class="co">## [31] sass_0.4.6           bayesplot_1.10.0     yaml_2.3.7          </span></span>
+<span><span class="co">## [34] Formula_1.2-5        pillar_1.9.0         pkgdown_2.0.7       </span></span>
+<span><span class="co">## [37] crayon_1.5.2         jquerylib_0.1.4      cachem_1.0.8        </span></span>
+<span><span class="co">## [40] StanHeaders_2.26.27  abind_1.4-5          posterior_1.4.1     </span></span>
+<span><span class="co">## [43] rstan_2.21.8         tidyselect_1.2.0     digest_0.6.32       </span></span>
+<span><span class="co">## [46] mvtnorm_1.2-2        stringi_1.7.12       reshape2_1.4.4      </span></span>
+<span><span class="co">## [49] dplyr_1.1.2          purrr_1.0.1          labeling_0.4.2      </span></span>
+<span><span class="co">## [52] rprojroot_2.0.3      fastmap_1.1.1        grid_4.3.1          </span></span>
+<span><span class="co">## [55] colorspace_2.1-0     cli_3.6.1            magrittr_2.0.3      </span></span>
+<span><span class="co">## [58] loo_2.6.0            pkgbuild_1.4.2       utf8_1.2.3          </span></span>
+<span><span class="co">## [61] withr_2.5.0          prettyunits_1.1.1    scales_1.2.1        </span></span>
+<span><span class="co">## [64] backports_1.4.1      rmarkdown_2.22       matrixStats_1.0.0   </span></span>
+<span><span class="co">## [67] gridExtra_2.3        ragg_1.2.5           memoise_2.0.1       </span></span>
+<span><span class="co">## [70] evaluate_0.21        rstantools_2.3.1     rlang_1.1.1         </span></span>
+<span><span class="co">## [73] Rcpp_1.0.10          glue_1.6.2           jsonlite_1.8.5      </span></span>
+<span><span class="co">## [76] plyr_1.8.8           R6_2.5.1             systemfonts_1.0.4   </span></span>
+<span><span class="co">## [79] fs_1.6.2</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
