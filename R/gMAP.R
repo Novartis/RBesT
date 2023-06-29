@@ -367,8 +367,7 @@ gMAP <- function (formula,
                   init=getOption("RBesT.MC.init", 1),
                   chains=getOption("RBesT.MC.chains", 4),
                   cores=getOption("mc.cores", 1L)
-                  )
-{
+                  ) {
     call <- match.call()
 
     if (is.character(family))

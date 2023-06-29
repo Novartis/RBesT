@@ -66,8 +66,8 @@ The probability of success is a very useful concept to assess the
 chances of success of a trial while taking uncertainties into
 account. In this document we briefly introduce the needed formal
 details, describe an example data set and then demonstrate various
-ways of increasing complexity how the probability of success concept
-can be applied to increasingly complex data situations.
+ways of how the probability of success concept can be applied to
+increasingly complex data situations.
 
 # Introduction
 
@@ -85,7 +85,7 @@ same results as is demonstrated in the appendix at the bottom. An
 example for a co-data scenario in drug development is the simultaneous
 execution of twin phase III trails for registriation. In such a
 setting, a futility analysis at an interim analysis may take
-historical an all contemporary data into account in a co-data
+historical and all contemporary data into account in a co-data
 approach. This example has been discussed in [1] using the probability
 of success (PoS) as metric to assess futility at an interim analysis
 and is discussed here in detail.
@@ -147,15 +147,15 @@ $\theta$ which will not be part of the trial analysis.
 In the following the hypothetical example as in [1] is discussed. The
 assumed endpoint is time-to-event, which is analyzed using the normal
 approximation of the log-rank statistic for comparing two
-groups. Under a 1:1 randomization the sampling distribution of the
-log-hazard ratio is a normal distribution with sampling standard
-deviation $2$ and a standard error of $\sqrt{4/N_{events}}$ for a
-sample size of $N_{events}$. The historical data considered is a proof
-of concept and a phase II trial. The twin phase III studies are event
-driven. Each trial stops whenever a total of $379$ events is reached
-and an interim is planned whenever at least $150$ events have
-occured. The assumed true hazard ratio used for the design of the
-trial is $0.8$.
+groups. Under a 1:1 randomization the standard error of the log-hazard
+ratio scales with the number of events as $2/\sqrt{N_{events}}$. This
+implies a corresponding sampling standard deviation of $2$, which
+defines the unit information prior used later on in the analysis. The
+historical data considered is a proof of concept and a phase II
+trial. The twin phase III studies are event driven. Each trial stops
+whenever a total of $379$ events is reached and an interim is planned
+whenever at least $150$ events have occured. The assumed true hazard
+ratio used for the design of the trial is $0.8$.
 
 Example data:
 ```{r}

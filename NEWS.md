@@ -1,3 +1,12 @@
+# RBesT 1.6-7 - June 26th, 2023
+
+## Bug fixes
+
+* resolve compilation from source issues on some platforms triggered
+  by changes in `rstantools`
+* correct documentation on difference distribution and improve PoS
+  with co-data vignette
+
 # RBesT 1.6-6 - March 3rd, 2023
 
 ## Bug fixes
