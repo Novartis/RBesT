@@ -81,19 +81,18 @@
 #'
 
 #' @export
-mixfit <- function(sample, type=c("norm", "beta", "gamma"), thin, ...) UseMethod("mixfit")
+mixfit <- function(sample, type=c("norm", "beta", "gamma", "mvnorm"), thin, ...) UseMethod("mixfit")
 
 #' @describeIn mixfit Performs an EM fit for the given
 #' sample. Thinning is applied only if thin is specified.
 #' @export
-mixfit.default <- function(sample, type=c("norm", "beta", "gamma"), thin, ...)
-{
+mixfit.default <- function(sample, type=c("norm", "beta", "gamma", "mvnorm"), thin, ...) {
     type <- match.arg(type)
-    assert_that(type %in% c("norm", "beta", "gamma"))
-    EM <- switch(type, norm=EM_nmm, beta=EM_bmm_ab, gamma=EM_gmm)
+    assert_that(type %in% c("norm", "beta", "gamma", "mvnorm"))
+    EM <- switch(type, norm=EM_nmm, beta=EM_bmm_ab, gamma=EM_gmm, mvnorm=EM_mnmm)
     if(!missing(thin)) {
         assert_that(thin >= 1)
-        sample <- sample[seq(1,NROW(sample),by=thin),drop=FALSE]
+        sample <- asub(sample, seq(1,NROW(sample),by=thin), dims=1, drop=FALSE)
     }
     EM(sample, ...)
 }
@@ -107,8 +106,7 @@ mixfit.default <- function(sample, type=c("norm", "beta", "gamma"), thin, ...)
 #' normal mixture will set the reference scale to the estimated
 #' sigma in \code{\link{gMAP}} call.
 #' @export
-mixfit.gMAP <- function(sample, type, thin, ...)
-{
+mixfit.gMAP <- function(sample, type, thin, ...) {
     family <- sample$family$family
     ## automatically thin sample as estimated by gMAP function
     if(missing(thin)) {
@@ -129,8 +127,7 @@ mixfit.gMAP <- function(sample, type, thin, ...)
 #' @describeIn mixfit Fits a mixture density for each prediction from
 #' the \code{\link{gMAP}} prediction.
 #' @export
-mixfit.gMAPpred <- function(sample, type, thin, ...)
-{
+mixfit.gMAPpred <- function(sample, type, thin, ...) {
     if(attr(sample, "type") == "response") {
         type <- switch(attr(sample, "family")$family, binomial = "beta", gaussian = "norm", poisson = "gamma", "unknown")
         family <- attr(sample, "family")$family
@@ -157,10 +154,8 @@ mixfit.gMAPpred <- function(sample, type, thin, ...)
 #' expected to have 3 dimensions which are nested as iterations,
 #' chains, and draws.
 #' @export
-mixfit.array <- function(sample, type, thin, ...)
-{
-    Nmcmc <- prod(dim(sample))
-    if(dim(sample)[3] != 1)
+mixfit.array <- function(sample, type, thin, ...) {
+    if(type != "mvnorm" & dim(sample)[3] != 1)
         stop("Only univariate data is supported.")
     mixfit.default(sample, type, thin, ...)
 }

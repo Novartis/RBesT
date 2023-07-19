@@ -5,6 +5,7 @@
 \alias{preddist.betaMix}
 \alias{preddist.normMix}
 \alias{preddist.gammaMix}
+\alias{preddist.mvnormMix}
 \title{Predictive Distributions for Mixture Distributions}
 \usage{
 preddist(mix, ...)
@@ -14,6 +15,8 @@ preddist(mix, ...)
 \method{preddist}{normMix}(mix, n = 1, sigma, ...)
 
 \method{preddist}{gammaMix}(mix, n = 1, ...)
+
+\method{preddist}{mvnormMix}(mix, ...)
 }
 \arguments{
 \item{mix}{mixture distribution}
@@ -23,7 +26,8 @@ preddist(mix, ...)
 \item{n}{predictive sample size, set by default to 1}
 
 \item{sigma}{The fixed reference scale of a normal mixture. If left
-unspecified, the default reference scale of the mixture is assumed.}
+unspecified, the default reference scale of the mixture is
+assumed.}
 }
 \value{
 The function returns for a normal, beta or gamma mixture
@@ -59,11 +63,14 @@ for a beta distribution, the BetaBinomial.
 
 \item \code{preddist(normMix)}: Obtain the matching predictive distribution
 for a Normal with constant standard deviation. Note that the
-reference scale of the returned Normal mixture is meaningless as the
-individual components are updated appropriatley.
+reference scale of the returned Normal mixture is meaningless
+as the individual components are updated appropriatley.
 
 \item \code{preddist(gammaMix)}: Obtain the matching predictive distribution
 for a Gamma. Only Poisson likelihoods are supported.
+
+\item \code{preddist(mvnormMix)}: Multivariate normal mixtures predictive
+densities are not (yet) supported.
 
 }}
 \section{Supported Conjugate Prior-Likelihood Pairs}{

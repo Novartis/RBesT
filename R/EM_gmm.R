@@ -1,6 +1,5 @@
 ## EM for GMM with Nc components
-EM_gmm <- function(x, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(weight=0.005,alpha=0.005,beta=0.005))
-{
+EM_gmm <- function(x, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(weight=0.005,alpha=0.005,beta=0.005)) {
     N <- length(x)
     assert_that(N+Nc >= Ninit)
 

@@ -50,7 +50,7 @@
 #' summary(nm)
 #' plot(nm)
 #'
-#' set.seed(1)
+#' set.seed(57845)
 #' mixSamp <- rmix(nm, 500)
 #' plot(nm, samp=mixSamp)
 #'
@@ -74,6 +74,7 @@ NULL
 #' @export
 mixnorm <- function(..., sigma, param=c("ms", "mn")) {
     mix <- mixdist3(...)
+    assert_matrix(mix, nrows=3, any.missing=FALSE)
     param <- match.arg(param)
     mix[c(2,3),] <- switch(param,
                            ms=mix[c(2,3),],

@@ -90,6 +90,7 @@ mixnormdiff <- function(mix1, mix2) {
 #' @rdname mixdiff
 #' @export
 dmixdiff <- function(mix1, mix2, x) {
+    assert_that(!inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"), msg="Multivariate normal mixture density not supported.")
     if(inherits(mix1, "normMix") & inherits(mix2, "normMix"))
         return(dmix(mixnormdiff(mix1, mix2), x=x))
     interval <- support(mix1)
@@ -123,6 +124,7 @@ dmixdiff <- function(mix1, mix2, x) {
 #' @rdname mixdiff
 #' @export
 pmixdiff <- function(mix1, mix2, q, lower.tail=TRUE) {
+    assert_that(!inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"), msg="Multivariate normal mixture density not supported.")
     if(inherits(mix1, "normMix") & inherits(mix2, "normMix"))
         return(pmix(mixnormdiff(mix1, mix2), q=q, lower.tail=lower.tail))
     interval <- support(mix1)
@@ -154,6 +156,7 @@ pmixdiff <- function(mix1, mix2, q, lower.tail=TRUE) {
 #' @rdname mixdiff
 #' @export
 qmixdiff <- function(mix1, mix2, p, lower.tail = TRUE) {
+    assert_that(!inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"), msg="Multivariate normal mixture density not supported.")
     if(inherits(mix1, "normMix"))
         return(qmix(mixnormdiff(mix1, mix2), p=p, lower.tail=lower.tail))
     interval <- support(mix1)

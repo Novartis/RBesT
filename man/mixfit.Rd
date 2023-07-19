@@ -8,9 +8,9 @@
 \alias{mixfit.array}
 \title{Fit of Mixture Densities to Samples}
 \usage{
-mixfit(sample, type = c("norm", "beta", "gamma"), thin, ...)
+mixfit(sample, type = c("norm", "beta", "gamma", "mvnorm"), thin, ...)
 
-\method{mixfit}{default}(sample, type = c("norm", "beta", "gamma"), thin, ...)
+\method{mixfit}{default}(sample, type = c("norm", "beta", "gamma", "mvnorm"), thin, ...)
 
 \method{mixfit}{gMAP}(sample, type, thin, ...)
 

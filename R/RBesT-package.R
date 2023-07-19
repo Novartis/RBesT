@@ -64,4 +64,5 @@
 #' @import ggplot2
 #' @import Formula
 #' @import checkmate
+#' @import abind
 NULL

@@ -43,8 +43,9 @@ mixcombine(bm, unif, weight=c(9, 1))
 Other mixdist: 
 \code{\link{mixbeta}()},
 \code{\link{mixgamma}()},
+\code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
-\code{\link{mix}},
-\code{\link{plot.mix}()}
+\code{\link{mixplot}},
+\code{\link{mix}}
 }
 \concept{mixdist}

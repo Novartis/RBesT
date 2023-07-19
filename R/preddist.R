@@ -78,10 +78,10 @@
 #' @export
 preddist <- function(mix, ...) UseMethod("preddist")
 #' @export
-preddist.default <- function(mix, ...) "Unknown distribution"
+preddist.default <- function(mix, ...) stop("Unknown distribution")
 
 #' @describeIn preddist Obtain the matching predictive distribution
-#' for a beta distribution, the BetaBinomial.
+#'     for a beta distribution, the BetaBinomial.
 #' @export
 preddist.betaMix <- function(mix, n=1, ...) {
     attr(mix, "n") <- n
@@ -90,11 +90,12 @@ preddist.betaMix <- function(mix, n=1, ...) {
 }
 
 #' @describeIn preddist Obtain the matching predictive distribution
-#' for a Normal with constant standard deviation. Note that the
-#' reference scale of the returned Normal mixture is meaningless as the
-#' individual components are updated appropriatley.
+#'     for a Normal with constant standard deviation. Note that the
+#'     reference scale of the returned Normal mixture is meaningless
+#'     as the individual components are updated appropriatley.
 #' @param sigma The fixed reference scale of a normal mixture. If left
-#' unspecified, the default reference scale of the mixture is assumed.
+#'     unspecified, the default reference scale of the mixture is
+#'     assumed.
 #' @export
 preddist.normMix <- function(mix, n=1, sigma, ...) {
     if(missing(sigma)) {
@@ -116,7 +117,7 @@ preddist.normMix <- function(mix, n=1, sigma, ...) {
 }
 
 #' @describeIn preddist Obtain the matching predictive distribution
-#' for a Gamma. Only Poisson likelihoods are supported.
+#'     for a Gamma. Only Poisson likelihoods are supported.
 #' @export
 preddist.gammaMix <- function(mix, n=1, ...) {
     assert_set_equal(likelihood(mix), "poisson")
@@ -127,3 +128,7 @@ preddist.gammaMix <- function(mix, n=1, ...) {
     mix
 }
 
+#' @describeIn preddist Multivariate normal mixtures predictive
+#'     densities are not (yet) supported.
+#' @export
+preddist.mvnormMix <- function(mix, ...) stop("Multivariate normal mixture predictive density not supported.")

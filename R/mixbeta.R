@@ -56,6 +56,7 @@ NULL
 #' @export
 mixbeta <- function(..., param=c("ab", "ms", "mn")) {
     mix <- mixdist3(...)
+    assert_matrix(mix, nrows=3, any.missing=FALSE)
     param <- match.arg(param)
     mix[c(2,3),] <- switch(param,
                            ab=mix[c(2,3),],

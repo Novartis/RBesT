@@ -1,3 +1,16 @@
+# RBesT 1.7-0 - July 19th, 2023
+
+## Enhancements
+
+* Implementation multivariate normal mixture support in a first
+  version. This includes density evaluation, basic summary functions
+  and multivariate normal EM fitting. Support is not yet as complete
+  as for other densites, but will be expanded in upcoming releases.
+* Change the default for the option `constrain_gt1` of the EM for beta
+  mixtures to `TRUE`. This will be default constrain the fitted
+  parameters of each beta mixture component to be greater than unity
+  as required for finite ESS elir calculations.
+
 # RBesT 1.6-7 - June 26th, 2023
 
 ## Bug fixes

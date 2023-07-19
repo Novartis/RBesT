@@ -88,8 +88,9 @@ print(bm4)
 Other mixdist: 
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
+\code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
-\code{\link{mix}},
-\code{\link{plot.mix}()}
+\code{\link{mixplot}},
+\code{\link{mix}}
 }
 \concept{mixdist}
