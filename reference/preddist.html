@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,10 @@
 <span><span class="fu">preddist</span><span class="op">(</span><span class="va">mix</span>, n <span class="op">=</span> <span class="fl">1</span>, <span class="va">sigma</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for gammaMix</span></span>
-<span><span class="fu">preddist</span><span class="op">(</span><span class="va">mix</span>, n <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">preddist</span><span class="op">(</span><span class="va">mix</span>, n <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for mvnormMix</span></span>
+<span><span class="fu">preddist</span><span class="op">(</span><span class="va">mix</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -93,7 +96,8 @@
 
 <dt>sigma</dt>
 <dd><p>The fixed reference scale of a normal mixture. If left
-unspecified, the default reference scale of the mixture is assumed.</p></dd>
+unspecified, the default reference scale of the mixture is
+assumed.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -124,10 +128,12 @@ it is the mean\(\bar{y}_n = 1/n \sum_{i=1}^n y_i\).</p>
 for a beta distribution, the BetaBinomial.</p></li>
 <li><p><code>preddist(normMix)</code>: Obtain the matching predictive distribution
 for a Normal with constant standard deviation. Note that the
-reference scale of the returned Normal mixture is meaningless as the
-individual components are updated appropriatley.</p></li>
+reference scale of the returned Normal mixture is meaningless
+as the individual components are updated appropriatley.</p></li>
 <li><p><code>preddist(gammaMix)</code>: Obtain the matching predictive distribution
 for a Gamma. Only Poisson likelihoods are supported.</p></li>
+<li><p><code>preddist(mvnormMix)</code>: Multivariate normal mixtures predictive
+densities are not (yet) supported.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="supported-conjugate-prior-likelihood-pairs">Supported Conjugate Prior-Likelihood Pairs<a class="anchor" aria-label="anchor" href="#supported-conjugate-prior-likelihood-pairs"></a></h2>
@@ -178,9 +184,9 @@ for a Gamma. Only Poisson likelihoods are supported.</p></li>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">/</span><span class="va">n.sim</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       0       1       2       3       4       5       6       7       8       9 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.08702 0.19754 0.23863 0.19401 0.11695 0.05907 0.03089 0.02108 0.01807 0.01833 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.08968 0.19746 0.23763 0.19322 0.11681 0.05847 0.03068 0.02091 0.01858 0.01803 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      10 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.01841 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.01853 </span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: 3-comp Normal mixture</span></span></span>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6-7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.6-7" id="rbest-16-7---june-26th-2023">RBesT 1.6-7 - June 26th, 2023<a class="anchor" aria-label="anchor" href="#rbest-16-7---june-26th-2023"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-0" id="rbest-17-0---july-19th-2023">RBesT 1.7-0 - July 19th, 2023<a class="anchor" aria-label="anchor" href="#rbest-17-0---july-19th-2023"></a></h2>
+<div class="section level3">
+<h3 id="enhancements-1-7-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-0"></a></h3>
+<ul><li>Implementation multivariate normal mixture support in a first version. This includes density evaluation, basic summary functions and multivariate normal EM fitting. Support is not yet as complete as for other densites, but will be expanded in upcoming releases.</li>
+<li>Change the default for the option <code>constrain_gt1</code> of the EM for beta mixtures to <code>TRUE</code>. This will be default constrain the fitted parameters of each beta mixture component to be greater than unity as required for finite ESS elir calculations.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.6-7" id="rbest-16-7---june-26th-2023">RBesT 1.6-7 - June 26th, 2023<a class="anchor" aria-label="anchor" href="#rbest-16-7---june-26th-2023"></a></h2><p class="text-muted">CRAN release: 2023-06-29</p>
 <div class="section level3">
 <h3 id="bug-fixes-1-6-7">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-6-7"></a></h3>
 <ul><li>resolve compilation from source issues on some platforms triggered by changes in <code>rstantools</code>
