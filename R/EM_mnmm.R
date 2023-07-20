@@ -176,7 +176,7 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol
 
     ##mixEst <- list(p=pEst, mean=muEst, sigma=covEst)
 
-    mixEst <- do.call(mixmvnorm, lapply(1:Nc, function(i) cmv(pEst[i], muEst[i,,drop=FALSE], matrix(covEst[i,,], Nd, Nd))))
+    mixEst <- do.call(mixmvnorm, lapply(1:Nc, function(i) c(pEst[i], muEst[i,,drop=FALSE], matrix(covEst[i,,], Nd, Nd))))
     
     ## give further details
     attr(mixEst, "df") <- df
@@ -203,6 +203,7 @@ EM_nmm <- function(X, Nc, mix_init, verbose=FALSE, Niter.max=500, tol, Neps, eps
     mixEst <- EM_mnmm(X=X, Nc=Nc, mix_init=mix_init, verbose=verbose, Niter.max=Niter.max, tol=tol, Neps=Neps, eps=eps)
     rownames(mixEst) <- c("w", "m", "s")
     class(mixEst) <- c("EM", "EMnmm", "normMix", "mix")
+    likelihood(mixEst) <- "normal"
     mixEst
 }
 

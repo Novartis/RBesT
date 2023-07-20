@@ -2,15 +2,12 @@
 % Please edit documentation in R/mixmvnorm.R
 \name{mixmvnorm}
 \alias{mixmvnorm}
-\alias{cmv}
 \alias{print.mvnormMix}
 \alias{summary.mvnormMix}
 \alias{sigma.mvnormMix}
 \title{Multivariate Normal Mixture Density}
 \usage{
 mixmvnorm(..., sigma, param = c("ms", "mn"))
-
-cmv(...)
 
 \method{print}{mvnormMix}(x, ...)
 
@@ -45,9 +42,11 @@ Each entry in the \code{...} argument list is a numeric
     vector is the weight of the mixture component followed by the
     vector of means in each dimension and finally a specification
     of the covariance matrix, which depends on the chosen
-    parametrization. To simplify the definition of a component the
-    utility function \code{cmv} reformats weight, mean vector and
-    covariance matrix appropriately. 
+    parametrization. The covariance matrix is expected to be given
+    as numeric vector in a column-major format, which is standard
+    conversion applied to matrices by the vector concatenation
+    function \code{\link[base:c]{c}}. Please refer to the examples
+    section below.
 
 Each component defining vector can be specified in different ways
 as determined by the \code{param} option:
@@ -68,8 +67,8 @@ reference covariance.
 \examples{
 
 S <- diag(c(1, 2)) \%*\% matrix(c(1, 0.5, 0.5, 1), 2, 2) \%*\% diag(c(1, 2)) 
-mvnm1 <- mixmvnorm(rob=cmv(0.2, c(0, 0), diag(c(5, 5))),
-                   inf=cmv(0.8, c(0.5, 1), S/10), sigma=S)
+mvnm1 <- mixmvnorm(rob=c(0.2, c(0, 0), diag(c(5, 5))),
+                   inf=c(0.8, c(0.5, 1), S/10), sigma=S)
 
 print(mvnm1)
 summary(mvnm1)

@@ -126,16 +126,16 @@ test_that("Multivariate normal mixture has consistent dimensionality",
     for(i in 1:(nrow(S)-1)) {
         p_sub <- 4-i
         S_sub <- S[-c(1:i), -c(1:i), drop=FALSE]
-        mvn_consistent_dimension(mixmvnorm(cmv(1, rep(0, p_sub), S_sub), sigma=S_sub), p_sub)
+        mvn_consistent_dimension(mixmvnorm(c(1, rep(0, p_sub), S_sub), sigma=S_sub), p_sub)
     }
 })
 
 test_that("Multivariate normal mixture has consistent initialization",
 {
     p <- nrow(S)
-    mv1 <- mixmvnorm(cmv(1, rep(0, p), S), sigma=S, param="ms")
-    mv2 <- mixmvnorm(cmv(1, rep(0, p), 1), sigma=S, param="mn")
-    mv3 <- mixmvnorm(cmv(1, rep(0, p), 2), sigma=S, param="mn")
+    mv1 <- mixmvnorm(c(1, rep(0, p), S), sigma=S, param="ms")
+    mv2 <- mixmvnorm(c(1, rep(0, p), 1), sigma=S, param="mn")
+    mv3 <- mixmvnorm(c(1, rep(0, p), 2), sigma=S, param="mn")
 
     expect_equal(summary(mv1)$cov, S, tolerance=eps_lower)
     expect_equal(summary(mv2)$cov, S, tolerance=eps_lower)
@@ -152,9 +152,9 @@ mvn_consistent_summaries <- function(mix, S=Nsamp_equant) {
 test_that("Multivariate normal mixture has consistent summaries",
 {
     p <- nrow(S)
-    mv1 <- mixmvnorm(cmv(1, rep(0, p), S), sigma=S, param="ms")
-    mv2 <- mixmvnorm(cmv(1, rep(0, p), 1), sigma=S, param="mn")
-    mv3 <- mixmvnorm(cmv(0.2, rep(0, p), 2), cmv(0.8, rep(1, p), 6), sigma=S, param="mn")
+    mv1 <- mixmvnorm(c(1, rep(0, p), S), sigma=S, param="ms")
+    mv2 <- mixmvnorm(c(1, rep(0, p), 1), sigma=S, param="mn")
+    mv3 <- mixmvnorm(c(0.2, rep(0, p), 2), c(0.8, rep(1, p), 6), sigma=S, param="mn")
 
     mvn_consistent_summaries(mv1)
     mvn_consistent_summaries(mv2)

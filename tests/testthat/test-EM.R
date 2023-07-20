@@ -49,7 +49,7 @@ s <- c(1, 2, 3, 4)
 S <- diag(s, p) %*% Rho %*% diag(s, p)
 zero <- rep(0, p)
 
-ref$mvnorm_single <- mixmvnorm(cmv(1, zero, 5),
+ref$mvnorm_single <- mixmvnorm(c(1, zero, 5),
                                param="mn", sigma=S)
 
 ref$mvnorm_heavy <- mixmvnorm(c(0.5, zero, 0.25),
