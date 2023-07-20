@@ -41,6 +41,32 @@ ref$norm_bi <- mixnorm(c(0.5, 0, 0.5),
                        c(0.25, -1, 2),
                        param="mn", sigma=1)
 
+p <- 4
+Rho <- diag(p)
+Rho[lower.tri(Rho)] <- c(0.3, 0.8, -0.2, 0.1, 0.5, -0.4)
+Rho[upper.tri(Rho)] <- t(Rho)[upper.tri(Rho)]
+s <- c(1, 2, 3, 4)
+S <- diag(s, p) %*% Rho %*% diag(s, p)
+zero <- rep(0, p)
+
+ref$mvnorm_single <- mixmvnorm(c(1, zero, 5),
+                               param="mn", sigma=S)
+
+ref$mvnorm_heavy <- mixmvnorm(c(0.5, zero, 0.25),
+                              c(0.5, zero + 1, 5),
+                              param="mn", sigma=S)
+
+ref$mvnorm_bi <- mixmvnorm(c(0.5, zero, 0.5),
+                           c(0.25, zero + 1, 5),
+                           c(0.25, zero - 1, 2),
+                           param="mn", sigma=S)
+
+ref$mvnorm_bi_1D <- mixmvnorm(c(0.5, 0, 0.5),
+                              c(0.25, 1, 5),
+                              c(0.25, -1, 2),
+                              param="mn", sigma=S[1,1,drop=FALSE])
+
+
 ref$beta_single <- mixbeta(c(1, 0.3, 10),
                            param="mn")
 
@@ -76,7 +102,7 @@ EM_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
     set.seed(seed)
     samp <- rmix(mixTest, Nsim)
     EMmix <- mixfit(samp,
-                    type=switch(class(mixTest)[1], gammaMix="gamma", normMix="norm", betaMix="beta"),
+                    type=switch(class(mixTest)[1], gammaMix="gamma", normMix="norm", betaMix="beta", mvnormMix="mvnorm"),
                     thin=1,
                     eps=2,
                     Nc=ncol(mixTest),
@@ -85,9 +111,27 @@ EM_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
     expect_true(kl < KLthresh)
 }
 
+EM_mvn_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
+    set.seed(seed)
+    samp <- rmix(mixTest, Nsim)
+    EMmix <- mixfit(samp,
+                    type="mvnorm",
+                    thin=1,
+                    eps=2,
+                    Nc=ncol(mixTest),
+                    verbose=verbose, ...)
+    expect_equal(summary(mixTest)$mean, summary(EMmix)$mean, tolerance=0.1)
+    expect_equal(summary(mixTest)$cov, summary(EMmix)$cov, tolerance=0.1)
+}
+
 test_that("Normal EM fits single component",     EM_test(ref$norm_single, 3453563, Nsim, verbose))
 test_that("Normal EM fits heavy-tailed mixture", EM_test(ref$norm_heavy,  9275624, Nsim, verbose))
 test_that("Normal EM fits bi-modal mixture",     EM_test(ref$norm_bi,     9345726, Nsim, verbose))
+
+test_that("Multivariate Normal EM fits single component",     EM_mvn_test(ref$mvnorm_single, 3453563, Nsim, verbose))
+test_that("Multivariate Normal EM fits heavy-tailed mixture", EM_mvn_test(ref$mvnorm_heavy,  9275624, Nsim, verbose))
+test_that("Multivariate Normal EM fits bi-modal mixture",     EM_mvn_test(ref$mvnorm_bi,     9345726, Nsim, verbose))
+test_that("Multivariate Normal EM fits bi-modal mixture 1D",     EM_mvn_test(ref$mvnorm_bi_1D,     9345726, Nsim, verbose))
 
 test_that("Gamma EM fits single component",      EM_test(ref$gamma_single, 9345835, Nsim, verbose))
 test_that("Gamma EM fits heavy-tailed mixture",  EM_test(ref$gamma_heavy,  5629389, Nsim, verbose))

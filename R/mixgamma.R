@@ -70,6 +70,7 @@ NULL
 #' @export
 mixgamma <- function(..., param=c("ab", "ms", "mn"), likelihood=c("poisson", "exp")) {
     mix <- mixdist3(...)
+    assert_matrix(mix, nrows=3, any.missing=FALSE)
     param <- match.arg(param)
     likelihood <- match.arg(likelihood)
     mix[c(2,3),] <- switch(param,

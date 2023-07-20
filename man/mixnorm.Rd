@@ -86,7 +86,7 @@ print(nm)
 summary(nm)
 plot(nm)
 
-set.seed(1)
+set.seed(57845)
 mixSamp <- rmix(nm, 500)
 plot(nm, samp=mixSamp)
 
@@ -110,7 +110,8 @@ Other mixdist:
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
-\code{\link{mix}},
-\code{\link{plot.mix}()}
+\code{\link{mixmvnorm}()},
+\code{\link{mixplot}},
+\code{\link{mix}}
 }
 \concept{mixdist}

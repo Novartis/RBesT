@@ -105,11 +105,13 @@ rmix <- function(mix, n) UseMethod("rmix")
     cl <- grep("mix$", class(mix), ignore.case=TRUE, value=TRUE)
     dl <- dlink(mix)
     if(inherits(mix, "normMix")) s <- sigma(mix)
+    if(inherits(mix, "mvnormMix")) s <- sigma(mix)
     mix <- mix[,...,drop=FALSE]
     if(rescale) mix[1,] <- mix[1,] / sum(mix[1,])
     class(mix) <- cl
     dlink(mix) <- dl
     if(inherits(mix, "normMix")) sigma(mix) <- s
+    if(inherits(mix, "mvnormMix")) sigma(mix) <- s
     mix
 }
 #' @export
@@ -126,7 +128,7 @@ rmix <- function(mix, n) UseMethod("rmix")
 ## IMPLEMENTATION DETAILS
 
 #' @export
-dmix.default <- function(mix, x, log=FALSE) "Unknown mixture"
+dmix.default <- function(mix, x, log=FALSE) stop("Unknown mixture")
 
 ## default implementation which only needs the density function;
 ## assumption is that the first argument of the density corresponds to
@@ -165,9 +167,34 @@ dmix.betaBinomialMix <- function(mix, x, log=FALSE) dmix_impl(Curry(dBetaBinomia
 #' @export
 dmix.gammaPoissonMix <- function(mix, x, log=FALSE) dmix_impl(Curry(.dnbinomAB, n=attr(mix, "n")), mix, x, log)
 
+#' @export
+dmix.mvnormMix <- function(mix, x, log=FALSE) {
+    p <- mvnormdim(mix[-1,1])
+    Nc <- ncol(mix)
+    if(is.matrix(x)) {
+        Nx <- nrow(x)
+        assert_matrix(x, any.missing=FALSE, nrows=Nx, ncols=p)
+    } else if(is.vector(x)) {
+        Nx <- 1
+        assert_vector(x, any.missing=FALSE, len=p)
+    } else {
+        stop("x must a vector or a matrix.")
+    }
+    assert_that(is.mixidentity_link(mix))
+    comp_res <- matrix(NA_real_, nrow=Nx, ncol=Nc)
+    for(i in 1:Nc) {
+        S <- mvnormsigma(mix[-1,i])
+        comp_res[,i] <- log(mix[1,i]) + mvtnorm::dmvnorm(x, mix[2:(p+1), i], sigma=S, log=TRUE, checkSymmetry=FALSE)
+    }
+    res <- matrixStats::rowLogSumExps(comp_res)
+    if(!log)
+        res <- exp(res)
+    return(res)
+}
+
 ## DISTRIBUTION FUNCTIONS
 #' @export
-pmix.default <- function(mix, q, lower.tail = TRUE, log.p=FALSE) "Unknown mixture"
+pmix.default <- function(mix, q, lower.tail = TRUE, log.p=FALSE) stop("Unknown mixture")
 
 pmix_impl <- function(dist, mix, q, lower.tail = TRUE, log.p=FALSE) {
     Nc <- ncol(mix)
@@ -217,10 +244,14 @@ pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p=FALSE) {
 #' @export
 pmix.gammaPoissonMix <- function(mix, q, lower.tail = TRUE, log.p=FALSE) pmix_impl(Curry(.pnbinomAB, n=attr(mix, "n")), mix, q, lower.tail, log.p)
 
+#' @export
+pmix.mvnormMix <- function(mix, q, ...) stop("Multivariate normal mixture cumulative density not supported.")
+
+
 ## QUANTILE FUNCTION
 
 #' @export
-qmix.default <- function(mix, p, lower.tail = TRUE, log.p=FALSE) "Unknown mixture"
+qmix.default <- function(mix, p, lower.tail = TRUE, log.p=FALSE) stop("Unknown mixture")
 
 qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p=FALSE) {
     Nc <- ncol(mix)
@@ -286,11 +317,11 @@ qmix.betaBinomialMix  <- function(mix, p, lower.tail = TRUE, log.p=FALSE) {
 ## internal redefinition of negative binomial
 ##.qnbinomAB <- function(p, a, b, lower.tail = TRUE, log.p = FALSE ) qnbinom(p, size=a, prob=b/(b+1), lower.tail = lower.tail, log.p = log.p )
 .qnbinomAB <- function(p, a, b, n=1, lower.tail = TRUE, log.p = FALSE ) qnbinom(p, size=a, prob=b/(b+n), lower.tail = lower.tail, log.p = log.p )
-#' @export
 ##qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p=FALSE) qmix_impl(Curry(.qnbinomAB, n=attr(mix, "n")), mix, p, lower.tail, log.p, discrete=TRUE)
 
 ## switched to numeric implementation as discretization seems to cause
 ## some trouble in the above definitions
+#' @export
 qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p=FALSE) {
     assert_that(is.dlink_identity(attr(mix, "link")))
     ## numerical evaulation
@@ -308,11 +339,13 @@ qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p=FALSE) {
     ind
 }
 
+#' @export
+qmix.mvnormMix <- function(mix, p, ...) stop("Multivariate normal mixture quantiles not supported.")
 
 ### RANDOM NUMBER GENERATION
 
 #' @export
-rmix.default <- function(mix, n) "Unknown mixture"
+rmix.default <- function(mix, n) stop("Unknown mixture")
 
 rmix_impl <- function(rng, mix, n) {
     ind <-  sample.int(ncol(mix), n, replace = TRUE, prob = mix[1,])
@@ -343,6 +376,29 @@ rmix.betaBinomialMix  <- function(mix, n) {
 #' @export
 rmix.gammaPoissonMix  <- function(mix, n) rmix_impl(Curry(.rnbinomAB, n=attr(mix, "n")),  mix, n)
 
+#' @export
+rmix.mvnormMix <- function(mix, n) {
+    ## sample the mixture components
+    ind <-  sample.int(ncol(mix), n, replace = TRUE, prob = mix["w",])
+    ## sort these
+    sidx <- order(ind)
+    ## ensure we can sort into the original random order
+    oidx <- seq(1, n)[sidx]
+    sind <- ind[sidx]
+    ## now sind[oidx] == ind
+    ## count how many times we need to sample which component
+    r <- rle(sind)
+    p <- mvnormdim(mix[-1,1])
+    samp <- do.call(rbind,
+                    mapply(function(comp, cn) {
+                        m <- mix[2:(p+1),comp]
+                        S <- mvnormsigma(mix[-1,comp])
+                        rmvnorm(cn, m, S, checkSymmetry=FALSE)
+                    },
+                    r$values, r$lengths, SIMPLIFY=FALSE))[oidx,,drop=FALSE]
+    attr(samp, "ind") <- ind
+    samp
+}
 
 #' @export
 print.mix <- function(x, digits, ...) {

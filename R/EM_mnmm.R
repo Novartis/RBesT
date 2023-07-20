@@ -4,8 +4,7 @@
 ## cluster weights and covariance matrices (taken from the knn
 ## determined clusters)
 
-EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(w=0.005,m=0.005,s=0.005))
-{
+EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(w=0.005,m=0.005,s=0.005)) {
     ## in case X is no matrix, interpret it as uni-variate case
     if(!is.matrix(X))
         X <- matrix(X,ncol=1)
@@ -175,8 +174,10 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol
     ##    tauEst <- sqrt(as.vector(covEst))
     ##}
 
-    mixEst <- list(p=pEst, mean=muEst, sigma=covEst)
+    ##mixEst <- list(p=pEst, mean=muEst, sigma=covEst)
 
+    mixEst <- do.call(mixmvnorm, lapply(1:Nc, function(i) c(pEst[i], muEst[i,,drop=FALSE], matrix(covEst[i,,], Nd, Nd))))
+    
     ## give further details
     attr(mixEst, "df") <- df
     attr(mixEst, "nobs") <- N
@@ -187,31 +188,34 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol
     attr(mixEst, "tol") <- tol
     attr(mixEst, "traceLli") <- traceLli
     attr(mixEst, "traceMix") <- traceMix
+    attr(mixEst, "x") <- X
 
-    invisible(mixEst)
+    class(mixEst) <- c("EM", "EMmvnmm", "mvnormMix", "mix")
+
+    mixEst
 }
 
 ## uni-variate case
-EM_nmm <- function(X, Nc, mix_init, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(w=0.005,m=0.005,s=0.005))
-{
-    res <- EM_mnmm(X=X, Nc=Nc, mix_init=mix_init, verbose=verbose, Niter.max=Niter.max, tol=tol, Neps=Neps, eps=eps)
-    convert <- function(est) suppressWarnings(do.call(mixnorm, lapply(1:Nc, function(i) c(est$p[i], est$mean[i,1], sqrt(est$sigma[i,,])))))
-    mixEst <- convert(res)
-    attr(mixEst, "df") <- attr(res, "df")
-    attr(mixEst, "nobs") <- attr(res, "nobs")
-    attr(mixEst, "lli") <- attr(res, "lli")
-    attr(mixEst, "Nc") <- attr(res, "Nc")
-    attr(mixEst, "tol") <- attr(res, "tol")
-    attr(mixEst, "traceLli") <- attr(res, "traceLli")
-    attr(mixEst, "traceMix") <-  lapply(attr(res, "traceMix"), convert)
-    attr(mixEst, "x") <- X
+EM_nmm <- function(X, Nc, mix_init, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(w=0.005,m=0.005,s=0.005)) {
+    if(is.matrix(X)) {
+        assert_matrix(X, any.missing=FALSE, ncols=1)
+    }
+    mixEst <- EM_mnmm(X=X, Nc=Nc, mix_init=mix_init, verbose=verbose, Niter.max=Niter.max, tol=tol, Neps=Neps, eps=eps)
+    rownames(mixEst) <- c("w", "m", "s")
     class(mixEst) <- c("EM", "EMnmm", "normMix", "mix")
+    likelihood(mixEst) <- "normal"
     mixEst
 }
 
 #' @export
 print.EMnmm <- function(x, ...) {
     cat("EM for Normal Mixture Model\nLog-Likelihood = ", logLik(x), "\n\n",sep="")
+    NextMethod()
+}
+
+#' @export
+print.EMmvnmm <- function(x, ...) {
+    cat("EM for Multivariate Normal Mixture Model\nLog-Likelihood = ", logLik(x), "\n\n",sep="")
     NextMethod()
 }
 

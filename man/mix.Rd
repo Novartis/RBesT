@@ -123,7 +123,8 @@ Other mixdist:
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
+\code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
-\code{\link{plot.mix}()}
+\code{\link{mixplot}}
 }
 \concept{mixdist}

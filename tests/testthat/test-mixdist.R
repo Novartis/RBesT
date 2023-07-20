@@ -22,8 +22,6 @@ betaMix <- mixbeta(c(0.8, 11, 4), c(0.2, 1, 1))
 gamma <- mixgamma(c(1, 5, 10), param="mn")
 gammaMix <- mixgamma(rob=c(0.25, 8, 0.5), inf=c(0.75, 8, 10), param="mn")
 
-nm <- mixnorm(rob=c(0.2, 0, 2), inf=c(0.8, 2, 2), sigma=5)
-
 norm <- mixnorm(c(1, 0, sqrt(2)), sigma=1)
 
 normMix <- mixnorm(c(0.2, 0, 2), c(0.8, 2, 2), sigma=1)
@@ -108,3 +106,57 @@ test_that("Gamma mixture CDF function is consistent", consistent_cdf(gammaMix, s
 ## problematic Beta density
 bm <- mixbeta(c(1.0, 298.30333970, 146.75306521))
 test_that("Problematic (1) BetaBinomial CDF function is consistent", consistent_cdf(preddist(bm, n=50), 0:50))
+
+## tests for the multivariate normal mixture density
+p <- 4
+Rho <- diag(p)
+Rho[lower.tri(Rho)] <- c(0.3, 0.8, -0.2, 0.1, 0.5, -0.4)
+Rho[upper.tri(Rho)] <- t(Rho)[upper.tri(Rho)]
+s <- c(1, 2, 3, 4)
+S <- diag(s, p) %*% Rho %*% diag(s, p)
+
+mvn_consistent_dimension <- function(mix, p) {
+    s <- summary(mix)
+    expect_numeric(s$mean, any.missing=FALSE, len=p)
+    expect_matrix(s$cov, any.missing=FALSE, nrows=p, ncols=p)
+}
+
+test_that("Multivariate normal mixture has consistent dimensionality",
+{
+    for(i in 1:(nrow(S)-1)) {
+        p_sub <- 4-i
+        S_sub <- S[-c(1:i), -c(1:i), drop=FALSE]
+        mvn_consistent_dimension(mixmvnorm(c(1, rep(0, p_sub), S_sub), sigma=S_sub), p_sub)
+    }
+})
+
+test_that("Multivariate normal mixture has consistent initialization",
+{
+    p <- nrow(S)
+    mv1 <- mixmvnorm(c(1, rep(0, p), S), sigma=S, param="ms")
+    mv2 <- mixmvnorm(c(1, rep(0, p), 1), sigma=S, param="mn")
+    mv3 <- mixmvnorm(c(1, rep(0, p), 2), sigma=S, param="mn")
+
+    expect_equal(summary(mv1)$cov, S, tolerance=eps_lower)
+    expect_equal(summary(mv2)$cov, S, tolerance=eps_lower)
+    expect_equal(summary(mv3)$cov, S/2, tolerance=eps_lower)
+})
+
+mvn_consistent_summaries <- function(mix, S=Nsamp_equant) {
+    samp <- rmix(mix, S)
+    m <- colMeans(samp)
+    expect_equal(colMeans(samp), summary(mix)$mean, tolerance=eps)
+    expect_equal(unname(cov(samp)), summary(mix)$cov, tolerance=eps)
+}
+
+test_that("Multivariate normal mixture has consistent summaries",
+{
+    p <- nrow(S)
+    mv1 <- mixmvnorm(c(1, rep(0, p), S), sigma=S, param="ms")
+    mv2 <- mixmvnorm(c(1, rep(0, p), 1), sigma=S, param="mn")
+    mv3 <- mixmvnorm(c(0.2, rep(0, p), 2), c(0.8, rep(1, p), 6), sigma=S, param="mn")
+
+    mvn_consistent_summaries(mv1)
+    mvn_consistent_summaries(mv2)
+    mvn_consistent_summaries(mv3)
+})

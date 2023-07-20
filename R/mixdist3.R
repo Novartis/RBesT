@@ -4,8 +4,9 @@
 mixdist3 <- function(...) {
     args <- list(...)
     Nc <- length(args)
-    if(!all(sapply(args, length) == 3))
-        stop("All components must have 3 parameters.")
+    l <- sapply(args, length)
+    if(!all(l >= 3) | !all(l == l[1]))
+        stop("All components must have equal number of parameters.")
     res <- do.call(cbind, args)
     if(is.null(names(args)))
         colnames(res) <- paste("comp", seq(Nc), sep="")

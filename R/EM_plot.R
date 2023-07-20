@@ -52,6 +52,7 @@
 #' @export
 plot.EM <- function(x, size=1.25, link=c("identity", "logit", "log"), ...) {
     pl <- list()
+    if(inherits(x, "mvnormMix")) stop("Multivariate normal mixtures plotting not supported.")
     pl$mixdist <- plot.mix(x, size=size, ...)
     ## in verbose mode we output EM fit diagnostics
     if(getOption("RBesT.verbose", FALSE)) {

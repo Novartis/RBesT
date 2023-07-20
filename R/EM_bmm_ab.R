@@ -1,15 +1,9 @@
 
 ## EM for Beta Mixture Models (BMM) with Nc components
 
-EM_bmm_ab <- function(x, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(w=0.005,a=0.005,b=0.005), constrain_gt1)
-{
+EM_bmm_ab <- function(x, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol, Neps, eps=c(w=0.005,a=0.005,b=0.005), constrain_gt1=TRUE) {
     N <- length(x)
     assert_that(N+Nc >= Ninit)
-
-    if(missing(constrain_gt1)) {
-        message("Since version 1.6-0 of RBesT the EM for beta mixtures constrains a > 1 & b > 1 by default.\nUse constrain_gt1=FALSE for an unconstrained fit. To avoid this message use constrain_gt1=TRUE.\nIn a future version the new default will be used without this message.")
-        constrain_gt1 <- TRUE
-    }
 
     assert_logical(constrain_gt1, any.missing=FALSE, len=1)
 

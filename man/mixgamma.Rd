@@ -106,8 +106,9 @@ gfmix <- mixgamma(rob1=c(0.15, mn2gamma(2, 1)), rob2=c(0.15, ms2gamma(2, 5)), in
 Other mixdist: 
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
+\code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
-\code{\link{mix}},
-\code{\link{plot.mix}()}
+\code{\link{mixplot}},
+\code{\link{mix}}
 }
 \concept{mixdist}

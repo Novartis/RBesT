@@ -47,5 +47,6 @@ mixcombine <- function(..., weight, rescale=TRUE) {
     dlink(mix) <- dl
     likelihood(mix) <- lik
     if("normMix" %in% cl) sigma(mix) <- sigma(comp[[1]])
+    if("mvnormMix" %in% cl) sigma(mix) <- sigma(comp[[1]])
     mix
 }

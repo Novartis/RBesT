@@ -1,4 +1,8 @@
-#' Plot mixture distributions
+#' @name mixplot
+#' 
+#' @title Plot mixture distributions
+#'
+#' @description Plotting for mixture distributions
 #'
 #' @param x mixture distribution
 #' @param prob  defining lower and upper percentile of x-axis. Defaults to the 99\% central probability mass.
@@ -55,6 +59,7 @@
 #' pl <- plot(nm)
 #' pl + ggtitle("Normal 2-Component Mixture")
 #'
+#' @rdname mixplot
 #' @method plot mix
 #' @export
 plot.mix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ...) {
@@ -105,4 +110,11 @@ plot.mix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ..
         pl <- pl + scale_colour_manual("Comp. [%]", values=2:(num_comp+1), labels=paste0(colnames(x), " ", format(100*x[1,],digits=1,nsmall=1)))
     }
     pl
+}
+
+#' @rdname mixplot
+#' @method plot mvnormMix
+#' @export
+plot.mvnormMix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ...) {
+    stop("Multivariate normal mixture plotting not supported.")
 }
