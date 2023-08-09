@@ -6,11 +6,10 @@
 #' @param Ninit number of samples used per cluster if no init argument is given
 #' @param verbose allows print out of progress information; in verbose mode the cluster memberships are added to the output
 #' @param tol smaller changes than tol in the objective function indicate convergence, if missing chosen automatically to be 1/5 of the smallest sample variance per dimension
-#' @param maxIter maximum number of admissible iterations
+#' @param Niter.max maximum number of admissible iterations
 #'
 #' @keywords internal
-knn <- function(X, K=2, init, Ninit=50, verbose=FALSE, tol, Niter.max=500)
-{
+knn <- function(X, K=2, init, Ninit=50, verbose=FALSE, tol, Niter.max=500) {
     ## in case X is no matrix, interpret it as uni-variate case
     if(!is.matrix(X))
         X <- matrix(X,ncol=1)
