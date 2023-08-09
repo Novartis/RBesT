@@ -7,11 +7,15 @@ set.seed(234534)
 
 if(getOption("brms.backend", "not_set") == "not_set") {
     .brms_backend <- Sys.getenv("BRMS_BACKEND", "not_set")
-    options(brms.backend=ifelse(.brms_backend != "not_set", .brms_backend, NULL))
+    if(.brms_backend != "not_set") {
+        options(brms.backend=.brms_backend)
+    }
 }
 if(getOption("cmdstanr_write_stan_file_dir", "not_set") == "not_set") {
     .brms_cache_dir <- Sys.getenv("BRMS_CACHE_DIR", "not_set")
-    options(cmdstanr_write_stan_file_dir=ifelse(.brms_cache_dir != "not_set", .brms_cache_dir, NULL))
+    if(.brms_cache_dir != "not_set") {
+        options(cmdstanr_write_stan_file_dir=.brms_cache_dir)
+    }
 }
 
 ## sample based match requirements
