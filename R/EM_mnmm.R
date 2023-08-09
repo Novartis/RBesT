@@ -175,8 +175,8 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol
     ##}
 
     ##mixEst <- list(p=pEst, mean=muEst, sigma=covEst)
-
-    mixEst <- do.call(mixmvnorm, lapply(1:Nc, function(i) c(pEst[i], muEst[i,,drop=FALSE], matrix(covEst[i,,], Nd, Nd))))
+    
+    mixEst <- do.call(mixmvnorm, lapply(1:Nc, function(i) c(pEst[i], muEst[i,,drop=TRUE], matrix(covEst[i,,], Nd, Nd))))
     
     ## give further details
     attr(mixEst, "df") <- df
@@ -185,9 +185,11 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, tol
 
     attr(mixEst, "Nc") <- Nc
 
+    convert <- function(est) suppressWarnings(do.call(mixmvnorm, lapply(1:Nc, function(i) c(est$p[i], est$mean[i,,drop=FALSE], matrix(est$sigma[i,,], Nd, Nd)))))
+
     attr(mixEst, "tol") <- tol
     attr(mixEst, "traceLli") <- traceLli
-    attr(mixEst, "traceMix") <- traceMix
+    attr(mixEst, "traceMix") <- lapply(traceMix, convert)
     attr(mixEst, "x") <- X
 
     class(mixEst) <- c("EM", "EMmvnmm", "mvnormMix", "mix")
@@ -203,6 +205,12 @@ EM_nmm <- function(X, Nc, mix_init, verbose=FALSE, Niter.max=500, tol, Neps, eps
     mixEst <- EM_mnmm(X=X, Nc=Nc, mix_init=mix_init, verbose=verbose, Niter.max=Niter.max, tol=tol, Neps=Neps, eps=eps)
     rownames(mixEst) <- c("w", "m", "s")
     class(mixEst) <- c("EM", "EMnmm", "normMix", "mix")
+    attr(mixEst, "traceMix") <- lapply(attr(mixEst, "traceMix"),
+                                       function(x) {
+                                           class(x) <- class(mixEst)
+                                           rownames(x) <- rownames(mixEst)
+                                           x
+                                       })
     likelihood(mixEst) <- "normal"
     mixEst
 }

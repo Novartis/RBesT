@@ -24,37 +24,14 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
+```{r, child="settings-knitr.txt"}
+```
+```{r, child="settings-sampling.txt"}
+```
 ```{r, include=FALSE}
-if(!require(RBesT)) {
-    ## in case RBesT is not yet installed, please
-    ## install RBesT from CRAN
-    stop("RBesT R package is not installed. Please use install.packages to install.")
-    ## example call to install.packages
-    ## install.packages("RBesT")
-    ## the following packages are recommended as well
-    ## install.packages(c("bayesplot", "knitr", "dplyr", "purrr", "ggplot2"))
-}
-library(RBesT)
-library(knitr)
 library(bayesplot)
 library(dplyr)
 library(purrr)
-library(ggplot2)
-theme_set(theme_bw())
-knitr::opts_chunk$set(
-    fig.width = 1.62*4,
-    fig.height = 4,
-    cache=TRUE
-)
-## setup up fast sampling when run on CRAN
-is_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
-## NOTE: for running this vignette locally, please uncomment the
-## following line:
-## is_CRAN <- FALSE
-.user_mc_options <- list()
-if (is_CRAN) {
-    .user_mc_options <- options(RBesT.MC.warmup=50, RBesT.MC.iter=100, RBesT.MC.chains=2, RBesT.MC.thin=1)
-}
 ```
 
 <!-- To produce a html report, please execute in R -->

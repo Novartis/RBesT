@@ -114,6 +114,7 @@ Rho[lower.tri(Rho)] <- c(0.3, 0.8, -0.2, 0.1, 0.5, -0.4)
 Rho[upper.tri(Rho)] <- t(Rho)[upper.tri(Rho)]
 s <- c(1, 2, 3, 4)
 S <- diag(s, p) %*% Rho %*% diag(s, p)
+rownames(S) <- colnames(S) <- 1:p
 
 mvn_consistent_dimension <- function(mix, p) {
     s <- summary(mix)
@@ -127,6 +128,25 @@ test_that("Multivariate normal mixture has consistent dimensionality",
         p_sub <- 4-i
         S_sub <- S[-c(1:i), -c(1:i), drop=FALSE]
         mvn_consistent_dimension(mixmvnorm(c(1, rep(0, p_sub), S_sub), sigma=S_sub), p_sub)
+    }
+})
+
+test_that("Multivariate normal mixture has consistent dimension naming",
+{
+    for(i in 1:(nrow(S)-1)) {
+        p_sub <- 4-i
+        S_sub <- S[-c(1:i), -c(1:i), drop=FALSE]
+        m_sub <- rep(0, p_sub)
+        dim_labels <- letters[1:p_sub]
+        names(m_sub) <- dim_labels
+        test_mix <- mixmvnorm(c(1, m_sub, S_sub), sigma=S_sub)
+        ## now test that names are used consistently
+        expect_equal(rownames(sigma(test_mix)), dim_labels)
+        expect_equal(colnames(sigma(test_mix)), dim_labels)
+        expect_equal(names(summary(test_mix)$mean), dim_labels)
+        expect_equal(rownames(summary(test_mix)$cov), dim_labels)
+        expect_equal(colnames(summary(test_mix)$cov), dim_labels)
+        expect_equal(colnames(rmix(test_mix, 1)), dim_labels)
     }
 })
 
@@ -146,7 +166,7 @@ mvn_consistent_summaries <- function(mix, S=Nsamp_equant) {
     samp <- rmix(mix, S)
     m <- colMeans(samp)
     expect_equal(colMeans(samp), summary(mix)$mean, tolerance=eps)
-    expect_equal(unname(cov(samp)), summary(mix)$cov, tolerance=eps)
+    expect_equal(cov(samp), summary(mix)$cov, tolerance=eps)
 }
 
 test_that("Multivariate normal mixture has consistent summaries",

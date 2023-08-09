@@ -19,6 +19,8 @@ src/stan_files/.*\.hpp$
 ^inst/sbc/sbc_report_full.html$
 ^.Rd*$
 ^.Rd*/*$
+^.Rprofile$
+^.brms-cache
 ^.gitignore$
 ^.gitattributes$
 ^_pkgdown\.yml$

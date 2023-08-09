@@ -8,8 +8,7 @@
 ## modelling using the t distribution". D. Peel and G.J. McLachlan,
 ## Statistics and Computing (2000), 10, 339-348,
 
-EM_msmm <- function(X, Nc, init, Ninit=50, verbose=TRUE, Niter.max=500, tol=1e-1)
-{
+EM_msmm <- function(X, Nc, init, Ninit=50, verbose=TRUE, Niter.max=500, tol=1e-1) {
     ## in case X is no matrix, interpret it as uni-variate case
     if(!is.matrix(X))
         X <- matrix(X,ncol=1)
@@ -117,7 +116,22 @@ EM_msmm <- function(X, Nc, init, Ninit=50, verbose=TRUE, Niter.max=500, tol=1e-1
         ## calculate additional weights of the U matrix aka latent
         ## tail mass of a point
         for(i in seq(Nc)) {
-            lU[,i] <- log(nuEst[i] + Nd) - log(nuEst[i] + mahalanobis(X, muEst[i,], as.matrix(covEst[i,,])) ) ## Eq. 20
+            Xc_i <- sweep(X, 2L, muEst[i,])
+            Sigma_i <- as.matrix(covEst[i,,])
+            ## in rare cases the covariance matrix becomes (almost)
+            ## singular in which case the alternative cholesky
+            ## factorization gives more stable results
+            maha_dist <- tryCatch(
+                mahalanobis(Xc_i, FALSE, Sigma_i),
+                error = function(e) {
+                    ## see https://stats.stackexchange.com/questions/147210/efficient-fast-mahalanobis-distance-computation
+                    ## also adding eps to the diagonal to further stabilize the computation
+                    L_i <- t(chol(Sigma_i + diag(5 * .Machine$double.eps, Nd, Nd)))
+                    y_i <- forwardsolve(L_i, t(Xc_i))
+                    colSums(y_i^2)
+                }
+            )
+            lU[,i] <- log(nuEst[i] + Nd) - log(nuEst[i] + maha_dist) ## Eq. 20
         }
 
         ## mean probability to be in a specific mixture component ->

@@ -9,28 +9,16 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
   
+  
+```{r, child="settings-knitr.txt"}
+```
+```{r, child="settings-sampling.txt"}
+```
 ```{r, include=FALSE}
-library(RBesT)
 library(dplyr)
 library(purrr)
 library(knitr)
 library(bayesplot)
-library(ggplot2)
-theme_set(theme_bw())
-set.seed(3453456)
-knitr::opts_chunk$set(
-    fig.width = 1.62*4,
-    fig.height = 4
-    )
-## setup up fast sampling when run on CRAN
-is_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
-## NOTE: for running this vignette locally, please uncomment the
-## following line:
-## is_CRAN <- FALSE
-.user_mc_options <- list()
-if (is_CRAN) {
-    .user_mc_options <- options(RBesT.MC.warmup=50, RBesT.MC.iter=100, RBesT.MC.chains=2, RBesT.MC.thin=1)
-}
 ```
 
 Applying the meta-analytic-predictive (MAP) prior approach to

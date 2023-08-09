@@ -21,6 +21,7 @@ SRCS = $(R_PKG_SRCS) $(R_SRCS) $(RMD_SRCS) $(STAN_SRCS)
 NODIR_SRC = $(notdir $(SRCS))
 BIN_OBJS = src/package-binary R/sysdata.rda
 DOC_OBJS = man/package-doc inst/doc/$(RPKG).pdf
+RCMD ?= R_PROFILE_USER="$(PROJROOT_ABS)/.Rprofile" "${R_HOME}/bin/R" -q
 
 R_HOME ?= $(shell R RHOME)
 PKG_VERSION ?= $(patsubst ‘%’, %, $(word 2, $(shell grep ^Version DESCRIPTION)))
@@ -32,17 +33,17 @@ all : $(TARGET)
 
 # tell makefile how to turn a Rmd into an md file
 %.md : %.Rmd
-	cd $(@D); echo running R -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
-	cd $(@D); R -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
+	cd $(@D); echo running $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
+	cd $(@D); $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
 
 %.md : %.R
-	cd $(@D); echo running R -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
-	cd $(@D); R -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
+	cd $(@D); echo running $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
+	cd $(@D); $(RCMD) -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::md_document(variant='markdown'))"
 
 # render an html via the respective md file
 %.html : %.md
-	cd $(@D); echo running R -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
-	cd $(@D); R -q -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
+	cd $(@D); echo running $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
+	cd $(@D); $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
 
 R/stanmodels.R:
 	## ensure that NAMESPACE contains load directive
@@ -88,7 +89,7 @@ $(TARGET): build/r-source
 
 build/r-source : $(BIN_OBJS) $(DOC_OBJS) $(SRCS)
 	install -d build
-	cd build; "${R_HOME}/bin/R" CMD build .. --no-build-vignettes --no-manual
+	cd build; $(RCMD) CMD build .. --no-build-vignettes --no-manual
 	cd build; mv $(RPKG)_$(PKG_VERSION).tar.gz $(RPKG)-source.tar.gz
 	touch build/r-source-fast
 
@@ -105,7 +106,7 @@ build/r-source-release : $(BIN_OBJS) $(DOC_OBJS) $(SRCS) inst/sbc/sbc_report.htm
 	install -d build/$(RPKG)-$(GIT_TAG)/man
 	cp -v man/*.Rd build/$(RPKG)-$(GIT_TAG)/man
 	# set NOT_CRAN=true to get vignettes render with full sampling
-	cd build; NOT_CRAN=true "${R_HOME}/bin/R" CMD build $(RPKG)-$(GIT_TAG)
+	cd build; NOT_CRAN=true $(RCMD) CMD build --compact-vignettes=both $(RPKG)-$(GIT_TAG)
 	#cd build; NOT_CRAN=false "${R_HOME}/bin/R" CMD build $(RPKG)-$(GIT_TAG) --no-build-vignettes --no-manual
 	rm -rf build/$(RPKG)-$(GIT_TAG)
 	cd build; $(MD5) $(RPKG)-$(GIT_TAG).tar.gz > $(RPKG)-$(GIT_TAG).md5
@@ -120,6 +121,11 @@ binary : NAMESPACE src/package-binary
 
 PHONY += derived
 derived : NAMESPACE $(BIN_OBJS) $(DOC_OBJS)
+
+PHONY += r-source-check
+r-source-check : r-source
+	cd build; tar xvzf RBesT-source.tar.gz
+	cd build; NOT_CRAN=true $(RCMD) CMD check RBesT
 
 #$(DIR_OBJ)/%.o: %.c $(INCS)
 #    mkdir -p $(@D)

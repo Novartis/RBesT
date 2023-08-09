@@ -9,6 +9,11 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
+```{r, child="settings-knitr.txt"}
+```
+```{r, child="settings-sampling.txt"}
+```
+
 # Introduction
 
 This vignette demonstrates how to work with the forest plot provided
@@ -23,16 +28,6 @@ following resources:
 - [bayesplot](https://CRAN.R-project.org/package=bayesplot) - library on which the `RBesT` plotting functionality is built
 - [ggplot2](https://ggplot2.tidyverse.org/reference/) - powerful library for graphics in R
 - [R Cookbook - Graphs](http://www.cookbook-r.com/Graphs/) - general reference for R and graphics in R
-
-```{r setup, include=FALSE}
-##suppressPackageStartupMessages(library(tidyverse))
-library(knitr)
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 1.62*4, fig.height = 4)
-## setup up fast sampling when run on CRAN
-if (!identical(Sys.getenv("NOT_CRAN"), "true")) {
-    options(RBesT.MC.warmup=250, RBesT.MC.iter=500, RBesT.MC.chains=2)
-}
-```
 
 ```{r}
 # Load required libraries
