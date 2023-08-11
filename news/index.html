@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-0" id="rbest-17-0---july-19th-2023">RBesT 1.7-0 - July 19th, 2023<a class="anchor" aria-label="anchor" href="#rbest-17-0---july-19th-2023"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-1" id="rbest-17-1---august-8th-2023">RBesT 1.7-1 - August 8th, 2023<a class="anchor" aria-label="anchor" href="#rbest-17-1---august-8th-2023"></a></h2><p class="text-muted">CRAN release: 2023-08-10</p>
+<div class="section level3">
+<h3 id="enhancements-1-7-1">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-1"></a></h3>
+<ul><li>Allow use of mixture priors in <code>brms</code> models with the new adapter function <code>mixstanvar</code>.</li>
+<li>Allow use of named dimensions for multivariate normal mixtures.</li>
+<li>Add <em>experimental</em> diagnostic plots for mixture multivariate normal EM fits. These are subject to changes in future release and user feedback is very welcome.</li>
+<li>Compress png plots of vignettes saving ~40% in file size of the package sources.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-1-7-1">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-7-1"></a></h3>
+<ul><li>Fix issue when plotting EM diagnostic debugging plots for normal mixtures.</li>
+<li>Comply with newer ggplot2 standards to not use <code>aes_string</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.7-0" id="rbest-17-0---july-19th-2023">RBesT 1.7-0 - July 19th, 2023<a class="anchor" aria-label="anchor" href="#rbest-17-0---july-19th-2023"></a></h2><p class="text-muted">CRAN release: 2023-07-20</p>
 <div class="section level3">
 <h3 id="enhancements-1-7-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-0"></a></h3>
 <ul><li>Implementation multivariate normal mixture support in a first version. This includes density evaluation, basic summary functions and multivariate normal EM fitting. Support is not yet as complete as for other densites, but will be expanded in upcoming releases.</li>

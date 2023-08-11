@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
                         <h4 data-toc-skip class="author">Baldur
 Magnusson</h4>
             
-            <h4 data-toc-skip class="date">2023-07-20</h4>
+            <h4 data-toc-skip class="date">2023-08-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/HEAD/vignettes/customizing_plots.Rmd" class="external-link"><code>vignettes/customizing_plots.Rmd</code></a></small>
       <div class="d-none name"><code>customizing_plots.Rmd</code></div>
@@ -114,11 +114,25 @@ powerful library for graphics in R</li>
 <code class="sourceCode R"><span><span class="co"># Load required libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://opensource.nibr.com/RBesT/">RBesT</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Default settings for bayesplot</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'dplyr'</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     filter, lag</span></span></code></pre>
+<pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     intersect, setdiff, setequal, union</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## This is bayesplot version 1.10.0</span></span></code></pre>
+<pre><code><span><span class="co">## - Online documentation and vignettes at mc-stan.org/bayesplot</span></span></code></pre>
+<pre><code><span><span class="co">## - bayesplot theme set to bayesplot::theme_default()</span></span></code></pre>
+<pre><code><span><span class="co">##    * Does _not_ affect other ggplot2 plots</span></span></code></pre>
+<pre><code><span><span class="co">##    * See ?bayesplot_theme_set for details on theme setting</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Default settings for bayesplot</span></span>
 <span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-colors.html" class="external-link">color_scheme_set</a></span><span class="op">(</span><span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/theme_default.html" class="external-link">theme_default</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -158,34 +172,34 @@ powerful library for graphics in R</li>
 <p>The default forest plot is a “standard” forest plot with the
 Meta-Analytic-Predictive (MAP) prior additionally summarized in the
 bottom row:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-2-1.png" width="622.08"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>We can also include the model-based estimates for each study, and add
 a legend to explain the different linetypes.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span>, model<span class="op">=</span><span class="st">"both"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-helpers.html" class="external-link">legend_move</a></span><span class="op">(</span><span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-3-1.png" width="622.08"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>We can modify the color scheme as follows (refer to
 <code><a href="https://mc-stan.org/bayesplot/reference/bayesplot-colors.html" class="external-link">help(color_scheme_set)</a></code> for a full list of themes):</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># preview a color scheme</span></span>
 <span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-colors.html" class="external-link">color_scheme_view</a></span><span class="op">(</span><span class="st">"mix-blue-red"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-4-1.png" width="622.08"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># and now let's use it</span></span>
 <span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-colors.html" class="external-link">color_scheme_set</a></span><span class="op">(</span><span class="st">"mix-blue-red"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-4-2.png" width="622.08"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-6-2.png" width="100%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-colors.html" class="external-link">color_scheme_set</a></span><span class="op">(</span><span class="st">"gray"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-4-3.png" width="622.08"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-6-3.png" width="100%" style="display: block; margin: auto;"></p>
 <p>The point size can be modified and the vertical line removed:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-colors.html" class="external-link">color_scheme_set</a></span><span class="op">(</span><span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span>, size<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-5-1.png" width="622.08"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="presentation-ready-plots">Presentation-ready plots<a class="anchor" aria-label="anchor" href="#presentation-ready-plots"></a>
 </h3>
@@ -194,13 +208,13 @@ the study protocol, it is recommended to use sufficiently large font
 sizes (e.g. about as large as the fonts on the same slide or in the same
 document) and that elements of the plot are clearly visible. Here we
 show a few simple statements that can be used for this purpose.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># adjust the base font size</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/theme_default.html" class="external-link">theme_default</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">16</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span>, model<span class="op">=</span><span class="st">"both"</span>, est<span class="op">=</span><span class="st">"MAP"</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-helpers.html" class="external-link">legend_move</a></span><span class="op">(</span><span class="st">"right"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Forest plot"</span>, subtitle<span class="op">=</span><span class="st">"Results of Meta-Analytic-Predictive (MAP) analysis"</span>, </span>
 <span>       caption<span class="op">=</span><span class="st">"Plot shows point estimates (posterior medians) with 95% intervals"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-6-1.png" width="960"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>We also recommend saving plots explicitly with the
 <code>ggsave</code> function, which allows control (and hence
 consistency) of image size. Note that the font size will be enforced in
@@ -209,7 +223,7 @@ little space for the plot itself. The image is sized according to the
 golden cut (<span class="math inline">\(\phi=\frac{1+\sqrt5}{2} \approx
 1.62\)</span>) which is perceived as a pleasing axis ratio. Png is the
 recommended image file type for presentations and study documents.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"plot1.png"</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/last_plot.html" class="external-link">last_plot</a></span><span class="op">(</span><span class="op">)</span>, width<span class="op">=</span><span class="fl">1.62</span><span class="op">*</span><span class="fl">2.78</span>, height<span class="op">=</span><span class="fl">2.78</span>, unit<span class="op">=</span><span class="st">"in"</span><span class="op">)</span> <span class="co"># too small for the chosen font size</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"plot2.png"</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/last_plot.html" class="external-link">last_plot</a></span><span class="op">(</span><span class="op">)</span>, width<span class="op">=</span><span class="fl">1.62</span><span class="op">*</span><span class="fl">5.56</span>, height<span class="op">=</span><span class="fl">5.56</span>, unit<span class="op">=</span><span class="st">"in"</span><span class="op">)</span> <span class="co"># fits a single ppt slide quite well</span></span></code></pre></div>
 </div>
@@ -226,11 +240,11 @@ recommended image file type for presentations and study documents.</p>
 user must extract the data from this object and create a graph from
 scratch using <code>ggplot</code> functions. Recall the original forest
 plot:</p>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-8-1.png" width="622.08"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>Suppose we wish to use different symbols for the meta/stratified
 point estimates and a different linestyle for the vertical line. A
 tailored plot can be created as follows.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the data from the returned object</span></span>
 <span><span class="va">fp_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">map_crohn</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fp_data</span>, digits<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
@@ -243,7 +257,7 @@ tailored plot can be created as follows.</p>
 <span><span class="co">## Gastr01b         -54 11.6    -54  -77 -31.4 Gastr01b stratified</span></span>
 <span><span class="co">## theta_resp_pred  -50 19.6    -49  -94 -11.5      MAP       meta</span></span>
 <span><span class="co">## theta_resp       -50  9.1    -49  -69 -33.9     Mean       meta</span></span></code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use a two-component map mixture to compute the vertical line location</span></span>
 <span><span class="va">map_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">map_crohn</span>, Nc<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co"># Finally compose a ggplot call for the desired graph</span></span>
@@ -252,7 +266,7 @@ tailored plot can be created as follows.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept<span class="op">=</span><span class="fu"><a href="../reference/mix.html">qmix</a></span><span class="op">(</span><span class="va">map_mix</span>, <span class="fl">0.5</span><span class="op">)</span>, linetype<span class="op">=</span><span class="fl">3</span>, alpha<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">12</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"None"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">""</span>, y<span class="op">=</span><span class="st">"Response"</span>, title<span class="op">=</span><span class="st">"Modified forest plot"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-9-1.png" width="622.08"></p>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="design-plots-a-clinical-trial">Design plots a clinical trial<a class="anchor" aria-label="anchor" href="#design-plots-a-clinical-trial"></a>
@@ -274,7 +288,7 @@ follows:</p>
 other is satisfied.</p>
 <p>We now create a plot that shows the study conclusion, given any
 combination of outcomes on the two treatment arms.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define prior distributions</span></span>
 <span><span class="va">prior_pbo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixbeta.html">mixbeta</a></span><span class="op">(</span>inf1<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.60</span>, <span class="fl">19</span>, <span class="fl">29</span><span class="op">)</span>, inf2<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.30</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, rob<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.10</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">prior_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixbeta.html">mixbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
@@ -306,11 +320,16 @@ combination of outcomes on the two treatment arms.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="va">n_trt</span>,by<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"Events on placebo"</span>, y<span class="op">=</span><span class="st">"Events on treatment"</span>, title<span class="op">=</span><span class="st">"Study outcomes"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">12</span><span class="op">)</span></span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-10-1.png" width="622.08"></p>
+<pre><code><span><span class="co">## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
+<span><span class="co">## <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>We can also use the design functions that were already derived
 (<code>design_suc</code> and <code>design_fut</code>) to compute
 operating characteristics.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define the grid of true event rates for which to evaluate OC</span></span>
 <span><span class="va">p_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, length<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span>
 <span><span class="va">p_pbo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">0.40</span>, <span class="fl">0.45</span>, <span class="fl">0.50</span><span class="op">)</span></span>
@@ -336,12 +355,18 @@ operating characteristics.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"True event rate for treatment"</span>, y<span class="op">=</span><span class="st">"Probability"</span>, title<span class="op">=</span><span class="st">"Operating Characteristics"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span>base_size<span class="op">=</span><span class="fl">12</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="customizing_plots_files/figure-html/unnamed-chunk-11-1.png" width="816"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## Warning: The `guide` argument in `scale_*()` cannot be `FALSE`. This was deprecated in</span></span>
+<span><span class="co">## ggplot2 3.3.4.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use "none" instead.</span></span>
+<span><span class="co">## <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
+<p><img src="customizing_plots_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -361,10 +386,10 @@ operating characteristics.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] bayesplot_1.10.0 tidyr_1.3.0      dplyr_1.1.2      ggplot2_3.4.2   </span></span>
-<span><span class="co">## [5] RBesT_1.7-0      knitr_1.43      </span></span>
+<span><span class="co">## [5] knitr_1.43       RBesT_1.7-1     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.3        xfun_0.39           bslib_0.5.0        </span></span>
+<span><span class="co">##  [1] gtable_0.3.3        xfun_0.40           bslib_0.5.0        </span></span>
 <span><span class="co">##  [4] processx_3.8.2      inline_0.3.19       callr_3.7.3        </span></span>
 <span><span class="co">##  [7] vctrs_0.6.3         tools_4.3.1         ps_1.7.5           </span></span>
 <span><span class="co">## [10] generics_0.1.3      stats4_4.3.1        parallel_4.3.1     </span></span>
@@ -373,12 +398,12 @@ operating characteristics.</p>
 <span><span class="co">## [19] RcppParallel_5.1.7  assertthat_0.2.1    lifecycle_1.0.3    </span></span>
 <span><span class="co">## [22] farver_2.1.1        compiler_4.3.1      stringr_1.5.0      </span></span>
 <span><span class="co">## [25] textshaping_0.3.6   munsell_0.5.0       codetools_0.2-19   </span></span>
-<span><span class="co">## [28] htmltools_0.5.5     sass_0.4.7          yaml_2.3.7         </span></span>
+<span><span class="co">## [28] htmltools_0.5.6     sass_0.4.7          yaml_2.3.7         </span></span>
 <span><span class="co">## [31] Formula_1.2-5       pillar_1.9.0        pkgdown_2.0.7      </span></span>
 <span><span class="co">## [34] crayon_1.5.2        jquerylib_0.1.4     cachem_1.0.8       </span></span>
 <span><span class="co">## [37] StanHeaders_2.26.27 abind_1.4-5         rstan_2.21.8       </span></span>
 <span><span class="co">## [40] tidyselect_1.2.0    digest_0.6.33       mvtnorm_1.2-2      </span></span>
-<span><span class="co">## [43] stringi_1.7.12      purrr_1.0.1         labeling_0.4.2     </span></span>
+<span><span class="co">## [43] stringi_1.7.12      purrr_1.0.2         labeling_0.4.2     </span></span>
 <span><span class="co">## [46] rprojroot_2.0.3     fastmap_1.1.1       grid_4.3.1         </span></span>
 <span><span class="co">## [49] colorspace_2.1-0    cli_3.6.1           magrittr_2.0.3     </span></span>
 <span><span class="co">## [52] loo_2.6.0           pkgbuild_1.4.2      utf8_1.2.3         </span></span>
@@ -387,7 +412,7 @@ operating characteristics.</p>
 <span><span class="co">## [61] gridExtra_2.3       ragg_1.2.5          memoise_2.0.1      </span></span>
 <span><span class="co">## [64] evaluate_0.21       rstantools_2.3.1.1  rlang_1.1.1        </span></span>
 <span><span class="co">## [67] Rcpp_1.0.11         glue_1.6.2          jsonlite_1.8.7     </span></span>
-<span><span class="co">## [70] R6_2.5.1            systemfonts_1.0.4   fs_1.6.2</span></span></code></pre>
+<span><span class="co">## [70] R6_2.5.1            systemfonts_1.0.4   fs_1.6.3</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,9 +159,9 @@ reference covariance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Multivariate normal mixture</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Outcome dimension: 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference covariance:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    1    4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mixture Components:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          rob       inf      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> w        0.2000000 0.8000000</span>
@@ -172,19 +172,19 @@ reference covariance.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> rho[2,1] 0.0000000 0.5000000</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvnm1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> m[1] m[2] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.4  0.8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.4 0.8 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cov</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.12 0.16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.16 1.48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      1    2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.12 0.16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.16 1.48</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">657846</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mixSamp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">rmix</a></span><span class="op">(</span><span class="va">mvnm1</span>, <span class="fl">500</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">mixSamp1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      m[1]      m[2] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1         2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.3695877 0.7900870 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
