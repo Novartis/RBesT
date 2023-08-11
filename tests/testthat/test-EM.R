@@ -122,6 +122,7 @@ EM_mvn_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
                     verbose=verbose, ...)
     expect_equal(summary(mixTest)$mean, summary(EMmix)$mean, tolerance=0.1)
     expect_equal(summary(mixTest)$cov, summary(EMmix)$cov, tolerance=0.1)
+    expect_equal(likelihood(EMmix), likelihood(mixTest))
 }
 
 test_that("Normal EM fits single component",     EM_test(ref$norm_single, 3453563, Nsim, verbose))

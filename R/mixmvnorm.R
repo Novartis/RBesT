@@ -65,6 +65,7 @@ NULL
 mixmvnorm <- function(..., sigma, param=c("ms", "mn")) {
     ## length of first mean vector determines dimension
     mix <- mixdist3(...)
+    dim_labels <- rownames(mix)
     param <- match.arg(param)
     Nc <- ncol(mix)
     n <- colnames(mix)
@@ -94,9 +95,15 @@ mixmvnorm <- function(..., sigma, param=c("ms", "mn")) {
     }
     colnames(mix) <- n
     p <- mvnormdim(mix[-1,1])
-    rownames(mix) <- c("w", mvnorm_label(mix[-1,1]))
+    if(is.null(dim_labels)) {
+        dim_labels <- as.character(1:p)
+    } else {
+        dim_labels <- dim_labels[2:(p+1)]
+    }
+    rownames(mix) <- c("w", mvnorm_label(mix[-1,1], dim_labels))
     if(!missing(sigma)) {
         assert_matrix(sigma, any.missing=FALSE, nrows=p, ncols=p)
+        colnames(sigma) <- rownames(sigma) <- dim_labels
         attr(mix, "sigma") <- sigma
     }
     class(mix) <- c("mvnormMix", "mix")
@@ -125,13 +132,25 @@ mvnormdim <- function(mvn) {
 }
 
 #' @keywords internal
-mvnorm_label <- function(mvn) {
+mvnorm_dim_labels <- function(mvn) {
     p <- mvnormdim(mvn)
+    n <- names(mvn)
+    if(is.null(n)) {
+        return(as.character(1:p))
+    }
+    return(gsub("\\]$", "", gsub("^[^\\[]*\\[", "", n[1:p])))
+}
+
+#' @keywords internal
+mvnorm_label <- function(mvn, dim_labels) {
+    p <- mvnormdim(mvn)
+    if(missing(dim_labels))
+        dim_labels <- mvnorm_dim_labels(mvn)
     if(p > 1) {
-        Rho_labs_idx <- outer(1:p, 1:p, paste, sep=",")[lower.tri(diag(p))]
-        lab <- c(paste0("m[", 1:p,"]"), paste0("s[", 1:p, "]"), paste0("rho[", Rho_labs_idx, "]"))
+        Rho_labs_idx <- outer(dim_labels, dim_labels, paste, sep=",")[lower.tri(diag(p))]
+        lab <- c(paste0("m[", dim_labels,"]"), paste0("s[", dim_labels, "]"), paste0("rho[", Rho_labs_idx, "]"))
     } else {
-        lab <- c(paste0("m[", 1:p,"]"), paste0("s[", 1:p, "]"))
+        lab <- c(paste0("m[", dim_labels,"]"), paste0("s[", dim_labels, "]"))
     }
     lab
 }
@@ -181,6 +200,7 @@ summary.mvnormMix <- function(object, ...) {
             S <- S + w[i] * ( mvnormsigma(object[-1,i]) + tcrossprod(unname(m[,i,drop=FALSE]) ))
         }
     }
+    rownames(S) <- colnames(S) <- names(mmix) <- mvnorm_dim_labels(object[-1,1])
     list(mean=mmix, cov=S)
 }
 
@@ -190,4 +210,23 @@ summary.mvnormMix <- function(object, ...) {
 #' @export sigma
 sigma.mvnormMix <- function(object, ...) {
     attr(object, "sigma")
+}
+
+#' @keywords internal
+is_mixmv <- function(mix) {
+    inherits(mix, "mvnormMix")
+}
+
+#' @keywords internal
+mvnorm_extract_dim <- function(mix, sub) {
+    Nc <- ncol(mix)
+    sub_comp <- list()
+    p <- mvnormdim(mix[-1,1])
+    assert_numeric(sub, lower=1, upper=p, any.missing=FALSE)
+    for(i in seq_len(Nc)) {
+        sub_comp[[i]] <- c(mix["w", i], mix[1 + sub, i], mvnormsigma(mix[-1,i])[sub, sub, drop=FALSE])
+    }
+    if(!is.null(sigma(mix)))
+        sub_comp$sigma <- sigma(mix)
+    do.call(mixmvnorm, sub_comp)
 }

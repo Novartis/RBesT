@@ -396,6 +396,7 @@ rmix.mvnormMix <- function(mix, n) {
                         rmvnorm(cn, m, S, checkSymmetry=FALSE)
                     },
                     r$values, r$lengths, SIMPLIFY=FALSE))[oidx,,drop=FALSE]
+    colnames(samp) <- mvnorm_dim_labels(mix[-1,1])
     attr(samp, "ind") <- ind
     samp
 }
@@ -429,3 +430,4 @@ mixlJinv_link <- function(mix, l)
 
 is.mixidentity_link <- function(mix, l)
     is.dlink_identity(attr(mix, "link"))
+

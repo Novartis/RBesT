@@ -59,6 +59,7 @@
 #' @import stats
 #' @importFrom utils capture.output modifyList
 #' @importFrom matrixStats rowLogSumExps colLogSumExps colSums2 rowMins rowRanks logSumExp
+#' @importFrom rlang .data
 #' @import assertthat
 #' @import mvtnorm
 #' @import ggplot2

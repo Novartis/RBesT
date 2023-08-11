@@ -267,6 +267,7 @@ EM_bmm_ab <- function(x, Nc, mix_init, Ninit=50, verbose=FALSE, Niter.max=500, t
 
     mixEst <- mixEst[,order(mixEst[1,], decreasing=TRUE),drop=FALSE]
     colnames(mixEst) <- paste("comp", seq(Nc), sep="")
+    likelihood(mixEst) <- "binomial"
     dlink(mixEst) <- identity_dlink
     class(mixEst) <- c("EM", "EMbmm", "betaMix", "mix")
 

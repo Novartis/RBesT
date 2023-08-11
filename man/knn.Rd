@@ -19,7 +19,7 @@ knn(X, K = 2, init, Ninit = 50, verbose = FALSE, tol, Niter.max = 500)
 
 \item{tol}{smaller changes than tol in the objective function indicate convergence, if missing chosen automatically to be 1/5 of the smallest sample variance per dimension}
 
-\item{maxIter}{maximum number of admissible iterations}
+\item{Niter.max}{maximum number of admissible iterations}
 }
 \description{
 k nearest neighbor algorithm for multi-variate data

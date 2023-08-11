@@ -1,0 +1,18 @@
+```{r, SETTINGS-knitr, include=FALSE}
+## knitr settings used to build vignettes
+library(RBesT)
+library(knitr)
+library(ggplot2)
+theme_set(theme_bw())
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+knitr::opts_chunk$set(
+  dev = "ragg_png",
+  dpi = 72,
+  fig.retina = 2,
+  fig.width = 1.62*4,
+  fig.height = 4,
+  fig.align = "center",
+  out.width = "100%",
+  pngquant = "--speed=1 --quality=50"
+  )
+```

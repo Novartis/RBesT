@@ -90,8 +90,10 @@ forest_plot <- function(x,
                   if("meta"       %in% model) transform(fit,   study=rownames(strat), model="meta"),
                   pred_est
                   )
-    comb <- within(comb, { model <- factor(model, levels=c("meta", "stratified"))
-                           study <- factor(study, levels=rev(c(rownames(strat), "Mean", "MAP"))) })
+    comb <- within(comb, {
+        model <- factor(model, levels=c("meta", "stratified"))
+        study <- factor(study, levels=rev(c(rownames(strat), "Mean", "MAP")))
+    })
 
     opts <- list(position=position_dodge(width=0.3), size=size)
 
@@ -99,8 +101,8 @@ forest_plot <- function(x,
                        gaussian="Response",
                        binomial="Response Rate",
                        poisson="Counting Rate")
-
-    graph <- ggplot(comb, aes_string(x="study", y=point_est, ymin="low", ymax="up", linetype="model", color="model"))
+    
+    graph <- ggplot(comb, aes(x=.data$study, y=.data[[point_est]], ymin=.data$low, ymax=.data$up, linetype=.data$model, color=.data$model))
 
     if(any(c("MAP", "Mean") %in% est)) {
         ref_line <- est[est %in% c("Mean", "MAP")][1]

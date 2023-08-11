@@ -1,3 +1,22 @@
+# RBesT 1.7-1 - August 8th, 2023
+
+## Enhancements
+
+* Allow use of mixture priors in `brms` models with the new adapter
+  function `mixstanvar`.
+* Allow use of named dimensions for multivariate normal mixtures.
+* Add *experimental* diagnostic plots for mixture multivariate normal
+  EM fits. These are subject to changes in future release and user
+  feedback is very welcome.
+* Compress png plots of vignettes saving ~40% in file size of the
+  package sources.
+
+## Bugfixes
+
+* Fix issue when plotting EM diagnostic debugging plots for normal
+  mixtures.
+* Comply with newer ggplot2 standards to not use `aes_string`.
+
 # RBesT 1.7-0 - July 19th, 2023
 
 ## Enhancements

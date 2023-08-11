@@ -104,8 +104,8 @@ plot.mix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ..
     }
     if(funStr=="dmix" & comp) {
         comp_df <- list()
-        for(i in seq(num_comp)) {
-            pl <- pl + stat_function(geom=plot_geom, mapping=aes_(colour=factor(i)), fun=plot_fun, args=list(mix=x[[i]], log=log), n=n_fun, linetype=I(2), size=size)
+        for(i in seq_len(num_comp)) {
+            pl <- pl + stat_function(geom=plot_geom, data=data.frame(comp=factor(i, levels=seq_len(num_comp))), mapping=aes(colour=comp), fun=plot_fun, args=list(mix=x[[i]], log=log), n=n_fun, linetype=I(2), linewidth=size, inherit.aes=FALSE)
         }
         pl <- pl + scale_colour_manual("Comp. [%]", values=2:(num_comp+1), labels=paste0(colnames(x), " ", format(100*x[1,],digits=1,nsmall=1)))
     }
