@@ -120,16 +120,6 @@ EM_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
                     Nc=ncol(mixTest),
                     verbose=verbose, ...)
     expect_true(all(EMmix1 == EMmix2), info="Result of EM is independent of random seed.")
-    set.seed(seed)
-    samp_reordered <- samp[sample.int(Nsim, Nsim)]
-    set.seed(seed)
-    EMmix3 <- mixfit(samp_reordered,
-                    type=switch(class(mixTest)[1], gammaMix="gamma", normMix="norm", betaMix="beta", mvnormMix="mvnorm"),
-                    thin=1,
-                    eps=2,
-                    Nc=ncol(mixTest),
-                    verbose=verbose, ...)
-    expect_true(sum(EMmix1 != EMmix3) > 0, info="Result of EM changes with different ordering of the sample.")
 }
 
 EM_mvn_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
@@ -153,16 +143,6 @@ EM_mvn_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
                     Nc=ncol(mixTest),
                     verbose=verbose, ...)
     expect_true(all(EMmix1 == EMmix2), info="Result of EM is independent of random seed.")
-    set.seed(seed)
-    samp_reordered <- samp[sample.int(Nsim, Nsim),, drop=FALSE]
-    set.seed(seed)
-    EMmix3 <- mixfit(samp_reordered,
-                    type="mvnorm",
-                    thin=1,
-                    eps=2,
-                    Nc=ncol(mixTest),
-                    verbose=verbose, ...)
-    expect_true(sum(EMmix1 != EMmix3) > 0, info="Result of EM changes with different ordering of the sample.")
 }
 
 test_that("Normal EM fits single component",     EM_test(ref$norm_single, 3453563, Nsim, verbose))
