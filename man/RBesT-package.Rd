@@ -2,8 +2,8 @@
 % Please edit documentation in R/RBesT-package.R
 \docType{package}
 \name{RBesT-package}
-\alias{RBesT-package}
 \alias{RBesT}
+\alias{RBesT-package}
 \title{R Bayesian Evidence Synthesis Tools}
 \description{
 The RBesT tools are designed to support in the derivation of
@@ -51,9 +51,32 @@ Option \tab Default \tab Description \cr
 \section{Version History}{
 
 
-See \code{NEWS} file.
+See \code{NEWS.md} file.
 }
 
 \references{
 Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://opensource.nibr.com/RBesT/}
+  \item Report bugs at \url{https://github.com/Novartis/RBesT/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Sebastian Weber \email{sebastian.weber@novartis.com}
+
+Other contributors:
+\itemize{
+  \item Novartis Pharma AG [copyright holder]
+  \item Beat Neuenschwander \email{beat.neuenschwander@novartis.com} [contributor]
+  \item Heinz Schmidli \email{heinz.schmidli@novartis.com} [contributor]
+  \item Baldur Magnusson \email{baldur.magnusson@novartis.com} [contributor]
+  \item Yue Li \email{yue-1.li@novartis.com} [contributor]
+  \item Satrajit Roychoudhury \email{satrajit.roychoudhury@novartis.com} [contributor]
+  \item Trustees of Columbia University (R/stanmodels.R, configure, configure.win) [copyright holder]
+}
+
 }
