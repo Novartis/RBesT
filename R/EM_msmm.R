@@ -29,7 +29,8 @@ EM_msmm <- function(X, Nc, init, Ninit=50, verbose=TRUE, Niter.max=500, tol=1e-1
         pEst <- KNN$p
         cmin <- which.min(pEst)
         muEst <- KNN$center
-        nuEst <- rlnorm(Nc, log(20), log(5)/1.96)
+        ##nuEst <- rlnorm(Nc, log(20), log(5)/1.96) ## avoid randomness during initialization
+        nuEst <- rep(12, times=Nc)
         covEst <- array(0, dim=c(Nc, Nd, Nd))
         Xtau <- sqrt(colVars(X))
         for(i in seq(Nc)) {
@@ -40,13 +41,16 @@ EM_msmm <- function(X, Nc, init, Ninit=50, verbose=TRUE, Niter.max=500, tol=1e-1
                 R <- cov2cor(covKNN)
                 tau <- sqrt(diag(covKNN))
                 ## set variances below or equal to 0 to the sample variance
-                tau[tau <=0] <- Xtau[tau <= 0]
+                tau[tau <= 0] <- Xtau[tau <= 0]
             } else {
                 R <- diag(Nd)
                 tau <- Xtau
             }
             ##tauR <- rlnorm(Nd, log(tau), log(3)/1.96)
             ##covEst[i,,] <- diag(tauR, Nd, Nd) %*% R %*% diag(tauR, Nd, Nd)
+            ## ensure that the smallest variance is not less than the global
+            ## variance divided by 100... which is to stabilize things
+            tau <- pmax(tau, Xtau / 100)
             covEst[i,,] <- diag(tau, Nd, Nd) %*% R %*% diag(tau, Nd, Nd)
         }
         ##tauR <- rlnorm(Nd, log(Xtau), log(3)/1.96)
