@@ -1,3 +1,13 @@
+# RBesT 1.7-2 - unreleased
+
+## Enhancements
+
+* Add unit tests for `mixstanvar` function and disabled integration
+  tests on CI/CD systems as these require significant resources due to
+  the need to compile Stan models. The unit tests do ensure that
+  things are correct from the `RBesT` side of things.
+* Use new scheme of `roxygen2` to document package documentation.
+
 # RBesT 1.7-1 - August 8th, 2023
 
 ## Enhancements

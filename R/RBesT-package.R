@@ -42,15 +42,16 @@
 #'
 #' @section Version History:
 #'
-#' See \code{NEWS} file.
+#' See \code{NEWS.md} file.
 #'
 #' @references
 #' Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
 #'
-#' @name RBesT-package
-#' @aliases RBesT
-#' @docType package
 #' @useDynLib RBesT, .registration = TRUE
+#' 
+# The following block is used by usethis to automatically manage
+# roxygen namespace tags. Modify with care!
+## usethis namespace: start
 #' @import methods
 #' @import Rcpp
 #' @importFrom RcppParallel RcppParallelLibs CxxFlags
@@ -66,4 +67,5 @@
 #' @import Formula
 #' @import checkmate
 #' @import abind
-NULL
+## usethis namespace: end
+"_PACKAGE"
