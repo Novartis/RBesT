@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@ Clinical Trails with RBesT</h3>
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2023-08-21</h4>
+            <h4 data-toc-skip class="date">2023-08-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/HEAD/vignettes/PoS_codata.Rmd" class="external-link"><code>vignettes/PoS_codata.Rmd</code></a></small>
       <div class="d-none name"><code>PoS_codata.Rmd</code></div>
@@ -445,15 +445,15 @@ prior is the prediction of the log-hazard ratio of a future trial:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -3080.931</span></span>
+<span><span class="co">## Log-Likelihood = -3080.927</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 2</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1      comp2     </span></span>
-<span><span class="co">## w  0.7232516  0.2767484</span></span>
-<span><span class="co">## m -0.2857408 -0.3098357</span></span>
-<span><span class="co">## s  0.3223596  0.9859165</span></span></code></pre>
+<span><span class="co">## w  0.7233863  0.2766137</span></span>
+<span><span class="co">## m -0.2857441 -0.3098386</span></span>
+<span><span class="co">## s  0.3224104  0.9860875</span></span></code></pre>
 <p>At the interim we have even more knowledge available on the treatment
 effect through the interim data itself which we can include into the MAP
 prior:</p>
@@ -463,7 +463,7 @@ prior:</p>
 <em>and</em> interim data collected) is:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.480742</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4807369</span></span></code></pre>
 <p>Note that we have not redefined <code>interim_pos_A</code>, such that
 this calculates the PoS for the phase III A trial taking into account
 that the final analysis will use a non-informative prior.</p>
@@ -471,7 +471,7 @@ that the final analysis will use a non-informative prior.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_B_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">base_map</span>, m<span class="op">=</span><span class="va">trials</span><span class="op">$</span><span class="va">logHR</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, se<span class="op">=</span><span class="va">trials</span><span class="op">$</span><span class="va">sem</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6649256</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6649225</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="use-of-historical-information---mac-approach">Use of historical information - MAC approach<a class="anchor" aria-label="anchor" href="#use-of-historical-information---mac-approach"></a>
@@ -496,34 +496,34 @@ the phase III result of trial B is also available:</p>
 <tr class="odd">
 <td align="left">PoC</td>
 <td align="right">-0.247</td>
-<td align="right">0.225</td>
-<td align="right">-0.741</td>
+<td align="right">0.234</td>
+<td align="right">-0.771</td>
 <td align="right">-0.240</td>
-<td align="right">0.210</td>
+<td align="right">0.216</td>
 </tr>
 <tr class="even">
 <td align="left">PhII</td>
+<td align="right">-0.255</td>
+<td align="right">0.153</td>
+<td align="right">-0.576</td>
 <td align="right">-0.250</td>
-<td align="right">0.151</td>
-<td align="right">-0.561</td>
-<td align="right">-0.248</td>
-<td align="right">0.050</td>
+<td align="right">0.044</td>
 </tr>
 <tr class="odd">
 <td align="left">PhIII_A</td>
-<td align="right">-0.214</td>
-<td align="right">0.127</td>
+<td align="right">-0.216</td>
+<td align="right">0.124</td>
 <td align="right">-0.455</td>
-<td align="right">-0.217</td>
-<td align="right">0.047</td>
+<td align="right">-0.218</td>
+<td align="right">0.032</td>
 </tr>
 <tr class="even">
 <td align="left">PhIII_B</td>
 <td align="right">-0.240</td>
-<td align="right">0.129</td>
-<td align="right">-0.498</td>
-<td align="right">-0.238</td>
-<td align="right">0.002</td>
+<td align="right">0.130</td>
+<td align="right">-0.499</td>
+<td align="right">-0.237</td>
+<td align="right">0.013</td>
 </tr>
 </tbody>
 </table>
@@ -539,10 +539,10 @@ the phase III result of trial B is also available:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">interim_map_post</span>, n<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           parameters</span></span>
-<span><span class="co">## iterations   theta[1]   theta[2]   theta[3]    theta[4]</span></span>
-<span><span class="co">##       [1,] -0.3623904 -0.2900111 -0.3895817 -0.33736356</span></span>
-<span><span class="co">##       [2,] -0.2242586 -0.1874217 -0.3220046 -0.26273504</span></span>
-<span><span class="co">##       [3,] -0.2010753 -0.1312968 -0.2283422 -0.05753074</span></span></code></pre>
+<span><span class="co">## iterations   theta[1]    theta[2]    theta[3]   theta[4]</span></span>
+<span><span class="co">##       [1,] -0.1593264 -0.07647811 -0.19873600 -0.1168811</span></span>
+<span><span class="co">##       [2,] -0.2307407 -0.46953690 -0.11706358 -0.1222869</span></span>
+<span><span class="co">##       [3,] -0.3839539 -0.26403940 -0.02395107 -0.2883597</span></span></code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>turn MCMC posterior sample into parametric mixture</li>
 </ol>
@@ -553,14 +553,14 @@ the phase III result of trial B is also available:</p>
 </ol>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5020994</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.506154</span></span></code></pre>
 <p>which aligns with the published result under the assumption of full
 exchangeability.</p>
 <p>For trial B computations are:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_B_allcombined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>,<span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6459044</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6446309</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -665,7 +665,7 @@ d\theta \approx \frac{1}{S} \sum_{i=1}^S CP(\theta_i),\]</span></p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_A_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mix.html">rmix</a></span><span class="op">(</span><span class="va">interim_A</span>, <span class="fl">1E4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_A_samp</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4481538</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4479449</span></span></code></pre>
 <p>This is an MC approach to calculating the PoS.</p>
 <p>When now considering the probability for both trials being successful
 we have to perform an MC integration over the joint density <span class="math inline">\(p(\theta_A,\theta_B|y_{n_{I_A}},y_{n_{I_B}})\)</span></p>
@@ -701,7 +701,7 @@ case)</p>
 <p>For the full exchangeability case we have</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>,<span class="st">"theta[3]"</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_oc_B</span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>,<span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.3543761</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3557928</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
@@ -721,11 +721,11 @@ calculations.</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## in addition with prior historical data PoC &amp; phase II data</span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.480742</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4807369</span></span></code></pre>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## finally with the interim data of the phase III B</span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5020994</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.506154</span></span></code></pre>
 <p>Phase III trial B:</p>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## only interim data of trial B</span></span>
@@ -734,11 +734,11 @@ calculations.</p>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## in addition with prior historical data PoC &amp; phase II data</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6649256</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6649225</span></span></code></pre>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## finally with the interim data of the phase III A</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6459044</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6446309</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="appendix-map-and-mac-equivalence">Appendix: MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#appendix-map-and-mac-equivalence"></a>
@@ -769,57 +769,57 @@ equivalence we need to align this mismatch of used data.</p>
 <span>                      tau.dist<span class="op">=</span><span class="st">"HalfNormal"</span>, tau.prior<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span>                      beta.prior<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>                      chains<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">is_CRAN</span>, <span class="fl">2</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: There were 1 divergent transitions after warmup. See</span></span>
-<span><span class="co">## https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
-<span><span class="co">## to find out why this is a problem and how to eliminate them.</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: Examine the pairs() plot to diagnose sampling problems</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in gMAP(cbind(logHR, sem) ~ 1 | study, family = gaussian, data = base, : In total 1 divergent transitions occured during the sampling phase.</span></span>
-<span><span class="co">## Please consider increasing adapt_delta closer to 1 with the following command prior to gMAP:</span></span>
-<span><span class="co">## options(RBesT.MC.control=list(adapt_delta=0.999))</span></span></code></pre>
 <p>Force an accurate fit with 5 components:</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_map_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">base_map_mc_2</span>, Nc<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">base_map_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -15109.54</span></span>
+<span><span class="co">## Log-Likelihood = -15013.39</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 2</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1       comp2       comp3       comp4       comp5      </span></span>
-<span><span class="co">## w  0.43304116  0.19520974  0.18818969  0.12362521  0.05993421</span></span>
-<span><span class="co">## m -0.28318475 -0.61228855  0.05395887 -0.56397909  0.33678471</span></span>
-<span><span class="co">## s  0.24200930  0.36080786  0.38082177  0.95401445  0.98517168</span></span></code></pre>
+<span><span class="co">## w  0.41971628  0.20090208  0.19003754  0.12618322  0.06316088</span></span>
+<span><span class="co">## m -0.29762454  0.04532952 -0.63996469  0.04207775 -0.83560925</span></span>
+<span><span class="co">## s  0.23604208  0.34976342  0.35791996  0.96086588  0.86439829</span></span></code></pre>
 <p>Now, combine the MAP prior (representing historical knowledge) with
 the interim data of trial A:</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_A_combined_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">base_map_2</span>, m<span class="op">=</span><span class="va">trials</span><span class="op">$</span><span class="va">logHR</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, se<span class="op">=</span><span class="va">trials</span><span class="op">$</span><span class="va">sem</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <ol style="list-style-type: decimal">
 <li>Run the respective MAC analysis (thus we need historical data +
 phase III A trial, but excluding the phase III B data):</li>
 </ol>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">interim_map_mc_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">base_map_mc_2</span>, data<span class="op">=</span><span class="va">trials</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span>,<span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">interim_map_post_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">interim_map_mc_2</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">interim_map_mc_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">base_map_mc_2</span>, data<span class="op">=</span><span class="va">trials</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span>,<span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: There were 3 divergent transitions after warmup. See</span></span>
+<span><span class="co">## https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
+<span><span class="co">## to find out why this is a problem and how to eliminate them.</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: Examine the pairs() plot to diagnose sampling problems</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in gMAP(formula = cbind(logHR, sem) ~ 1 | study, family = gaussian, : In total 3 divergent transitions occured during the sampling phase.</span></span>
+<span><span class="co">## Please consider increasing adapt_delta closer to 1 with the following command prior to gMAP:</span></span>
+<span><span class="co">## options(RBesT.MC.control=list(adapt_delta=0.999))</span></span></code></pre>
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">interim_map_post_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">interim_map_mc_2</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>turn MCMC posterior sample into parametric mixture</li>
 </ol>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_A_allcombined_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">interim_map_post_2</span><span class="op">[</span>,<span class="st">"theta[3]"</span><span class="op">]</span>, Nc<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">interim_A_allcombined_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = 10713.21</span></span>
+<span><span class="co">## Log-Likelihood = 10757.26</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1       comp2       comp3       comp4       comp5      </span></span>
-<span><span class="co">## w  0.23969528  0.22484399  0.21599172  0.19892130  0.12054771</span></span>
-<span><span class="co">## m -0.09859566 -0.20609863 -0.31149961 -0.10623196 -0.41624583</span></span>
-<span><span class="co">## s  0.12906532  0.05548528  0.06108111  0.07659343  0.08726130</span></span></code></pre>
+<span><span class="co">## w  0.23620664  0.22779753  0.21517295  0.19537486  0.12544803</span></span>
+<span><span class="co">## m -0.31643419 -0.10440955 -0.21611083 -0.30967721 -0.01589361</span></span>
+<span><span class="co">## s  0.12356170  0.06722802  0.06159021  0.08073824  0.10421168</span></span></code></pre>
 <p>Now let’s overlay the two posterior’s</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logHR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.8</span>,<span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">logHR</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html" class="external-link">stat_function</a></span><span class="op">(</span>fun<span class="op">=</span><span class="va">dmix</span>, args<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mix<span class="op">=</span><span class="va">interim_A_combined_2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype<span class="op">=</span><span class="st">"MAP"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html" class="external-link">stat_function</a></span><span class="op">(</span>fun<span class="op">=</span><span class="va">dmix</span>, args<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mix<span class="op">=</span><span class="va">interim_A_allcombined_2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype<span class="op">=</span><span class="st">"MAC"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -827,12 +827,12 @@ phase III A trial, but excluding the phase III B data):</li>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Posterior log hazard of phase III A trial at interim"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PoS_codata_files/figure-html/unnamed-chunk-47-1.png" width="100%" style="display: block; margin: auto;"></p>
 <p>The PoS is essentially the same</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4884644</span></span></code></pre>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## [1] 0.4907594</span></span></code></pre>
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4912059</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4899727</span></span></code></pre>
 <div class="section level3">
 <h3 id="formal-map-and-mac-equivalence">Formal MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#formal-map-and-mac-equivalence"></a>
 </h3>
@@ -873,7 +873,7 @@ Biometrics. 2014;70(4):1023-1032. </p>
 <div class="section level2">
 <h2 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
 </h2>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
@@ -897,7 +897,7 @@ Biometrics. 2014;70(4):1023-1032. </p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] purrr_1.0.2      dplyr_1.1.2      bayesplot_1.10.0 ggplot2_3.4.3   </span></span>
-<span><span class="co">## [5] knitr_1.43       RBesT_1.7-1     </span></span>
+<span><span class="co">## [5] knitr_1.43       RBesT_1.7-2     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] tensorA_0.36.2       gtable_0.3.3         xfun_0.40           </span></span>

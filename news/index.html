@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,11 +56,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-2" id="rbest-17-2---unreleased">RBesT 1.7-2 - unreleased<a class="anchor" aria-label="anchor" href="#rbest-17-2---unreleased"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.7-2" id="rbest-17-2---august-21st-2023">RBesT 1.7-2 - August 21st, 2023<a class="anchor" aria-label="anchor" href="#rbest-17-2---august-21st-2023"></a></h2><p class="text-muted">CRAN release: 2023-08-21</p>
 <div class="section level3">
 <h3 id="enhancements-1-7-2">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-2"></a></h3>
 <ul><li>Add unit tests for <code>mixstanvar</code> function and disabled integration tests on CI/CD systems as these require significant resources due to the need to compile Stan models. The unit tests do ensure that things are correct from the <code>RBesT</code> side of things.</li>
 <li>Use new scheme of <code>roxygen2</code> to document package documentation.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-1-7-2">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-7-2"></a></h3>
+<ul><li>Make EM for normal and multivariate normal mixtures deterministic in that the resulting density does not depend on the random seed any longer, which is the intended behavior. Note that this change may cause that estimated normal / MVN mixtures will be numerically different as compared to the previous version. The estimated density itself is (statistically) still the very same.</li>
 </ul></div>
 </div>
     <div class="section level2">

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
       <img src="" class="logo" alt=""><h1>RBesT for a Normal Endpoint</h1>
                         <h4 data-toc-skip class="author">Yue Li</h4>
             
-            <h4 data-toc-skip class="date">2023-08-21</h4>
+            <h4 data-toc-skip class="date">2023-08-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/HEAD/vignettes/introduction_normal.Rmd" class="external-link"><code>vignettes/introduction_normal.Rmd</code></a></small>
       <div class="d-none name"><code>introduction_normal.Rmd</code></div>
@@ -237,15 +237,15 @@ can also specify the number of components for the mixture via
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -17150.82</span></span>
+<span><span class="co">## Log-Likelihood = -17150.88</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 88</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1       comp2       comp3       comp4      </span></span>
-<span><span class="co">## w   0.5337693   0.2919489   0.1036433   0.0706384</span></span>
-<span><span class="co">## m -53.9071644 -46.7957807 -52.6857032 -32.9867605</span></span>
-<span><span class="co">## s  16.6267034   5.8400681  41.9546778  12.8736086</span></span></code></pre>
+<span><span class="co">##   comp1        comp2        comp3        comp4       </span></span>
+<span><span class="co">## w   0.53035525   0.29556439   0.10454835   0.06953201</span></span>
+<span><span class="co">## m -54.01354685 -46.79309018 -52.63692998 -32.31288704</span></span>
+<span><span class="co">## s  16.56999073   5.87104280  41.86822148  12.49821940</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## check accuracy of mixture fit</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></code></pre></div>
@@ -269,7 +269,7 @@ sample size of the control group.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method<span class="op">=</span><span class="st">"morita"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 88</span></span></code></pre>
-<pre><code><span><span class="co">## [1] 141</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 140</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method<span class="op">=</span><span class="st">"moment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 88</span></span></code></pre>
@@ -300,9 +300,9 @@ group population. Note that robustification decreases the ESS.</p>
 <span><span class="co">## Reference scale: 88</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1        comp2        comp3        comp4        robust      </span></span>
-<span><span class="co">## w   0.42701546   0.23355915   0.08291467   0.05651072   0.20000000</span></span>
-<span><span class="co">## m -53.90716444 -46.79578074 -52.68570324 -32.98676046 -50.00000000</span></span>
-<span><span class="co">## s  16.62670343   5.84006809  41.95467783  12.87360863  88.00000000</span></span></code></pre>
+<span><span class="co">## w   0.42428420   0.23645151   0.08363868   0.05562561   0.20000000</span></span>
+<span><span class="co">## m -54.01354685 -46.79309018 -52.63692998 -32.31288704 -50.00000000</span></span>
+<span><span class="co">## s  16.56999073   5.87104280  41.86822148  12.49821940  88.00000000</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map_robust</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 88</span></span></code></pre>
@@ -479,10 +479,10 @@ is taken into account.</p>
 <span><span class="co">## then calculate probability for the dual criteria</span></span>
 <span><span class="co">## and compare to the predefined threshold values</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">post_act</span>, <span class="va">post_pbo</span>, <span class="fl">0</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.06130469</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.06130378</span></span></code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">post_act</span>, <span class="va">post_pbo</span>, <span class="op">-</span><span class="fl">50</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 3.838598e-06</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 3.839255e-06</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p1</span><span class="op">&gt;</span><span class="fl">0.95</span> <span class="op">&amp;</span> <span class="va">p2</span><span class="op">&gt;</span><span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] FALSE</span></span></code></pre>
@@ -527,7 +527,7 @@ is taken into account.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_3.4.3 knitr_1.43    RBesT_1.7-1  </span></span>
+<span><span class="co">## [1] ggplot2_3.4.3 knitr_1.43    RBesT_1.7-2  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##  [1] tensorA_0.36.2       gtable_0.3.3         xfun_0.40           </span></span>
