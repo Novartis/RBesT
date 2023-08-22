@@ -1,4 +1,4 @@
-# RBesT 1.7-2 - unreleased
+# RBesT 1.7-2 - August 21st, 2023
 
 ## Enhancements
 
@@ -7,6 +7,15 @@
   the need to compile Stan models. The unit tests do ensure that
   things are correct from the `RBesT` side of things.
 * Use new scheme of `roxygen2` to document package documentation.
+
+## Bugfixes
+
+* Make EM for normal and multivariate normal mixtures deterministic in
+  that the resulting density does not depend on the random seed any
+  longer, which is the intended behavior. Note that this change may
+  cause that estimated normal / MVN mixtures will be numerically
+  different as compared to the previous version. The estimated density
+  itself is (statistically) still the very same.
 
 # RBesT 1.7-1 - August 8th, 2023
 

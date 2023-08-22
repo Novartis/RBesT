@@ -101,28 +101,48 @@ ref$gamma_bi <- mixgamma(c(0.5, 7.5, 1),
 EM_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
     set.seed(seed)
     samp <- rmix(mixTest, Nsim)
-    EMmix <- mixfit(samp,
+    set.seed(seed)
+    EMmix1 <- mixfit(samp,
                     type=switch(class(mixTest)[1], gammaMix="gamma", normMix="norm", betaMix="beta", mvnormMix="mvnorm"),
                     thin=1,
                     eps=2,
                     Nc=ncol(mixTest),
                     verbose=verbose, ...)
-    kl <- abs(KLdivmix(mixTest, EMmix))
-    expect_true(kl < KLthresh)
+    kl1 <- abs(KLdivmix(mixTest, EMmix1))
+    expect_true(kl1 < KLthresh)
+    ## results must not depend on the seed, but only on the order of
+    ## the input sample
+    set.seed(seed + 657858)
+    EMmix2 <- mixfit(samp,
+                    type=switch(class(mixTest)[1], gammaMix="gamma", normMix="norm", betaMix="beta", mvnormMix="mvnorm"),
+                    thin=1,
+                    eps=2,
+                    Nc=ncol(mixTest),
+                    verbose=verbose, ...)
+    expect_true(all(EMmix1 == EMmix2), info="Result of EM is independent of random seed.")
 }
 
 EM_mvn_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
     set.seed(seed)
     samp <- rmix(mixTest, Nsim)
-    EMmix <- mixfit(samp,
+    set.seed(seed)
+    EMmix1 <- mixfit(samp,
                     type="mvnorm",
                     thin=1,
                     eps=2,
                     Nc=ncol(mixTest),
                     verbose=verbose, ...)
-    expect_equal(summary(mixTest)$mean, summary(EMmix)$mean, tolerance=0.1)
-    expect_equal(summary(mixTest)$cov, summary(EMmix)$cov, tolerance=0.1)
-    expect_equal(likelihood(EMmix), likelihood(mixTest))
+    expect_equal(summary(mixTest)$mean, summary(EMmix1)$mean, tolerance=0.1)
+    expect_equal(summary(mixTest)$cov, summary(EMmix1)$cov, tolerance=0.1)
+    expect_equal(likelihood(EMmix1), likelihood(mixTest))
+    set.seed(seed + 476767)
+    EMmix2 <- mixfit(samp,
+                    type="mvnorm",
+                    thin=1,
+                    eps=2,
+                    Nc=ncol(mixTest),
+                    verbose=verbose, ...)
+    expect_true(all(EMmix1 == EMmix2), info="Result of EM is independent of random seed.")
 }
 
 test_that("Normal EM fits single component",     EM_test(ref$norm_single, 3453563, Nsim, verbose))
