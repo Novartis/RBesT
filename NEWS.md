@@ -1,3 +1,18 @@
+# RBesT 1.7-3 - January 2nd, 2024
+
+## Enhancements
+
+* Updated Stan model file syntax to use new array syntax as required
+  by Stan >=2.33. This upgrades the minimal Stan version to 2.26.
+* Moved most vignettes to be articles to decrease size of R
+  packages. Articles are available on [the package
+  homepage](https://opensource.nibr.com/RBesT/articles/).
+
+## Bugfixes
+
+* Added `pngquant` to system requirements of package as requested by
+  CRAN.
+
 # RBesT 1.7-2 - August 21st, 2023
 
 ## Enhancements

@@ -8,8 +8,8 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     for details on applying this package while Neuenschwander et al. (2010)
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
-Version: 1.7-2
-Date: 2023-08-21
+Version: 1.7-3
+Date: 2024-01-02
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
@@ -25,7 +25,7 @@ Imports:
     methods,
     Rcpp (>= 0.12.0),
     RcppParallel (>= 5.0.1),
-    rstan (>= 2.19.3),
+    rstan (>= 2.26.0),
     rstantools (>= 2.3.1),
     assertthat,
     mvtnorm,
@@ -44,8 +44,8 @@ LinkingTo:
     Rcpp (>= 0.12.0),
     RcppEigen (>= 0.3.3.3.0),
     RcppParallel (>= 5.0.1),
-    rstan (>= 2.19.3),
-    StanHeaders (>= 2.19.0)
+    rstan (>= 2.26.0),
+    StanHeaders (>= 2.26.0)
 License: GPL (>=3)
 LazyData: true
 Biarch: true
@@ -69,6 +69,6 @@ Suggests:
     glue,
     ragg
 VignetteBuilder: knitr
-SystemRequirements: GNU make, pandoc (>= 1.12.3), pandoc-citeproc, C++17
+SystemRequirements: GNU make, pandoc (>= 1.12.3), pngquant, C++17
 Encoding: UTF-8
 RoxygenNote: 7.2.3
