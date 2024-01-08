@@ -33,3 +33,4 @@ src/stan_files/.*\.hpp$
 ^src/package-binary$
 ^Makefile$
 ^LICENSE$
+^vignettes/articles$

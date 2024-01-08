@@ -24,9 +24,9 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, child="settings-knitr.txt"}
+```{r, child="../settings-knitr.txt"}
 ```
-```{r, child="settings-sampling.txt"}
+```{r, child="../settings-sampling.txt"}
 ```
 ```{r, include=FALSE}
 library(bayesplot)

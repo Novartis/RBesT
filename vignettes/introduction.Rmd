@@ -30,17 +30,30 @@ vignette: >
 
 # Introduction
 
-The R Bayesian evidence synthesis Tools (RBesT) have been created to
-facilitate the use of historical information in clinical trials. Once
-relevant historical information has been identified, RBesT supports
-the derivation of informative priors via the Meta-Analytic-Predictive
-(MAP) approach [1] and the evaluation of the trial's operating
-characteristics. The MAP approach performs a standard meta-analysis
-followed by a prediction for the control group parameter of a future
-study while accounting for the uncertainty in the population mean (the
-standard result from a meta-analysis) and the between-trial
-heterogeneity. Therefore, RBesT can also be used as a meta-analysis
-tool if one simply neglects the prediction part.
+The R Bayesian evidence synthesis Tools (RBesT) facilitate the use of
+historical information in clinical trials. Once relevant historical
+information has been identified, RBesT supports the derivation of
+informative priors via the Meta-Analytic-Predictive (MAP) approach [1]
+and the evaluation of the trial's operating characteristics. The MAP
+approach performs a standard meta-analysis followed by a prediction
+for the control group parameter of a future study while accounting for
+the uncertainty in the population mean (the standard result from a
+meta-analysis) and the between-trial heterogeneity. Therefore, RBesT
+can also be used as a meta-analysis tool if one simply neglects the
+prediction part.
+
+This document demonstrates RBesT as it can be used to derive from
+historical control data a prior for a binary endpoint. The [RBesT
+package homepage](https://opensource.nibr.com/RBesT/) contains further
+articles on introductory material:
+
+- Probability of success with co-data
+- Probability of success at an interim with a normal endpoint
+- Customizing RBesT plots
+- RBesT for a normal endpoint
+- Meta-Analytic-Predictive priors for variances
+
+# Binary responder analysis example
 
 Let's consider a Novartis Phase II study in ankylosing spondylitis
 comparing the Novartis test treatment secukinumab with placebo

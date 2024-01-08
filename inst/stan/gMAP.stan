@@ -14,22 +14,22 @@ data {
   vector[H] y_se;
   
   // binomial data, link=logit=2
-  int<lower=0>    r[H];
-  int<lower=1>  r_n[H];
+  array[H] int<lower=0>    r;
+  array[H] int<lower=1>  r_n;
 
   // count data, link=log=3
-  int<lower=0> count[H];
+  array[H] int<lower=0> count;
   vector[H]    log_offset;
 
   // exchangeability cluster mapping
   int<lower=1> n_groups;
-  int<lower=1,upper=n_groups> group_index[H];
+  array[H] int<lower=1,upper=n_groups> group_index;
 
   // tau prediction stratum
   int<lower=1,upper=n_groups> n_tau_strata;
   int<lower=1,upper=n_tau_strata> tau_strata_pred;
   // data item to tau stratum mapping
-  int<lower=1,upper=n_tau_strata> tau_strata_index[H];
+  array[H] int<lower=1,upper=n_tau_strata> tau_strata_index;
 
   // number of predictors
   int<lower=1> mX;
@@ -52,20 +52,20 @@ data {
   int<lower=0,upper=1> ncp;
 
   // guesses on the parameter location and scales
-  vector[mX] beta_raw_guess[2];
-  real       tau_raw_guess[2];
+  array[2] vector[mX] beta_raw_guess;
+  array[2] real       tau_raw_guess;
 
   // sample from prior predictive (do not add data to likelihood)
   int<lower=0,upper=1> prior_PD;
 }
 transformed data {
-  vector[mX] beta_prior_stan[2];
-  vector[n_tau_strata] tau_prior_stan[2];
+  array[2] vector[mX] beta_prior_stan;
+  array[2] vector[n_tau_strata] tau_prior_stan;
   //matrix[n_groups, n_tau_strata] S;
   //matrix[H, n_groups] Z;
   matrix[H, mX] X_param;
   // group index to tau stratum mapping
-  int<lower=1,upper=n_tau_strata> tau_strata_gindex[n_groups] = rep_array(tau_strata_pred, n_groups);
+  array[n_groups] int<lower=1,upper=n_tau_strata> tau_strata_gindex = rep_array(tau_strata_pred, n_groups);
 
   for (i in 1:mX) {
     beta_prior_stan[1,i] = beta_prior[i,1];

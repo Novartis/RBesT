@@ -92,7 +92,7 @@ plot.mix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ..
 
     num_comp <- ncol(x)
     pl <- ggplot(data.frame(x=interval), aes(x=x)) +
-        stat_function(geom=plot_geom, fun = plot_fun, args=list(mix=x, log=log), n=n_fun, size=size) +
+        stat_function(geom=plot_geom, fun = plot_fun, args=list(mix=x, log=log), n=n_fun, linewidth=size) +
         bayesplot::bayesplot_theme_get()
 
     if(funStr=="dmix") {

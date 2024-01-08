@@ -104,6 +104,7 @@ test_that("SBC data was up to date at package creation.", {
 set.seed(92575)
 rate <- round(-log(0.05)/2, 1)
 test_that("gMAP matches RStanArm binomial family", {
+    skip("RStanArm has issues loading since 2024-01-02 on CI/CD systems.")
               skip_on_cran()
               best_run <- gMAP(cbind(r, n-r) ~ 1 | study,
                                data=AS,
