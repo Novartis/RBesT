@@ -97,5 +97,6 @@ is.dlink <- function(x)
 is.dlink_identity <- function(x)
     is.dlink(x) & x$name == "identity"
 
+#' @export
 print.dlink <- function(x, ...)
     cat("Link:", x$name, "\n")

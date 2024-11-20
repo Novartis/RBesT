@@ -1,10 +1,9 @@
-context("Utilities: predict")
 
 ## run the example from predict.gMAP
-suppressMessages(example("predict.gMAP", package="RBesT", echo=FALSE, ask=FALSE, verbose=FALSE))
+source_example("predict_gMAP.R")
 
 ## check that we got for each input data item a prediction
-test_that("correct # of predictions are generated", expect_equal(nrow(map$data), ncol(samp)))
+test_that("correct # of predictions are generated", { expect_equal(nrow(map$data), ncol(samp)) })
 
 ## check that the predictive distribution has a variance which is
 ## larger in accordance to the betwee-trial heterogeniety (needs to be
@@ -28,7 +27,7 @@ test_that("variances have correct ordering", {
 
 
 ## new prediction was done for a single data item
-test_that("correct # of new predictions are generated", expect_equal(ncol(pred_new), 1))
+test_that("correct # of new predictions are generated", { expect_equal(ncol(pred_new), 1) } )
 
 ## must have larger sd than between-trial alone (on link scale)
 test_that("predictive variances have correct ordering",{
@@ -45,8 +44,6 @@ test_that("predictive distributions for the same study & covariate must match ex
     post_trans <- as.matrix(predict(map, newdata=trans_cov_new))
     expect_equal(post_trans[,1], post_trans[,2])
 })
-
-context("Utilities: (auto)mixfit")
 
 test_that("automixfit attempts K=4 different models and returns best fitting", {
               auto_map <- automixfit(map, Nc=1:4, k=6)
@@ -75,16 +72,14 @@ test_that("mixfit for prediction handles response and link scale", {
           })
 
 
-context("Utilities: mixcombine")
-
-example("mixcombine", package="RBesT", echo=FALSE, ask=FALSE, verbose=FALSE)
+source_example("mixcombine.R")
 
 test_that("combination of mixtures", {
               m1 <- mixcombine(bm, unif, weight=c(9, 1))
               m2 <- mixcombine(bm, unif, unif, weight=c(8, 1, 1))
-              expect_equivalent(m1[1,], c(bm[1,] - 0.1/2, 0.1))
-              expect_equivalent(m1[2:3,1:2], bm[2:3,1:2])
-              expect_equivalent(m2[2:3,1:2], bm[2:3,1:2])
+              expect_equal(m1[1,], c(bm[1,] - 0.1/2, 0.1), ignore_attr=TRUE)
+              expect_equal(m1[2:3,1:2], bm[2:3,1:2], ignore_attr=TRUE)
+              expect_equal(m2[2:3,1:2], bm[2:3,1:2], ignore_attr=TRUE)
           })
 
 test_that("throws an error if more weights than mixtures given", {
@@ -98,50 +93,47 @@ test_that("combination of normal mixtures without default sigma works", {
               expect_true(ncol(norm_ui_mix) == 2)
           })
 
-context("Utilities: robustify")
-
-example("robustify", package="RBesT", echo=FALSE, ask=FALSE, verbose=FALSE)
+source_example("robustify.R")
 
 test_that("beta mixture is robustified with Beta(1,1)", {
               expect_equal(ncol(bmix)+1, ncol(rbmix))
-              expect_equivalent(rbmix[,ncol(rbmix)], c(0.1, 1, 1))
+              expect_equal(rbmix[,ncol(rbmix)], c(0.1, 1, 1), ignore_attr=TRUE)
           })
 
 test_that("beta mixture is robustified with Beta(0.5,0.5)", {
-              rbmix2 <- robustify(bmix, w=0.1, n=0)
+              rbmix2 <- robustify(bmix, w=0.1, n=0, mean=0.5)
               expect_equal(ncol(bmix)+1, ncol(rbmix2))
-              expect_equivalent(rbmix2[,ncol(rbmix2)], c(0.1, 0.5, 0.5))
+              expect_equal(rbmix2[,ncol(rbmix2)], c(0.1, 0.5, 0.5), ignore_attr=TRUE)
           })
 
 test_that("gamma mixture is robustified with n=1 equivalent prior", {
               m <- summary(gmnMix)["mean"]
               nr <- ncol(rgmnMix)
-              expect_equivalent(rgmnMix[[nr, rescale=TRUE]], mixgamma(c(1, m, 1), param="mn"))
+              expect_equal(rgmnMix[[nr, rescale=TRUE]], mixgamma(c(1, m, 1), param="mn"), ignore_attr=TRUE)
               expect_equal(rgmnMix[1,nr], 0.1)
           })
 
 test_that("gamma mixture is robustified with n=5 equivalent prior", {
               m <- summary(gmnMix)["mean"]
-              rgmnMix2 <- robustify(gmnMix, w=0.1, n=5)
+              rgmnMix2 <- robustify(gmnMix, w=0.1, n=5, mean=2)
               nr <- ncol(rgmnMix2)
-              expect_equivalent(rgmnMix2[[nr, rescale=TRUE]], mixgamma(c(1, m, 5), param="mn"))
+              expect_equal(rgmnMix2[[nr, rescale=TRUE]], mixgamma(c(1, m, 5), param="mn"), ignore_attr=TRUE)
               expect_equal(rgmnMix2[1,nr], 0.1)
           })
 
 test_that("normal mixture is robustified with n=1 equivalent prior", {
               nr <- ncol(rnMix)
-              expect_equivalent(rnMix[[nr, rescale=TRUE]], mixnorm(c(1, 0, 1), param="mn", sigma=sigma(nm)))
+              expect_equal(rnMix[[nr, rescale=TRUE]], mixnorm(c(1, 0, 1), param="mn", sigma=sigma(nm)), ignore_attr=TRUE)
               expect_equal(rnMix[1,nr], 0.1)
           })
 
 test_that("normal mixture is robustified with n=5 equivalent prior", {
               rnMix2 <- robustify(nm, w=0.1, mean=0, n=5, sigma=sigma(nm))
               nr <- ncol(rnMix2)
-              expect_equivalent(rnMix2[[nr, rescale=TRUE]], mixnorm(c(1, 0, 5), param="mn", sigma=sigma(nm)))
+              expect_equal(rnMix2[[nr, rescale=TRUE]], mixnorm(c(1, 0, 5), param="mn", sigma=sigma(nm)), ignore_attr=TRUE)
               expect_equal(rnMix2[1,nr], 0.1)
           })
 
-context("Utilities: Plotting of Mixtures")
 test_that("plotting of normal mixtures without default sigma works", {
               norm_ui <- mixnorm(c(1, 0, 2))
               norm_mix_ui <- mixcombine(norm_ui, norm_ui, weight=c(0.5,0.5))
@@ -149,9 +141,7 @@ test_that("plotting of normal mixtures without default sigma works", {
               expect_true(inherits(pl, "ggplot"))
           })
 
-context("Utilities: Mixture Effective Sample Size")
-
-example("ess", package="RBesT", echo=FALSE, ask=FALSE, verbose=FALSE)
+source_example("ess.R")
 
 test_that("conjugate beta case matches canonical formula", {
               expect_equal(a+b, ess(prior, "moment"))
@@ -173,7 +163,7 @@ test_that("ess elir for beta mixtures gives a warning for a<1 & b<1 densities", 
 
 test_that("ess elir for normal mixtures returns correct values", {
     mix <- mixnorm( inf1=c(0.5026,-191.1869,127.4207),inf2=c(0.2647,-187.5895,31.6130),inf3=c(0.2326,-184.7445,345.3849), sigma=270.4877)
-    expect_gt(ess(mix), 0)
+    expect_gt(ess(mix, sigma=270.4877), 0)
 })
 
 test_that("moment matching for beta mixtures is correct", {
@@ -297,3 +287,31 @@ test_that("ESS elir is predictively consistent for gamma mixtures (Poisson likel
     gmixP <- mixgamma(rob=c(0.3, 20, 4), inf=c(0.7, 50, 10), likelihood="poisson")
     elir_predictive_consistent(gmixP, m=1E2, Nsim=1E3, seed=355435, stat="m", n=1E2)
 })
+
+test_that("ess elir for problematic beta mixtures gives correct result 1", {
+    ## by user reported beta mixture density which triggers this erros
+    ## with RBesT 1.7.2 & 1.7.3 (others not tested):
+    ## Error in if (all(dgl < 0) || all(dgl > 0)) { : 
+    ##   missing value where TRUE/FALSE needed
+
+    mixmat <- matrix(c(0.06429517, 0.03301215, 0.00269268, 0.90000000,
+                       437.32302999, 64.04211307, 5.92543558, 1.00000000,
+                       10.71709277, 2.14157953, 1.00000001, 1.00000000), byrow=TRUE, ncol=4)
+
+    mixb <- do.call(mixbeta, apply(mixmat,2,c,simplify=FALSE))
+
+    expect_double(ess(mixb), lower=0, finite=TRUE, any.missing=FALSE, len=1)
+})
+ 
+test_that("ess elir for problematic beta mixtures gives correct result 2", {
+    mixmat <- matrix(c(0.7237396, 0.1665037,  0.1097567,
+                       53.3721902, 44.3894573,  9.8097062,
+                       1.4301638,  4.3842200,  1.8492197
+                       ), byrow=TRUE, ncol=3)
+
+    mixb <- do.call(mixbeta, apply(mixmat,2,c,simplify=FALSE))
+    
+    expect_double(ess(robustify(mixb, 0.05, 0.5)), lower=0, finite=TRUE, any.missing=FALSE, len=1)
+    expect_double(ess(robustify(mixb, 0.95, 0.5)), lower=0, finite=TRUE, any.missing=FALSE, len=1)
+})
+ 

@@ -1,4 +1,4 @@
-context("EM: Expectation-Maximization")
+#context("EM: Expectation-Maximization")
 
 ## test that the EM algorithms recover reliably test distributions;
 ## test criterium is a "sufficiently" small KL divergence
@@ -145,23 +145,23 @@ EM_mvn_test <- function(mixTest, seed, Nsim=1e4, verbose=FALSE, ...) {
     expect_true(all(EMmix1 == EMmix2), info="Result of EM is independent of random seed.")
 }
 
-test_that("Normal EM fits single component",     EM_test(ref$norm_single, 3453563, Nsim, verbose))
-test_that("Normal EM fits heavy-tailed mixture", EM_test(ref$norm_heavy,  9275624, Nsim, verbose))
-test_that("Normal EM fits bi-modal mixture",     EM_test(ref$norm_bi,     9345726, Nsim, verbose))
+test_that("Normal EM fits single component",     { EM_test(ref$norm_single, 3453563, Nsim, verbose) })
+test_that("Normal EM fits heavy-tailed mixture", { EM_test(ref$norm_heavy,  9275624, Nsim, verbose) })
+test_that("Normal EM fits bi-modal mixture",     { EM_test(ref$norm_bi,     9345726, Nsim, verbose) })
 
-test_that("Multivariate Normal EM fits single component",     EM_mvn_test(ref$mvnorm_single, 3453563, Nsim, verbose))
-test_that("Multivariate Normal EM fits heavy-tailed mixture", EM_mvn_test(ref$mvnorm_heavy,  9275624, Nsim, verbose))
-test_that("Multivariate Normal EM fits bi-modal mixture",     EM_mvn_test(ref$mvnorm_bi,     9345726, Nsim, verbose))
-test_that("Multivariate Normal EM fits bi-modal mixture 1D",     EM_mvn_test(ref$mvnorm_bi_1D,     9345726, Nsim, verbose))
+test_that("Multivariate Normal EM fits single component",     { EM_mvn_test(ref$mvnorm_single, 3453563, max(1E4, Nsim), verbose) })
+test_that("Multivariate Normal EM fits heavy-tailed mixture", { EM_mvn_test(ref$mvnorm_heavy,  9275624, max(1E4, Nsim), verbose) })
+test_that("Multivariate Normal EM fits bi-modal mixture",     { EM_mvn_test(ref$mvnorm_bi,     9345726, max(1E4, Nsim), verbose) })
+test_that("Multivariate Normal EM fits bi-modal mixture 1D",     { EM_mvn_test(ref$mvnorm_bi_1D,     9345726, max(1E4, Nsim), verbose) })
 
-test_that("Gamma EM fits single component",      EM_test(ref$gamma_single, 9345835, Nsim, verbose))
-test_that("Gamma EM fits heavy-tailed mixture",  EM_test(ref$gamma_heavy,  5629389, Nsim, verbose))
-test_that("Gamma EM fits bi-modal mixture",      EM_test(ref$gamma_bi,     9373515, Nsim, verbose))
+test_that("Gamma EM fits single component",      { EM_test(ref$gamma_single, 9345835, Nsim, verbose) })
+test_that("Gamma EM fits heavy-tailed mixture",  { EM_test(ref$gamma_heavy,  5629389, Nsim, verbose) })
+test_that("Gamma EM fits bi-modal mixture",      { EM_test(ref$gamma_bi,     9373515, Nsim, verbose) })
 
-test_that("Beta EM fits single component",       EM_test(ref$beta_single, 7265355, Nsim, verbose))
-test_that("Beta EM fits single component with mass at boundary", EM_test(ref$beta_single_alt, 7265355, Nsim, verbose, constrain_gt1=FALSE))
-test_that("Beta EM fits heavy-tailed mixture",   EM_test(ref$beta_heavy,  2946562, Nsim, verbose))
-test_that("Beta EM fits bi-modal mixture",       EM_test(ref$beta_bi,     9460370, Nsim, verbose))
+test_that("Beta EM fits single component",       { EM_test(ref$beta_single, 7265355, Nsim, verbose) })
+test_that("Beta EM fits single component with mass at boundary", { EM_test(ref$beta_single_alt, 7265355, Nsim, verbose, constrain_gt1=FALSE) })
+test_that("Beta EM fits heavy-tailed mixture",   { EM_test(ref$beta_heavy,  2946562, Nsim, verbose) })
+test_that("Beta EM fits bi-modal mixture",       { EM_test(ref$beta_bi,     9460370, Nsim, verbose) })
 
 test_that("Constrained Beta EM respects a>1 & b>1", {
     unconstrained  <- mixbeta(c(0.6, 2.8, 64), c(0.25, 0.5, 0.92), c(0.15, 3, 15))

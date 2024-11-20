@@ -1,3 +1,19 @@
+# RBesT 1.7-4 - November 20th, 2024
+
+## Enhancements
+
+* Upgraded testhat edition to version 3
+* Added for `mixstanvar` automatic generation of distribution
+  functions allowing truncated priors in `brms` with mixtures
+
+## Bugfixes
+
+* Fixed a rare issue when estimating ESS ELIR for beta mixtures. The
+  calculation aborted due to boundary issues which are now avoided.
+* Avoid over and underflow of beta-binomial distribution.
+* Replace calls to deprecated `ggplot2::qplot` with respective calls
+  to `ggplot2::ggplot`.
+
 # RBesT 1.7-3 - January 2nd, 2024
 
 ## Enhancements

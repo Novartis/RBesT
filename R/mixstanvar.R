@@ -154,7 +154,32 @@ real {{mixdens}}_lpdf(real y, vector w, vector {{arg1}}, vector {{arg2}}) {
      lp_mix[i] = {{standens}}_lpdf(y | {{arg1}}[i], {{arg2}}[i]);
   }
   return log_sum_exp(log(w) + lp_mix);
-}", .open="{{", .close="}}"), block="functions")
+}
+real {{mixdens}}_lcdf(real y, vector w, vector {{arg1}}, vector {{arg2}}) {
+  int Nc = rows(w);
+  vector[Nc] lp_mix;
+  for(i in 1:Nc) {
+     lp_mix[i] = {{standens}}_lcdf(y | {{arg1}}[i], {{arg2}}[i]);
+  }
+  return log_sum_exp(log(w) + lp_mix);
+}
+real {{mixdens}}_lccdf(real y, vector w, vector {{arg1}}, vector {{arg2}}) {
+  int Nc = rows(w);
+  vector[Nc] lp_mix;
+  for(i in 1:Nc) {
+     lp_mix[i] = {{standens}}_lccdf(y | {{arg1}}[i], {{arg2}}[i]);
+  }
+  return log_sum_exp(log(w) + lp_mix);
+}
+real {{mixdens}}_cdf(real y, vector w, vector {{arg1}}, vector {{arg2}}) {
+  int Nc = rows(w);
+  vector[Nc] p_mix;
+  for(i in 1:Nc) {
+     p_mix[i] = {{standens}}_cdf(y | {{arg1}}[i], {{arg2}}[i]);
+  }
+  return sum(w + p_mix);
+}
+", .open="{{", .close="}}"), block="functions")
     }
     if(includes_density("normMix")) {
         sv <- sv + mixdensity_template("mixnorm", "normal", "m", "s")

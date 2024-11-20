@@ -117,3 +117,19 @@ test_that("Poisson PoS 2 sample function matches MC integration of CPO",
                      N1, N2,
                      dec_count, dec_countU))
 
+test_that("Binomial PoS 2 with IA returns results", {
+    ## reported by user
+    successCrit  <- decision2S(c(0.9), c(0), lower.tail=FALSE)
+    n0 <- 50
+    n <- 100
+    n_alt <- 140
+    neutr_prior <- mixbeta(c(1,1/3,1/3))
+    post_placeboIA <- postmix(neutr_prior, r=13, n=n0)
+    post_treatIA   <- postmix(neutr_prior, r=3, n=n0)
+    # Criterion for PPoS at IA  
+    pos_final <- pos2S(post_treatIA, post_placeboIA, n-n0, n-n0, successCrit) 
+    pos_final_alt <- pos2S(post_treatIA, post_placeboIA, n_alt-n0, n_alt-n0, successCrit) 
+    #Predictive proba of success at the end
+    expect_number(pos_final_alt(post_treatIA, post_placeboIA), na.ok=FALSE, lower=0, upper=1, finite=TRUE, null.ok=FALSE)
+    expect_number(pos_final(post_treatIA, post_placeboIA), na.ok=FALSE, lower=0, upper=1, finite=TRUE, null.ok=FALSE)
+})

@@ -237,11 +237,13 @@ ocI <- rbind(data.frame(cfb_truth=cfb_truth, typeI=typeI1,
              data.frame(cfb_truth=cfb_truth, typeI=typeI4,
                         design="40:20 with robust prior for placebo")
 )
-qplot(cfb_truth, typeI, data=ocI, colour=design, geom="line", main="Type I Error") +
+ggplot(ocI, aes(cfb_truth, typeI, colour=design)) +
+    geom_line() +
+    ggtitle("Type I Error") +
     xlab(expression(paste('True value of change from baseline ', mu[act] == mu[pbo]))) +
-        ylab('Type I error') +
-            coord_cartesian(ylim=c(0,0.2)) +
-  theme(legend.justification=c(1,1),legend.position=c(0.95,0.85))
+    ylab('Type I error') +
+    coord_cartesian(ylim=c(0,0.2)) +
+    theme(legend.justification=c(1,1),legend.position=c(0.95,0.85))
 ```
 
 
@@ -274,17 +276,17 @@ ocP <- rbind(data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
                         design="40:20 with non-robust prior for placebo"),
              data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
                         delta=delta, power=power4,
-                        design="40:20 with robust prior for placebo")
-)
+                        design="40:20 with robust prior for placebo"))
 
-qplot(delta, power, data=ocP, colour=design, geom="line", main="Power") +
-  xlab('True value of difference (act - pbo)')+ ylab('Power') +
-  scale_y_continuous(breaks=c(seq(0,1,0.2),0.9)) +
-  scale_x_continuous(breaks=c(seq(-80,0,20),-70)) +
-  geom_hline(yintercept=0.9,linetype=2) + 
-  geom_vline(xintercept=-70,linetype=2) +
-  theme(legend.justification=c(1,1),legend.position=c(0.95,0.85))
- 
+ggplot(ocP, aes(delta, power, colour=design)) +
+    geom_line() +
+    ggtitle("Power") + 
+    xlab('True value of difference (act - pbo)')+ ylab('Power') +
+    scale_y_continuous(breaks=c(seq(0,1,0.2),0.9)) +
+    scale_x_continuous(breaks=c(seq(-80,0,20),-70)) +
+    geom_hline(yintercept=0.9,linetype=2) + 
+    geom_vline(xintercept=-70,linetype=2) +
+    theme(legend.justification=c(1,1),legend.position=c(0.95,0.85)) 
 ```
 
 

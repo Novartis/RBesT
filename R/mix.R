@@ -222,20 +222,32 @@ pmix.normMix  <- function(mix, q, lower.tail = TRUE, log.p=FALSE) pmix_impl(pnor
 ## pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p=FALSE) pmix_impl(Curry(pBetaBinomial, n=attr(mix, "n")), mix, q, lower.tail, log.p)
 pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p=FALSE) {
     assert_that(is.dlink_identity(attr(mix, "link")))
-##     ## the analytic solution needs the generalized hypergeometric
-##     ## function which is only available in the hyper-geo package which
-##     ## is why a numeric integration is performed here
-##     ## treat out-of-bounds quantiles special
-     out_low  <- q<0
-     out_high <- q>attr(mix, "n")
-     q[out_low | out_high] <- 0
-     dist <- cumsum(dmix.betaBinomialMix(mix, seq(0,max(q))))
-     p <- dist[q+1]
-     p[out_low] <- 0
-     p[out_high] <- 1
-     if(!lower.tail) p <- 1-p
-     if(log.p) p <- log(p)
-     return(p)
+    ##     ## the analytic solution needs the generalized hypergeometric
+    ##     ## function which is only available in the hyper-geo package which
+    ##     ## is why a numeric integration is performed here
+    ##     ## treat out-of-bounds quantiles special
+##    if (requireNamespace("extraDistr", quietly = TRUE)) {
+##        Nq <- length(q)
+##        size <- attr(mix, "n")
+##        if(!log.p)
+##            return(matrixStats::colSums2(matrix(mix[1,] * extraDistr::pbbinom(rep(q, each=Nc), size, rep(mix[2,], times=Nq), rep(mix[3,], times=Nq), lower.tail=lower.tail, log.p=FALSE), nrow=Nc)))
+        ## log version is slower, but numerically more stable
+##        res <- matrixStats::colLogSumExps(matrix(log(mix[1,]) + dist(rep(q, each=Nc), rep(mix[2,], times=Nq), rep(mix[3,], times=Nq), lower.tail=lower.tail, log.p=TRUE), nrow=Nc))
+##        return(res)
+##    }
+    
+    ## default implementation uses brute-force integration
+    out_low  <- q<0
+    out_high <- q>attr(mix, "n")
+    q[out_low | out_high] <- 0
+    dist <- cumsum(dmix.betaBinomialMix(mix, seq(0,max(q))))
+    dist <- pmin(pmax(dist, 0), 1) ## avoid over and underflows
+    p <- dist[q+1]
+    p[out_low] <- 0
+    p[out_high] <- 1
+    if(!lower.tail) p <- 1-p
+    if(log.p) p <- log(p)
+    return(p)
 }
 
 ## internal redefinition of negative binomial

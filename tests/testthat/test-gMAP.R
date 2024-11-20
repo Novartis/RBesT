@@ -1,4 +1,3 @@
-context("gMAP: Generalized Meta Analytic Predictive")
 
 ## test gMAP results using SBC and with matching rstanarm models
 

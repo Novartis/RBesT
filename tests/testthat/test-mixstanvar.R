@@ -1,4 +1,4 @@
-context("mixstanvar: Mixture Distribution brms Adapter")
+
 
 skip_if_not_installed("brms")
 
@@ -56,9 +56,17 @@ mixstanvar_simul_test <- function(mix,
 mixstanvar_test <- function(mix,
                             brms_args) {
     brms_prior_empty <- do.call(brms::brm, c(brms_args, list(seed=1423545, refresh=0, sample_prior="only", stanvars=mixstanvar(prior=mix), empty=TRUE)))
-    stan_dist <- paste0("mix", gsub("Mix$", "", class(mix)[1]), "_lpdf")
+    mix_class <- gsub("Mix$", "", class(mix)[1])
+    stan_dist_lpdf <- paste0("mix", mix_class, "_lpdf")
+    stan_dist_lcdf <- paste0("mix", mix_class, "_lcdf")
+    stan_dist_lccdf <- paste0("mix", mix_class, "_lccdf")
+    stan_dist_cdf <- paste0("mix", mix_class, "_cdf")
     ## look for the declared density in Stan
-    expect_true(grep(stan_dist, brms::stancode(brms_prior_empty)) == 1, info="Looking for declared Stan mixture density in generated brms Stan code.")
+    stan_code <- brms::stancode(brms_prior_empty)
+    expect_true(grep(stan_dist_lpdf, stan_code) == 1, info="Looking for declared Stan mixture density pdf in generated brms Stan code.")
+    expect_true(grep(stan_dist_lcdf, stan_code) == 1, info="Looking for declared Stan mixture density cdf in generated brms Stan code.")
+    expect_true(grep(stan_dist_lccdf, stan_code) == 1, info="Looking for declared Stan mixture density ccdf in generated brms Stan code.")
+    expect_true(grep(stan_dist_cdf, stan_code) == 1, info="Looking for declared Stan mixture density natural scale cdf in generated brms Stan code.")
     ## now check for the mixture being passed to Stan as data
     stan_data <- brms::standata(brms_prior_empty)
     for(i in 1:3) {    
@@ -71,27 +79,46 @@ brms_beta_args <- list(formula=brms::bf(r | trials(n) ~ 1, family=brms::brmsfami
                        data=data.frame(r=0, n=0),
                        prior=brms::prior(mixbeta(prior_w, prior_a, prior_b), coef=Intercept))
 
-test_that("Beta quantiles are correct for brms sampled prior", mixstanvar_simul_test(beta, brms_beta_args, eps, c(0.1, 0.9)))
-test_that("Beta prior is declared correctly in brms generated model and data", mixstanvar_test(beta, brms_beta_args))
-test_that("Beta mixture quantiles are correct for brms sampled prior", mixstanvar_simul_test(betaMix, brms_beta_args, eps, c(0.1, 0.9)))
-test_that("Beta mixture prior is declared correctly in brms generated model and data", mixstanvar_test(betaMix, brms_beta_args))
+test_that("Beta quantiles are correct for brms sampled prior", { mixstanvar_simul_test(beta, brms_beta_args, eps, c(0.1, 0.9)) })
+test_that("Beta prior is declared correctly in brms generated model and data", { mixstanvar_test(beta, brms_beta_args) })
+test_that("Beta mixture quantiles are correct for brms sampled prior", { mixstanvar_simul_test(betaMix, brms_beta_args, eps, c(0.1, 0.9)) })
+test_that("Beta mixture prior is declared correctly in brms generated model and data", { mixstanvar_test(betaMix, brms_beta_args) })
+
+brms_beta_trunc_args <- list(formula=brms::bf(r | trials(n) ~ 1, family=brms::brmsfamily("binomial", link="identity"), center=FALSE),
+                             data=data.frame(r=0, n=0),
+                             prior=brms::prior(mixbeta(prior_w, prior_a, prior_b), class=b, lb=0.1, ub=0.9))
+test_that("Beta (truncated) prior is declared correctly in brms generated model and data", { mixstanvar_test(beta, brms_beta_trunc_args) })
+test_that("Beta mixture (truncated) prior is declared correctly in brms generated model and data", { mixstanvar_test(betaMix, brms_beta_trunc_args) })
 
 brms_normal_args <- list(formula=brms::bf(y ~ 1, family=brms::brmsfamily("gaussian", link="identity"), center=FALSE),
                          data=data.frame(y=0),
                          prior=brms::prior(mixnorm(prior_w, prior_m, prior_s), coef=Intercept) + brms::prior(constant(1), class=sigma))
-test_that("Normal quantiles are correct for brms sampled prior", mixstanvar_simul_test(norm, brms_normal_args, eps, c(-1, 0)))
-test_that("Normal prior is declared correctly in brms generated model and data", mixstanvar_test(norm, brms_normal_args))
-test_that("Normal mixture quantiles are correct for brms sampled prior", mixstanvar_simul_test(normMix, brms_normal_args, eps, c(2, 1), ptest=c(0.3, 0.5, 0.7)))
-test_that("Normal mixture prior is declared correctly in brms generated model and data", mixstanvar_test(normMix, brms_normal_args))
+test_that("Normal quantiles are correct for brms sampled prior", { mixstanvar_simul_test(norm, brms_normal_args, eps, c(-1, 0)) })
+test_that("Normal prior is declared correctly in brms generated model and data", { mixstanvar_test(norm, brms_normal_args) })
+test_that("Normal mixture quantiles are correct for brms sampled prior", { mixstanvar_simul_test(normMix, brms_normal_args, eps, c(2, 1), ptest=c(0.3, 0.5, 0.7)) })
+test_that("Normal mixture prior is declared correctly in brms generated model and data", { mixstanvar_test(normMix, brms_normal_args) })
+
+brms_normal_trunc_args <- list(formula=brms::bf(y ~ 1, family=brms::brmsfamily("gaussian", link="identity"), center=FALSE),
+                         data=data.frame(y=0),
+                         prior=brms::prior(mixnorm(prior_w, prior_m, prior_s), class=b, lb=-5, ub=5) + brms::prior(constant(1), class=sigma))
+test_that("Normal (truncated) prior is declared correctly in brms generated model and data", { mixstanvar_test(norm, brms_normal_trunc_args) })
+test_that("Normal mixture (truncated) prior is declared correctly in brms generated model and data", { mixstanvar_test(normMix, brms_normal_trunc_args) })
 
 brms_gamma_args <- list(formula=brms::bf(y ~ 1, family=brms::brmsfamily("gaussian", link="identity"), center=FALSE),
                         data=data.frame(y=1),
                         prior=brms::prior(mixgamma(prior_w, prior_a, prior_b), coef=Intercept) + brms::prior(constant(1), class=sigma))
 
-test_that("Gamma quantiles are correct for brms sampled prior", mixstanvar_simul_test(gamma, brms_gamma_args, eps, c(2, 7)))
-test_that("Gamma prior is declared correctly in brms generated model and data", mixstanvar_test(gamma, brms_gamma_args))
-test_that("Gamma mixture quantile function is correct for brms sampled prior", mixstanvar_simul_test(gammaMix, brms_gamma_args, eps, c(2, 7), ptest = seq(0.2, 0.8, by=0.2)))
-test_that("Gamma mixture prior is declared correctly in brms generated model and data", mixstanvar_test(gammaMix, brms_gamma_args))
+test_that("Gamma quantiles are correct for brms sampled prior", { mixstanvar_simul_test(gamma, brms_gamma_args, eps, c(2, 7)) })
+test_that("Gamma prior is declared correctly in brms generated model and data", { mixstanvar_test(gamma, brms_gamma_args) })
+test_that("Gamma mixture quantile function is correct for brms sampled prior", { mixstanvar_simul_test(gammaMix, brms_gamma_args, eps, c(2, 7), ptest = seq(0.2, 0.8, by=0.2)) })
+test_that("Gamma mixture prior is declared correctly in brms generated model and data", { mixstanvar_test(gammaMix, brms_gamma_args) })
+
+brms_gamma_trunc_args <- list(formula=brms::bf(y ~ 1, family=brms::brmsfamily("gaussian", link="identity"), center=FALSE),
+                              data=data.frame(y=1),
+                              prior=brms::prior(mixgamma(prior_w, prior_a, prior_b), class=b, lb=0.1, ub=10) + brms::prior(constant(1), class=sigma))
+
+test_that("Gamma (truncated) prior is declared correctly in brms generated model and data", { mixstanvar_test(gamma, brms_gamma_trunc_args) })
+test_that("Gamma mixture (truncated) prior is declared correctly in brms generated model and data", { mixstanvar_test(gammaMix, brms_gamma_trunc_args) })
 
 # Here we approximate the samples using a multi-variante normal via a
 # moment based approxmation and compare this to the respective
@@ -170,10 +197,10 @@ brms_mvn_4_args <- list(formula=brms::bf(y ~ 1 + l1 + l2 + l3, family=brms::brms
                         data=data.frame(y=1, l1=0, l2=0, l3=0),
                         prior=brms::prior(mixmvnorm(prior_w, prior_m, prior_sigma_L), class=b) + brms::prior(constant(1), class=sigma))
 
-test_that("Multivariate normal (4D) is correct for brms sampled prior", mixstanvar_simul_mv_test(mvnorm_single_4, brms_mvn_4_args, eps))
-test_that("Multivariate normal (4D) prior is declared correctly in brms generated model and data", mixstanvar_test_mvnormMix(mvnorm_single_4, brms_mvn_4_args))
-test_that("Multivariate normal with heavy (4D) tails is correct for brms sampled prior", mixstanvar_simul_mv_test(mvnorm_heavy_4, brms_mvn_4_args, eps))
-test_that("Multivariate normal with heavy (4D) tails is declared correctly in brms generated model and data", mixstanvar_test_mvnormMix(mvnorm_heavy_4, brms_mvn_4_args))
+test_that("Multivariate normal (4D) is correct for brms sampled prior", { mixstanvar_simul_mv_test(mvnorm_single_4, brms_mvn_4_args, eps) })
+test_that("Multivariate normal (4D) prior is declared correctly in brms generated model and data", { mixstanvar_test_mvnormMix(mvnorm_single_4, brms_mvn_4_args) })
+test_that("Multivariate normal with heavy (4D) tails is correct for brms sampled prior", { mixstanvar_simul_mv_test(mvnorm_heavy_4, brms_mvn_4_args, eps) })
+test_that("Multivariate normal with heavy (4D) tails is declared correctly in brms generated model and data", { mixstanvar_test_mvnormMix(mvnorm_heavy_4, brms_mvn_4_args) })
 
 mvnorm_single_2 <- mixmvnorm(c(1, m1[1:2], 5),
                              param="mn", sigma=S[1:2,1:2])
@@ -187,7 +214,7 @@ brms_mvn_2_args <- list(formula=brms::bf(y ~ 1 + l1, family=brms::brmsfamily("ga
                         data=data.frame(y=1, l1=0),
                         prior=brms::prior(mixmvnorm(prior_w, prior_m, prior_sigma_L), class=b) + brms::prior(constant(1), class=sigma))
 
-test_that("Multivariate normal (2D) is correct for brms sampled prior", mixstanvar_simul_mv_test(mvnorm_single_2, brms_mvn_2_args, eps))
-test_that("Multivariate normal (2D) is declared correctly in brms generated model and data", mixstanvar_test_mvnormMix(mvnorm_single_2, brms_mvn_2_args))
-test_that("Multivariate normal with heavy (2D) tails is correct for brms sampled prior", mixstanvar_simul_mv_test(mvnorm_heavy_2, brms_mvn_2_args, eps))
-test_that("Multivariate normal with heavy (2D) is declared correctly in brms generated model and data", mixstanvar_test_mvnormMix(mvnorm_heavy_2, brms_mvn_2_args))
+test_that("Multivariate normal (2D) is correct for brms sampled prior", { mixstanvar_simul_mv_test(mvnorm_single_2, brms_mvn_2_args, eps) })
+test_that("Multivariate normal (2D) is declared correctly in brms generated model and data", { mixstanvar_test_mvnormMix(mvnorm_single_2, brms_mvn_2_args) })
+test_that("Multivariate normal with heavy (2D) tails is correct for brms sampled prior", { mixstanvar_simul_mv_test(mvnorm_heavy_2, brms_mvn_2_args, eps) })
+test_that("Multivariate normal with heavy (2D) is declared correctly in brms generated model and data", { mixstanvar_test_mvnormMix(mvnorm_heavy_2, brms_mvn_2_args) })
