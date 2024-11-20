@@ -13,6 +13,8 @@
 * Avoid over and underflow of beta-binomial distribution.
 * Replace calls to deprecated `ggplot2::qplot` with respective calls
   to `ggplot2::ggplot`.
+* Use new `array` notation for `mixstanvar` generated Stan code to
+  make generated Stan programs compatible with Stan >= 2.33
 
 # RBesT 1.7-3 - January 2nd, 2024
 

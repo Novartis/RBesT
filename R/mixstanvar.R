@@ -136,7 +136,7 @@ mixstanvar <- function(..., verbose=FALSE) {
 
     if(includes_density("mvnormMix")) {
         sv <- sv + brms::stanvar(name="mixmvnorm_lpdf", scode="
-real mixmvnorm_lpdf(vector y, vector w, vector[] m, matrix[] L) {
+real mixmvnorm_lpdf(vector y, vector w, array[] vector m, array[] matrix L) {
   int Nc = rows(w);
   vector[Nc] lp_mix;
   for(i in 1:Nc) {
@@ -218,10 +218,10 @@ mix2brms.mvnormMix <- function(mix, name, verbose=FALSE) {
     mvprior <-  brms::stanvar(Nc, glue::glue("{prefix}Nc")) +
         brms::stanvar(p, glue::glue("{prefix}p")) +
         brms::stanvar(array(mix[1,,drop=TRUE], dim=Nc), glue::glue("{prefix}w"), scode=glue::glue("vector[{prefix}Nc] {prefix}w;")) +
-        brms::stanvar(t(mix[2:(p+1),,drop=FALSE]), glue::glue("{prefix}m"), scode=glue::glue("vector[{prefix}p] {prefix}m[{prefix}Nc];")) +
-        brms::stanvar(Sigma, glue::glue("{prefix}sigma"), scode=glue::glue("matrix[{prefix}p, {prefix}p] {prefix}sigma[{prefix}Nc];")) +
+        brms::stanvar(t(mix[2:(p+1),,drop=FALSE]), glue::glue("{prefix}m"), scode=glue::glue("array[{prefix}Nc] vector[{prefix}p] {prefix}m;")) +
+        brms::stanvar(Sigma, glue::glue("{prefix}sigma"), scode=glue::glue("array[{prefix}Nc] matrix[{prefix}p, {prefix}p] {prefix}sigma;")) +
         brms::stanvar(scode=glue::glue("
-matrix[{{prefix}}p, {{prefix}}p] {{prefix}}sigma_L[{{prefix}}Nc];
+array[{{prefix}}Nc] matrix[{{prefix}}p, {{prefix}}p] {{prefix}}sigma_L;
 for (i in 1:{{prefix}}Nc) {
     {{prefix}}sigma_L[i] = cholesky_decompose({{prefix}}sigma[i]);
 }", .open="{{", .close="}}"), block="tdata")

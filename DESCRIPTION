@@ -9,7 +9,7 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
 Version: 1.7-4
-Date: 2024-11-19
+Date: 2024-11-20
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
@@ -25,7 +25,7 @@ Imports:
     methods,
     Rcpp (>= 0.12.0),
     RcppParallel (>= 5.0.1),
-    rstan (>= 2.26.0),
+    rstan (>= 2.32.0),
     rstantools (>= 2.4.0),
     assertthat,
     mvtnorm,
@@ -44,8 +44,8 @@ LinkingTo:
     Rcpp (>= 0.12.0),
     RcppEigen (>= 0.3.3.3.0),
     RcppParallel (>= 5.0.1),
-    rstan (>= 2.26.0),
-    StanHeaders (>= 2.26.0)
+    rstan (>= 2.32.0),
+    StanHeaders (>= 2.32.0)
 License: GPL (>=3)
 LazyData: true
 Biarch: true

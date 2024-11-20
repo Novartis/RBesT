@@ -156,6 +156,11 @@ r-source-check : r-source
 	cd build; tar xvzf $(RPKG)-source.tar.gz
 	cd build; NOT_CRAN=true $(RCMD) CMD check $(RPKG)
 
+PHONY += r-source-release-check
+r-source-release-check : r-source-release
+	cd build; tar xvzf $(RPKG)_$(PKG_VERSION).tar.gz
+	cd build; NOT_CRAN=true $(RCMD) CMD check $(RPKG)
+
 build/installed/$(RPKG)/DESCRIPTION : build/r-source-fast
 	rm -rf build/installed
 	install -d build/installed
