@@ -120,9 +120,11 @@ round(sum(ab_matched))
 ess(bmix, method="morita")
 
 # Predictive consistency of elir
-n_forward <- 1E2
+n_forward <- 1E1
 bmixPred <- preddist(bmix, n=n_forward)
-pred_samp <- rmix(bmixPred, 1E3)
+pred_samp <- rmix(bmixPred, 1E2)
+# use more samples here for greater accuracy
+# pred_samp <- rmix(bmixPred, 1E3) 
 pred_ess <- sapply(pred_samp, function(r) ess(postmix(bmix, r=r, n=n_forward), "elir") )
 ess(bmix, "elir")
 mean(pred_ess) - n_forward
