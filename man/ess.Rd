@@ -120,14 +120,12 @@ round(sum(ab_matched))
 ess(bmix, method="morita")
 
 # Predictive consistency of elir
-\donttest{
 n_forward <- 1E2
 bmixPred <- preddist(bmix, n=n_forward)
 pred_samp <- rmix(bmixPred, 1E3)
 pred_ess <- sapply(pred_samp, function(r) ess(postmix(bmix, r=r, n=n_forward), "elir") )
 ess(bmix, "elir")
 mean(pred_ess) - n_forward
-}
 
 # Normal mixture example
 nmix <- mixnorm(rob=c(0.5, 0, 2), inf=c(0.5, 3, 4), sigma=10)

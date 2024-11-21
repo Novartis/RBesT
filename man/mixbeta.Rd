@@ -86,11 +86,11 @@ print(bm4)
 }
 \seealso{
 Other mixdist: 
+\code{\link{mix}},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
 \code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
-\code{\link{mixplot}},
-\code{\link{mix}}
+\code{\link{mixplot}}
 }
 \concept{mixdist}

@@ -152,8 +152,8 @@ Robust meta-analytic-predictive priors in clinical trials with historical contro
 }
 \seealso{
 Other design2S: 
-\code{\link{decision2S_boundary}()},
 \code{\link{decision2S}()},
+\code{\link{decision2S_boundary}()},
 \code{\link{pos2S}()}
 }
 \concept{design2S}

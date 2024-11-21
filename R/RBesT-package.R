@@ -38,6 +38,7 @@
 #' \tab \code{rel.tol=.Machine$double.eps^0.25,} \tab \cr
 #' \tab \code{abs.tol=.Machine$double.eps^0.25,} \tab \cr
 #' \tab \code{subdivisions=1E3)} \tab \cr
+#' \code{RBesT.integrate_prob_eps} \tab \code{1E-6} \tab probability mass left out from tails if integration needs to be restricted in range \cr
 #' }
 #'
 #' @section Version History:

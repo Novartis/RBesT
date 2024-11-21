@@ -1,4 +1,4 @@
-# RBesT 1.7-4 - November 20th, 2024
+# RBesT 1.7-4 - November 21st, 2024
 
 ## Enhancements
 
@@ -7,7 +7,7 @@
 * Slight speed increase for Stan model by more efficient construction
   of likelihood. Also reducing object size of `gMAP` objects by
   avoiding to store redundant variables.
-* Upgraded testhat edition to version 3.
+* Upgraded `testthat` edition to version 3.
 
 ## Bugfixes
 

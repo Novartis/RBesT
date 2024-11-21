@@ -89,7 +89,6 @@ summary(pred_cov)
 # obtain a prediction for new data with specific covariates
 pred_new <- predict(map, data.frame(country="CH", study=12))
 pred_new
-
 ## Recover user set sampling defaults
 options(.user_mc_options)
 
