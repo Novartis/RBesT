@@ -1,195 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/404.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/PoS_codata.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/PoS_interim.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/customizing_plots.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/introduction.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/introduction_normal.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/articles/variances_MAP.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/index.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/AS.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/BinaryExactCI.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/Curry.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/RBesT-package.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/SimSum.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/automixfit.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/chains2sample.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/colVars.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/colitis.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/crohn.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/dBetaBinomial.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/decision1S.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/decision1S_boundary.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/decision2S.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/decision2S_boundary.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/dlink-set.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/ess.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/fill.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/forest_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/gMAP.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/integrate_density_log.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/knn.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/likelihood.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/lodds.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/logLik.EM.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/log_inv_logit.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mix.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixbeta.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixcombine.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixdiff.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixdist3.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixfit.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixgamma.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixlink.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixmvnorm.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixnorm.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixplot.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/mixstanvar.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/oc1S.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/oc2S.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/plot.EM.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/plot.gMAP.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/pos1S.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/pos2S.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/postmix.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/preddist.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/predict.gMAP.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/robustify.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/support.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/transplant.html</loc>
-  </url>
-  <url>
-    <loc>https://opensource.nibr.com/RBesT/reference/uniroot_int.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://opensource.nibr.com/RBesT/404.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/LICENSE-text.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/PoS_codata.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/PoS_interim.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/customizing_plots.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/index.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/introduction.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/introduction_normal.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/articles/variances_MAP.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/authors.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/index.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/news/index.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/AS.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/BinaryExactCI.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/Curry.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/RBesT-package.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/SimSum.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/automixfit.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/chains2sample.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/colVars.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/colitis.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/crohn.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/dBetaBinomial.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/decision1S.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/decision1S_boundary.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/decision2S.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/decision2S_boundary.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/dlink-set.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/ess.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/fill.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/forest_plot.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/gMAP.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/index.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/integrate_density_log.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/knn.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/likelihood.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/lodds.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/logLik.EM.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/log_inv_logit.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mix.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixbeta.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixcombine.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixdiff.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixdist3.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixfit.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixgamma.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixlink.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixmvnorm.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixnorm.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixplot.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/mixstanvar.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/oc1S.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/oc2S.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/plot.EM.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/plot.gMAP.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/pos1S.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/pos2S.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/postmix.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/preddist.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/predict.gMAP.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/robustify.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/support.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/transplant.html</loc></url>
+<url><loc>https://opensource.nibr.com/RBesT/reference/uniroot_int.html</loc></url>
 </urlset>
+

@@ -5,69 +5,53 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="RBesT">
 <title>Meta-Analytic-Predictive Priors for Variances • RBesT</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Meta-Analytic-Predictive Priors for Variances">
-<meta property="og:description" content="RBesT">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Meta-Analytic-Predictive Priors for Variances">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/PoS_codata.html">Probability of Success with Co-Data</a>
-    <a class="dropdown-item" href="../articles/PoS_interim.html">Probability of Success at an Interim Analysis</a>
-    <a class="dropdown-item" href="../articles/customizing_plots.html">Customizing RBesT plots</a>
-    <a class="dropdown-item" href="../articles/introduction_normal.html">RBesT for a Normal Endpoint</a>
-    <a class="dropdown-item" href="../articles/variances_MAP.html">Meta-Analytic-Predictive Priors for Variances</a>
-    <a class="dropdown-item" href="../articles/introduction.html">Getting started with RBesT (binary)</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/customizing_plots.html">Customizing RBesT plots</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction_normal.html">RBesT for a Normal Endpoint</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Getting started with RBesT (binary)</a></li>
+    <li><a class="dropdown-item" href="../articles/PoS_codata.html">Probability of Success with Co-Data</a></li>
+    <li><a class="dropdown-item" href="../articles/PoS_interim.html">Probability of Success at an Interim Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/variances_MAP.html">Meta-Analytic-Predictive Priors for Variances</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/Novartis/RBesT/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Novartis/RBesT/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -76,13 +60,14 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Meta-Analytic-Predictive Priors for Variances</h1>
+
+      <h1>Meta-Analytic-Predictive Priors for Variances</h1>
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2024-01-08</h4>
+            <h4 data-toc-skip class="date">2024-11-21</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/HEAD/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
       <div class="d-none name"><code>variances_MAP.Rmd</code></div>
     </div>
 
@@ -94,45 +79,65 @@ better informed planning of future trials which use a normal endpoint.
 For these reliable information on the sampling standard deviation is
 crucial for planning the trial.</p>
 <p>Under a normal sampling distribution the (standard) unbiased variance
-estimator for a sample <span class="math inline">\(y_j\)</span> of size
-<span class="math inline">\(n_j\)</span> is</p>
-<p><span class="math display">\[ s^2_j = \frac{1}{n_j-1}
-\sum_{i=1}^{n_j} (y_{j,i} - \bar{y}_j)^2, \]</span></p>
-<p>which follows a <span class="math inline">\(\chi^2_\nu\)</span>
-distribution with <span class="math inline">\(\nu_j = n_j-1\)</span>
-degrees of freedom. The <span class="math inline">\(\chi^2_\nu\)</span>
-can be rewritten as a <span class="math inline">\(\Gamma\)</span>
+estimator for a sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>j</mi></msub><annotation encoding="application/x-tex">y_j</annotation></semantics></math>
+of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>j</mi></msub><annotation encoding="application/x-tex">n_j</annotation></semantics></math>
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mi>j</mi></msub><mo>−</mo><mn>1</mn></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>j</mi></msub></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mrow><mi>j</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msub><mover><mi>y</mi><mo accent="true">‾</mo></mover><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex"> s^2_j = \frac{1}{n_j-1} \sum_{i=1}^{n_j} (y_{j,i} - \bar{y}_j)^2, </annotation></semantics></math></p>
+<p>which follows a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>ν</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\chi^2_\nu</annotation></semantics></math>
+distribution with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mi>j</mi></msub><mo>=</mo><msub><mi>n</mi><mi>j</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\nu_j = n_j-1</annotation></semantics></math>
+degrees of freedom. The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>ν</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\chi^2_\nu</annotation></semantics></math>
+can be rewritten as a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 distribution</p>
-<p><span class="math display">\[ s^2_j|\nu_j,\sigma_j \sim
-\Gamma(\nu_j/2, \nu_j/(2\,\sigma^2_j)) \]</span> <span class="math display">\[ \Leftrightarrow s^2_j \, \nu_j /2
-|\nu_j,\sigma_j \sim \Gamma(\nu_j/2, 1/\sigma^2_j), \]</span></p>
-<p>where <span class="math inline">\(\sigma_j\)</span> is the (unknown)
-sampling standard deviation for the data <span class="math inline">\(y_j\)</span>.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="false" form="prefix">|</mo><msub><mi>ν</mi><mi>j</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>j</mi></msub><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo>,</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mspace width="0.167em"></mspace><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> s^2_j|\nu_j,\sigma_j \sim \Gamma(\nu_j/2, \nu_j/(2\,\sigma^2_j)) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇔</mo><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mspace width="0.167em"></mspace><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="false" form="prefix">|</mo><msub><mi>ν</mi><mi>j</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>j</mi></msub><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo>,</mo><mn>1</mn><mi>/</mi><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Leftrightarrow s^2_j \, \nu_j /2 |\nu_j,\sigma_j \sim \Gamma(\nu_j/2, 1/\sigma^2_j), </annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\sigma_j</annotation></semantics></math>
+is the (unknown) sampling standard deviation for the data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>j</mi></msub><annotation encoding="application/x-tex">y_j</annotation></semantics></math>.</p>
 <p>While this is not directly supported in <code>RBesT</code>, a normal
-approximation of the <span class="math inline">\(\log\)</span>
-transformed <span class="math inline">\(\Gamma\)</span> variate can be
-applied. When <span class="math inline">\(\log\)</span> transforming a
-<span class="math inline">\(\Gamma(\alpha,\beta)\)</span> variate it’s
-moment and variance can analytically be shown to be (see [2], for
-example)</p>
-<p><span class="math display">\[ E[\log(X)] = \psi(\alpha) -
-\log(\beta)\]</span> <span class="math display">\[ Var[\log(X)] =
-\psi^{(1)}(\alpha).\]</span></p>
-<p>Here, <span class="math inline">\(\psi(x)\)</span> is the digamma
-function and <span class="math inline">\(\psi^{(1)}(x)\)</span> is the
-polygamma function of order 1 (second derivative of the <span class="math inline">\(\log\)</span> of the <span class="math inline">\(\Gamma\)</span> function).</p>
-<p>Thus, by approximating the <span class="math inline">\(\log\)</span>
-transformed <span class="math inline">\(\Gamma\)</span> distribution
-with a normal approximation, we can apply <code>gMAP</code> as if we
-were using a normal endpoint. Specifically, we apply the transform <span class="math inline">\(Y_j=\log(s^2_j \, \nu_j /2) -
-\psi(\nu_j/2)\)</span> such that the meta-analytic model directly
-considers <span class="math inline">\(\log \sigma_j\)</span> as random
-variate. The normal approximation becomes more accurate, the larger the
-degrees of freedom are. The section at the bottom of this vignette
-discusses this approximation accuracy and concludes that independent of
-the true <span class="math inline">\(\sigma\)</span> value for 10
-observations the approxmation is useful and a very good one for more
-than 20 observations.</p>
+approximation of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+transformed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+variate can be applied. When
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+transforming a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma(\alpha,\beta)</annotation></semantics></math>
+variate it’s moment and variance can analytically be shown to be (see
+[2], for example)</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> E[\log(X)] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[\log(X)] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
+<p>Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\psi(x)</annotation></semantics></math>
+is the digamma function and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\psi^{(1)}(x)</annotation></semantics></math>
+is the polygamma function of order 1 (second derivative of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+function).</p>
+<p>Thus, by approximating the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+transformed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+distribution with a normal approximation, we can apply <code>gMAP</code>
+as if we were using a normal endpoint. Specifically, we apply the
+transform
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>j</mi></msub><mo>=</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mspace width="0.167em"></mspace><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_j=\log(s^2_j
+\, \nu_j /2) - \psi(\nu_j/2)</annotation></semantics></math> such that
+the meta-analytic model directly considers
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><msub><mi>σ</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">\log \sigma_j</annotation></semantics></math>
+as random variate. The normal approximation becomes more accurate, the
+larger the degrees of freedom are. The section at the bottom of this
+vignette discusses this approximation accuracy and concludes that
+independent of the true
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+value for 10 observations the approxmation is useful and a very good one
+for more than 20 observations.</p>
 <p>In the following we reanalyze the main example of reference [1] which
 is shown in table 2:</p>
 <table class="table">
@@ -174,8 +179,11 @@ is shown in table 2:</p>
 </tr>
 </tbody>
 </table>
-<p>Using the above equations (and using plug-in estimates for <span class="math inline">\(\sigma_j\)</span>) this translates into an
-approximate normal distribution for the <span class="math inline">\(\log\)</span> variance as:</p>
+<p>Using the above equations (and using plug-in estimates for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\sigma_j</annotation></semantics></math>)
+this translates into an approximate normal distribution for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+variance as:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">hdata</span>,</span>
 <span>                alpha<span class="op">=</span><span class="va">df</span><span class="op">/</span><span class="fl">2</span>,</span>
@@ -250,16 +258,23 @@ approximate normal distribution for the <span class="math inline">\(\log\)</span
 </tbody>
 </table>
 <p>In order to run the MAP analysis a prior for the heterogeniety
-parameter <span class="math inline">\(\tau\)</span> and the intercept
-<span class="math inline">\(\beta\)</span> is needed. In reference [3]
-it is demonstrated that the (approximate) sampling standard deviation of
-the <span class="math inline">\(\log\)</span> variance is <span class="math inline">\(\sqrt{2}\)</span>. Thus, a
-<code>HalfNormal(0,sqrt(2)/2)</code> is a very conservative choice for
-the between-study heterogeniety parameter. A less conservative choice is
-<code>HalfNormal(0,sqrt(2)/4)</code>, which gives very similar results
-in this case. For the intercept <span class="math inline">\(\beta\)</span> a very wide prior is used with a
-standard deviation of <span class="math inline">\(100\)</span> which is
-in line with reference [1]:</p>
+parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+and the intercept
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
+is needed. In reference [3] it is demonstrated that the (approximate)
+sampling standard deviation of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+variance is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math>.
+Thus, a <code>HalfNormal(0,sqrt(2)/2)</code> is a very conservative
+choice for the between-study heterogeniety parameter. A less
+conservative choice is <code>HalfNormal(0,sqrt(2)/4)</code>, which gives
+very similar results in this case. For the intercept
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
+a very wide prior is used with a standard deviation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+which is in line with reference [1]:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">logvar_mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">logvar_var</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>, data<span class="op">=</span><span class="va">hdata</span>,</span>
 <span>               tau.dist<span class="op">=</span><span class="st">"HalfNormal"</span>, tau.prior<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span>,</span>
@@ -304,18 +319,21 @@ in line with reference [1]:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span><span class="op">$</span><span class="va">forest_model</span></span></code></pre></div>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;"></p>
-<p>In reference [1] the correct <span class="math inline">\(\Gamma\)</span> likelihood is used in contrast to
-the approximate normal approach above. Still, the results match very
-close, even for the outer quantiles.</p>
+<p>In reference [1] the correct
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+likelihood is used in contrast to the approximate normal approach above.
+Still, the results match very close, even for the outer quantiles.</p>
 <div class="section level2">
 <h2 id="map-prior-for-the-sampling-standard-deviation">MAP prior for the sampling standard deviation<a class="anchor" aria-label="anchor" href="#map-prior-for-the-sampling-standard-deviation"></a>
 </h2>
-<p>While the MAP analysis is performed for the <span class="math inline">\(\log\)</span> variance, we are actually interested
-in the MAP of the respective sampling standard deviation. Since the
-sampling standard deviation is a strictly positive quantity it is
-suitable to approximate the MCMC posterior of the MAP prior using a
-mixture of <span class="math inline">\(\Gamma\)</span> variates, which
-can be done using <code>RBesT</code> as:</p>
+<p>While the MAP analysis is performed for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+variance, we are actually interested in the MAP of the respective
+sampling standard deviation. Since the sampling standard deviation is a
+strictly positive quantity it is suitable to approximate the MCMC
+posterior of the MAP prior using a mixture of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+variates, which can be done using <code>RBesT</code> as:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_mc_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span></span>
 <span><span class="va">sd_trans</span> <span class="op">&lt;-</span> <span class="fu">compose</span><span class="op">(</span><span class="va">sqrt</span>, <span class="va">exp</span><span class="op">)</span></span>
@@ -334,20 +352,24 @@ can be done using <code>RBesT</code> as:</p>
 <span><span class="co">## 10.980236  1.401089  8.283373 10.921528 14.063679</span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="normal-approximation-of-a-loggamma-variate">Normal approximation of a <span class="math inline">\(\log\Gamma\)</span> variate<a class="anchor" aria-label="anchor" href="#normal-approximation-of-a-loggamma-variate"></a>
+<h2 id="normal-approximation-of-a-loggamma-variate">Normal approximation of a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>Γ</mi></mrow><annotation encoding="application/x-tex">\log\Gamma</annotation></semantics></math>
+variate<a class="anchor" aria-label="anchor" href="#normal-approximation-of-a-loggamma-variate"></a>
 </h2>
-<p>For a <span class="math inline">\(\Gamma(y|\alpha, \beta)\)</span>
-variate <span class="math inline">\(y\)</span>, which is <span class="math inline">\(\log\)</span> transformed, <span class="math inline">\(z = \log(y)\)</span>, we have by the law of
-transformations for univariate densities:</p>
-<p><span class="math display">\[ y|\alpha,\beta \sim
-\Gamma(\alpha,\beta) \]</span> <span class="math display">\[ p(z) = p(y)
-\, y = p(\exp(z)) \, \exp(z) \]</span> <span class="math display">\[
-z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)\]</span> <span class="math display">\[\Leftrightarrow \exp(z)|\alpha,\beta \sim
-\Gamma(\alpha,\beta) \, \exp(z) \]</span></p>
-<p>The first and second moment of <span class="math inline">\(z\)</span>
-is then <span class="math display">\[ E[z] = \psi(\alpha) -
-\log(\beta)\]</span> <span class="math display">\[ Var[z] =
-\psi^{(1)}(\alpha).\]</span></p>
+<p>For a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma(y|\alpha, \beta)</annotation></semantics></math>
+variate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>,
+which is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+transformed,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">z = \log(y)</annotation></semantics></math>,
+we have by the law of transformations for univariate densities:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> y|\alpha,\beta \sim \Gamma(\alpha,\beta) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>y</mi><mo>=</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> p(z) = p(y) \, y = p(\exp(z)) \, \exp(z) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mo>log</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇔</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Leftrightarrow \exp(z)|\alpha,\beta \sim \Gamma(\alpha,\beta) \, \exp(z) </annotation></semantics></math></p>
+<p>The first and second moment of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+is then
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>z</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> E[z] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>z</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[z] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
 <p>A short simulation demonstrates the above results:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgamma.html">mixgamma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
@@ -373,14 +395,29 @@ is then <span class="math display">\[ E[z] = \psi(\alpha) -
 <span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-distributions.html" class="external-link">mcmc_hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logGamma<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span><span class="op">)</span>, freq<span class="op">=</span><span class="cn">FALSE</span>, binwidth<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-helpers.html" class="external-link">overlay_function</a></span><span class="op">(</span>fun<span class="op">=</span><span class="va">dlogGamma</span>, args<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a<span class="op">=</span><span class="va">a</span>,b<span class="op">=</span><span class="va">b</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype<span class="op">=</span><span class="st">"LogGamma"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://mc-stan.org/bayesplot/reference/bayesplot-helpers.html" class="external-link">overlay_function</a></span><span class="op">(</span>fun<span class="op">=</span><span class="va">dnorm</span>, args<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean<span class="op">=</span><span class="va">m</span>, sd<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype<span class="op">=</span><span class="st">"NormalApprox"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in stat_function(..., inherit.aes = FALSE): All aesthetics have length 1, but the data has 100000 rows.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span></span>
+<span><span class="co">##   a single row.</span></span>
+<span><span class="co">## All aesthetics have length 1, but the data has 100000 rows.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span></span>
+<span><span class="co">##   a single row.</span></span></code></pre>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;"></p>
-<p>We see that for <span class="math inline">\(\nu=9\)</span> only, the
-approximation with a normal density is reasonable. However, by comparing
-as a function of <span class="math inline">\(\nu\)</span> the <span class="math inline">\(2.5\)</span>%, <span class="math inline">\(50\)</span>% and <span class="math inline">\(97.5\)</span>% quantiles of the correct
-distribution with the respective approximate distribution we can assess
-the adequatness of the approximation. The respective R code is
-accessible via the vignette overview page while here the graphical
-result is presented for two different <span class="math inline">\(\sigma\)</span> values:</p>
+<p>We see that for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">\nu=9</annotation></semantics></math>
+only, the approximation with a normal density is reasonable. However, by
+comparing as a function of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ν</mi><annotation encoding="application/x-tex">\nu</annotation></semantics></math>
+the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2.5</mn><annotation encoding="application/x-tex">2.5</annotation></semantics></math>%,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>%
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>97.5</mn><annotation encoding="application/x-tex">97.5</annotation></semantics></math>%
+quantiles of the correct distribution with the respective approximate
+distribution we can assess the adequatness of the approximation. The
+respective R code is accessible via the vignette overview page while
+here the graphical result is presented for two different
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+values:</p>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-2.png" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-3.png" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-4.png" width="100%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
@@ -400,11 +437,11 @@ Chapter 4, p. 84</p>
 <div class="section level3">
 <h3 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.2 (2023-10-31)</span></span>
-<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
+<pre><code><span><span class="co">## R version 4.4.2 (2024-10-31)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.5 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -423,58 +460,56 @@ Chapter 4, p. 84</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] bayesplot_1.10.0 purrr_1.0.2      dplyr_1.1.4      ggplot2_3.4.4   </span></span>
-<span><span class="co">## [5] knitr_1.45       RBesT_1.7-3     </span></span>
+<span><span class="co">## [1] bayesplot_1.11.1 purrr_1.0.2      dplyr_1.1.4      ggplot2_3.5.1   </span></span>
+<span><span class="co">## [5] knitr_1.49       RBesT_1.7-4     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] tensorA_0.36.2.1     gtable_0.3.4         xfun_0.41           </span></span>
-<span><span class="co">##  [4] bslib_0.6.1          QuickJSR_1.0.9       inline_0.3.19       </span></span>
-<span><span class="co">##  [7] vctrs_0.6.5          tools_4.3.2          generics_0.1.3      </span></span>
-<span><span class="co">## [10] stats4_4.3.2         parallel_4.3.2       tibble_3.2.1        </span></span>
-<span><span class="co">## [13] fansi_1.0.6          highr_0.10           pkgconfig_2.0.3     </span></span>
-<span><span class="co">## [16] checkmate_2.3.1      desc_1.4.3           distributional_0.3.2</span></span>
-<span><span class="co">## [19] RcppParallel_5.1.7   assertthat_0.2.1     lifecycle_1.0.4     </span></span>
-<span><span class="co">## [22] farver_2.1.1         compiler_4.3.2       stringr_1.5.1       </span></span>
-<span><span class="co">## [25] textshaping_0.3.7    munsell_0.5.0        codetools_0.2-19    </span></span>
-<span><span class="co">## [28] htmltools_0.5.7      sass_0.4.8           yaml_2.3.8          </span></span>
-<span><span class="co">## [31] Formula_1.2-5        pillar_1.9.0         pkgdown_2.0.7       </span></span>
-<span><span class="co">## [34] jquerylib_0.1.4      cachem_1.0.8         StanHeaders_2.26.28 </span></span>
-<span><span class="co">## [37] abind_1.4-5          posterior_1.5.0      rstan_2.32.3        </span></span>
-<span><span class="co">## [40] tidyselect_1.2.0     digest_0.6.33        mvtnorm_1.2-4       </span></span>
-<span><span class="co">## [43] stringi_1.8.3        reshape2_1.4.4       labeling_0.4.3      </span></span>
-<span><span class="co">## [46] fastmap_1.1.1        grid_4.3.2           colorspace_2.1-0    </span></span>
-<span><span class="co">## [49] cli_3.6.2            magrittr_2.0.3       loo_2.6.0           </span></span>
-<span><span class="co">## [52] pkgbuild_1.4.3       utf8_1.2.4           withr_2.5.2         </span></span>
-<span><span class="co">## [55] scales_1.3.0         backports_1.4.1      rmarkdown_2.25      </span></span>
-<span><span class="co">## [58] matrixStats_1.2.0    gridExtra_2.3        ragg_1.2.7          </span></span>
-<span><span class="co">## [61] memoise_2.0.1        evaluate_0.23        rstantools_2.3.1.1  </span></span>
-<span><span class="co">## [64] rlang_1.1.2          Rcpp_1.0.11          glue_1.6.2          </span></span>
-<span><span class="co">## [67] jsonlite_1.8.8       R6_2.5.1             plyr_1.8.9          </span></span>
-<span><span class="co">## [70] systemfonts_1.0.5    fs_1.6.3</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.49           </span></span>
+<span><span class="co">##  [4] bslib_0.8.0          QuickJSR_1.4.0       htmlwidgets_1.6.4   </span></span>
+<span><span class="co">##  [7] inline_0.3.20        vctrs_0.6.5          tools_4.4.2         </span></span>
+<span><span class="co">## [10] generics_0.1.3       stats4_4.4.2         parallel_4.4.2      </span></span>
+<span><span class="co">## [13] tibble_3.2.1         fansi_1.0.6          pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [16] checkmate_2.3.2      desc_1.4.3           distributional_0.5.0</span></span>
+<span><span class="co">## [19] RcppParallel_5.1.9   assertthat_0.2.1     lifecycle_1.0.4     </span></span>
+<span><span class="co">## [22] farver_2.1.2         compiler_4.4.2       stringr_1.5.1       </span></span>
+<span><span class="co">## [25] textshaping_0.4.0    munsell_0.5.1        codetools_0.2-20    </span></span>
+<span><span class="co">## [28] htmltools_0.5.8.1    sass_0.4.9           yaml_2.3.10         </span></span>
+<span><span class="co">## [31] Formula_1.2-5        pillar_1.9.0         pkgdown_2.1.1       </span></span>
+<span><span class="co">## [34] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 </span></span>
+<span><span class="co">## [37] abind_1.4-8          posterior_1.6.0      rstan_2.32.6        </span></span>
+<span><span class="co">## [40] tidyselect_1.2.1     digest_0.6.37        mvtnorm_1.3-2       </span></span>
+<span><span class="co">## [43] stringi_1.8.4        reshape2_1.4.4       labeling_0.4.3      </span></span>
+<span><span class="co">## [46] fastmap_1.2.0        grid_4.4.2           colorspace_2.1-1    </span></span>
+<span><span class="co">## [49] cli_3.6.3            magrittr_2.0.3       loo_2.8.0           </span></span>
+<span><span class="co">## [52] pkgbuild_1.4.5       utf8_1.2.4           withr_3.0.2         </span></span>
+<span><span class="co">## [55] scales_1.3.0         backports_1.5.0      rmarkdown_2.29      </span></span>
+<span><span class="co">## [58] matrixStats_1.4.1    gridExtra_2.3        ragg_1.3.3          </span></span>
+<span><span class="co">## [61] evaluate_1.0.1       rstantools_2.4.0     rlang_1.1.4         </span></span>
+<span><span class="co">## [64] Rcpp_1.0.13-1        glue_1.8.0           jsonlite_1.8.9      </span></span>
+<span><span class="co">## [67] R6_2.5.1             plyr_1.8.9           systemfonts_1.1.0   </span></span>
+<span><span class="co">## [70] fs_1.6.5</span></span></code></pre>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Sebastian Weber.</p>
+  <p>Developed by Sebastian Weber.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

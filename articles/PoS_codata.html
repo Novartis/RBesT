@@ -5,69 +5,53 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="RBesT">
 <title>Probability of Success with Co-Data • RBesT</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Probability of Success with Co-Data">
-<meta property="og:description" content="RBesT">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Probability of Success with Co-Data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/PoS_codata.html">Probability of Success with Co-Data</a>
-    <a class="dropdown-item" href="../articles/PoS_interim.html">Probability of Success at an Interim Analysis</a>
-    <a class="dropdown-item" href="../articles/customizing_plots.html">Customizing RBesT plots</a>
-    <a class="dropdown-item" href="../articles/introduction_normal.html">RBesT for a Normal Endpoint</a>
-    <a class="dropdown-item" href="../articles/variances_MAP.html">Meta-Analytic-Predictive Priors for Variances</a>
-    <a class="dropdown-item" href="../articles/introduction.html">Getting started with RBesT (binary)</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/customizing_plots.html">Customizing RBesT plots</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction_normal.html">RBesT for a Normal Endpoint</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Getting started with RBesT (binary)</a></li>
+    <li><a class="dropdown-item" href="../articles/PoS_codata.html">Probability of Success with Co-Data</a></li>
+    <li><a class="dropdown-item" href="../articles/PoS_interim.html">Probability of Success at an Interim Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/variances_MAP.html">Meta-Analytic-Predictive Priors for Variances</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/Novartis/RBesT/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Novartis/RBesT/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -76,15 +60,16 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Probability of Success with Co-Data</h1>
+
+      <h1>Probability of Success with Co-Data</h1>
             <h3 data-toc-skip class="subtitle">Use of Co-Data in
 Clinical Trails with RBesT</h3>
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2024-01-08</h4>
+            <h4 data-toc-skip class="date">2024-11-21</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/HEAD/vignettes/articles/PoS_codata.Rmd" class="external-link"><code>vignettes/articles/PoS_codata.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/PoS_codata.Rmd" class="external-link"><code>vignettes/articles/PoS_codata.Rmd</code></a></small>
       <div class="d-none name"><code>PoS_codata.Rmd</code></div>
     </div>
 
@@ -124,47 +109,72 @@ consideration of uncertainty in parameters conditional on available
 data. In contrast, the conditional power (CP) calculates the frequency a
 given experemintal design will be successful for a known value of the
 parameters. For example, in a 1-sample experiment with a one-sided
-success criterion the trial is successful if the collected data <span class="math inline">\(y_N\)</span> of sample size <span class="math inline">\(N\)</span> exceeds some critical value <span class="math inline">\(y_c\)</span>; recall that the critical value <span class="math inline">\(y_c\)</span> is determined by the success
-criterion, prior and sample size when evaluated. Assuming that the
-sampling model of the data is <span class="math inline">\(p(y|\theta)\)</span>, then</p>
-<p><span class="math display">\[ CP_N(\theta) = \int I(y_N  &gt; y_c) \,
-p(y_N|\theta) \, dy_N.\]</span></p>
-<p>The integration over the data <span class="math inline">\(y_N\)</span> comprises all possible outcomes of
-the trial. Note that before the start of the trial, <span class="math inline">\(CP_N(\theta_0)\)</span> is the type I error rate
-under the conventional null hypothesis (<span class="math inline">\(\theta=\theta_0\)</span>) and <span class="math inline">\(CP_N(\theta_a)\)</span> the power of the trial
-under the alternative (<span class="math inline">\(\theta=\theta_a\)</span>). At an interim analysis
-at sample size <span class="math inline">\(n_I\)</span>, the conditional
-power is then evaluated conditional on the observed data so far (the
-<span class="math inline">\(n_I\)</span> measurements) while the
-remaining sample size (<span class="math inline">\(N-n_I\)</span>) is
-random and distributed according to <span class="math inline">\(p(y|\theta)\)</span> with <span class="math inline">\(\theta\)</span> set to some known value,</p>
-<p><span class="math display">\[ CP_{N-n_I}(\theta|y_{n_I}) = \int
-I(y_{n_I} + y_{N-n_I} = y_N &gt; y_c|y_{n_I}) \, p(y_{N-n_I}|\theta) \,
-dy_{N-n_I}.\]</span></p>
+success criterion the trial is successful if the collected data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>N</mi></msub><annotation encoding="application/x-tex">y_N</annotation></semantics></math>
+of sample size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+exceeds some critical value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>c</mi></msub><annotation encoding="application/x-tex">y_c</annotation></semantics></math>;
+recall that the critical value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>c</mi></msub><annotation encoding="application/x-tex">y_c</annotation></semantics></math>
+is determined by the success criterion, prior and sample size when
+evaluated. Assuming that the sampling model of the data is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(y|\theta)</annotation></semantics></math>,
+then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>∫</mo><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>N</mi></msub><mo>&gt;</mo><msub><mi>y</mi><mi>c</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>N</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><msub><mi>y</mi><mi>N</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex"> CP_N(\theta) = \int I(y_N  &gt; y_c) \, p(y_N|\theta) \, dy_N.</annotation></semantics></math></p>
+<p>The integration over the data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>N</mi></msub><annotation encoding="application/x-tex">y_N</annotation></semantics></math>
+comprises all possible outcomes of the trial. Note that before the start
+of the trial,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">CP_N(\theta_0)</annotation></semantics></math>
+is the type I error rate under the conventional null hypothesis
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>=</mo><msub><mi>θ</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\theta=\theta_0</annotation></semantics></math>)
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mi>N</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>a</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">CP_N(\theta_a)</annotation></semantics></math>
+the power of the trial under the alternative
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>=</mo><msub><mi>θ</mi><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">\theta=\theta_a</annotation></semantics></math>).
+At an interim analysis at sample size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>I</mi></msub><annotation encoding="application/x-tex">n_I</annotation></semantics></math>,
+the conditional power is then evaluated conditional on the observed data
+so far (the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>I</mi></msub><annotation encoding="application/x-tex">n_I</annotation></semantics></math>
+measurements) while the remaining sample size
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">N-n_I</annotation></semantics></math>)
+is random and distributed according to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(y|\theta)</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+set to some known value,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>∫</mo><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo>+</mo><msub><mi>y</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mo>=</mo><msub><mi>y</mi><mi>N</mi></msub><mo>&gt;</mo><msub><mi>y</mi><mi>c</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mo stretchy="false" form="prefix">|</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><msub><mi>y</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex"> CP_{N-n_I}(\theta|y_{n_I}) = \int I(y_{n_I} + y_{N-n_I} = y_N &gt; y_c|y_{n_I}) \, p(y_{N-n_I}|\theta) \, dy_{N-n_I}.</annotation></semantics></math></p>
 <p>The known value can be set equal to the observed point estimate at
-the interim, <span class="math inline">\(CP_{N-n_I}(\hat{\theta}_{I}|y_{n_I})\)</span>, or
-to the assumed true alternative, <span class="math inline">\(CP_{N-n_I}(\theta_a|y_{n_I})\)</span>, used to
-plan the trial.</p>
-<p>The probability of success in contrast assigns <span class="math inline">\(\theta\)</span> a distribution and marginalizes
-the conditional power over this distribution. In absence of additional
-trial external information this distribution is the posterior for <span class="math inline">\(p(\theta|y_{n_I})\)</span> obtained from the prior
-for <span class="math inline">\(p(\theta)\)</span> and the data
-collected up to the interim,</p>
-<p><span class="math display">\[ PoS_I = \int CP_{N-n_I}(\theta|y_{n_I})
-\, p(\theta|y_{n_I}) \, d\theta.\]</span></p>
-<p>However, our knowledge about <span class="math inline">\(\theta\)</span> can be refined if other
-data-sources like completed (historical) or concurrent trials are
-available,</p>
-<p><span class="math display">\[ PoS_{I,H,...} = \int
-CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{I},y_{H},...) \,
-d\theta.\]</span></p>
+the interim,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>θ</mi><mo accent="true">̂</mo></mover><mi>I</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">CP_{N-n_I}(\hat{\theta}_{I}|y_{n_I})</annotation></semantics></math>,
+or to the assumed true alternative,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>a</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">CP_{N-n_I}(\theta_a|y_{n_I})</annotation></semantics></math>,
+used to plan the trial.</p>
+<p>The probability of success in contrast assigns
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+a distribution and marginalizes the conditional power over this
+distribution. In absence of additional trial external information this
+distribution is the posterior for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta|y_{n_I})</annotation></semantics></math>
+obtained from the prior for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta)</annotation></semantics></math>
+and the data collected up to the interim,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><msub><mi>S</mi><mi>I</mi></msub><mo>=</mo><mo>∫</mo><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>θ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex"> PoS_I = \int CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{n_I}) \, d\theta.</annotation></semantics></math></p>
+<p>However, our knowledge about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+can be refined if other data-sources like completed (historical) or
+concurrent trials are available,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><msub><mi>S</mi><mrow><mi>I</mi><mo>,</mo><mi>H</mi><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi></mrow></msub><mo>=</mo><mo>∫</mo><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mi>I</mi></msub><mo>,</mo><msub><mi>y</mi><mi>H</mi></msub><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>θ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex"> PoS_{I,H,...} = \int CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{I},y_{H},...) \, d\theta.</annotation></semantics></math></p>
 <p>It is important to note that the conditional power is <em>always</em>
 evaluated with respect to the trial data (and prior) only. Thus,
 additional data-sources are not part of the analysis of the trial. In
 practice this means that the probability of success is usually
 calculated for a trial which uses non-informative priors, but at interim
-we may use additional data-sources to refine our knowledge on <span class="math inline">\(\theta\)</span> which will not be part of the
-trial analysis.</p>
+we may use additional data-sources to refine our knowledge on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+which will not be part of the trial analysis.</p>
 </div>
 <div class="section level2">
 <h2 id="example-data-scenario">Example Data Scenario<a class="anchor" aria-label="anchor" href="#example-data-scenario"></a>
@@ -173,14 +183,20 @@ trial analysis.</p>
 assumed endpoint is time-to-event, which is analyzed using the normal
 approximation of the log-rank statistic for comparing two groups. Under
 a 1:1 randomization the standard error of the log-hazard ratio scales
-with the number of events as <span class="math inline">\(2/\sqrt{N_{events}}\)</span>. This implies a
-corresponding sampling standard deviation of <span class="math inline">\(2\)</span>, which defines the unit information
-prior used later on in the analysis. The historical data considered is a
-proof of concept and a phase II trial. The twin phase III studies are
-event driven. Each trial stops whenever a total of <span class="math inline">\(379\)</span> events is reached and an interim is
-planned whenever at least <span class="math inline">\(150\)</span>
+with the number of events as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><msqrt><msub><mi>N</mi><mrow><mi>e</mi><mi>v</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>s</mi></mrow></msub></msqrt></mrow><annotation encoding="application/x-tex">2/\sqrt{N_{events}}</annotation></semantics></math>.
+This implies a corresponding sampling standard deviation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+which defines the unit information prior used later on in the analysis.
+The historical data considered is a proof of concept and a phase II
+trial. The twin phase III studies are event driven. Each trial stops
+whenever a total of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>379</mn><annotation encoding="application/x-tex">379</annotation></semantics></math>
+events is reached and an interim is planned whenever at least
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>150</mn><annotation encoding="application/x-tex">150</annotation></semantics></math>
 events have occured. The assumed true hazard ratio used for the design
-of the trial is <span class="math inline">\(0.8\)</span>.</p>
+of the trial is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.8</mn><annotation encoding="application/x-tex">0.8</annotation></semantics></math>.</p>
 <p>Example data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>study  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PoC"</span>, <span class="st">"PhII"</span>, <span class="st">"PhIII_A"</span>, <span class="st">"PhIII_B"</span><span class="op">)</span>,</span>
@@ -190,8 +206,8 @@ of the trial is <span class="math inline">\(0.8\)</span>.</p>
 <span>                     <span class="op">)</span></span>
 <span><span class="co">## under the normal approximation of the log-HR, the sampling sd is 2</span></span>
 <span><span class="co">## such that the standard errors are sqrt(4/events)</span></span>
-<span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">trials</span> <span class="op">%&gt;%</span></span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>logHR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">HR</span><span class="op">)</span>, sem<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">4</span><span class="op">/</span><span class="va">deaths</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">trials</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>logHR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">HR</span><span class="op">)</span>, sem<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">4</span><span class="op">/</span><span class="va">deaths</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">kable</span><span class="op">(</span><span class="va">trials</span>, digits<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -250,11 +266,14 @@ demonstrated.</p>
 <ul>
 <li>time-to-event endpoint</li>
 <li>phase III trials stop at target # of events 379</li>
-<li>null hypothesis of no difference in HR, <span class="math inline">\(\theta_0 = 1.0\)</span>
+<li>null hypothesis of no difference in HR,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>0</mn></msub><mo>=</mo><mn>1.0</mn></mrow><annotation encoding="application/x-tex">\theta_0 = 1.0</annotation></semantics></math>
 </li>
-<li>one-sided <span class="math inline">\(\alpha = 0.025\)</span>
+<li>one-sided
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mn>0.025</mn></mrow><annotation encoding="application/x-tex">\alpha = 0.025</annotation></semantics></math>
 </li>
-<li>alternative hypothesis assumes true HR of <span class="math inline">\(\theta_a=0.75\)</span>
+<li>alternative hypothesis assumes true HR of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mi>a</mi></msub><mo>=</mo><mn>0.75</mn></mrow><annotation encoding="application/x-tex">\theta_a=0.75</annotation></semantics></math>
 </li>
 <li>interim when at least 150 events reached</li>
 </ul>
@@ -265,8 +284,9 @@ demonstrated.</p>
 </ul>
 <p>Co-data:</p>
 <ul>
-<li>two phase III trials run in parallel <span class="math inline">\(\Rightarrow\)</span> each phase III trial is
-<em>concurrent</em> with the other</li>
+<li>two phase III trials run in parallel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇒</mo><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math>
+each phase III trial is <em>concurrent</em> with the other</li>
 </ul>
 <p>Define design choices</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -355,8 +375,9 @@ alternatives:</p>
 <code class="sourceCode R"><span><span class="fu">success_crit</span><span class="op">(</span><span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">unit_inf</span>, m<span class="op">=</span><span class="va">design_crit</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1.01</span><span class="op">)</span>, n<span class="op">=</span><span class="fl">379</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Using default prior reference scale 2</span></span></code></pre>
 <pre><code><span><span class="co">## [1] 0</span></span></code></pre>
-<p>No success then <span class="math inline">\(\Rightarrow\)</span> this
-is the critical boundary value.</p>
+<p>No success then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⇒</mo><annotation encoding="application/x-tex">\Rightarrow</annotation></semantics></math>
+this is the critical boundary value.</p>
 </div>
 </div>
 <div class="section level2">
@@ -390,13 +411,15 @@ historical information, then this is just the interim posterior:</p>
 <pre><code><span><span class="co">## [1] 0.4465623</span></span></code></pre>
 <p>The above command integrates the <em>conditional power</em> over the
 uncertainty which we have about the treatment effect as defined above
-for <span class="math inline">\(PoS_I\)</span>.</p>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><msub><mi>S</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">PoS_I</annotation></semantics></math>.</p>
 <p>The conditional power and the operating characteristics of a trial
 coincide whenever we do not condition on any observed data. The key
 difference of the conditional power as compared to the probability of
 success is that it assumes a known value for the parameter of interest.
 This can be seen as follows: First define the conditional power which is
-conditional on the observed data, <span class="math inline">\(CP_{N-n_I}(\theta|y_{n_I})\)</span>:</p>
+conditional on the observed data,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">CP_{N-n_I}(\theta|y_{n_I})</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_oc_A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oc1S.html">oc1S</a></span><span class="op">(</span><span class="va">interim_A</span>, <span class="va">Nev</span><span class="op">-</span><span class="va">trials</span><span class="op">$</span><span class="va">deaths</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">success_crit</span>, sigma<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>The conditional power assuming the alternative is true (a HR of
@@ -404,8 +427,9 @@ conditional on the observed data, <span class="math inline">\(CP_{N-n_I}(\theta|
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">alt_logHR</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.708769</span></span></code></pre>
-<p>In case there is no uncertainty of the treatment effect (here <span class="math inline">\(se=10^-4\)</span>), then this result agrees with
-the probability of success calculation:</p>
+<p>In case there is no uncertainty of the treatment effect (here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mi>e</mi><mo>=</mo><msup><mn>10</mn><mo>−</mo></msup><mn>4</mn></mrow><annotation encoding="application/x-tex">se=10^-4</annotation></semantics></math>),
+then this result agrees with the probability of success calculation:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="fu"><a href="../reference/mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">alt_logHR</span>, <span class="fl">1E-4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.7087689</span></span></code></pre>
@@ -445,15 +469,15 @@ prior is the prediction of the log-hazard ratio of a future trial:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -3080.927</span></span>
+<span><span class="co">## Log-Likelihood = -3110.728</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 2</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1      comp2     </span></span>
-<span><span class="co">## w  0.7233863  0.2766137</span></span>
-<span><span class="co">## m -0.2857441 -0.3098386</span></span>
-<span><span class="co">## s  0.3224104  0.9860875</span></span></code></pre>
+<span><span class="co">##   comp1      comp2      comp3     </span></span>
+<span><span class="co">## w  0.6094510  0.2591800  0.1313691</span></span>
+<span><span class="co">## m -0.2943573 -0.2783962 -0.3331379</span></span>
+<span><span class="co">## s  0.2990546  0.6500315  1.1889177</span></span></code></pre>
 <p>At the interim we have even more knowledge available on the treatment
 effect through the interim data itself which we can include into the MAP
 prior:</p>
@@ -463,7 +487,7 @@ prior:</p>
 <em>and</em> interim data collected) is:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4807369</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4850564</span></span></code></pre>
 <p>Note that we have not redefined <code>interim_pos_A</code>, such that
 this calculates the PoS for the phase III A trial taking into account
 that the final analysis will use a non-informative prior.</p>
@@ -471,7 +495,7 @@ that the final analysis will use a non-informative prior.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_B_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">base_map</span>, m<span class="op">=</span><span class="va">trials</span><span class="op">$</span><span class="va">logHR</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, se<span class="op">=</span><span class="va">trials</span><span class="op">$</span><span class="va">sem</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6649225</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6686476</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="use-of-historical-information---mac-approach">Use of historical information - MAC approach<a class="anchor" aria-label="anchor" href="#use-of-historical-information---mac-approach"></a>
@@ -495,35 +519,35 @@ the phase III result of trial B is also available:</p>
 <tbody>
 <tr class="odd">
 <td align="left">PoC</td>
-<td align="right">-0.247</td>
+<td align="right">-0.244</td>
+<td align="right">0.238</td>
+<td align="right">-0.795</td>
+<td align="right">-0.238</td>
 <td align="right">0.234</td>
-<td align="right">-0.771</td>
-<td align="right">-0.240</td>
-<td align="right">0.216</td>
 </tr>
 <tr class="even">
 <td align="left">PhII</td>
-<td align="right">-0.255</td>
-<td align="right">0.153</td>
-<td align="right">-0.576</td>
-<td align="right">-0.250</td>
-<td align="right">0.044</td>
+<td align="right">-0.252</td>
+<td align="right">0.149</td>
+<td align="right">-0.556</td>
+<td align="right">-0.251</td>
+<td align="right">0.042</td>
 </tr>
 <tr class="odd">
 <td align="left">PhIII_A</td>
+<td align="right">-0.214</td>
+<td align="right">0.126</td>
+<td align="right">-0.462</td>
 <td align="right">-0.216</td>
-<td align="right">0.124</td>
-<td align="right">-0.455</td>
-<td align="right">-0.218</td>
-<td align="right">0.032</td>
+<td align="right">0.035</td>
 </tr>
 <tr class="even">
 <td align="left">PhIII_B</td>
-<td align="right">-0.240</td>
-<td align="right">0.130</td>
-<td align="right">-0.499</td>
 <td align="right">-0.237</td>
-<td align="right">0.013</td>
+<td align="right">0.126</td>
+<td align="right">-0.489</td>
+<td align="right">-0.237</td>
+<td align="right">0.011</td>
 </tr>
 </tbody>
 </table>
@@ -539,10 +563,10 @@ the phase III result of trial B is also available:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">interim_map_post</span>, n<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           parameters</span></span>
-<span><span class="co">## iterations   theta[1]    theta[2]    theta[3]   theta[4]</span></span>
-<span><span class="co">##       [1,] -0.1593264 -0.07647811 -0.19873600 -0.1168811</span></span>
-<span><span class="co">##       [2,] -0.2307407 -0.46953690 -0.11706358 -0.1222869</span></span>
-<span><span class="co">##       [3,] -0.3839539 -0.26403940 -0.02395107 -0.2883597</span></span></code></pre>
+<span><span class="co">## iterations   theta[1]   theta[2]   theta[3]    theta[4]</span></span>
+<span><span class="co">##       [1,]  0.5793535 -0.4054789  0.1303989 -0.30952085</span></span>
+<span><span class="co">##       [2,] -0.3457577 -0.3818282 -0.3105840 -0.32644175</span></span>
+<span><span class="co">##       [3,] -0.1232030 -0.1211176 -0.1414171 -0.08166256</span></span></code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>turn MCMC posterior sample into parametric mixture</li>
 </ol>
@@ -553,14 +577,14 @@ the phase III result of trial B is also available:</p>
 </ol>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.506154</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5030811</span></span></code></pre>
 <p>which aligns with the published result under the assumption of full
 exchangeability.</p>
 <p>For trial B computations are:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_B_allcombined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>,<span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6446309</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6415822</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -571,7 +595,7 @@ differently. For example, we may assume greater heterogeneity for the
 historical data in comparison to the twin phase III trials.</p>
 <p>Assign data to historical (2) and concurrent data strata (1):</p>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">trials</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>stratum<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">trials</span> <span class="op">&lt;-</span> <span class="va">trials</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>stratum<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">kable</span><span class="op">(</span><span class="va">trials</span>, digits<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -634,10 +658,10 @@ historical data in comparison to the twin phase III trials.</p>
 <span><span class="va">interim_B_diff_allcombined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>,<span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_diff_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4879023</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.493427</span></span></code></pre>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_diff_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6358335</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6394128</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="pos-for-both-phase-iii-trials-being-successful">PoS for both phase III trials being successful<a class="anchor" aria-label="anchor" href="#pos-for-both-phase-iii-trials-being-successful"></a>
@@ -655,21 +679,26 @@ a design when conditioning on the already observed data:</p>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_oc_A</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oc1S.html">oc1S</a></span><span class="op">(</span><span class="va">interim_A</span>, <span class="va">Nev</span><span class="op">-</span><span class="va">trials</span><span class="op">$</span><span class="va">deaths</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, <span class="va">success_crit</span>, sigma<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>The PoS is then the integral of the conditional power over the
-parameter space <span class="math inline">\(\theta\)</span> representing
-our knowledge. This integral can be evaluated in a Monte-Carlo (MC)
-approach as</p>
-<p><span class="math display">\[ PoS_I = \int CP_{N-n_I}(\theta|y_{n_I})
-\, p(\theta|y_{n_I}) \,
-d\theta \approx \frac{1}{S} \sum_{i=1}^S CP(\theta_i),\]</span></p>
-<p>whenever we have a sample of <span class="math inline">\(p(\theta|y_{n_I})\)</span> of size <span class="math inline">\(S\)</span>… which we have:</p>
+parameter space
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
+representing our knowledge. This integral can be evaluated in a
+Monte-Carlo (MC) approach as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><msub><mi>S</mi><mi>I</mi></msub><mo>=</mo><mo>∫</mo><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><mi>I</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><mi>θ</mi><mo>≈</mo><mfrac><mn>1</mn><mi>S</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><mi>C</mi><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex"> PoS_I = \int CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{n_I}) \,
+d\theta \approx \frac{1}{S} \sum_{i=1}^S CP(\theta_i),</annotation></semantics></math></p>
+<p>whenever we have a sample of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><mi>I</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta|y_{n_I})</annotation></semantics></math>
+of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>…
+which we have:</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_A_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mix.html">rmix</a></span><span class="op">(</span><span class="va">interim_A</span>, <span class="fl">1E4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_A_samp</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.4479449</span></span></code></pre>
 <p>This is an MC approach to calculating the PoS.</p>
 <p>When now considering the probability for both trials being successful
-we have to perform an MC integration over the joint density <span class="math inline">\(p(\theta_A,\theta_B|y_{n_{I_A}},y_{n_{I_B}})\)</span></p>
-<p><span class="math display">\[
+we have to perform an MC integration over the joint density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>A</mi></msub><mo>,</mo><msub><mi>θ</mi><mi>B</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>A</mi></msub></msub></msub><mo>,</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>B</mi></msub></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta_A,\theta_B|y_{n_{I_A}},y_{n_{I_B}})</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>P</mi><mi>o</mi><mi>S</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>∬</mo><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><msub><mi>I</mi><mi>A</mi></msub></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>A</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>A</mi></msub></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><msub><mi>I</mi><mi>B</mi></msub></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>B</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>B</mi></msub></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mi>A</mi></msub><mo>,</mo><msub><mi>θ</mi><mi>B</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>A</mi></msub></msub></msub><mo>,</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>B</mi></msub></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>d</mi><msub><mi>θ</mi><mi>A</mi></msub><mi>d</mi><msub><mi>θ</mi><mi>B</mi></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>≈</mo><mfrac><mn>1</mn><mi>S</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><msub><mi>I</mi><mi>A</mi></msub></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>A</mi><mo>,</mo><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>A</mi></msub></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>C</mi><msub><mi>P</mi><mrow><mi>N</mi><mo>−</mo><msub><mi>n</mi><msub><mi>I</mi><mi>B</mi></msub></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>B</mi><mo>,</mo><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><msub><mi>n</mi><msub><mi>I</mi><mi>B</mi></msub></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 PoS &amp;= \iint CP_{N-n_{I_A}}(\theta_A|y_{n_{I_A}}) \,
 CP_{N-n_{I_B}}(\theta_B|y_{n_{I_B}})\,
@@ -678,7 +707,7 @@ p(\theta_A,\theta_B|y_{n_{I_A}},y_{n_{I_B}}) \, d\theta_A d\theta_B \\
 \frac{1}{S} \sum_{i=1}^S CP_{N-n_{I_A}}(\theta_{A,i}|y_{n_{I_A}}) \,
 CP_{N-n_{I_B}}(\theta_{B,i}|y_{n_{I_B}}).
 \end{aligned}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>Thus we need to also get the conditional power for trial B at
 interim…</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
@@ -687,7 +716,7 @@ interim…</p>
 case)</p>
 <div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>,<span class="st">"theta[3]"</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_oc_B</span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>,<span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.3372824</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3452887</span></span></code></pre>
 <p>which is slightly larger than assuming independence:</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B</span><span class="op">)</span></span></code></pre></div>
@@ -696,12 +725,12 @@ case)</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"theta[3]"</span>, <span class="st">"theta[4]"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           theta[3]  theta[4]</span></span>
-<span><span class="co">## theta[3] 1.0000000 0.2897837</span></span>
-<span><span class="co">## theta[4] 0.2897837 1.0000000</span></span></code></pre>
+<span><span class="co">## theta[3] 1.0000000 0.3187079</span></span>
+<span><span class="co">## theta[4] 0.3187079 1.0000000</span></span></code></pre>
 <p>For the full exchangeability case we have</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>,<span class="st">"theta[3]"</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_oc_B</span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>,<span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.3557928</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3521087</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
@@ -721,11 +750,11 @@ calculations.</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## in addition with prior historical data PoC &amp; phase II data</span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4807369</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4850564</span></span></code></pre>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## finally with the interim data of the phase III B</span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.506154</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5030811</span></span></code></pre>
 <p>Phase III trial B:</p>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## only interim data of trial B</span></span>
@@ -734,11 +763,11 @@ calculations.</p>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## in addition with prior historical data PoC &amp; phase II data</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6649225</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6686476</span></span></code></pre>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## finally with the interim data of the phase III A</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6446309</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6415822</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="appendix-map-and-mac-equivalence">Appendix: MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#appendix-map-and-mac-equivalence"></a>
@@ -774,15 +803,15 @@ equivalence we need to align this mismatch of used data.</p>
 <code class="sourceCode R"><span><span class="va">base_map_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">base_map_mc_2</span>, Nc<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">base_map_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -15013.39</span></span>
+<span><span class="co">## Log-Likelihood = -15088.42</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 2</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1       comp2       comp3       comp4       comp5      </span></span>
-<span><span class="co">## w  0.41971628  0.20090208  0.19003754  0.12618322  0.06316089</span></span>
-<span><span class="co">## m -0.29762454  0.04532952 -0.63996469  0.04207776 -0.83560924</span></span>
-<span><span class="co">## s  0.23604208  0.34976342  0.35791995  0.96086588  0.86439829</span></span></code></pre>
+<span><span class="co">## w  0.40929935  0.20586574  0.18866513  0.12833707  0.06783271</span></span>
+<span><span class="co">## m -0.28173830 -0.64782890  0.06087094  0.16129924 -1.05921673</span></span>
+<span><span class="co">## s  0.22707579  0.32358363  0.33140706  0.86765455  0.73553054</span></span></code></pre>
 <p>Now, combine the MAP prior (representing historical knowledge) with
 the interim data of trial A:</p>
 <div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
@@ -810,14 +839,14 @@ phase III A trial, but excluding the phase III B data):</li>
 <span></span>
 <span><span class="va">interim_A_allcombined_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = 10757.26</span></span>
+<span><span class="co">## Log-Likelihood = 10763.73</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1       comp2       comp3       comp4       comp5      </span></span>
-<span><span class="co">## w  0.23620662  0.22779752  0.21517295  0.19537488  0.12544802</span></span>
-<span><span class="co">## m -0.31643418 -0.10440955 -0.21611084 -0.30967721 -0.01589360</span></span>
-<span><span class="co">## s  0.12356170  0.06722802  0.06159021  0.08073825  0.10421168</span></span></code></pre>
+<span><span class="co">## w  0.22608509  0.22287087  0.22104424  0.19134605  0.13865375</span></span>
+<span><span class="co">## m -0.22358073 -0.31478209 -0.11546035 -0.32415990 -0.01378153</span></span>
+<span><span class="co">## s  0.05767847  0.12976158  0.06117267  0.07871764  0.09025686</span></span></code></pre>
 <p>Now let’s overlay the two posterior’s</p>
 <div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logHR<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.8</span>,<span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">logHR</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -829,33 +858,36 @@ phase III A trial, but excluding the phase III B data):</li>
 <p>The PoS is essentially the same</p>
 <div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4907594</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.489214</span></span></code></pre>
 <div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4899727</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4943454</span></span></code></pre>
 <div class="section level3">
 <h3 id="formal-map-and-mac-equivalence">Formal MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#formal-map-and-mac-equivalence"></a>
 </h3>
 <p>The stated equivalence requires that the posterior of a trial
 specific parameter</p>
-<p><span class="math display">\[p(\theta_\star|y_\star,y_H),\]</span></p>
-<p>which is conditional on the trial specific data <span class="math inline">\(y_\star\)</span> <strong>and</strong> the
-historical data <span class="math inline">\(y_H\)</span> (MAC approach,
-joint use of <span class="math inline">\(y_H,y_\star\)</span>), is
-equivalent to obtaining the MAP prior <span class="math inline">\(p(\theta_\star|y_H)\)</span> based on the
-historical data and then analyzing the new trial with this prior.</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">p(\theta_\star|y_\star,y_H),</annotation></semantics></math></p>
+<p>which is conditional on the trial specific data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">y_\star</annotation></semantics></math><strong>and</strong> the historical data
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>H</mi></msub><annotation encoding="application/x-tex">y_H</annotation></semantics></math>
+(MAC approach, joint use of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>H</mi></msub><mo>,</mo><msub><mi>y</mi><mo>⋆</mo></msub></mrow><annotation encoding="application/x-tex">y_H,y_\star</annotation></semantics></math>),
+is equivalent to obtaining the MAP prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(\theta_\star|y_H)</annotation></semantics></math>
+based on the historical data and then analyzing the new trial with this
+prior.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>∝</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>θ</mi><mi>H</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>∝</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>θ</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>θ</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>θ</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>θ</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>∝</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo>,</mo><msub><mi>θ</mi><mi>H</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>∝</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>θ</mi><mo>⋆</mo></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>y</mi><mi>H</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
-p(\theta_\star|y_\star,y_H) &amp;\propto
-p(\theta_\star,\theta_H|y_\star,y_H) \\
-&amp;\propto p(y_\star,y_H|\theta_\star,\theta_H) \,
-p(\theta_\star,\theta_H) \\
-&amp;= p(y_\star|\theta_\star) \, p(y_H|\theta_H) \,
-p(\theta_\star,\theta_H) \\
+p(\theta_\star|y_\star,y_H) &amp;\propto p(\theta_\star,\theta_H|y_\star,y_H) \\
+ &amp;\propto p(y_\star,y_H|\theta_\star,\theta_H) \,
+ p(\theta_\star,\theta_H) \\ 
+ &amp;= p(y_\star|\theta_\star) \, p(y_H|\theta_H) \,
+ p(\theta_\star,\theta_H) \\ 
 &amp;\propto p(y_\star|\theta_\star) \, p(\theta_\star,\theta_H|y_H) \\
 &amp;\propto p(y_\star|\theta_\star) \, p(\theta_\star|y_H)
 \end{aligned}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>The equivalence holds under the use of the meta-analytic model.</p>
 </div>
 </div>
@@ -875,9 +907,9 @@ Biometrics. 2014;70(4):1023-1032. </p>
 </h2>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.2 (2023-10-31)</span></span>
-<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
+<pre><code><span><span class="co">## R version 4.4.2 (2024-10-31)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.5 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -896,57 +928,55 @@ Biometrics. 2014;70(4):1023-1032. </p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] purrr_1.0.2      dplyr_1.1.4      bayesplot_1.10.0 ggplot2_3.4.4   </span></span>
-<span><span class="co">## [5] knitr_1.45       RBesT_1.7-3     </span></span>
+<span><span class="co">## [1] purrr_1.0.2      dplyr_1.1.4      bayesplot_1.11.1 ggplot2_3.5.1   </span></span>
+<span><span class="co">## [5] knitr_1.49       RBesT_1.7-4     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] tensorA_0.36.2.1     gtable_0.3.4         xfun_0.41           </span></span>
-<span><span class="co">##  [4] bslib_0.6.1          QuickJSR_1.0.9       inline_0.3.19       </span></span>
-<span><span class="co">##  [7] vctrs_0.6.5          tools_4.3.2          generics_0.1.3      </span></span>
-<span><span class="co">## [10] stats4_4.3.2         parallel_4.3.2       tibble_3.2.1        </span></span>
-<span><span class="co">## [13] fansi_1.0.6          highr_0.10           pkgconfig_2.0.3     </span></span>
-<span><span class="co">## [16] checkmate_2.3.1      desc_1.4.3           distributional_0.3.2</span></span>
-<span><span class="co">## [19] RcppParallel_5.1.7   assertthat_0.2.1     lifecycle_1.0.4     </span></span>
-<span><span class="co">## [22] compiler_4.3.2       farver_2.1.1         stringr_1.5.1       </span></span>
-<span><span class="co">## [25] textshaping_0.3.7    munsell_0.5.0        codetools_0.2-19    </span></span>
-<span><span class="co">## [28] htmltools_0.5.7      sass_0.4.8           yaml_2.3.8          </span></span>
-<span><span class="co">## [31] Formula_1.2-5        pillar_1.9.0         pkgdown_2.0.7       </span></span>
-<span><span class="co">## [34] jquerylib_0.1.4      cachem_1.0.8         StanHeaders_2.26.28 </span></span>
-<span><span class="co">## [37] abind_1.4-5          posterior_1.5.0      rstan_2.32.3        </span></span>
-<span><span class="co">## [40] tidyselect_1.2.0     digest_0.6.33        mvtnorm_1.2-4       </span></span>
-<span><span class="co">## [43] stringi_1.8.3        reshape2_1.4.4       labeling_0.4.3      </span></span>
-<span><span class="co">## [46] fastmap_1.1.1        grid_4.3.2           colorspace_2.1-0    </span></span>
-<span><span class="co">## [49] cli_3.6.2            magrittr_2.0.3       loo_2.6.0           </span></span>
-<span><span class="co">## [52] pkgbuild_1.4.3       utf8_1.2.4           withr_2.5.2         </span></span>
-<span><span class="co">## [55] scales_1.3.0         backports_1.4.1      rmarkdown_2.25      </span></span>
-<span><span class="co">## [58] matrixStats_1.2.0    gridExtra_2.3        ragg_1.2.7          </span></span>
-<span><span class="co">## [61] memoise_2.0.1        evaluate_0.23        rstantools_2.3.1.1  </span></span>
-<span><span class="co">## [64] rlang_1.1.2          Rcpp_1.0.11          glue_1.6.2          </span></span>
-<span><span class="co">## [67] jsonlite_1.8.8       plyr_1.8.9           R6_2.5.1            </span></span>
-<span><span class="co">## [70] systemfonts_1.0.5    fs_1.6.3</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.49           </span></span>
+<span><span class="co">##  [4] bslib_0.8.0          QuickJSR_1.4.0       htmlwidgets_1.6.4   </span></span>
+<span><span class="co">##  [7] inline_0.3.20        vctrs_0.6.5          tools_4.4.2         </span></span>
+<span><span class="co">## [10] generics_0.1.3       stats4_4.4.2         parallel_4.4.2      </span></span>
+<span><span class="co">## [13] tibble_3.2.1         fansi_1.0.6          pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [16] checkmate_2.3.2      desc_1.4.3           distributional_0.5.0</span></span>
+<span><span class="co">## [19] RcppParallel_5.1.9   assertthat_0.2.1     lifecycle_1.0.4     </span></span>
+<span><span class="co">## [22] compiler_4.4.2       farver_2.1.2         stringr_1.5.1       </span></span>
+<span><span class="co">## [25] textshaping_0.4.0    munsell_0.5.1        codetools_0.2-20    </span></span>
+<span><span class="co">## [28] htmltools_0.5.8.1    sass_0.4.9           yaml_2.3.10         </span></span>
+<span><span class="co">## [31] Formula_1.2-5        pillar_1.9.0         pkgdown_2.1.1       </span></span>
+<span><span class="co">## [34] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 </span></span>
+<span><span class="co">## [37] abind_1.4-8          posterior_1.6.0      rstan_2.32.6        </span></span>
+<span><span class="co">## [40] tidyselect_1.2.1     digest_0.6.37        stringi_1.8.4       </span></span>
+<span><span class="co">## [43] mvtnorm_1.3-2        reshape2_1.4.4       labeling_0.4.3      </span></span>
+<span><span class="co">## [46] fastmap_1.2.0        grid_4.4.2           colorspace_2.1-1    </span></span>
+<span><span class="co">## [49] cli_3.6.3            magrittr_2.0.3       loo_2.8.0           </span></span>
+<span><span class="co">## [52] pkgbuild_1.4.5       utf8_1.2.4           withr_3.0.2         </span></span>
+<span><span class="co">## [55] scales_1.3.0         backports_1.5.0      rmarkdown_2.29      </span></span>
+<span><span class="co">## [58] matrixStats_1.4.1    gridExtra_2.3        ragg_1.3.3          </span></span>
+<span><span class="co">## [61] evaluate_1.0.1       rstantools_2.4.0     rlang_1.1.4         </span></span>
+<span><span class="co">## [64] Rcpp_1.0.13-1        glue_1.8.0           jsonlite_1.8.9      </span></span>
+<span><span class="co">## [67] R6_2.5.1             plyr_1.8.9           systemfonts_1.1.0   </span></span>
+<span><span class="co">## [70] fs_1.6.5</span></span></code></pre>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Sebastian Weber.</p>
+  <p>Developed by Sebastian Weber.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
