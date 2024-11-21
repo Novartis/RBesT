@@ -23,7 +23,7 @@ library(data.table)
 library(knitr)
 sbc_tools <- new.env()
 source(here("inst", "sbc", "sbc_tools.R"), local=sbc_tools)
-set.seed(453453)
+set.seed(45348346)
 
 sbc_tools$rbest_lib_dir <- rbest_lib_dir
 sbc_tools$rbest_source_dir <- rbest_source_dir
@@ -80,7 +80,7 @@ num_simulations <- nrow(scenarios)
 cat("Total number of jobs to dispatch:", num_simulations, "\n")
 
 RNGkind("L'Ecuyer-CMRG")
-set.seed(56969)
+set.seed(269698974)
 rng_seeds <- sbc_tools$setup_lecuyer_seeds(.Random.seed, num_simulations)
 
 sim_result <- Q_rows(scenarios, sbc_tools$run_sbc_case, const=list(base_scenarios=base_scenarios, seeds=rng_seeds), export=as.list(sbc_tools), n_jobs=n_jobs, pkgs=pkg)

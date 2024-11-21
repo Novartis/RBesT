@@ -2,12 +2,17 @@
 
 ## Enhancements
 
-* Upgraded testhat edition to version 3
 * Added for `mixstanvar` automatic generation of distribution
   functions allowing truncated priors in `brms` with mixtures
+* Slight speed increase for Stan model by more efficient construction
+  of likelihood. Also reducing object size of `gMAP` objects by
+  avoiding to store redundant variables.
+* Upgraded testhat edition to version 3.
 
 ## Bugfixes
 
+* Fix issue #18 of ESS ELIR aborting whenever one mixture component
+  has zero weight.
 * Fixed a rare issue when estimating ESS ELIR for beta mixtures. The
   calculation aborted due to boundary issues which are now avoided.
 * Avoid over and underflow of beta-binomial distribution.

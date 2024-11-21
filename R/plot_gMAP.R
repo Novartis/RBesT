@@ -11,7 +11,7 @@
 #'
 #' @template plot-help
 #' 
-#' @return The function returns a list of \code{\link{ggplot}}
+#' @return The function returns a list of \code{\link[ggplot2:ggplot]{ggplot}}
 #' objects.
 #'
 #' @method plot gMAP

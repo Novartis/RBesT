@@ -134,10 +134,8 @@ parameters {
 }
 transformed parameters {
   vector[H] theta;
-  vector[n_groups] eta;
   vector[mX] beta;
   vector[n_tau_strata] tau;
-  vector[n_groups] tau_group;
 
   beta = beta_raw_guess[1] + beta_raw_guess[2] .* beta_raw;
 
@@ -147,14 +145,24 @@ transformed parameters {
   else
     tau = exp(tau_raw_guess[1] + tau_raw_guess[2] * tau_raw);
 
-  tau_group = tau[tau_strata_gindex];
-  
-  if (ncp)  // NCP
-    eta = xi_eta .* tau_group;
-  else // CP places overall intercept into random effect
-    eta = beta_raw_guess[1,1] + beta_raw_guess[2,1] * xi_eta;
-
-  theta = X_param * beta + eta[group_index];
+  // expand random effect to groups in loop for performance reasons
+  if(ncp) {
+    if(n_tau_strata == 1) {
+      // most common case of just one stratum which simplifies things
+      // and in ncp mode
+      for(h in 1:H) {
+        theta[h] = X_param[h] * beta + xi_eta[ group_index[h] ] * tau[1];
+      }
+    } else {
+      for(h in 1:H) {
+        theta[h] = X_param[h] * beta + xi_eta[ group_index[h] ] * tau[ tau_strata_gindex[ group_index[h] ] ];
+      }
+    }
+  } else {
+    for(h in 1:H) {
+      theta[h] = X_param[h] * beta + beta_raw_guess[1,1] + beta_raw_guess[2,1] * xi_eta[ group_index[h] ];
+    }
+  }
 }
 model {
   if (ncp) {
@@ -163,8 +171,8 @@ model {
     if(re_dist == 1) xi_eta ~ student_t(re_dist_t_df, 0, 1);
   } else {
     // random effect distribution
-    if(re_dist == 0) xi_eta ~ normal( (beta[1] - beta_raw_guess[1,1])/beta_raw_guess[2,1], tau_group / beta_raw_guess[2,1]);
-    if(re_dist == 1) xi_eta ~ student_t(re_dist_t_df, (beta[1] - beta_raw_guess[1,1])/beta_raw_guess[2,1], tau_group / beta_raw_guess[2,1]);
+    if(re_dist == 0) xi_eta ~ normal( (beta[1] - beta_raw_guess[1,1])/beta_raw_guess[2,1], tau[tau_strata_gindex] / beta_raw_guess[2,1]);
+    if(re_dist == 1) xi_eta ~ student_t(re_dist_t_df, (beta[1] - beta_raw_guess[1,1])/beta_raw_guess[2,1], tau[tau_strata_gindex] / beta_raw_guess[2,1]);
   }
 
   // assign priors to coefficients

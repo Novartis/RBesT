@@ -79,7 +79,7 @@ src/package-binary: R/stanmodels.R
 	echo "importFrom(rstan, sampling)" >> NAMESPACE
 	echo "useDynLib($(RPKG), .registration = TRUE)" >> NAMESPACE
 	install -d src
-	"${R_HOME}/bin/Rscript" -e 'pkgbuild::compile_dll()'
+	"${R_HOME}/bin/Rscript" -e 'pkgbuild::compile_dll(debug=FALSE)'
 	touch src/package-binary
 
 man/package-doc: $(R_PKG_SRCS) $(BIN_OBJS)

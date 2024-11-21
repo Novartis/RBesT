@@ -87,12 +87,16 @@ fit_rbest <- function(fake, draw, draw_theta, family, prior_mean_mu, prior_sd_mu
                     gaussian=cbind(y, y_se) ~ 1 | group)
 
     options(RBesT.MC.warmup=2000, RBesT.MC.iter=4000, RBesT.MC.thin=1, RBesT.MC.init=0.1,
-            RBesT.MC.control=list(adapt_delta=0.999, stepsize=0.01, max_treedepth=10,
+            RBesT.MC.control=list(##adapt_delta=0.999, ## 2024-11-21 lowered to 0.95 for the sake of performance
+                                  adapt_delta=0.95,
+                                  stepsize=0.01, max_treedepth=10,
                                   adapt_init_buffer=100, adapt_term_buffer=300))
 
     if(Ng > 5) {
         ## for the dense case we can be a bit less aggressive with the sampling tuning parameters
-        options(RBesT.MC.control=list(adapt_delta=0.95, stepsize=0.01, max_treedepth=10,
+        options(RBesT.MC.control=list(##adapt_delta=0.95,
+                                      adapt_delta=0.90,
+                                      stepsize=0.01, max_treedepth=10,
                                       adapt_init_buffer=100, adapt_term_buffer=300))
     }
     fit <- gMAP(model, data=fake, family=family,
