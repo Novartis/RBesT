@@ -13,7 +13,7 @@ PROJROOT_ABS=$(abspath .)
 
 RPKG=$(patsubst ‘%’, %, $(word 2, $(shell grep ^Package: DESCRIPTION)))
 INCS = 
-R_PKG_SRCS = $(wildcard R/*.R)
+R_PKG_SRCS = $(wildcard R/*.R inst/examples/*R)
 R_SRCS = $(wildcard *.R $(foreach fd, $(SRCDIR), $(fd)/*.R))
 R_TEST_SRCS = $(wildcard tests/testthat/test*.R)
 R_TEST_OBJS = $(R_TEST_SRCS:.R=.Rtest)
