@@ -1,4 +1,3 @@
-context("pos2S: 2-Sample Probability of Success")
 
 ## test the analytical OC function via brute force simulation
 set.seed(12354)
@@ -51,11 +50,12 @@ test_pos2S <- function(prior1, prior2, ia_dist1, ia_dist2, n1, n2, dec, decU) {
 ia1 <- postmix(prior1, m=0.2, se=s/sqrt(15))
 ia2 <- postmix(prior2, m=0, se=s/sqrt(15))
 
-test_that("Normal PoS 2 sample function matches MC integration of CPO",
-          test_pos2S(prior1, prior2,
-                     ia1, ia2,           
-                     N1, N2,
-                     dec, decU))
+test_that("Normal PoS 2 sample function matches MC integration of CPO",{
+    test_pos2S(prior1, prior2,
+               ia1, ia2,           
+               N1, N2,
+               dec, decU)
+})
 
 ## also run a MC comparison
 pos2S_normal_MC <- function(prior1, prior2, N1, N2, dtheta1, dtheta2, pcrit=0.975, qcrit=0) {
@@ -98,11 +98,12 @@ test_that("Normal PoS 2 sample function matches MC integration",
 beta_prior <- mixbeta(c(1, 1, 1))
 beta_ia1 <- postmix(beta_prior, r=20, n=50)
 beta_ia2 <- postmix(beta_prior, r=30, n=50)
-test_that("Binomial PoS 2 sample function matches MC integration of CPO",
+test_that("Binomial PoS 2 sample function matches MC integration of CPO", {
           test_pos2S(beta_prior, beta_prior,
                      beta_ia1, beta_ia2,           
                      N1, N2,
-                     dec, decU))
+                     dec, decU)
+})
 
 
 gamma_prior <- mixgamma(c(1, 1, 1), param="mn")
@@ -111,11 +112,12 @@ dec_count  <- decision2S(1-alpha, 0, lower.tail=TRUE)
 dec_countU  <- decision2S(1-alpha, 0, lower.tail=FALSE)
 gamma_ia1 <- postmix(gamma_prior, m=0.7, n=60)
 gamma_ia2 <- postmix(gamma_prior, m=1.2, n=60)
-test_that("Poisson PoS 2 sample function matches MC integration of CPO",
+test_that("Poisson PoS 2 sample function matches MC integration of CPO", {
           test_pos2S(gamma_prior, gamma_prior,
                      gamma_ia1, gamma_ia2,           
                      N1, N2,
-                     dec_count, dec_countU))
+                     dec_count, dec_countU)
+})
 
 test_that("Binomial PoS 2 with IA returns results", {
     ## reported by user
