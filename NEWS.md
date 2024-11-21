@@ -1,3 +1,26 @@
+# RBesT 1.7-4 - November 21st, 2024
+
+## Enhancements
+
+* Added for `mixstanvar` automatic generation of distribution
+  functions allowing truncated priors in `brms` with mixtures
+* Slight speed increase for Stan model by more efficient construction
+  of likelihood. Also reducing object size of `gMAP` objects by
+  avoiding to store redundant variables.
+* Upgraded `testthat` edition to version 3.
+
+## Bugfixes
+
+* Fix issue #18 of ESS ELIR aborting whenever one mixture component
+  has zero weight.
+* Fixed a rare issue when estimating ESS ELIR for beta mixtures. The
+  calculation aborted due to boundary issues which are now avoided.
+* Avoid over and underflow of beta-binomial distribution.
+* Replace calls to deprecated `ggplot2::qplot` with respective calls
+  to `ggplot2::ggplot`.
+* Use new `array` notation for `mixstanvar` generated Stan code to
+  make generated Stan programs compatible with Stan >= 2.33
+
 # RBesT 1.7-3 - January 2nd, 2024
 
 ## Enhancements

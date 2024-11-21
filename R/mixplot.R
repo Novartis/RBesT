@@ -12,7 +12,7 @@
 #' which will display colour-coded each mixture component of the
 #' density in addition to the density.
 #' @param size controls the linesize in plots.
-#' @param ... extra arguments passed on to the \code{\link[ggplot2]{qplot}} call.
+#' @param ... extra arguments passed on to the plotted function.
 #'
 #' @details Plot function for mixture distribution objects. It shows
 #' the density/quantile/cumulative distribution (corresponds to
@@ -85,7 +85,7 @@ plot.mix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ..
         plot_fun <- function(x, ...) fun(floor(x), ...)
         plot_geom <- "step"
     } else {
-        plot_fun <- fun
+        plot_fun <- function(x, ...) fun(x, ...)
         plot_geom <- "line"
     }
     n_fun <- 501

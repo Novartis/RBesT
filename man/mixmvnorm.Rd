@@ -81,11 +81,11 @@ colMeans(mixSamp1)
 }
 \seealso{
 Other mixdist: 
+\code{\link{mix}},
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
 \code{\link{mixnorm}()},
-\code{\link{mixplot}},
-\code{\link{mix}}
+\code{\link{mixplot}}
 }
 \concept{mixdist}

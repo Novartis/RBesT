@@ -14,7 +14,7 @@
 \item{...}{Ignored.}
 }
 \value{
-The function returns a list of \code{\link{ggplot}}
+The function returns a list of \code{\link[ggplot2:ggplot]{ggplot}}
 objects.
 }
 \description{

@@ -170,15 +170,14 @@ kable(ocAdaptSamp, digits=1, caption="Sample size")
 #' ## Additional power Figure under varying pc
 #'
 
-qplot(pt-pc, power, data=power, geom=c("line"), colour=prior) +
+ggplot(power, aes(pt-pc, power, colour=prior)) + geom_line()  +
     facet_wrap(~pc) +
     scale_y_continuous(breaks=seq(0,1,by=0.2)) +
-        scale_x_continuous(breaks=seq(-0.8,0.8,by=0.2)) +
-            coord_cartesian(xlim=c(-0.15,0.5)) +
-            geom_hline(yintercept=0.025, linetype=2) +
-                geom_hline(yintercept=0.8, linetype=2) +
-                    ggtitle("Prob. for alternative for different pc")
-
+    scale_x_continuous(breaks=seq(-0.8,0.8,by=0.2)) +
+    coord_cartesian(xlim=c(-0.15,0.5)) +
+    geom_hline(yintercept=0.025, linetype=2) +
+    geom_hline(yintercept=0.8, linetype=2) +
+    ggtitle("Prob. for alternative for different pc")
 
 #'
 #' ## Bias and rMSE, Figure 1
@@ -265,10 +264,8 @@ est <- foreach(case=names(map), .combine=rbind) %do% {
 }
 
 
-
-qplot(p, 100*bias, data=est, geom="line", colour=prior, main="Bias")
-qplot(p, 100*rMSE, data=est, geom="line", colour=prior, main="rMSE")
-
+ggplot(est, aes(p, 100*bias, colour=prior)) + geom_line() + ggtitle("Bias")
+ggplot(est, aes(p, 100*rMSE, colour=prior)) + geom_line() + ggtitle("rMSE")
 
 
 #'
@@ -330,9 +327,8 @@ post <- foreach(prior=names(mapCol), .combine=rbind) %do% {
     res
 }
 
-qplot(r, mean, data=post, colour=prior, shape=prior) + geom_abline(slope=1/20)
-qplot(r, sd, data=post, colour=prior, shape=prior) + coord_cartesian(ylim=c(0,0.17))
-
+ggplot(post, aes(r, mean, colour=prior, shape=prior)) + geom_point() + geom_abline(slope=1/20)
+ggplot(post, aes(r, sd, colour=prior, shape=prior)) + geom_point() + coord_cartesian(ylim=c(0,0.17))
 
 sessionInfo()
 

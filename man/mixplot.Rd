@@ -25,7 +25,7 @@ density in addition to the density.}
 
 \item{size}{controls the linesize in plots.}
 
-\item{...}{extra arguments passed on to the \code{\link[ggplot2]{qplot}} call.}
+\item{...}{extra arguments passed on to the plotted function.}
 }
 \value{
 A \code{\link[ggplot2]{ggplot}} object is returned.
@@ -92,11 +92,11 @@ pl + ggtitle("Normal 2-Component Mixture")
 }
 \seealso{
 Other mixdist: 
+\code{\link{mix}},
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
 \code{\link{mixmvnorm}()},
-\code{\link{mixnorm}()},
-\code{\link{mix}}
+\code{\link{mixnorm}()}
 }
 \concept{mixdist}

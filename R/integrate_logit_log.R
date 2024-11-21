@@ -16,8 +16,8 @@
 #' @param Lpupper logit of upper cumulative density
 #'
 #' @keywords internal
-integrate_density_log <- function(log_integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=1E-9) {
-    .integrand_comp <- function(mix_comp) {
+integrate_density_log <- function(log_integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=getOption("RBesT.integrate_prob_eps", 1E-6)) {
+    .integrand_comp_logit <- function(mix_comp) {
         function(l) {
             u   <- inv_logit(l)
             lp  <- log_inv_logit(l)
@@ -37,10 +37,9 @@ integrate_density_log <- function(log_integrand, mix, Lplower=-Inf, Lpupper=Inf,
     upper  <- inv_logit(Lpupper)
     return(sum(vapply(1:Nc, function(comp) {
         mix_comp  <- mix[[comp, rescale=TRUE]]
-        mix_comp_identity <- mix_comp
-        dlink(mix_comp_identity) <- identity_dlink
-        if (all(dmix(mix_comp_identity, support(mix_comp_identity)) == 0 )) {
-            return(.integrate(.integrand_comp(mix_comp), Lplower, Lpupper))
+        fn_integrand_comp_logit <- .integrand_comp_logit(mix_comp)
+        if (all(!is.na(fn_integrand_comp_logit(c(Lplower, Lpupper))))) {
+            return(.integrate(fn_integrand_comp_logit, Lplower, Lpupper))
         }
         lower_comp  <- ifelse(Lplower==-Inf, qmix(mix_comp, eps), qmix(mix_comp, lower))
         upper_comp  <- ifelse(Lpupper==Inf, qmix(mix_comp, 1-eps), qmix(mix_comp, upper))
@@ -48,8 +47,8 @@ integrate_density_log <- function(log_integrand, mix, Lplower=-Inf, Lpupper=Inf,
     }, c(0.1)) * mix[1,]))
 }
 
-integrate_density <- function(integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=1E-9) {
-    .integrand_comp <- function(mix_comp) {
+integrate_density <- function(integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=getOption("RBesT.integrate_prob_eps", 1E-6)) {
+    .integrand_comp_logit <- function(mix_comp) {
         function(l) {
             u   <- inv_logit(l)
             lp  <- log_inv_logit(l)
@@ -57,18 +56,19 @@ integrate_density <- function(integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=1E-
             exp(lp + lnp) * integrand(qmix(mix_comp, u))
         }
     }
-
     Nc <- ncol(mix)
 
     lower  <- inv_logit(Lplower)
     upper  <- inv_logit(Lpupper)
+    
     return(sum(vapply(1:Nc, function(comp) {
         mix_comp  <- mix[[comp, rescale=TRUE]]
-        mix_comp_identity <- mix_comp
-        dlink(mix_comp_identity) <- identity_dlink
-        if (all(dmix(mix_comp_identity, support(mix_comp_identity)) == 0 )) {
-            return(.integrate(.integrand_comp(mix_comp), Lplower, Lpupper))
+        ## ensure that the integrand is defined at the boundaries...
+        fn_integrand_comp_logit <- .integrand_comp_logit(mix_comp)
+        if (all(!is.na(fn_integrand_comp_logit(c(Lplower, Lpupper))))) {
+            return(.integrate(fn_integrand_comp_logit, Lplower, Lpupper))
         }
+        ## ... otherwise we avoid the boundaries by eps prob density:
         lower_comp  <- ifelse(Lplower==-Inf, qmix(mix_comp, eps), qmix(mix_comp, lower))
         upper_comp  <- ifelse(Lpupper==Inf, qmix(mix_comp, 1-eps), qmix(mix_comp, upper))
         return(.integrate(function(x) integrand(x) * dmix(mix_comp, x), lower_comp, upper_comp))
@@ -80,7 +80,8 @@ integrate_density <- function(integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=1E-
     args <- modifyList(list(lower=lower, upper=upper,
                             rel.tol=.Machine$double.eps^0.25,
                             abs.tol=.Machine$double.eps^0.25,
-                            subdivisions=1000),
+                            subdivisions=1000,
+                            stop.on.error=TRUE),
                        integrate_args_user)
 
     integrate(integrand,
@@ -88,5 +89,6 @@ integrate_density <- function(integrand, mix, Lplower=-Inf, Lpupper=Inf, eps=1E-
               upper=args$upper,
               rel.tol=args$rel.tol,
               abs.tol=args$abs.tol,
-              subdivisions=args$subdivisions)$value
+              subdivisions=args$subdivisions,
+              stop.on.error=args$stop.on.error)$value
 }

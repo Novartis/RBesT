@@ -1,4 +1,3 @@
-context("mixdiff: Mixture Difference Distribution")
 
 ## test that calculations for the cumulative distribution function of
 ## differences in mixture distributions are correct by comparison with
@@ -64,18 +63,18 @@ mixdiff_cmp_norm <- function(case, mixref) {
     expect_true(all(res_quants < eps))
 }
 
-test_that("Difference in beta variates evaluates correctly", mixdiff_cmp(beta))
-test_that("Difference in beta mixture variates evaluates correctly", mixdiff_cmp(betaMix))
+test_that("Difference in beta variates evaluates correctly", { mixdiff_cmp(beta) })
+test_that("Difference in beta mixture variates evaluates correctly", { mixdiff_cmp(betaMix) })
 
-test_that("Difference in gamma variates evaluates correctly", mixdiff_cmp(gamma))
-test_that("Difference in gamma mixture variates evaluates correctly", mixdiff_cmp(gammaMix))
+test_that("Difference in gamma variates evaluates correctly", { mixdiff_cmp(gamma) })
+test_that("Difference in gamma mixture variates evaluates correctly", { mixdiff_cmp(gammaMix) })
 
-test_that("Difference in normal variates evaluates correctly", mixdiff_cmp(norm))
-test_that("Difference in normal mixture variates evaluates correctly", mixdiff_cmp(normMix))
+test_that("Difference in normal variates evaluates correctly", { mixdiff_cmp(norm) })
+test_that("Difference in normal mixture variates evaluates correctly", { mixdiff_cmp(normMix) })
 
 ## for the normal we can use exact analytical results
-test_that("Difference in normal variates evaluates (analytically) correctly", mixdiff_cmp_norm(norm,norm_ref))
-test_that("Difference in normal mixture variates evaluates (analytically) correctly", mixdiff_cmp_norm(normMix,normMix_ref))
+test_that("Difference in normal variates evaluates (analytically) correctly", { mixdiff_cmp_norm(norm,norm_ref) })
+test_that("Difference in normal mixture variates evaluates (analytically) correctly", { mixdiff_cmp_norm(normMix,normMix_ref) })
 
 ## now test difference distributions on the link-transformed scales
 ## (the cannonical cases)
@@ -86,14 +85,14 @@ apply_link <- function(dists, link) {
 }
  
 ## log-odds
-test_that("Difference in beta variates with logit link evaluates correctly", mixdiff_cmp(apply_link(beta, RBesT:::logit_dlink)))
-test_that("Difference in beta mixture variates with logit link evaluates correctly", mixdiff_cmp(apply_link(betaMix, RBesT:::logit_dlink)))
+test_that("Difference in beta variates with logit link evaluates correctly", { mixdiff_cmp(apply_link(beta, RBesT:::logit_dlink)) })
+test_that("Difference in beta mixture variates with logit link evaluates correctly", { mixdiff_cmp(apply_link(betaMix, RBesT:::logit_dlink)) })
 
 ## relative risk
-test_that("Difference in beta variates with log link evaluates correctly", mixdiff_cmp(apply_link(beta, RBesT:::log_dlink)))
-test_that("Difference in beta mixture variates with log link evaluates correctly", mixdiff_cmp(apply_link(betaMix, RBesT:::log_dlink)))
+test_that("Difference in beta variates with log link evaluates correctly", { mixdiff_cmp(apply_link(beta, RBesT:::log_dlink)) })
+test_that("Difference in beta mixture variates with log link evaluates correctly", { mixdiff_cmp(apply_link(betaMix, RBesT:::log_dlink)) })
 
 ## relative counts
-test_that("Difference in gamma variates with log link evaluates correctly", mixdiff_cmp(apply_link(gamma, RBesT:::log_dlink)))
-test_that("Difference in gamma mixture variates with log link evaluates correctly", mixdiff_cmp(apply_link(gammaMix, RBesT:::log_dlink)))
+test_that("Difference in gamma variates with log link evaluates correctly", { mixdiff_cmp(apply_link(gamma, RBesT:::log_dlink)) })
+test_that("Difference in gamma mixture variates with log link evaluates correctly", { mixdiff_cmp(apply_link(gammaMix, RBesT:::log_dlink)) })
 

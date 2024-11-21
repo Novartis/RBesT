@@ -1,4 +1,3 @@
-context("mixdist: Mixture Distribution")
 
 ## various tests around mixture distributions
 set.seed(234534)
@@ -41,14 +40,14 @@ pmix_lower_tail_test <- function(mix, N=Nsamp_quant) {
     do_test(preddist(mix, n=100))
 }
 
-test_that("Cumulative beta distribution function evaluates lower.tail correctly", pmix_lower_tail_test(beta))
-test_that("Cumulative beta mixture distribution function evaluates lower.tail correctly", pmix_lower_tail_test(betaMix))
+test_that("Cumulative beta distribution function evaluates lower.tail correctly", { pmix_lower_tail_test(beta) })
+test_that("Cumulative beta mixture distribution function evaluates lower.tail correctly", { pmix_lower_tail_test(betaMix) })
 
-test_that("Cumulative normal distribution function evaluates lower.tail correctly", pmix_lower_tail_test(norm))
-test_that("Cumulative normal mixture distribution function evaluates lower.tail correctly", pmix_lower_tail_test(normMix))
+test_that("Cumulative normal distribution function evaluates lower.tail correctly", { pmix_lower_tail_test(norm) })
+test_that("Cumulative normal mixture distribution function evaluates lower.tail correctly", { pmix_lower_tail_test(normMix) })
 
-test_that("Cumulative gamma distribution function evaluates lower.tail correctly", pmix_lower_tail_test(gamma))
-test_that("Cumulative gamma mixture distribution function evaluates lower.tail correctly", pmix_lower_tail_test(gammaMix))
+test_that("Cumulative gamma distribution function evaluates lower.tail correctly", { pmix_lower_tail_test(gamma) })
+test_that("Cumulative gamma mixture distribution function evaluates lower.tail correctly", { pmix_lower_tail_test(gammaMix) })
 
 ## tests the quantile and distribution function against simulated samples
 mix_simul_test <- function(mix, eps, qtest, ptest = seq(0.1, 0.9, by=0.1), S=Nsamp_equant) {
@@ -63,40 +62,52 @@ mix_simul_test <- function(mix, eps, qtest, ptest = seq(0.1, 0.9, by=0.1), S=Nsa
     expect_true(all(res_probs < eps))
 }
 
-test_that("Beta quantile function is correct", mix_simul_test(beta, eps, c(0.1, 0.9)))
-test_that("Beta mixture quantile function is correct", mix_simul_test(betaMix, eps, c(0.1, 0.9)))
+test_that("Beta quantile function is correct", { mix_simul_test(beta, eps, c(0.1, 0.9)) })
+test_that("Beta mixture quantile function is correct", { mix_simul_test(betaMix, eps, c(0.1, 0.9)) })
 
-test_that("Normal quantile function is correct", mix_simul_test(norm, eps, c(-1, 0)))
-test_that("Normal mixture quantile function is correct", mix_simul_test(normMix, eps, c(4, 1)))
-test_that("Normal mixture with very weak component quantile function is correct", mix_simul_test(normMixWeak, eps, c(4, 1)))
+test_that("Normal quantile function is correct", { mix_simul_test(norm, eps, c(-1, 0)) })
+test_that("Normal mixture quantile function is correct", { mix_simul_test(normMix, eps, c(4, 1)) })
+test_that("Normal mixture with very weak component quantile function is correct", { mix_simul_test(normMixWeak, eps, c(4, 1)) })
 
-test_that("Gamma quantile function is correct", mix_simul_test(gamma, eps, c(2, 7)))
-test_that("Gamma mixture quantile function is correct", mix_simul_test(gammaMix, eps, c(2, 7), ptest = seq(0.2, 0.8, by=0.1)))
+test_that("Gamma quantile function is correct", { mix_simul_test(gamma, eps, c(2, 7)) })
+test_that("Gamma mixture quantile function is correct", { mix_simul_test(gammaMix, eps, c(2, 7), ptest = seq(0.2, 0.8, by=0.1)) })
 
 ## problematic gamma (triggers internally a fallback to root finding)
 gammaMix2 <- mixgamma(c(8.949227e-01, 7.051570e-01, 6.125121e-02),
                       c(1.049106e-01, 3.009986e-01, 5.169626e-04),
                       c(1.666667e-04, 1.836051e+04, 1.044005e-02))
 
-test_that("Singular gamma mixture quantile function is correct", mix_simul_test(gammaMix2, 10*eps, c(1, 1E3), ptest = seq(0.2, 0.8, by=0.1)))
+test_that("Singular gamma mixture quantile function is correct", { mix_simul_test(gammaMix2, 10*eps, c(1, 1E3), ptest = seq(0.2, 0.8, by=0.1)) })
 
 
 consistent_cdf <- function(mix, values) {
     dens <- dmix(mix, values)
     cdf <- pmix(mix, values)
+    lcdf <- pmix(mix, values, log.p=TRUE)
     expect_true(all(diff(cdf) >= 0))
-    expect_numeric(dens, any.missing=FALSE)
-    expect_numeric(cdf, any.missing=FALSE)
+    expect_numeric(dens, lower=0, finite=TRUE, any.missing=FALSE)
+    expect_numeric(cdf, lower=0, upper=1, finite=TRUE, any.missing=FALSE)
+    expect_numeric(lcdf, upper=0, finite=FALSE, any.missing=FALSE)
 }
 
-test_that("Beta CDF function is consistent", consistent_cdf(beta, seq(0.1, 0.9, by=0.1)))
-test_that("Beta mixture CDF function is consistent", consistent_cdf(betaMix, seq(0.1, 0.9, by=0.1)))
+consistent_ccdf <- function(mix, values) {
+    dens <- dmix(mix, values)
+    ccdf <- pmix(mix, values, FALSE)
+    lccdf <- pmix(mix, values, FALSE, TRUE)
+    expect_true(all(diff(ccdf) <= 0))
+    expect_numeric(dens, lower=0, finite=TRUE, any.missing=FALSE)
+    expect_numeric(ccdf, lower=0, upper=1, finite=TRUE, any.missing=FALSE)
+    expect_numeric(lccdf, upper=0, finite=FALSE, any.missing=FALSE)
+}
 
-test_that("Normal CDF is consistent", consistent_cdf(norm, seq(-2, 2, by=0.1)))
-test_that("Normal mixture CDF is consistent", consistent_cdf(norm, seq(-2, 2, by=0.1)))
+test_that("Beta CDF function is consistent", { consistent_cdf(beta, seq(0.1, 0.9, by=0.1)) })
+test_that("Beta mixture CDF function is consistent", { consistent_cdf(betaMix, seq(0.1, 0.9, by=0.1)) })
 
-test_that("Gamma CDF function is consistent", consistent_cdf(gamma, seq(2, 7, by=0.1)))
-test_that("Gamma mixture CDF function is consistent", consistent_cdf(gammaMix, seq(2, 7, by=0.1)))
+test_that("Normal CDF is consistent", { consistent_cdf(norm, seq(-2, 2, by=0.1)) })
+test_that("Normal mixture CDF is consistent", { consistent_cdf(norm, seq(-2, 2, by=0.1)) })
+
+test_that("Gamma CDF function is consistent", { consistent_cdf(gamma, seq(2, 7, by=0.1)) })
+test_that("Gamma mixture CDF function is consistent", { consistent_cdf(gammaMix, seq(2, 7, by=0.1)) })
 
 
 ## problematic beta which triggers that the cumulative of the
@@ -104,8 +115,12 @@ test_that("Gamma mixture CDF function is consistent", consistent_cdf(gammaMix, s
 ## again once 2.18 is out)
 
 ## problematic Beta density
-bm <- mixbeta(c(1.0, 298.30333970, 146.75306521))
-test_that("Problematic (1) BetaBinomial CDF function is consistent", consistent_cdf(preddist(bm, n=50), 0:50))
+bm1 <- mixbeta(c(1.0, 298.30333970, 146.75306521))
+test_that("Problematic (1) BetaBinomial CDF function is consistent", { consistent_cdf(preddist(bm1, n=50), 0:50) })
+test_that("Problematic (1) BetaBinomial CCDF function is consistent", { consistent_ccdf(preddist(bm1, n=50), 0:50) })
+bm2 <- mixbeta(c(1.0, 3 + 1/3, 47 + 1/3))
+test_that("Problematic (2) BetaBinomial CDF function is consistent", { consistent_cdf(preddist(bm2, n=50), 0:50) })
+test_that("Problematic (2) BetaBinomial CCDF function is consistent", { consistent_ccdf(preddist(bm2, n=50), 0:50) })
 
 ## tests for the multivariate normal mixture density
 p <- 4

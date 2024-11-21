@@ -14,7 +14,7 @@ integrate_density_log(
   mix,
   Lplower = -Inf,
   Lpupper = Inf,
-  eps = 1e-09
+  eps = getOption("RBesT.integrate_prob_eps", 1e-06)
 )
 }
 \arguments{

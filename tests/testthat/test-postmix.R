@@ -1,4 +1,3 @@
-context("postmix: Posterior Mixture Distribution")
 
 norm <- mixnorm(c(1, 0, 0.5), sigma=1)
 

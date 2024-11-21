@@ -1,4 +1,3 @@
-context("preddist: Mixture Predictive Distribution")
 
 ## check that predictive distributions hold what they promise,
 ## i.e. that they describe the sum of n new data points.
@@ -71,11 +70,11 @@ preddist_cmp <- function(mix,  n, n_rng, N=Nsamp, qntls=p_quants, stat=c("sum", 
 }
 
 
-test_that("Predictive for a beta evaluates correctly (binary)", preddist_cmp(beta, n, Curry(rbinom, n=n, size=1)))
-test_that("Predictive for a beta mixture evaluates correctly (binary)", preddist_cmp(betaMix, n, Curry(rbinom, n=n, size=1)))
+test_that("Predictive for a beta evaluates correctly (binary)", { preddist_cmp(beta, n, Curry(rbinom, n=n, size=1)) })
+test_that("Predictive for a beta mixture evaluates correctly (binary)", { preddist_cmp(betaMix, n, Curry(rbinom, n=n, size=1)) })
 
-test_that("Predictive for a gamma evaluates correctly (poisson)", preddist_cmp(gamma, n, Curry(rpois, n=n)))
-test_that("Predictive for a gamma mixture evaluates correctly (poisson)", preddist_cmp(gammaMix, n, Curry(rpois, n=n), Teps=1E-1))
+test_that("Predictive for a gamma evaluates correctly (poisson)", { preddist_cmp(gamma, n, Curry(rpois, n=n)) })
+test_that("Predictive for a gamma mixture evaluates correctly (poisson)", { preddist_cmp(gammaMix, n, Curry(rpois, n=n), Teps=1E-1) })
 
-test_that("Predictive for a normal evaluates correctly (normal)", preddist_cmp(norm, n, Curry(rnorm, n=n, sd=sigma(norm)), stat="mean"))
-test_that("Predictive for a normal mixture evaluates correctly (normal)", preddist_cmp(normMix, n, Curry(rnorm, n=n, sd=sigma(normMix)), stat="mean", Teps=1E-1))
+test_that("Predictive for a normal evaluates correctly (normal)", { preddist_cmp(norm, n, Curry(rnorm, n=n, sd=sigma(norm)), stat="mean") })
+test_that("Predictive for a normal mixture evaluates correctly (normal)", { preddist_cmp(normMix, n, Curry(rnorm, n=n, sd=sigma(normMix)), stat="mean", Teps=1E-1) })

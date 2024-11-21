@@ -2,13 +2,13 @@
 #' Utilities for SBC validation
 #'
 load_rbest_dev <- function() {
-    here::i_am("inst/sbc/sbc_tools.R")
+    if(rbest_lib_dir != .libPaths()[1]) {
+        cat("Unloading RBesT and setting libPaths to dev RBesT install.\n")
+        unloadNamespace("RBesT")
+        .libPaths(c(rbest_lib_dir, .libPaths()))
+    }
     if(!("RBesT" %in% .packages())) {
-        cat("RBesT not yet loaded, bringing up local dev version.\n")
-        library(devtools)
-        devtools::load_all(here())
-    } else {
-        cat("RBesT is already loaded.\n")
+        require(RBesT, lib.loc=rbest_lib_dir)
     }
 }
 
@@ -87,12 +87,16 @@ fit_rbest <- function(fake, draw, draw_theta, family, prior_mean_mu, prior_sd_mu
                     gaussian=cbind(y, y_se) ~ 1 | group)
 
     options(RBesT.MC.warmup=2000, RBesT.MC.iter=4000, RBesT.MC.thin=1, RBesT.MC.init=0.1,
-            RBesT.MC.control=list(adapt_delta=0.999, stepsize=0.01, max_treedepth=10,
+            RBesT.MC.control=list(##adapt_delta=0.999, ## 2024-11-21 lowered to 0.95 for the sake of performance
+                                  adapt_delta=0.95,
+                                  stepsize=0.01, max_treedepth=10,
                                   adapt_init_buffer=100, adapt_term_buffer=300))
 
     if(Ng > 5) {
         ## for the dense case we can be a bit less aggressive with the sampling tuning parameters
-        options(RBesT.MC.control=list(adapt_delta=0.95, stepsize=0.01, max_treedepth=10,
+        options(RBesT.MC.control=list(##adapt_delta=0.95,
+                                      adapt_delta=0.90,
+                                      stepsize=0.01, max_treedepth=10,
                                       adapt_init_buffer=100, adapt_term_buffer=300))
     }
     fit <- gMAP(model, data=fake, family=family,
@@ -159,58 +163,3 @@ run_sbc_case <- function(job.id, repl, data_scenario, family, mean_mu, sd_mu, sd
     c(list(job.id=job.id, time.running=runtime["elapsed"]), fit)
 }
 
-## Submits to batchtools cluster with fault tolerance, i.e.
-## resubmitting failed jobs max_num_tries times
-auto_submit <- function(jobs, registry, resources=list(), max_num_tries = 10) {
-  all_unfinished_jobs <- jobs
-
-  num_unfinished_jobs <- nrow(all_unfinished_jobs)
-  num_all_jobs <- num_unfinished_jobs
-  remaining_tries <- max_num_tries
-  all_jobs_finished <- FALSE
-  while (remaining_tries > 0 && !all_jobs_finished) {
-    remaining_tries <- remaining_tries - 1
-
-    message("Submitting jobs at ", Sys.time())
-    # Once things run fine let's submit this work to the cluster.
-    submitJobs(all_unfinished_jobs, resources=resources)
-    # Wait for results.
-    waitForJobs()
-    message("Finished waiting for jobs at ", Sys.time())
-
-    # Check status:
-    print(getStatus())
-
-    # Ensure that all jobs are done
-    if (nrow(findNotDone()) != 0) {
-      not_done_jobs <- findNotDone()
-      print(getErrorMessages(not_done_jobs))
-      ##browser()
-      ##invisible(readline(prompt="Press [enter] to continue"))
-
-      message("Some jobs did not complete. Please check the batchtools registry ", registry$file.dir)
-      all_unfinished_jobs <- inner_join(not_done_jobs, all_unfinished_jobs)
-
-      if (num_unfinished_jobs == nrow(all_unfinished_jobs) &&  nrow(all_unfinished_jobs) > 0.25 * num_all_jobs)
-      {
-        # Unfinished job count did not change -> retrying will probably not help. Abort!
-        warning("Error: unfinished job count is not decreasing. Aborting job retries.")
-        remaining_tries <- 0
-      }
-
-      if (num_unfinished_jobs == nrow(jobs))
-      {
-        # All jobs errored -> retrying will probably not help. Abort!
-        warning("Error: all jobs errored. Aborting job retries.")
-        remaining_tries <- 0
-      }
-
-      num_unfinished_jobs <- nrow(all_unfinished_jobs)
-      message("Trying to resubmit jobs. Remaining tries: ", remaining_tries, " / ", max_num_tries)
-    } else {
-      all_jobs_finished <- TRUE
-    }
-  }
-
-  invisible(all_jobs_finished)
-}

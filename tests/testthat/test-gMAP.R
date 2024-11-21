@@ -1,4 +1,3 @@
-context("gMAP: Generalized Meta Analytic Predictive")
 
 ## test gMAP results using SBC and with matching rstanarm models
 
@@ -106,14 +105,14 @@ rate <- round(-log(0.05)/2, 1)
 test_that("gMAP matches RStanArm binomial family", {
     skip("RStanArm has issues loading since 2024-01-02 on CI/CD systems.")
               skip_on_cran()
-              best_run <- gMAP(cbind(r, n-r) ~ 1 | study,
+              suppressWarnings( best_run <- gMAP(cbind(r, n-r) ~ 1 | study,
                                data=AS,
                                family=binomial,
                                tau.dist="Exp",
                                tau.prior=c(rate),
                                beta.prior=cbind(0, 2)
-                               )
-              out <- capture.output(rstanarm_run <- make_rstanarm_ref(
+                               ) )
+              suppressWarnings( out <- capture.output(rstanarm_run <- make_rstanarm_ref(
                   stan_glmer(cbind(r, n-r) ~ 1 + (1|study),
                              data=AS,
                              family=binomial,
@@ -127,6 +126,7 @@ test_that("gMAP matches RStanArm binomial family", {
                              prior_intercept=normal(0,2,autoscale=FALSE),
                              prior_covariance=decov(1, 1, 1, 1/rate)
                              )))
+                  )
               cmp_reference(best_gmap=best_run, OB_ref=rstanarm_run)
           })
 
@@ -148,9 +148,10 @@ test_that("gMAP processes single trial case", {
           )
 
 test_that("gMAP processes not continuously labeled studies", {
-              out <- capture.output(map1 <- gMAP(cbind(r, n-r) ~ 1 | study, data=AS[-1,],
+              suppressWarnings( out <- capture.output(map1 <- gMAP(cbind(r, n-r) ~ 1 | study, data=AS[-1,],
                                                  family=binomial, tau.dist="HalfNormal", tau.prior=0.5,
                                                  iter=100, warmup=50, chains=1, thin=1))
+                               )
               expect_true(nrow(fitted(map1)) == nrow(AS) - 1)
           })
 
@@ -163,7 +164,7 @@ test_that("gMAP reports divergences", {
                                                                  tau.dist="Uniform", tau.prior=cbind(0, 1000),
                                                                  beta.prior=cbind(0,1E5),
                                                                  iter=1000, warmup=0, chains=1, thin=1, init=10)))
-              sp <- rstan::get_sampler_params(mcmc_div$fit)[[1]]
+              sp <- rstan::get_sampler_params(mcmc_div$fit, inc_warmup=FALSE)[[1]]
               expect_true(sum(sp[,"divergent__"]) > 0)
           })
 
@@ -173,31 +174,31 @@ do.call(options, std_sampling)
 test_that("gMAP handles extreme response rates", {
               n <- 5
               data1 <- data.frame(n=c(n,n,n,n),r=c(5,5,5,5), study=1)
-              map1 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
-                           data=data1, tau.dist="HalfNormal",
-                           tau.prior=2.0, beta.prior=2,
-                           warmup=100, iter=200, chains=1, thin=1)
+              suppressWarnings( map1 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
+                                             data=data1, tau.dist="HalfNormal",
+                                             tau.prior=2.0, beta.prior=2,
+                                             warmup=100, iter=200, chains=1, thin=1) )
               expect_true(nrow(fitted(map1)) == 4)
               data2 <- data.frame(n=c(n,n,n,n),r=c(0,0,0,0), study=1)
-              map2 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
-                           data=data2, tau.dist="HalfNormal",
-                           tau.prior=2.0, beta.prior=2,
-                           warmup=100, iter=200, chains=1, thin=1)
+              suppressWarnings( map2 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
+                                             data=data2, tau.dist="HalfNormal",
+                                             tau.prior=2.0, beta.prior=2,
+                                             warmup=100, iter=200, chains=1, thin=1) )
               expect_true(nrow(fitted(map2)) == 4)
               data3 <- data.frame(n=c(n,n,n,n),r=c(5,5,5,5), study=c(1,1,2,2))
-              map3 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
-                           data=data3, tau.dist="HalfNormal",
-                           tau.prior=2.0, beta.prior=2,
-                           warmup=100, iter=200, chains=1, thin=1)
+              suppressWarnings( map3 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
+                                             data=data3, tau.dist="HalfNormal",
+                                             tau.prior=2.0, beta.prior=2,
+                                             warmup=100, iter=200, chains=1, thin=1) )
               expect_true(nrow(fitted(map3)) == 4)
           })
 
 test_that("gMAP handles fixed tau case", {
-              map1 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
-                           data=AS, tau.dist="Fixed",
-                           tau.prior=0.5, beta.prior=2,
-                           warmup=100, iter=200, chains=1, thin=1)
-              expect_true(map1$Rhat.max >= 1)
+    suppressWarnings( map1 <- gMAP(cbind(r, n-r) ~ 1 | study, family=binomial,
+                                   data=AS, tau.dist="Fixed",
+                                   tau.prior=0.5, beta.prior=2,
+                                   warmup=100, iter=200, chains=1, thin=1) )
+    expect_true(map1$Rhat.max >= 1)
           })
 
 test_that("gMAP labels data rows correctly when using covariates", {

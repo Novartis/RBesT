@@ -1,4 +1,3 @@
-context("oc2S: 2-Sample Operating Characteristics")
 
 ## test the analytical OC function via brute force simulation
 set.seed(12354)
@@ -20,8 +19,7 @@ theta2 <- 0.5
 
 Nsim <- 1e4
 
-run_on_cran <- function()
-{
+run_on_cran <- function() {
     if (identical(Sys.getenv("NOT_CRAN"), "true")) {
         return(FALSE)
     }
@@ -87,7 +85,7 @@ test_that("Type I error is matching between MC and analytical computations in th
 test_that("Power is matching between MC and analytical computations in the normal mixture case", {
               skip_on_cran()
 
-              power   <- oc2S(prior1, prior2, N1, N2, decision2S(pcrit, qcrit))(theta1, theta2)
+              power   <- oc2S(prior1, prior2, N1, N2, decision2S(pcrit, qcrit), sigma1=sigma(prior1), sigma2=sigma(prior2))(theta1, theta2)
               powerMC <- oc2S_normal_MC(prior1, prior2, N1, N2, theta1, theta2, pcrit, qcrit)
               res <- 100 * abs(power - powerMC)
               expect_equal(sum(res > 2) , 0)
@@ -125,10 +123,10 @@ test_that("Gsponer et al. results match (normal end-point)", {
               ## spline function
 
               ## Table 1, probability for interim for success
-              oc$success <- oc2S(priorP, priorT, nP1, nT1, successCrit, Ngrid=1)(-49, -49-oc$delta)
+              oc$success <- oc2S(priorP, priorT, nP1, nT1, successCrit, Ngrid=1, sigma1=sigmaFixed, sigma2=sigmaFixed)(-49, -49-oc$delta)
 
               ## Table 1, probability for interim for futility
-              oc$futile <- oc2S(priorP, priorT, nP1, nT1, futilityCrit, Ngrid=1)(-49, -49-oc$delta)
+              oc$futile <- oc2S(priorP, priorT, nP1, nT1, futilityCrit, Ngrid=1, sigma1=sigmaFixed, sigma2=sigmaFixed)(-49, -49-oc$delta)
 
               ## Table 1, first three columns, page 74
               oc[-1] <- lapply(100*oc[-1], round, 1)
@@ -236,9 +234,9 @@ expect_equal_each <- function(test, expected) {
 ## design object, decision function, posterior function must return
 ## posterior after updatding the prior with the given value; we assume
 ## that the priors are the same for sample 1 and 2
-test_critical_discrete <- function(design, decision, posterior, y2) {
+test_critical_discrete <- function(boundary_design, decision, posterior, y2) {
     lower.tail <- attr(decision, "lower.tail")
-    crit <- design(y2=y2)
+    crit <- boundary_design(y2)
     post2 <- posterior(y2)
     if(lower.tail) {
         expect_equal(decision(posterior(crit-1), post2), 1)
@@ -263,13 +261,20 @@ decB <- decision2S(1-alpha, 0, lower.tail=FALSE)
 beta_prior <- mixbeta(c(1, 1, 1))
 if(!run_on_cran()) {
     design_binary  <- oc2S(beta_prior, beta_prior, 100, 100, dec)
+    boundary_design_binary  <- decision2S_boundary(beta_prior, beta_prior, 100, 100, dec)
     design_binaryB <- oc2S(beta_prior, beta_prior, 100, 100, decB)
+    boundary_design_binaryB <- decision2S_boundary(beta_prior, beta_prior, 100, 100, decB)
+} else {
+    design_binary <- function(...) { return(0.1) }
+    design_binaryB <- function(...) { return(0.1) }
+    boundary_design_binary <- function(...) { return(0.1) }
+    boundary_design_binaryB <- function(...) { return(0.1) }
 }
 posterior_binary <- function(r) postmix(beta_prior, r=r, n=100)
 p_test <- 1:9 / 10
 test_that("Binary type I error rate", { skip_on_cran(); test_scenario(design_binary(p_test, p_test), alpha) })
-test_that("Binary crticial value, lower.tail=TRUE", { skip_on_cran(); test_critical_discrete(design_binary, dec, posterior_binary, 30) })
-test_that("Binary crticial value, lower.tail=FALSE", { skip_on_cran(); test_critical_discrete(design_binaryB, decB, posterior_binary, 30) })
+test_that("Binary crticial value, lower.tail=TRUE", { skip_on_cran(); test_critical_discrete(boundary_design_binary, dec, posterior_binary, 30) })
+test_that("Binary crticial value, lower.tail=FALSE", { skip_on_cran(); test_critical_discrete(boundary_design_binaryB, decB, posterior_binary, 30) })
 test_that("Binary boundary case, lower.tail=TRUE",  { skip_on_cran(); expect_numeric(design_binary( 1, 1), lower=0, upper=1, finite=TRUE, any.missing=FALSE) })
 test_that("Binary boundary case, lower.tail=FALSE", { skip_on_cran(); expect_numeric(design_binaryB(0, 0), lower=0, upper=1, finite=TRUE, any.missing=FALSE) })
 
@@ -280,9 +285,11 @@ beta_prior1 <- mixbeta(c(1, 0.9, 1000), param="mn")
 beta_prior2 <- mixbeta(c(1, 0.1, 1000), param="mn")
 design_lower <- oc2S(beta_prior1, beta_prior2, 20, 20, dec)  ## always 0
 design_upper <- oc2S(beta_prior1, beta_prior2, 20, 20, decB) ## always 1
+boundary_design_lower <- decision2S_boundary(beta_prior1, beta_prior2, 20, 20, dec)  ## always 0
+boundary_design_upper <- decision2S_boundary(beta_prior1, beta_prior2, 20, 20, decB) ## always 1
 
-test_that("Binary case, no decision change, lower.tail=TRUE, critical value", { skip_on_cran(); expect_equal_each(design_lower(y2=0:20), -1) })
-test_that("Binary case, no decision change, lower.tail=FALSE, critical value", { skip_on_cran(); expect_equal_each(design_upper(y2=0:20), 21) })
+test_that("Binary case, no decision change, lower.tail=TRUE, critical value", { skip_on_cran(); expect_equal_each(boundary_design_lower(0:20), -1) })
+test_that("Binary case, no decision change, lower.tail=FALSE, critical value", { skip_on_cran(); expect_equal_each(boundary_design_upper(0:20), 21) })
 test_that("Binary case, no decision change, lower.tail=TRUE, frequency=0", { skip_on_cran(); expect_equal_each(design_lower(p_test, p_test), 0.0) })
 test_that("Binary case, no decision change, lower.tail=FALSE, frequency=1",  { skip_on_cran(); expect_equal_each(design_upper(p_test, p_test), 1.0) })
 
@@ -290,10 +297,17 @@ test_that("Binary case, no decision change, lower.tail=FALSE, frequency=1",  { s
 if(!run_on_cran()) {
     design_lower_rev <- oc2S(beta_prior2, beta_prior1, 20, 20, dec)  ## always 1
     design_upper_rev <- oc2S(beta_prior2, beta_prior1, 20, 20, decB) ## always 0
+    boundary_design_lower_rev <- decision2S_boundary(beta_prior2, beta_prior1, 20, 20, dec)  ## always 1
+    boundary_design_upper_rev <- decision2S_boundary(beta_prior2, beta_prior1, 20, 20, decB) ## always 0
+} else {
+    design_lower_rev <- function(...) return(1)
+    design_upper_rev <- function(...) return(0)
+    boundary_design_lower_rev <- function(...) return(1)
+    boundary_design_upper_rev <- function(...) return(0)
 }
 
-test_that("Binary case, no decision change (reversed), lower.tail=TRUE, critical value",  { skip_on_cran(); expect_equal_each(design_lower_rev(y2=0:20), 20) })
-test_that("Binary case, no decision change (reversed), lower.tail=FALSE, critical value", { skip_on_cran(); expect_equal_each(design_upper_rev(y2=0:20), -1) })
+test_that("Binary case, no decision change (reversed), lower.tail=TRUE, critical value",  { skip_on_cran(); expect_equal_each(boundary_design_lower_rev(0:20), 20) })
+test_that("Binary case, no decision change (reversed), lower.tail=FALSE, critical value", { skip_on_cran(); expect_equal_each(boundary_design_upper_rev(0:20), -1) })
 test_that("Binary case, no decision change (reversed), lower.tail=TRUE, frequency=0",  { skip_on_cran(); expect_equal_each(design_lower_rev(p_test, p_test), 1.0) })
 test_that("Binary case, no decision change (reversed), lower.tail=FALSE, frequency=1",  { skip_on_cran(); expect_equal_each(design_upper_rev(p_test, p_test), 0.0) })
 test_that("Binary case, log-link", {
@@ -346,11 +360,13 @@ gamma_prior <- mixgamma(c(1, 2, 2))
 
 design_poisson  <- oc2S(gamma_prior, gamma_prior, 100, 100, dec)
 design_poissonB <- oc2S(gamma_prior, gamma_prior, 100, 100, decB)
+boundary_design_poisson  <- decision2S_boundary(gamma_prior, gamma_prior, 100, 100, dec)
+boundary_design_poissonB <- decision2S_boundary(gamma_prior, gamma_prior, 100, 100, decB)
 posterior_poisson <- function(m) postmix(gamma_prior, m=m/100, n=100)
 lambda_test <- seq(0.5, 1.3, by=0.1)
 test_that("Poisson type I error rate", { skip_on_cran(); test_scenario(design_poisson(lambda_test, lambda_test), alpha) })
-test_that("Poisson crticial value, lower.tail=TRUE", { skip_on_cran(); test_critical_discrete(design_poisson, dec, posterior_poisson, 90) })
-test_that("Poisson crticial value, lower.tail=FALSE", { skip_on_cran(); test_critical_discrete(design_poissonB, decB, posterior_poisson, 90) })
+test_that("Poisson crticial value, lower.tail=TRUE", { skip_on_cran(); test_critical_discrete(boundary_design_poisson, dec, posterior_poisson, 90) })
+test_that("Poisson crticial value, lower.tail=FALSE", { skip_on_cran(); test_critical_discrete(boundary_design_poissonB, decB, posterior_poisson, 90) })
 ## 22 Nov 2017: disabled test as we trigger always calculation of the
 ## boundaries as of now.
 ##test_that("Poisson results cache expands", {
@@ -413,8 +429,8 @@ test_that("Normal OC 2-sample avoids undefined behavior, example 1", {
     dec  <- decision2S(1-alpha, 0, lower.tail=FALSE)
     n <- 58
     k <- 2
-    design_map  <- oc2S(prior_flat, map_ref, n, n/k, dec)
-    design_map_2  <- oc2S(prior_flat, map_ref, n, n/k, dec)
+    design_map  <- oc2S(prior_flat, map_ref, n, n/k, dec, sigma1=sigma_ref, sigma2=sigma_ref)
+    design_map_2  <- oc2S(prior_flat, map_ref, n, n/k, dec, sigma1=sigma_ref, sigma2=sigma_ref)
 
     x <- seq(-2.6, -1.6, by=0.1)
     expect_numeric(design_map(x, x), lower=0, upper=1, any.missing=FALSE)
