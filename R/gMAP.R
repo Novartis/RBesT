@@ -6,38 +6,46 @@
 #' \code{\link[stats:glm]{glm}} conventions.
 #'
 #' @param formula the model formula describing the linear predictor
-#' and encoding the grouping; see details
-#' @param family the family of distributions defining the statistical
-#' model (\code{binomial}, \code{gaussian}, or \code{poisson})
+#'     and encoding the grouping; see details
+#' @param family defines data likelihood and link function
+#'     (\code{binomial}, \code{gaussian}, or \code{poisson})
 #' @param data optional data frame containing the variables of the
-#' model. If not found in \code{data}, the variables are taken from
-#' \code{environment(formula)}.
+#'     model. If not found in \code{data}, the variables are taken
+#'     from \code{environment(formula)}.
 #' @param weights optional weight vector; see details below.
 #' @param offset offset term in statistical model used for Poisson
-#' data
+#'     data
 #' @param tau.strata sets the exchangability stratum per study. That
-#' is, it is expected that each study belongs to a single
-#' stratum. Default is to assign all studies to stratum 1. See section
-#' differential heterogeniety below.
-#' @param tau.strata.pred the index for the prediction stratum; default is 1.
+#'     is, it is expected that each study belongs to a single
+#'     stratum. Default is to assign all studies to stratum 1. See
+#'     section differential heterogeniety below.
+#' @param tau.strata.pred the index for the prediction stratum;
+#'     default is 1.
 #' @param tau.dist type of prior distribution for \code{tau};
-#' supported priors are \code{HalfNormal} (default),
-#' \code{TruncNormal}, \code{Uniform}, \code{Gamma}, \code{InvGamma},
-#' \code{LogNormal}, \code{TruncCauchy}, \code{Exp} and \code{Fixed}.
+#'     supported priors are \code{HalfNormal} (default),
+#'     \code{TruncNormal}, \code{Uniform}, \code{Gamma},
+#'     \code{InvGamma}, \code{LogNormal}, \code{TruncCauchy},
+#'     \code{Exp} and \code{Fixed}.
 #' @param tau.prior parameters of prior distribution for \code{tau};
-#' see section prior specification below.
+#'     see section prior specification below.
 #' @param beta.prior mean and standard deviation for normal priors of
-#' regression coefficients, see section prior specification below.
-#' @param prior_PD logical to indicate if the prior predictive distribution should be sampled (no conditioning on the data). Defaults to \code{FALSE}.
-#' @param REdist type of random effects distribution. \code{Normal} (default) or \code{t}.
-#' @param t.df degrees of freedom if random-effects distribution is \code{t}.
+#'     regression coefficients, see section prior specification below.
+#' @param prior_PD logical to indicate if the prior predictive
+#'     distribution should be sampled (no conditioning on the
+#'     data). Defaults to \code{FALSE}.
+#' @param REdist type of random effects distribution. \code{Normal}
+#'     (default) or \code{t}.
+#' @param t.df degrees of freedom if random-effects distribution is
+#'     \code{t}.
 #' @param contrasts an optional list; See \code{contrasts.arg} from
-#' \code{\link[stats:model.matrix.default]{model.matrix.default}}.
+#'     \code{\link[stats:model.matrix.default]{model.matrix.default}}.
 #' @template args-sampling
 #' @param digits number of displayed significant digits.
 #' @param probs defines quantiles to be reported.
-#' @param type sets reported scale (\code{response} (default) or \code{link}).
-#' @param x,object \code{gMAP} analysis object created by \code{gMAP} function
+#' @param type sets reported scale (\code{response} (default) or
+#'     \code{link}).
+#' @param x,object \code{gMAP} analysis object created by \code{gMAP}
+#'     function
 #' @param ... optional arguments are ignored
 #'
 #' @details

@@ -14,22 +14,31 @@
 #'     of the expected information for the Poisson-Gamma case of
 #'     Morita method (defaults to 1E-4).
 #' @param sigma reference scale.
+#' @param family defines data likelihood and link function
+#'     (\code{binomial}, \code{gaussian}, or \code{poisson}).
 #' @param ... Optional arguments applicable to specific methods.
 #'
 #' @details The ESS is calculated using either the expected local
 #'     information ratio (elir) \emph{Neuenschwander et
-#'     al. (submitted)}, the moments approach or the method by
+#'     al. (2020)}, the moments approach or the method by
 #'     \emph{Morita et al. (2008)}.
 #'
-#' The elir approach is the only ESS which fulfills predictive
-#' consistency. The predictive consistency of the ESS requires that
-#' the ESS of a prior is the same as averaging the posterior ESS after
-#' a fixed amount of events over the prior predictive distribution
-#' from which the number of forward simulated events is
-#' subtracted. The elir approach results in ESS estimates which are
-#' neither conservative nor liberal whereas the moments method yields
-#' conservative and the morita method liberal results. See the example
-#' section for a demonstration of predictive consistency.
+#' The elir approach measures effective sample size in terms of the
+#' average curvature of the prior in relation to the Fisher
+#' information. Informally this corresponds to the average peakiness
+#' of the prior in relation to the information content of a single
+#' observation. The elir approach is the only ESS which fulfills
+#' predictive consistency. The predictive consistency of the ESS
+#' requires that the ESS of a prior is consistent when considering an
+#' averaged posterior ESS of additional data distributed according to
+#' the predictive distribution of the prior. The expectation of the
+#' posterior ESS is taken wrt to the prior predictive distribution and
+#' the averaged posterior ESS corresponds to the sum of the prior ESS
+#' and the number of forward simulated data items. The elir approach
+#' results in ESS estimates which are neither conservative nor liberal
+#' whereas the moments method yields conservative and the morita
+#' method liberal results. See the example section for a demonstration
+#' of predictive consistency.
 #'
 #' For the moments method the mean and standard deviation of the
 #' mixture are calculated and then approximated by the conjugate
@@ -45,17 +54,25 @@
 #' (2019) which avoids the need for a minimization and does not
 #' restrict the ESS to be an integer.
 #'
+#' The arguments \code{sigma} and \code{family} are specific for
+#' normal mixture densities. These specify the sampling standard
+#' deviation for a \code{gaussian} family (the default) while also
+#' allowing to consider the ESS of standard one-parameter exponential
+#' families, i.e. \code{binomial} or \code{poisson}. The function
+#' supports non-gaussian families with unit dispersion only.
+#'
 #' @return Returns the ESS of the prior as floating point number.
 #'
 #' @template conjugate_pairs
 #'
-#' @references Morita S, Thall PF, Mueller P.
-#' Determining the effective sample size of a parametric prior.
-#' \emph{Biometrics} 2008;64(2):595-602.
+#' @references Morita S, Thall PF, Mueller P.  Determining the
+#'     effective sample size of a parametric prior.  \emph{Biometrics}
+#'     2008;64(2):595-602.
 #'
-#' @references Neuenschwander B, Weber S, Schmidli H, O'Hagen A.
-#' Predictively Consistent Prior Effective Sample Sizes.
-#' \emph{pre-print} 2019; arXiv:1907.04185
+#' @references Neuenschwander B., Weber S., Schmidli H., O’Hagan
+#'     A. (2020). Predictively consistent prior effective sample
+#'     sizes. \emph{Biometrics}, 76(2),
+#'     578–587. https://doi.org/10.1111/biom.13252
 #'
 #' @example inst/examples/ess.R
 #' 
@@ -101,7 +118,7 @@ mixInfo <- function(mix, x, dens, gradl, hessl) {
     dgl <- gradl(x,a,b)
     dhl <- (hessl(x,a,b) + dgl^2)
     ## attempt numerically more stable log calculations if possible,
-    ## i.e. if all sings are the same
+    ## i.e. if all signs are the same
     if(all(!is.na(dgl)) && ( all(dgl < 0) || all(dgl > 0))) {
         gsum <- exp(2*matrixStats::logSumExp(lwdensComp + log(abs(dgl))))
     } else {
@@ -151,7 +168,6 @@ weighted_lir_link <- function(mix, info, fisher_inverse, link) {
 ##     sum(p*densComp*dgl)/densMix
 ## }
 
-
 # prior effective sample size ESS for Beta-mixture priors
 # based on
 # Morita, Thall, Mueller (MTM) 2008 Biometrics
@@ -162,6 +178,8 @@ ess.betaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100) {
 
     method <- match.arg(method)
 
+    assert_that(!("family" %in% names(match.call())), msg="Argument family is only supported for normal mixtures.")
+
     if(method == "elir") {
         if(!test_numeric(mix[2,], lower=1, finite=TRUE, any.missing=FALSE) ||
            !test_numeric(mix[3,], lower=1, finite=TRUE, any.missing=FALSE)) {
@@ -170,6 +188,14 @@ ess.betaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100) {
                  "Consider constraining all parameters to be greater than 1 (use constrain_gt1=TRUE argument for EM fitting functions).")
         }
         elir <- integrate_density(lir(mix, betaMixInfo, bernoulliFisherInfo_inverse), mix)
+        ## TODO: elir can be negative in case any a or b is equal to
+        ## 1. In this case the user may consider using a logit
+        ## transformation approach applied to a normal mixture prior
+        ## on the link scale. Give the user an informational message
+        ## in case this occures once this is implemented.
+        if(elir < 0) {
+            warning("Negative ESS elir found indicating unstable integration of the elir ratio.\nConsider estimating the ESS elir on the logit scale for the respective transformed density and use the family=binomial argument.")
+        }
         return(elir)
     }
 
@@ -188,8 +214,6 @@ ess.betaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100) {
 
     deriv2.prior <- betaMixInfo(mix, locEst)
 
-    ESSmax <- ceiling(sum(alphaP+betaP)) * 2
-
     ## alpha and beta of "flattened" priors
     alphaP0 <- locEst / s
     betaP0 <- (1-locEst) / s
@@ -207,47 +231,31 @@ ess.betaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100) {
         warning("Some of the mixture components have a scale which is large compared to the rescaling factor s. Consider increasing s.")
     }
 
-    ## expected 2nd derivative at mode
-    ed2p <- function(m) {
-        yn <- seq(0,m)
-        ## negative 2nd log-derivative at mode
-        info <- betaInfo(locEst, alphaP0 + yn, betaP0 + m - yn)
-        ## prior predictive
-        sum(info * dmix(preddist(mix,n=m), yn) )
-    }
-    ## function to search for change of sign
-    ed2pDiff <- function(m) {
-        deriv2.prior - ed2p(m)
-    }
-
     pd0 <- dmix(preddist(mix, n=1), 0)
     Einfo <- binomialInfo(0,locEst,1) * pd0 + binomialInfo(1,locEst,1) * (1-pd0)
 
-    ##return(unname(uniroot_int(ed2pDiff, c(0,ESSmax))))
     ## Eq. 9 of Neuenschwander et al. (2019)
     return( unname((deriv2.prior - info.prior0) / Einfo ) )
 }
 
 ## derivative of a single log-beta
 betaLogGrad <- function(x,a,b) {
-    lxm1 <- log1p(-x)
-    lx <- log(x)
-    - (b-1) * exp(- lxm1) + (a-1)*exp(- lx)
+    - (b-1)/(1-x) + (a-1)/x
 }
 
 ## second derivative of a single log-beta
 betaLogHess <- function(x,a,b) {
-    lxm1 <- log1p(-x)
-    lx <- log(x)
-    - (b-1) * exp(-2 * lxm1) - (a-1)*exp(-2 * lx)
+    - (b-1)/(x-1)^2 - (a-1)/x^2
 }
 
 betaMixInfo <- function(mix,x) {
+    x <- pmin(pmax(x, .Machine$double.eps), 1.0-.Machine$double.eps)
     mixInfo(mix, x, dbeta, betaLogGrad, betaLogHess)
 }
 
 ## info metric for a single beta, i.e. negative second derivative of log beta
 betaInfo <- function(x,a,b) {
+    x <- pmin(pmax(x, .Machine$double.eps), 1.0-.Machine$double.eps)
     -betaLogHess(x,a,b)
 }
 
@@ -269,8 +277,11 @@ binomialInfo <- function(r,theta,n) {
 ess.gammaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100, eps=1E-4) {
 
     method <- match.arg(method)
-    lik <- likelihood(mix)
 
+    assert_that(!("family" %in% names(match.call())), msg="Argument family is only supported for normal mixtures.")
+
+    lik <- likelihood(mix)
+    
     if(method == "elir") {
         if(lik == "poisson")
             return(integrate_density(lir(mix, gammaMixInfo, poissonFisherInfo_inverse), mix))
@@ -300,13 +311,6 @@ ess.gammaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100, 
         names(meanPrior) <- NULL
         priorN <- mix[3,,drop=FALSE]
 
-        ## function to search for change of sign
-        ed2pDiff <- function(m) {
-            deriv2.prior - ( gammaInfo(locEst, locEst/s + m * meanPrior, 1/s))
-        }
-
-        ESSmax <- ceiling(sum(mix[3,])) * 2
-
         info.prior0  <- gammaInfo(locEst, locEst/s, 1/s)
 
         ## E_Y1 ( i_F ) using numerical integration
@@ -318,12 +322,6 @@ ess.gammaMix <- function(mix, method=c("elir", "moment", "morita"), ..., s=100, 
 
     if(lik == "exp") {
         priorN <- mix[2,,drop=FALSE]
-        ## function to search for change of sign
-        ed2pDiff <- function(m) {
-            deriv2.prior - gammaInfo(locEst, 1/s + m, 1/(s*locEst))
-        }
-
-        ESSmax <- ceiling(sum(mix[2,])) * 2
 
         info.prior0  <- gammaInfo(locEst, 1/s, 1/(s*locEst))
 
@@ -367,13 +365,33 @@ expInfo <- function(y,theta) {
 
 #' @describeIn ess ESS for normal mixtures.
 #' @export
-ess.normMix <- function(mix, method=c("elir", "moment", "morita"), ..., sigma, s=100) {
+ess.normMix <- function(mix, method=c("elir", "moment", "morita"), ..., family=gaussian, sigma, s=100) {
 
     method <- match.arg(method)
 
-    if(missing(sigma)) {
-        sigma <- RBesT::sigma(mix)
-        message("Using default prior reference scale ", sigma)
+    if (is.character(family)) 
+        family <- get(family, mode = "function", envir = parent.frame())
+    if (is.function(family)) 
+        family <- family()
+    if (is.null(family$family)) {
+        print(family)
+        stop("'family' not recognized")
+    }
+
+    is_gaussian_family <- family$family == "gaussian"
+    if(!is_gaussian_family) {
+        assert_that(family$dispersion == 1, msg="Only dispersion unity is supported for non-gaussian families.")
+    }
+
+    normTransformedFisherInfo_inverse <- make_normTransformedFisherInfo_inverse(family)
+
+    if(!is_gaussian_family) {
+        sigma <- 1
+    } else {
+        if(missing(sigma)) {
+            sigma <- RBesT::sigma(mix)
+            message("Using default prior reference scale ", sigma)
+        }
     }
     assert_number(sigma, lower=0)
     tauSq <- sigma^2
@@ -384,13 +402,29 @@ ess.normMix <- function(mix, method=c("elir", "moment", "morita"), ..., sigma, s
     sigmaSq <- sigma^2
 
     if(method == "elir") {
-        return(tauSq * integrate_density(lir(mix, normMixInfo, normStdFisherInfo_inverse), mix))
+        elir <- integrate_density(lir(mix, normMixInfo, normTransformedFisherInfo_inverse), mix)
+        if(is_gaussian_family) {
+            ## in this case we have to account for the non-unity scale
+            ## of the Gaussian likelihood
+            elir <- elir * tauSq
+        }
+        return(elir)
     }
 
-    ## simple and conservative moment matching
+
+    ## simple and conservative moment matching compared to the
+    ## expected fisher information over the prior parameter space
     if(method == "moment") {
         smix <- summary(mix)
-        res <- tauSq / smix["sd"]^2
+        if(is_gaussian_family && family$link == "identity") {
+            expected_info <- 1
+        } else {
+            expected_info <- integrate_density(normTransformedFisherInfo_inverse, mix)
+        }
+        if(is_gaussian_family) {
+            expected_info <- expected_info/tauSq
+        }
+        res <- expected_info / smix["sd"]^2
         return( unname(res) )
     }
 
@@ -398,23 +432,22 @@ ess.normMix <- function(mix, method=c("elir", "moment", "morita"), ..., sigma, s
 
     deriv2.prior <- normMixInfo(mix, locEst)
 
-    ESSmax <- ceiling(sum( (1-1/s) * tauSq/sigmaSq )) * 2
-
     ## "flattened" priors
     muP0 <- locEst
     sigmaP0Sq <- s * max(sigmaSq)
 
-    ## difference of info at locEst and the expected 2nd derivative at
-    ## locEst
-    ed2pDiff <- function(m) {
-        deriv2.prior - normInfo(locEst, muP0, sqrt(1/(m/tauSq + 1/sigmaP0Sq)))
-    }
-
     info.prior0  <- normInfo(locEst, muP0, sqrt(sigmaP0Sq))
 
-    Einfo  <- 1/tauSq
+    ## info at mode
+    mode_info <- 1/normTransformedFisherInfo_inverse(locEst)
+    
+    if(is_gaussian_family) { 
+        ## in this case we have to account for the non-unity scale
+        ## of the Gaussian likelihood
+        mode_info  <- mode_info/tauSq
+    }
 
-    return(unname( (deriv2.prior - info.prior0)/Einfo ))
+    return(unname( (deriv2.prior - info.prior0)/mode_info ))
 }
 
 ## derivative of a single log-normal
@@ -439,4 +472,10 @@ normInfo <- function(x,mean,sigma) {
 ## Fisher info for normal sampling sd with known unit variance
 normStdFisherInfo_inverse <- function(x) {
     1.0
+}
+
+make_normTransformedFisherInfo_inverse <- function(family) {
+    function(x) {
+        1/family$variance(family$linkinv(x))
+    }
 }

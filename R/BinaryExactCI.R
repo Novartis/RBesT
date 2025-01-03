@@ -30,8 +30,8 @@ BinaryExactCI <- function(r, n, alpha=0.05, drop=TRUE) {
     Low <- alpha2
     High <- 1-alpha2
     
-    pLow <- qbeta( Low, r+(r==0), n-r+1)
-    pHigh <- qbeta( High, r+1, n-r+((n-r)==0))
+    pLow <- qbeta( Low, r, n-r+1)
+    pHigh <- qbeta( High, r+1, n-r)
 
     nms <- c( paste(round(100*Low,1),"%",sep=""),paste(round(100*High,1),"%",sep="") )
 

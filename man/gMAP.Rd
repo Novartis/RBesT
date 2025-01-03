@@ -52,12 +52,12 @@ gMAP(
 \item{formula}{the model formula describing the linear predictor
 and encoding the grouping; see details}
 
-\item{family}{the family of distributions defining the statistical
-model (\code{binomial}, \code{gaussian}, or \code{poisson})}
+\item{family}{defines data likelihood and link function
+(\code{binomial}, \code{gaussian}, or \code{poisson})}
 
 \item{data}{optional data frame containing the variables of the
-model. If not found in \code{data}, the variables are taken from
-\code{environment(formula)}.}
+model. If not found in \code{data}, the variables are taken
+from \code{environment(formula)}.}
 
 \item{weights}{optional weight vector; see details below.}
 
@@ -66,27 +66,33 @@ data}
 
 \item{tau.strata}{sets the exchangability stratum per study. That
 is, it is expected that each study belongs to a single
-stratum. Default is to assign all studies to stratum 1. See section
-differential heterogeniety below.}
+stratum. Default is to assign all studies to stratum 1. See
+section differential heterogeniety below.}
 
 \item{tau.dist}{type of prior distribution for \code{tau};
 supported priors are \code{HalfNormal} (default),
-\code{TruncNormal}, \code{Uniform}, \code{Gamma}, \code{InvGamma},
-\code{LogNormal}, \code{TruncCauchy}, \code{Exp} and \code{Fixed}.}
+\code{TruncNormal}, \code{Uniform}, \code{Gamma},
+\code{InvGamma}, \code{LogNormal}, \code{TruncCauchy},
+\code{Exp} and \code{Fixed}.}
 
 \item{tau.prior}{parameters of prior distribution for \code{tau};
 see section prior specification below.}
 
-\item{tau.strata.pred}{the index for the prediction stratum; default is 1.}
+\item{tau.strata.pred}{the index for the prediction stratum;
+default is 1.}
 
 \item{beta.prior}{mean and standard deviation for normal priors of
 regression coefficients, see section prior specification below.}
 
-\item{prior_PD}{logical to indicate if the prior predictive distribution should be sampled (no conditioning on the data). Defaults to \code{FALSE}.}
+\item{prior_PD}{logical to indicate if the prior predictive
+distribution should be sampled (no conditioning on the
+data). Defaults to \code{FALSE}.}
 
-\item{REdist}{type of random effects distribution. \code{Normal} (default) or \code{t}.}
+\item{REdist}{type of random effects distribution. \code{Normal}
+(default) or \code{t}.}
 
-\item{t.df}{degrees of freedom if random-effects distribution is \code{t}.}
+\item{t.df}{degrees of freedom if random-effects distribution is
+\code{t}.}
 
 \item{contrasts}{an optional list; See \code{contrasts.arg} from
 \code{\link[stats:model.matrix.default]{model.matrix.default}}.}
@@ -105,7 +111,8 @@ unconstrained space for random initialization. See
 
 \item{cores}{number of cores for parallel sampling of chains.}
 
-\item{x, object}{\code{gMAP} analysis object created by \code{gMAP} function}
+\item{x, object}{\code{gMAP} analysis object created by \code{gMAP}
+function}
 
 \item{digits}{number of displayed significant digits.}
 
@@ -113,7 +120,8 @@ unconstrained space for random initialization. See
 
 \item{...}{optional arguments are ignored}
 
-\item{type}{sets reported scale (\code{response} (default) or \code{link}).}
+\item{type}{sets reported scale (\code{response} (default) or
+\code{link}).}
 }
 \value{
 The function returns a S3 object of type \code{gMAP}. See

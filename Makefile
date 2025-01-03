@@ -49,12 +49,12 @@ all : $(TARGET)
 	cd $(@D); echo running $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
 	cd $(@D); $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
 
-tests/%.Rtest : tests/%.R
+tests/%.Rtest : tests/%.R $(R_PKG_SRCS) NAMESPACE
 	NOT_CRAN=true $(RCMD) -e "devtools::load_all()" -e "test_file('$<')" > $@ 2>&1
 	@printf "Test summary for $(<F): "
 	@grep '^\[' $@ | tail -n 1
 
-tests/%.Rtestfast : tests/%.R
+tests/%.Rtestfast : tests/%.R $(R_PKG_SRCS) NAMESPACE
 	NOT_CRAN=false $(RCMD) -e "devtools::load_all()" -e "test_file('$<')" > $@ 2>&1
 	@printf "Test summary for $(<F): "
 	@grep '^\[' $@ | tail -n 1

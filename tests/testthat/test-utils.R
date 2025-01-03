@@ -314,4 +314,144 @@ test_that("ess elir for problematic beta mixtures gives correct result 2", {
     expect_double(ess(robustify(mixb, 0.05, 0.5)), lower=0, finite=TRUE, any.missing=FALSE, len=1)
     expect_double(ess(robustify(mixb, 0.95, 0.5)), lower=0, finite=TRUE, any.missing=FALSE, len=1)
 })
- 
+
+
+test_that("ess elir for problematic beta mixtures gives warning", {
+    library(RBesT)
+    library(checkmate)
+    mixmat1 <- matrix(c(0.6092774,  0.2337629,  0.1569597,
+                       1.0000000,  1.2672179,  3.3856153,
+                       11.8465288,  1.2389927,  7.0191159), byrow=TRUE, ncol=3)
+    
+
+    mixb1 <- do.call(mixbeta, apply(mixmat1,2,c,simplify=FALSE))
+
+    ## in case one of the coefficients of a and b is 1, then we can
+    ## get negative results... which are unreliable to the user hopefully
+    expect_double(ess(mixb1), finite=TRUE, any.missing=FALSE, len=1)
+
+    mixmat2 <- matrix(c(0.6051804,  0.2324492,  0.1623704,
+                        1.0210697,  1.1955047,  3.1342298,
+                        11.5485831, 1.0831573, 6.7636286), byrow=TRUE, ncol=3)
+
+    mixb2 <- do.call(mixbeta, apply(mixmat2,2,c,simplify=FALSE))
+    
+    expect_double(ess(mixb2), lower=0, finite=TRUE, any.missing=FALSE, len=1)
+})
+
+test_that("BinaryExactCI has correct boundary behavior", {
+    expect_equal(unname(BinaryExactCI(0, 10, 0.05)[1]), 0)
+    expect_equal(unname(BinaryExactCI(10, 10, 0.05)[2]), 1)
+})
+
+
+test_that("ess for a normal density with binomial family under a logit link gives correct results", {
+    ## the ess elir for a normal density prior with mean m and
+    ## standard deviation s given to a logit transformed response rate
+    ## is: i(p(eta)) = 1/s^2 and i_F(eta) = exp(eta) / (1 +
+    ## exp(eta))^2 => r(eta) = i(p(eta)) / i_F(eta) the ess ELIR
+    ## integral then involves terms as integral exp(eta) p(eta|m,s)
+    ## d(eta) = exp(m + s^2/2) and integral exp(-eta) p(eta|m,s) d(eta)
+    ## = exp(-m + s^2/2). The analyical result is then
+    ## ess_elir = 1/s^2 * [ 2 + exp(-m + s^/2) + exp(m + s^/2) ]
+
+    ## since the information of a normal is just 1/s^2 and thus a
+    ## constant, the moment based approach gives the same result as
+    ## the elir method. The morita method differs though as it
+    ## evaluates at the mode of the prior.
+    
+    ess_elir_binomial_logit <- function(m, s)  {
+        s2 <- s*s
+        (2 + exp(-m + s2/2) + exp(m + s2/2) )/s2
+    }
+
+    fisher_binomial_logit <- function(l) {
+        exp(l) / (1 + exp(l))^2
+    }
+
+    ## Pennello and Thomson ESS for a binomial logit case corresponds
+    ## to the Morita ESS whenever the scale s for the flattened prior
+    ## is Infinity
+    pe_ess_binomial_logit <- function(m, s) {
+        1/s^2 / fisher_binomial_logit(m)
+    }
+    
+    m1 <- 0
+    s1 <- 2/sqrt(10)
+    prior_norm1 <- mixnorm(c(1, m1, s1), sigma=2)
+    expect_equal(ess(prior_norm1, "elir", family=binomial, sigma=2), ess_elir_binomial_logit(m1, s1), tolerance=1E-4)
+    expect_equal(ess(prior_norm1, "moment", family=binomial, sigma=2), ess_elir_binomial_logit(m1, s1), tolerance=1E-4)
+    expect_equal(ess(prior_norm1, "morita", family=binomial, sigma=2, s=Inf), pe_ess_binomial_logit(m1, s1), tolerance=1E-4)
+
+    m2 <- 2
+    s2 <- 2/sqrt(100)
+    prior_norm2a <- mixnorm(c(1, m2, s2), sigma=2)
+    expect_equal(ess(prior_norm2a, "elir", family=binomial, sigma=2), ess_elir_binomial_logit(m2, s2), tolerance=1E-4)
+    expect_equal(ess(prior_norm2a, "moment", family=binomial, sigma=2), ess_elir_binomial_logit(m2, s2), tolerance=1E-4)
+    expect_equal(ess(prior_norm2a, "morita", family=binomial, sigma=2, s=Inf), pe_ess_binomial_logit(m2, s2), tolerance=1E-4)
+
+    ## sigma does not play a role here
+    prior_norm2b <- mixnorm(c(1, m2, s2), sigma=4)
+    expect_equal(ess(prior_norm2b, "elir", family=binomial, sigma=4), ess_elir_binomial_logit(m2, s2), tolerance=1E-4)    
+    expect_equal(ess(prior_norm2b, "moment", family=binomial, sigma=4), ess_elir_binomial_logit(m2, s2), tolerance=1E-4)    
+    expect_equal(ess(prior_norm2b, "morita", family=binomial, sigma=4, s=Inf), pe_ess_binomial_logit(m2, s2), tolerance=1E-4)
+})
+
+
+test_that("ess for a normal density with poisson family under a log link gives correct results", {
+    ## the ess elir for a normal density prior with mean m and
+    ## standard deviation s given to a log transformed count rate
+    ## is: i(p(eta)) = 1/s^2 and i_F(eta) = exp(eta)  => r(eta) = i(p(eta)) / i_F(eta) the ess ELIR
+    ## integral then involves terms as integral exp(-eta) p(eta|m,s)
+    ## d(eta) = exp(-m + s^2/2). The analyical result is then
+    ## ess_elir = 1/s^2 * exp(-m + s^/2)
+
+    ## since the information of a normal is just 1/s^2 and thus a
+    ## constant, the moment based approach gives the same result as
+    ## the elir method. The morita method differs though as it
+    ## evaluates at the mode of the prior.
+    
+    ess_elir_poisson_log <- function(m, s)  {
+        s2 <- s*s
+        exp(-m + s2/2)/s2
+    }
+
+    fisher_poisson_log <- function(l) {
+        exp(l)
+    }
+
+    ## Pennello and Thomson ESS for a binomial logit case corresponds
+    ## to the Morita ESS whenever the scale s for the flattened prior
+    ## is Infinity
+    pe_ess_poisson_log <- function(m, s) {
+        1/s^2 / fisher_poisson_log(m)
+    }
+    
+    m1 <- 0
+    s1 <- 2/sqrt(10)
+    prior_norm1 <- mixnorm(c(1, m1, s1), sigma=2)
+    expect_equal(ess(prior_norm1, "elir", family=poisson, sigma=2), ess_elir_poisson_log(m1, s1), tolerance=1E-4)
+    expect_equal(ess(prior_norm1, "moment", family=poisson, sigma=2), ess_elir_poisson_log(m1, s1), tolerance=1E-4)
+    expect_equal(ess(prior_norm1, "morita", family=poisson, sigma=2, s=Inf), pe_ess_poisson_log(m1, s1), tolerance=1E-4)
+
+    m2 <- 2
+    s2 <- 2/sqrt(100)
+    prior_norm2a <- mixnorm(c(1, m2, s2), sigma=2)
+    expect_equal(ess(prior_norm2a, "elir", family=poisson, sigma=2), ess_elir_poisson_log(m2, s2), tolerance=1E-4)
+    expect_equal(ess(prior_norm2a, "moment", family=poisson, sigma=2), ess_elir_poisson_log(m2, s2), tolerance=1E-4)
+    expect_equal(ess(prior_norm2a, "morita", family=poisson, sigma=2, s=Inf), pe_ess_poisson_log(m2, s2), tolerance=1E-4)
+
+    ## sigma does not play a role here
+    prior_norm2b <- mixnorm(c(1, m2, s2), sigma=4)
+    expect_equal(ess(prior_norm2b, "elir", family=poisson, sigma=4), ess_elir_poisson_log(m2, s2), tolerance=1E-4)    
+    expect_equal(ess(prior_norm2b, "moment", family=poisson, sigma=4), ess_elir_poisson_log(m2, s2), tolerance=1E-4)    
+    expect_equal(ess(prior_norm2b, "morita", family=poisson, sigma=4, s=Inf), pe_ess_poisson_log(m2, s2), tolerance=1E-4)
+})
+
+test_that("ess for a beta mixture errors if a family is specified", {
+    expect_error(ess(mixbeta(c(1, 5, 15)), family=binomial))
+})
+
+test_that("ess for a gamma mixture errors if a family is specified", {
+    expect_error(ess(mixgamma(rob=c(0.3, 20, 4), inf=c(0.7, 50, 10)), family=poisson))
+})

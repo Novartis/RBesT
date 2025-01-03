@@ -8,8 +8,8 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     for details on applying this package while Neuenschwander et al. (2010)
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
-Version: 1.7-4
-Date: 2024-11-21
+Version: 1.8-0
+Date: 2025-01-03
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
