@@ -61,18 +61,18 @@
 #' theta_ni <- 0.4
 #' theta_a <- 0
 #' alpha <- 0.05
-#' beta  <- 0.2
-#' za <- qnorm(1-alpha)
-#' zb <- qnorm(1-beta)
-#' n1 <- round( (s * (za + zb)/(theta_ni - theta_a))^2 )  # n for which design was intended
+#' beta <- 0.2
+#' za <- qnorm(1 - alpha)
+#' zb <- qnorm(1 - beta)
+#' n1 <- round((s * (za + zb) / (theta_ni - theta_a))^2) # n for which design was intended
 #' nL <- 233
 #' c1 <- theta_ni - za * s / sqrt(n1)
 #'
 #' # flat prior
-#' flat_prior <- mixnorm(c(1,0,100), sigma=s)
+#' flat_prior <- mixnorm(c(1, 0, 100), sigma = s)
 #'
 #' # standard NI design
-#' decA <- decision1S(1 - alpha, theta_ni, lower.tail=TRUE)
+#' decA <- decision1S(1 - alpha, theta_ni, lower.tail = TRUE)
 #'
 #' # for double criterion with indecision point (mean estimate must be
 #' # lower than this)
@@ -80,13 +80,13 @@
 #'
 #' # double criterion design
 #' # statistical significance (like NI design)
-#' dec1 <- decision1S(1-alpha, theta_ni, lower.tail=TRUE)
+#' dec1 <- decision1S(1 - alpha, theta_ni, lower.tail = TRUE)
 #' # require mean to be at least as good as theta_c
-#' dec2 <- decision1S(0.5, theta_c, lower.tail=TRUE)
+#' dec2 <- decision1S(0.5, theta_c, lower.tail = TRUE)
 #' # combination
-#' decComb <- decision1S(c(1-alpha, 0.5), c(theta_ni, theta_c), lower.tail=TRUE)
+#' decComb <- decision1S(c(1 - alpha, 0.5), c(theta_ni, theta_c), lower.tail = TRUE)
 #'
-#' theta_eval  <- c(theta_a, theta_c, theta_ni)
+#' theta_eval <- c(theta_a, theta_c, theta_ni)
 #'
 #' # we can display the decision function definition
 #' decComb
@@ -97,44 +97,44 @@
 #' decComb(flat_prior)
 #' # or for a possible outcome of the trial
 #' # here with HR of 0.8 for 40 events
-#' decComb(postmix(flat_prior, m=log(0.8), n=40))
-#'
+#' decComb(postmix(flat_prior, m = log(0.8), n = 40))
 #'
 #' @export
-decision1S <- function(pc=0.975, qc=0, lower.tail=TRUE) {
-    assert_that(length(pc) == length(qc))
-    lpc <- log(pc)
-    fun <- function(mix, dist=FALSE) {
-        test <- pmix(mix, qc, lower.tail=lower.tail, log.p=TRUE) - lpc
-        if(dist)
-            return(test)
-        as.numeric(all(test > 0))
+decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
+  assert_that(length(pc) == length(qc))
+  lpc <- log(pc)
+  fun <- function(mix, dist = FALSE) {
+    test <- pmix(mix, qc, lower.tail = lower.tail, log.p = TRUE) - lpc
+    if (dist) {
+      return(test)
     }
-    attr(fun, "pc") <- pc
-    attr(fun, "qc") <- qc
-    attr(fun, "lower.tail") <- lower.tail
-    class(fun) <- c("decision1S", "function")
-    fun
+    as.numeric(all(test > 0))
+  }
+  attr(fun, "pc") <- pc
+  attr(fun, "qc") <- qc
+  attr(fun, "lower.tail") <- lower.tail
+  class(fun) <- c("decision1S", "function")
+  fun
 }
 
 #' @export
 print.decision1S <- function(x, ...) {
-    cat("1 sample decision function\n")
-    cat("Conditions for acceptance:\n")
-    qc <- attr(x, "qc")
-    pc <- attr(x, "pc")
-    low <- attr(x, "lower.tail")
-    cmp <- ifelse(low, "<=", ">")
-    for(i in seq_along(qc)) {
-        cat(paste0("P(theta ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
-    }
-    invisible(x)
+  cat("1 sample decision function\n")
+  cat("Conditions for acceptance:\n")
+  qc <- attr(x, "qc")
+  pc <- attr(x, "pc")
+  low <- attr(x, "lower.tail")
+  cmp <- ifelse(low, "<=", ">")
+  for (i in seq_along(qc)) {
+    cat(paste0("P(theta ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
+  }
+  invisible(x)
 }
 
 #' @describeIn decision1S Deprecated old function name. Please use
 #' \code{decision1S} instead.
 #' @export
-oc1Sdecision <- function(pc=0.975, qc=0, lower.tail=TRUE) {
-    deprecated("oc1Sdecision", "decision1S")
-    return(decision1S(pc, qc, lower.tail))
+oc1Sdecision <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
+  deprecated("oc1Sdecision", "decision1S")
+  return(decision1S(pc, qc, lower.tail))
 }

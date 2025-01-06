@@ -17,10 +17,11 @@
 #' @template example-start
 #' @examples
 #' set.seed(34563)
-#' map_AS <- gMAP(cbind(r, n-r) ~ 1 | study,
-#'                family=binomial,
-#'                data=AS,
-#'                tau.dist="HalfNormal", tau.prior=1,
-#'                beta.prior=2)
+#' map_AS <- gMAP(cbind(r, n - r) ~ 1 | study,
+#'   family = binomial,
+#'   data = AS,
+#'   tau.dist = "HalfNormal", tau.prior = 1,
+#'   beta.prior = 2
+#' )
 #' @template example-stop
 "AS"

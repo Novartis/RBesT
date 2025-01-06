@@ -27,11 +27,11 @@ library(rstan)
 library(purrr)
 
 knitr::opts_chunk$set(
-    fig.width = 1.62*4,
-    fig.height = 4,
-    cache=FALSE,
-    echo=FALSE
-    )
+  fig.width = 1.62 * 4,
+  fig.height = 4,
+  cache = FALSE,
+  echo = FALSE
+)
 #'
 #' This report documents the results of a simulation based calibration
 #' (SBC) run for `RBesT`. The calibration data will be generated
@@ -44,7 +44,7 @@ knitr::opts_chunk$set(
 #'
 #' The calibration data presented here has been generated at and with
 #' the `RBesT` git version as:
-cat(readLines(here("inst", "sbc", "calibration.md5")), sep="\n")
+cat(readLines(here("inst", "sbc", "calibration.md5")), sep = "\n")
 #'
 #' The MD5 hash of the calibration data file presented here must match
 #' the above listed MD5:
@@ -111,8 +111,9 @@ md5sum(here("inst", "sbc", "calibration.rds"))
 
 calibration <- readRDS(here("inst", "sbc", "calibration.rds"))
 include_plots <- TRUE
-if("params" %in% ls())
-    include_plots <- params$include_plots
+if ("params" %in% ls()) {
+  include_plots <- params$include_plots
+}
 
 # The summary function we use here scales down the $L+1=1024$ bins to
 # smaller number of rank bins. This improves the number of counts
@@ -122,24 +123,24 @@ if("params" %in% ls())
 # of $2$ can be used to scale down the number of bins.
 
 plot_binned <- function(count, rank, group) {
-    S <- sum(count[group==group[1]])
-    num_ranks <- length(rank[group==group[1]])
-    c95 <- qbinom(c(0.025, 0.5, 0.975), S, 1/num_ranks)
-    dd <- arrange(data.frame(count=count, rank=rank, group=group, stringsAsFactors=FALSE), group, rank) %>%
-        group_by(group) %>%
-            mutate(ecdf=cumsum(count)/S, ecdf_ref=(rank+1)/(num_ranks))  %>%
-                separate(group, into=c("g1", "g2"), sep="/")
-    pl <- list()
-    pl[["hist"]] <- ggplot(dd, aes(rank, count)) +
-        facet_grid(g1~g2) +
-            geom_col() +
-                geom_hline(yintercept=c95[c(1,3)], linetype=I(2)) +
-                    geom_hline(yintercept=c95[c(2)], linetype=I(3))
-    pl[["ecdf_diff"]] <- ggplot(dd, aes(rank, ecdf-ecdf_ref)) +
-        facet_grid(g1~g2) +
-            geom_step() +
-                geom_hline(yintercept=0, linetype=I(3))
-    pl
+  S <- sum(count[group == group[1]])
+  num_ranks <- length(rank[group == group[1]])
+  c95 <- qbinom(c(0.025, 0.5, 0.975), S, 1 / num_ranks)
+  dd <- arrange(data.frame(count = count, rank = rank, group = group, stringsAsFactors = FALSE), group, rank) %>%
+    group_by(group) %>%
+    mutate(ecdf = cumsum(count) / S, ecdf_ref = (rank + 1) / (num_ranks)) %>%
+    separate(group, into = c("g1", "g2"), sep = "/")
+  pl <- list()
+  pl[["hist"]] <- ggplot(dd, aes(rank, count)) +
+    facet_grid(g1 ~ g2) +
+    geom_col() +
+    geom_hline(yintercept = c95[c(1, 3)], linetype = I(2)) +
+    geom_hline(yintercept = c95[c(2)], linetype = I(3))
+  pl[["ecdf_diff"]] <- ggplot(dd, aes(rank, ecdf - ecdf_ref)) +
+    facet_grid(g1 ~ g2) +
+    geom_step() +
+    geom_hline(yintercept = 0, linetype = I(3))
+  pl
 }
 
 
@@ -147,40 +148,40 @@ B <- calibration$B
 S <- calibration$S
 
 calibration_binned <- calibration$data %>%
-    unite(family, sd_tau, col="group", sep="/") %>%
-    group_by(data_scenario, group)
+  unite(family, sd_tau, col = "group", sep = "/") %>%
+  group_by(data_scenario, group)
 
-calibration_binned  <- calibration_binned %>%
-    gather(starts_with("count"), key="parameter", value="count") %>%
-    mutate(parameter=sub("^count.", "", parameter))
+calibration_binned <- calibration_binned %>%
+  gather(starts_with("count"), key = "parameter", value = "count") %>%
+  mutate(parameter = sub("^count.", "", parameter))
 
 ## filter out cases where count == 0 for all entries of the parameters
 ## (happens due the way data is processed for the sparse cases)
 
-calibration_binned  <- calibration_binned %>%
-    group_by(data_scenario, group, parameter) %>%
-    mutate(all_zero=all(count == 0)) %>%
-    ungroup() %>%
-    subset(!all_zero) %>%
-    mutate(all_zero=NULL)
+calibration_binned <- calibration_binned %>%
+  group_by(data_scenario, group, parameter) %>%
+  mutate(all_zero = all(count == 0)) %>%
+  ungroup() %>%
+  subset(!all_zero) %>%
+  mutate(all_zero = NULL)
 
-calibration_dense <- subset(calibration_binned, data_scenario=="dense")
-calibration_sparse <- subset(calibration_binned, data_scenario=="sparse")
+calibration_dense <- subset(calibration_binned, data_scenario == "dense")
+calibration_sparse <- subset(calibration_binned, data_scenario == "sparse")
 
-pl_dense  <- calibration_dense %>%
-    split(.$parameter) %>%
-    map(~ plot_binned(.$count, .$rank, .$group))
+pl_dense <- calibration_dense %>%
+  split(.$parameter) %>%
+  map(~ plot_binned(.$count, .$rank, .$group))
 
-pl_sparse  <- calibration_sparse %>%
-    split(.$parameter) %>%
-    map(~ plot_binned(.$count, .$rank, .$group))
+pl_sparse <- calibration_sparse %>%
+  split(.$parameter) %>%
+  map(~ plot_binned(.$count, .$rank, .$group))
 
 #' # SBC results
 #'
 #' ## Sampler Diagnostics Overview
 #'
 
-kable(calibration$sampler_diagnostics, digits=3)
+kable(calibration$sampler_diagnostics, digits = 3)
 
 #'
 #' Note: Large Rhat is defined as exceeding 1.2.
@@ -192,26 +193,26 @@ kable(calibration$sampler_diagnostics, digits=3)
 #' ## $\chi^2$ Statistic, $\mu$
 #'
 
-chisq  <- calibration_binned %>%
-    group_by(data_scenario, group, parameter) %>%
-    group_map( ~cbind(case=.y, tidy(chisq.test(.$count))[,c(1,3,2)]) ) %>%
-        bind_rows() %>%
-    rename(df=parameter, data_scenario=case.data_scenario, group=case.group, parameter=case.parameter) %>%
-    separate(group, into=c("likelihood", "sd_tau"), sep="/")
+chisq <- calibration_binned %>%
+  group_by(data_scenario, group, parameter) %>%
+  group_map(~ cbind(case = .y, tidy(chisq.test(.$count))[, c(1, 3, 2)])) %>%
+  bind_rows() %>%
+  rename(df = parameter, data_scenario = case.data_scenario, group = case.group, parameter = case.parameter) %>%
+  separate(group, into = c("likelihood", "sd_tau"), sep = "/")
 
-kable(subset(chisq, parameter=="mu"), digits=3)
+kable(subset(chisq, parameter == "mu"), digits = 3)
 
 #'
 #' ## $\chi^2$ Statistic, $\tau$
 #'
 
-kable(subset(chisq, parameter=="tau"), digits=3)
+kable(subset(chisq, parameter == "tau"), digits = 3)
 
 #'
 #' ## $\chi^2$ Statistic, group estimates $\theta$
 #'
 
-kable(subset(chisq, parameter!="tau" & parameter!="mu"), digits=3)
+kable(subset(chisq, parameter != "tau" & parameter != "mu"), digits = 3)
 
 #+ results="asis", include=include_plots, eval=include_plots
 spin_child("sbc_report_plots.R")
@@ -220,4 +221,3 @@ spin_child("sbc_report_plots.R")
 #' ## Session Info
 #'
 sessionInfo()
-

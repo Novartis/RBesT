@@ -38,51 +38,52 @@
 #'
 #' @examples
 #' # random sample of size 1000 from a mixture of 2 beta components
-#' bm <- mixbeta(beta1=c(0.4, 20, 90), beta2=c(0.6, 35, 65))
+#' bm <- mixbeta(beta1 = c(0.4, 20, 90), beta2 = c(0.6, 35, 65))
 #' bmSamp <- rmix(bm, 1000)
 #'
 #' # fit with EM mixture models with up to 10 components and stop if
 #' # AIC increases
-#' bmFit <- automixfit(bmSamp, Nc=1:10, thresh=0, type="beta")
+#' bmFit <- automixfit(bmSamp, Nc = 1:10, thresh = 0, type = "beta")
 #' bmFit
 #'
 #' # advanced usage: find out about all discarded models
 #' bmFitAll <- attr(bmFit, "models")
 #'
-#' sapply(bmFitAll, AIC, k=6)
-#'
+#' sapply(bmFitAll, AIC, k = 6)
 #'
 #' @export
-automixfit <- function(sample, Nc=seq(1, 4), k=6, thresh=-Inf, verbose=FALSE, ...) {
-    if("gMAPpred" %in% class(sample)) {
-        stop("Not yet supported.")
+automixfit <- function(sample, Nc = seq(1, 4), k = 6, thresh = -Inf, verbose = FALSE, ...) {
+  if ("gMAPpred" %in% class(sample)) {
+    stop("Not yet supported.")
+  }
+  assert_that(all(diff(Nc) >= 1))
+  models <- list()
+  ic <- Inf
+  aic <- c()
+  for (i in seq_along(Nc)) {
+    curNc <- Nc[i]
+    icLast <- ic
+    if (!verbose) {
+      suppressMessages(run <- mixfit(sample, Nc = curNc, verbose = verbose, ...))
+    } else {
+      run <- mixfit(sample, Nc = curNc, verbose = verbose, ...)
     }
-    assert_that(all(diff(Nc) >=1 ))
-    models <- list()
-    ic <- Inf
-    aic <- c()
-    for(i in seq_along(Nc)) {
-        curNc <- Nc[i]
-        icLast <- ic
-        if(!verbose)
-            suppressMessages(run <- mixfit(sample, Nc=curNc, verbose=verbose, ...))
-        else
-            run <- mixfit(sample, Nc=curNc, verbose=verbose, ...)
-        ic <- AIC(run, k=k)
-        aic <- c(aic, ic)
-        delta <- icLast - ic
-        if(verbose)
-            message("Components", curNc, ": AIC", ic, "; deltaAIC =", delta, "\n")
-        models <- c(models, list(run))
-        if(delta < thresh)
-            break
+    ic <- AIC(run, k = k)
+    aic <- c(aic, ic)
+    delta <- icLast - ic
+    if (verbose) {
+      message("Components", curNc, ": AIC", ic, "; deltaAIC =", delta, "\n")
     }
-    names(models) <- Nc[1:i]
-    o <- order(aic)
-    models <- models[o]
-    models
-    bestfit <- models[[1]]
-    attr(bestfit, "models") <- models
-    bestfit
+    models <- c(models, list(run))
+    if (delta < thresh) {
+      break
+    }
+  }
+  names(models) <- Nc[1:i]
+  o <- order(aic)
+  models <- models[o]
+  models
+  bestfit <- models[[1]]
+  attr(bestfit, "models") <- models
+  bestfit
 }
-

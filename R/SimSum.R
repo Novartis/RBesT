@@ -20,25 +20,25 @@
 #' @keywords internal
 #'
 `SimSum` <-
-function( x, min.max=FALSE, n.sim=FALSE, probs=c(0.025,0.5,0.975), margin=ifelse(is.null(dim(x) | length(dim(x)) == 1), 2, length(dim(x))) )
-{
-    #	Version 1.1, 16-Oct-2014
-    if(is.null(dim(x)) | length(dim(x)) == 1)
-       x <- matrix(x, ncol=1)
+  function(x, min.max = FALSE, n.sim = FALSE, probs = c(0.025, 0.5, 0.975), margin = ifelse(is.null(dim(x) | length(dim(x)) == 1), 2, length(dim(x)))) {
+    # 	Version 1.1, 16-Oct-2014
+    if (is.null(dim(x)) | length(dim(x)) == 1) {
+      x <- matrix(x, ncol = 1)
+    }
 
     sfun <- function(r) {
-        ex <- if(min.max) c(min=min(r), max=max(r)) else NULL
-        N  <- if(n.sim)   c(nsim=length(r))         else NULL
-        c( mean=mean(r), sd=sd(r), quantile(r,probs), ex, N )
+      ex <- if (min.max) c(min = min(r), max = max(r)) else NULL
+      N <- if (n.sim) c(nsim = length(r)) else NULL
+      c(mean = mean(r), sd = sd(r), quantile(r, probs), ex, N)
     }
 
     sim.out <- apply(x, margin, sfun)
 
     ## to ensure compatibility with old versions of the function, a
     ## transpose is needed for the standard case of margin being 2
-    if(is.matrix(x) && margin == 2)
-        sim.out <- t(sim.out)
+    if (is.matrix(x) && margin == 2) {
+      sim.out <- t(sim.out)
+    }
 
     return(sim.out)
-}
-
+  }

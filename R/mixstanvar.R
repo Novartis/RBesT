@@ -67,75 +67,79 @@
 #' \dontrun{
 #' # The mixstanvar adapter requires the optional packages brms and glue
 #' stopifnot(require("brms"), require("glue"))
-#' 
+#'
 #' # Assume we prefer a logistic regression MCMC analysis rather than a
 #' # beta-binomial analysis for the responder endpoint of the ankylosing
 #' # spondylitis (AS) example. Reasons to prefer a regression analysis is
 #' # to allow for baseline covariate adjustments, for example.
 #' map_AS_beta <- mixbeta(c(0.62, 19.2, 57.8), c(0.38, 3.5, 9.4))
-#' 
+#'
 #' # First we need to convert the beta mixture to a respective mixture on
 #' # the log odds scale and approximate it with a normal mixture density.
 #' map_AS_samp <- rmix(map_AS_beta, 1E4)
-#' map_AS <- mixfit(logit(map_AS_samp), type="norm", Nc=2)
-#' 
+#' map_AS <- mixfit(logit(map_AS_samp), type = "norm", Nc = 2)
+#'
 #' # Trial results for placebo and secukinumab.
-#' trial <- data.frame(n=c(6, 24),
-#'                     r=c(1, 15),
-#'                     arm=factor(c("placebo", "secukinumab")))
-#' 
+#' trial <- data.frame(
+#'   n = c(6, 24),
+#'   r = c(1, 15),
+#'   arm = factor(c("placebo", "secukinumab"))
+#' )
+#'
 #' # Define brms model such that the overall intercept corresponds to the
 #' # placebo response rate on the logit scale. NOTE: The use of
 #' # center=FALSE is required here as detailed in the note above.
-#' model <- bf(r | trials(n) ~ 1 + arm, family=binomial, center=FALSE)
+#' model <- bf(r | trials(n) ~ 1 + arm, family = binomial, center = FALSE)
 #' # to obtain detailed information on the declared model parameters use
 #' # get_prior(model, data=trial)
 #' # declare model prior with reference to mixture normal map prior...
-#' model_prior <- prior(mixnorm(map_w, map_m, map_s), coef=Intercept) +
-#'     prior(normal(0, 2), class=b)
+#' model_prior <- prior(mixnorm(map_w, map_m, map_s), coef = Intercept) +
+#'   prior(normal(0, 2), class = b)
 #'
 #' # ... which must be made available to brms using the mixstanvar adapter.
 #' # Note that the map_AS prior is labeled "map" as referred to in the
 #' # previous prior declaration.
-#' analysis <- brm(model, data=trial, prior=model_prior,
-#'                 stanvars=mixstanvar(map=map_AS),
-#'                 seed=365634, refresh=0)
-#' 
+#' analysis <- brm(model,
+#'   data = trial, prior = model_prior,
+#'   stanvars = mixstanvar(map = map_AS),
+#'   seed = 365634, refresh = 0
+#' )
+#'
 #' # Let's compare the logistic regression estimate for the probability
 #' # of a positive treatment effect (secukinumab response rate exceeding
 #' # the response rate of placebo) to the direct beta-binomial analysis:
 #' hypothesis(analysis, "armsecukinumab > 0")
-#' 
-#' post_secukinumab <- postmix(mixbeta(c(1, 0.5, 1)), r=15, n=24)
-#' post_placebo     <- postmix(map_AS_beta, r=1, n=6)
-#' pmixdiff(post_secukinumab,  post_placebo, 0, lower.tail=FALSE)
+#'
+#' post_secukinumab <- postmix(mixbeta(c(1, 0.5, 1)), r = 15, n = 24)
+#' post_placebo <- postmix(map_AS_beta, r = 1, n = 6)
+#' pmixdiff(post_secukinumab, post_placebo, 0, lower.tail = FALSE)
 #' # The posterior probability for a positive treatment effect
 #' # is very close to unity in both cases.
 #' }
 #' @export
-mixstanvar <- function(..., verbose=FALSE) {
-    .assert_namespace("brms")
-    .assert_namespace("glue")
-    default_variable_names <- lapply(rlang::enquos(...), rlang::as_label)
-    mixpriors <- list(...)
-    if(is.null(names(mixpriors))) {
-        variable_names <- default_variable_names
-    } else {
-        variable_names <- names(mixpriors)
-        not_set <- which(variable_names == "")
-        variable_names[not_set] <- default_variable_names[not_set]
-    }
-    assert_list(variable_names, "character", unique=TRUE)
-    sv <- mix2brms(mixpriors[[1]], variable_names[[1]], verbose)
-    for(i in seq_len(length(mixpriors)-1)) {
-        mix <- mixpriors[[i+1]]
-        variable <- variable_names[[i+1]]
-        sv <- sv + mix2brms(mix, variable, verbose)
-    }
-    includes_density <- function(density) any(sapply(mixpriors, inherits, density))
+mixstanvar <- function(..., verbose = FALSE) {
+  .assert_namespace("brms")
+  .assert_namespace("glue")
+  default_variable_names <- lapply(rlang::enquos(...), rlang::as_label)
+  mixpriors <- list(...)
+  if (is.null(names(mixpriors))) {
+    variable_names <- default_variable_names
+  } else {
+    variable_names <- names(mixpriors)
+    not_set <- which(variable_names == "")
+    variable_names[not_set] <- default_variable_names[not_set]
+  }
+  assert_list(variable_names, "character", unique = TRUE)
+  sv <- mix2brms(mixpriors[[1]], variable_names[[1]], verbose)
+  for (i in seq_len(length(mixpriors) - 1)) {
+    mix <- mixpriors[[i + 1]]
+    variable <- variable_names[[i + 1]]
+    sv <- sv + mix2brms(mix, variable, verbose)
+  }
+  includes_density <- function(density) any(sapply(mixpriors, inherits, density))
 
-    if(includes_density("mvnormMix")) {
-        sv <- sv + brms::stanvar(name="mixmvnorm_lpdf", scode="
+  if (includes_density("mvnormMix")) {
+    sv <- sv + brms::stanvar(name = "mixmvnorm_lpdf", scode = "
 real mixmvnorm_lpdf(vector y, vector w, array[] vector m, array[] matrix L) {
   int Nc = rows(w);
   vector[Nc] lp_mix;
@@ -143,10 +147,10 @@ real mixmvnorm_lpdf(vector y, vector w, array[] vector m, array[] matrix L) {
      lp_mix[i] = multi_normal_cholesky_lpdf(y | m[i], L[i]);
   }
   return log_sum_exp(log(w) + lp_mix);
-}", block="functions")
-    }
-    mixdensity_template <- function(mixdens, standens, arg1, arg2) {
-        brms::stanvar(name=glue::glue("{mixdens}_lpdf"), scode=glue::glue("
+}", block = "functions")
+  }
+  mixdensity_template <- function(mixdens, standens, arg1, arg2) {
+    brms::stanvar(name = glue::glue("{mixdens}_lpdf"), scode = glue::glue("
 real {{mixdens}}_lpdf(real y, vector w, vector {{arg1}}, vector {{arg2}}) {
   int Nc = rows(w);
   vector[Nc] lp_mix;
@@ -179,107 +183,108 @@ real {{mixdens}}_cdf(real y, vector w, vector {{arg1}}, vector {{arg2}}) {
   }
   return sum(w + p_mix);
 }
-", .open="{{", .close="}}"), block="functions")
-    }
-    if(includes_density("normMix")) {
-        sv <- sv + mixdensity_template("mixnorm", "normal", "m", "s")
-    }
-    if(includes_density("betaMix")) {
-        sv <- sv + mixdensity_template("mixbeta", "beta", "a", "b")
-    }
-    if(includes_density("gammaMix")) {
-        sv <- sv + mixdensity_template("mixgamma", "gamma", "a", "b")
-    }
-    
-    sv
+", .open = "{{", .close = "}}"), block = "functions")
+  }
+  if (includes_density("normMix")) {
+    sv <- sv + mixdensity_template("mixnorm", "normal", "m", "s")
+  }
+  if (includes_density("betaMix")) {
+    sv <- sv + mixdensity_template("mixbeta", "beta", "a", "b")
+  }
+  if (includes_density("gammaMix")) {
+    sv <- sv + mixdensity_template("mixgamma", "gamma", "a", "b")
+  }
+
+  sv
 }
 
 #' @keywords internal
-mix2brms <- function(mix, name, verbose=FALSE) UseMethod("mix2brms")
+mix2brms <- function(mix, name, verbose = FALSE) UseMethod("mix2brms")
 
 #' @keywords internal
-mix2brms.default <- function(mix, name, verbose=FALSE) {
-    stop("Mixture density not supported in mixstanvar.")
+mix2brms.default <- function(mix, name, verbose = FALSE) {
+  stop("Mixture density not supported in mixstanvar.")
 }
 
 #' @keywords internal
-mix2brms.mvnormMix <- function(mix, name, verbose=FALSE) {
-    Nc <- ncol(mix)
-    p <- mvnormdim(mix[-1,1])
-    Sigma <- array(NA, dim=c(Nc, p, p))
-    for(i in 1:Nc) {
-        Rho_c <- diag(nrow=p)
-        Rho_c[lower.tri(Rho_c)] <- mix[(1+2*p+1):nrow(mix),i,drop=FALSE]
-        Rho_c[upper.tri(Rho_c)] <- t(Rho_c)[upper.tri(Rho_c)]
-        s <- mix[(1+p+1):(1+p+p),i,drop=TRUE]
-        Sigma[i,,] <- diag(s, nrow=p) %*% Rho_c %*% diag(s, nrow=p)
-    }
-    prefix <- paste0(name, "_")
-    mvprior <-  brms::stanvar(Nc, glue::glue("{prefix}Nc")) +
-        brms::stanvar(p, glue::glue("{prefix}p")) +
-        brms::stanvar(array(mix[1,,drop=TRUE], dim=Nc), glue::glue("{prefix}w"), scode=glue::glue("vector[{prefix}Nc] {prefix}w;")) +
-        brms::stanvar(t(mix[2:(p+1),,drop=FALSE]), glue::glue("{prefix}m"), scode=glue::glue("array[{prefix}Nc] vector[{prefix}p] {prefix}m;")) +
-        brms::stanvar(Sigma, glue::glue("{prefix}sigma"), scode=glue::glue("array[{prefix}Nc] matrix[{prefix}p, {prefix}p] {prefix}sigma;")) +
-        brms::stanvar(scode=glue::glue("
+mix2brms.mvnormMix <- function(mix, name, verbose = FALSE) {
+  Nc <- ncol(mix)
+  p <- mvnormdim(mix[-1, 1])
+  Sigma <- array(NA, dim = c(Nc, p, p))
+  for (i in 1:Nc) {
+    Rho_c <- diag(nrow = p)
+    Rho_c[lower.tri(Rho_c)] <- mix[(1 + 2 * p + 1):nrow(mix), i, drop = FALSE]
+    Rho_c[upper.tri(Rho_c)] <- t(Rho_c)[upper.tri(Rho_c)]
+    s <- mix[(1 + p + 1):(1 + p + p), i, drop = TRUE]
+    Sigma[i, , ] <- diag(s, nrow = p) %*% Rho_c %*% diag(s, nrow = p)
+  }
+  prefix <- paste0(name, "_")
+  mvprior <- brms::stanvar(Nc, glue::glue("{prefix}Nc")) +
+    brms::stanvar(p, glue::glue("{prefix}p")) +
+    brms::stanvar(array(mix[1, , drop = TRUE], dim = Nc), glue::glue("{prefix}w"), scode = glue::glue("vector[{prefix}Nc] {prefix}w;")) +
+    brms::stanvar(t(mix[2:(p + 1), , drop = FALSE]), glue::glue("{prefix}m"), scode = glue::glue("array[{prefix}Nc] vector[{prefix}p] {prefix}m;")) +
+    brms::stanvar(Sigma, glue::glue("{prefix}sigma"), scode = glue::glue("array[{prefix}Nc] matrix[{prefix}p, {prefix}p] {prefix}sigma;")) +
+    brms::stanvar(scode = glue::glue("
 array[{{prefix}}Nc] matrix[{{prefix}}p, {{prefix}}p] {{prefix}}sigma_L;
 for (i in 1:{{prefix}}Nc) {
     {{prefix}}sigma_L[i] = cholesky_decompose({{prefix}}sigma[i]);
-}", .open="{{", .close="}}"), block="tdata")
-    if(verbose) {
-        mvprior <- mvprior +
-            brms::stanvar(scode=glue::glue('
+}", .open = "{{", .close = "}}"), block = "tdata")
+  if (verbose) {
+    mvprior <- mvprior +
+      brms::stanvar(scode = glue::glue('
 print("Mixture prior {{name}}");
 for(i in 1:{{prefix}}Nc) {
   print("Component ", i, ": w     = ", {{prefix}}w[i]);
   print("Component ", i, ": m     = ", {{prefix}}m[i]);
   print("Component ", i, ": Sigma = ", {{prefix}}sigma[i]);
 }
-', .open="{{", .close="}}"), position="end", block="tdata")
-    }
-    mvprior
+', .open = "{{", .close = "}}"), position = "end", block = "tdata")
+  }
+  mvprior
 }
 
 #' @keywords internal
-mix2brms.normMix <- function(mix, name, verbose=FALSE) {
-    .declare_scalar_mixture_components(mix, c("w", "m", "s"), name, verbose)
+mix2brms.normMix <- function(mix, name, verbose = FALSE) {
+  .declare_scalar_mixture_components(mix, c("w", "m", "s"), name, verbose)
 }
 
 #' @keywords internal
-mix2brms.betaMix <- function(mix, name, verbose=FALSE) {
-    .declare_scalar_mixture_components(mix, c("w", "a", "b"), name, verbose)
+mix2brms.betaMix <- function(mix, name, verbose = FALSE) {
+  .declare_scalar_mixture_components(mix, c("w", "a", "b"), name, verbose)
 }
 
 #' @keywords internal
-mix2brms.gammaMix <- function(mix, name, verbose=FALSE) {
-    .declare_scalar_mixture_components(mix, c("w", "a", "b"), name, verbose)
+mix2brms.gammaMix <- function(mix, name, verbose = FALSE) {
+  .declare_scalar_mixture_components(mix, c("w", "a", "b"), name, verbose)
 }
 
 #' @keywords internal
-.declare_scalar_mixture_components <- function(mix, vars, name, verbose=FALSE) {
-    assert_that(length(vars) == 3, msg="Each mixture component density is expected to have 3 arguments.")
-    Nc <- ncol(mix)
-    prefix <- paste0(name, "_")
-    sv <-  brms::stanvar(Nc, glue::glue("{prefix}Nc"))
-    for(i in 1:3) {
-        arg <- vars[i]
-        sv <- sv + brms::stanvar(array(mix[i,,drop=TRUE], dim=Nc), glue::glue("{prefix}{arg}"), scode=glue::glue("vector[{prefix}Nc] {prefix}{arg};"))
-    }
-    if(verbose) {
-        sv <- sv +
-            brms::stanvar(name=paste0("verbose_", name), scode=glue::glue('
+.declare_scalar_mixture_components <- function(mix, vars, name, verbose = FALSE) {
+  assert_that(length(vars) == 3, msg = "Each mixture component density is expected to have 3 arguments.")
+  Nc <- ncol(mix)
+  prefix <- paste0(name, "_")
+  sv <- brms::stanvar(Nc, glue::glue("{prefix}Nc"))
+  for (i in 1:3) {
+    arg <- vars[i]
+    sv <- sv + brms::stanvar(array(mix[i, , drop = TRUE], dim = Nc), glue::glue("{prefix}{arg}"), scode = glue::glue("vector[{prefix}Nc] {prefix}{arg};"))
+  }
+  if (verbose) {
+    sv <- sv +
+      brms::stanvar(name = paste0("verbose_", name), scode = glue::glue('
 print("Mixture prior {{name}}");
 for(i in 1:{{prefix}}Nc) {
   print("Component ", i, ": w = ", {{prefix}}{vars[1]}[i]);
   print("Component ", i, ": m = ", {{prefix}}{vars[2]}[i]);
   print("Component ", i, ": s = ", {{prefix}}{vars[3]}[i]);
 }
-', .open="{{", .close="}}"), position="end", block="tdata")
-    }
-    sv
+', .open = "{{", .close = "}}"), position = "end", block = "tdata")
+  }
+  sv
 }
 
 #' @keywords internal
 .assert_namespace <- function(package) {
-    assert_that(requireNamespace(package, quietly=TRUE),
-                msg=paste0("Package ", package, " must be installed first."))
+  assert_that(requireNamespace(package, quietly = TRUE),
+    msg = paste0("Package ", package, " must be installed first.")
+  )
 }

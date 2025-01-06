@@ -27,7 +27,7 @@
 #'
 #' @return New mixture with an extra non-informative component named
 #' \code{robust}.
-#' 
+#'
 #' @references Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A,
 #' Spiegelhalter D, Neuenschwander B.  Robust meta-analytic-predictive
 #' priors in clinical trials with historical control information.
@@ -38,31 +38,31 @@
 #' Amer Statist Assoc} 1995; 90(431):928-934.
 #'
 #' @seealso \code{\link{mixcombine}}
-#' 
+#'
 #' @examples
-#' bmix <- mixbeta(inf1=c(0.2, 8, 3), inf2=c(0.8, 10, 2))
+#' bmix <- mixbeta(inf1 = c(0.2, 8, 3), inf2 = c(0.8, 10, 2))
 #' plot(bmix)
-#' rbmix <- robustify(bmix, weight=0.1, mean=0.5)
+#' rbmix <- robustify(bmix, weight = 0.1, mean = 0.5)
 #' rbmix
 #' plot(rbmix)
-#' 
-#' gmnMix <- mixgamma(inf1=c(0.2, 2, 3), inf2=c(0.8, 2, 5), param="mn")
+#'
+#' gmnMix <- mixgamma(inf1 = c(0.2, 2, 3), inf2 = c(0.8, 2, 5), param = "mn")
 #' plot(gmnMix)
-#' rgmnMix <- robustify(gmnMix, weight=0.1, mean=2)
+#' rgmnMix <- robustify(gmnMix, weight = 0.1, mean = 2)
 #' rgmnMix
 #' plot(rgmnMix)
-#' 
-#' nm <- mixnorm(inf1=c(0.2, 0.5, 0.7), inf2=c(0.8, 2, 1), sigma=2)
+#'
+#' nm <- mixnorm(inf1 = c(0.2, 0.5, 0.7), inf2 = c(0.8, 2, 1), sigma = 2)
 #' plot(nm)
-#' rnMix <- robustify(nm, weight=0.1, mean=0, sigma=2)
+#' rnMix <- robustify(nm, weight = 0.1, mean = 0, sigma = 2)
 #' rnMix
 #' plot(rnMix)
-#' 
+#'
 #' @export
-robustify <- function(priormix, weight, mean, n=1, ...) UseMethod("robustify")
+robustify <- function(priormix, weight, mean, n = 1, ...) UseMethod("robustify")
 
 #' @export
-robustify.default <- function(priormix, weight, mean, n=1, ...) "Unknown density"
+robustify.default <- function(priormix, weight, mean, n = 1, ...) "Unknown density"
 
 #' @describeIn robustify The default \code{mean} is set to 1/2 which
 #' represents no difference between the occurrence rates for one of the
@@ -72,33 +72,33 @@ robustify.default <- function(priormix, weight, mean, n=1, ...) "Unknown density
 #' the \code{Beta(1/2,1/2)} which strictly defined would be the unit
 #' information prior in this case.
 #' @export
-robustify.betaMix <- function(priormix, weight, mean, n=1, ...) {
-    assert_number(weight, lower=0, upper=1)
-    assert_number(n, lower=0, finite=TRUE)
-    if(missing(mean)) {
-        message("Using default mean for robust component of 1/2.")
-        mean <- 1/2
-    }
-    assert_number(mean, lower=0, upper=1)
-    rob <- mixbeta(robust=c(1, mean, n+1), param="mn")
-    mixcombine(priormix, rob, weight=c(1-weight, weight))
+robustify.betaMix <- function(priormix, weight, mean, n = 1, ...) {
+  assert_number(weight, lower = 0, upper = 1)
+  assert_number(n, lower = 0, finite = TRUE)
+  if (missing(mean)) {
+    message("Using default mean for robust component of 1/2.")
+    mean <- 1 / 2
+  }
+  assert_number(mean, lower = 0, upper = 1)
+  rob <- mixbeta(robust = c(1, mean, n + 1), param = "mn")
+  mixcombine(priormix, rob, weight = c(1 - weight, weight))
 }
 
 #' @describeIn robustify The default \code{mean} is set to the mean of the
 #' prior mixture. It is strongly recommended to explicitly set the
 #' mean to the location of the null hypothesis.
 #' @export
-robustify.gammaMix <- function(priormix, weight, mean, n=1, ...) {
-    assert_number(weight, lower=0, upper=1)
-    assert_number(n, lower=0, finite=TRUE)
-    if(missing(mean)) {
-        s <- summary(priormix)
-        message(paste("Using default mean for robust component; the mean of the prior which is", s["mean"], "."))
-        mean <- s["mean"]
-    }
-    assert_number(mean, lower=0, finite=TRUE)
-    rob <- mixgamma(robust=c(1, mean, n), param="mn", likelihood=likelihood(priormix))
-    mixcombine(priormix, rob, weight=c(1-weight, weight))
+robustify.gammaMix <- function(priormix, weight, mean, n = 1, ...) {
+  assert_number(weight, lower = 0, upper = 1)
+  assert_number(n, lower = 0, finite = TRUE)
+  if (missing(mean)) {
+    s <- summary(priormix)
+    message(paste("Using default mean for robust component; the mean of the prior which is", s["mean"], "."))
+    mean <- s["mean"]
+  }
+  assert_number(mean, lower = 0, finite = TRUE)
+  rob <- mixgamma(robust = c(1, mean, n), param = "mn", likelihood = likelihood(priormix))
+  mixcombine(priormix, rob, weight = c(1 - weight, weight))
 }
 
 #' @describeIn robustify The default \code{mean} is set to the mean
@@ -109,20 +109,19 @@ robustify.gammaMix <- function(priormix, weight, mean, n=1, ...) {
 #' @param sigma Sampling standard deviation for the case of Normal
 #' mixtures.
 #' @export
-robustify.normMix <- function(priormix, weight, mean, n=1, ..., sigma) {
-    assert_number(weight, lower=0, upper=1)
-    assert_number(n, lower=0, finite=TRUE)
-    if(missing(mean)) {
-        s <- summary(priormix)
-        message(paste("Using default mean for robust component; the mean of the prior which is", s["mean"], "."))
-        mean <- s["mean"]
-    }
-    assert_number(mean, finite=TRUE)
-    if(missing(sigma)) {
-        message("Using default prior reference scale ", RBesT::sigma(priormix))
-        sigma <- RBesT::sigma(priormix)
-    }
-    rob <- mixnorm(robust=c(1, mean, n), param="mn", sigma=sigma)
-    mixcombine(priormix, rob, weight=c(1-weight, weight))
+robustify.normMix <- function(priormix, weight, mean, n = 1, ..., sigma) {
+  assert_number(weight, lower = 0, upper = 1)
+  assert_number(n, lower = 0, finite = TRUE)
+  if (missing(mean)) {
+    s <- summary(priormix)
+    message(paste("Using default mean for robust component; the mean of the prior which is", s["mean"], "."))
+    mean <- s["mean"]
+  }
+  assert_number(mean, finite = TRUE)
+  if (missing(sigma)) {
+    message("Using default prior reference scale ", RBesT::sigma(priormix))
+    sigma <- RBesT::sigma(priormix)
+  }
+  rob <- mixnorm(robust = c(1, mean, n), param = "mn", sigma = sigma)
+  mixcombine(priormix, rob, weight = c(1 - weight, weight))
 }
-

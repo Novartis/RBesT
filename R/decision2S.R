@@ -65,32 +65,32 @@
 #' @examples
 #'
 #' # see Gsponer et al., 2010
-#' priorT <- mixnorm(c(1,   0, 0.001), sigma=88, param="mn")
-#' priorP <- mixnorm(c(1, -49, 20   ), sigma=88, param="mn")
+#' priorT <- mixnorm(c(1, 0, 0.001), sigma = 88, param = "mn")
+#' priorP <- mixnorm(c(1, -49, 20), sigma = 88, param = "mn")
 #' # the success criteria is for delta which are larger than some
 #' # threshold value which is why we set lower.tail=FALSE
-#' successCrit  <- decision2S(c(0.95, 0.5), c(0, 50), FALSE)
+#' successCrit <- decision2S(c(0.95, 0.5), c(0, 50), FALSE)
 #' # the futility criterion acts in the opposite direction
-#' futilityCrit <- decision2S(c(0.90)     , c(40),    TRUE)
+#' futilityCrit <- decision2S(c(0.90), c(40), TRUE)
 #'
 #' print(successCrit)
 #' print(futilityCrit)
 #'
 #' # consider decision for specific outcomes
-#' postP_interim <- postmix(priorP, n=10, m=-50)
-#' postT_interim <- postmix(priorT, n=20, m=-80)
-#' futilityCrit( postP_interim, postT_interim )
-#' successCrit(  postP_interim, postT_interim )
+#' postP_interim <- postmix(priorP, n = 10, m = -50)
+#' postT_interim <- postmix(priorT, n = 20, m = -80)
+#' futilityCrit(postP_interim, postT_interim)
+#' successCrit(postP_interim, postT_interim)
 #'
 #' # Binary endpoint with double criterion decision on log-odds scale
 #' # 95% certain positive difference and an odds ratio of 2 at least
-#' decL2 <- decision2S(c(0.95, 0.5), c(0, log(2)), lower.tail=FALSE, link="logit")
+#' decL2 <- decision2S(c(0.95, 0.5), c(0, log(2)), lower.tail = FALSE, link = "logit")
 #' # 95% certain positive difference and an odds ratio of 3 at least
-#' decL3 <- decision2S(c(0.95, 0.5), c(0, log(3)), lower.tail=FALSE, link="logit")
+#' decL3 <- decision2S(c(0.95, 0.5), c(0, log(3)), lower.tail = FALSE, link = "logit")
 #'
 #' # data scenario
-#' post1 <- postmix(mixbeta(c(1, 1, 1)), n=40, r=10)
-#' post2 <- postmix(mixbeta(c(1, 1, 1)), n=40, r=18)
+#' post1 <- postmix(mixbeta(c(1, 1, 1)), n = 40, r = 10)
+#' post2 <- postmix(mixbeta(c(1, 1, 1)), n = 40, r = 18)
 #'
 #' # positive outcome and a median odds ratio of at least 2 ...
 #' decL2(post2, post1)
@@ -98,53 +98,55 @@
 #' decL3(post2, post1)
 #'
 #' @export
-decision2S <- function(pc=0.975, qc=0, lower.tail=TRUE, link=c("identity", "logit", "log")) {
-    assert_that(length(pc) == length(qc))
-    lpc <- log(pc)
-    link <- match.arg(link)
-    dlink_obj <- link_map[[link]]
-    fun <- function(mix1, mix2, dist=FALSE) {
-        dlink(mix1) <- dlink_obj
-        dlink(mix2) <- dlink_obj
-        ## Note that for normal mixture densities we can expedite the
-        ## calculation of the convolution dramatically, i.e. the
-        ## convolution is done analytically exact
-        test <- if(inherits(mix1, "normMix"))
-                    pmix(mixnormdiff(mix1, mix2), qc, lower.tail=lower.tail, log.p=TRUE) - lpc
-                else
-                    log(pmax(pmixdiff(mix1, mix2, qc, lower.tail=lower.tail), .Machine$double.eps) ) - lpc
-        if(dist)
-            return(test)
-        as.numeric(all(test>0))
+decision2S <- function(pc = 0.975, qc = 0, lower.tail = TRUE, link = c("identity", "logit", "log")) {
+  assert_that(length(pc) == length(qc))
+  lpc <- log(pc)
+  link <- match.arg(link)
+  dlink_obj <- link_map[[link]]
+  fun <- function(mix1, mix2, dist = FALSE) {
+    dlink(mix1) <- dlink_obj
+    dlink(mix2) <- dlink_obj
+    ## Note that for normal mixture densities we can expedite the
+    ## calculation of the convolution dramatically, i.e. the
+    ## convolution is done analytically exact
+    test <- if (inherits(mix1, "normMix")) {
+      pmix(mixnormdiff(mix1, mix2), qc, lower.tail = lower.tail, log.p = TRUE) - lpc
+    } else {
+      log(pmax(pmixdiff(mix1, mix2, qc, lower.tail = lower.tail), .Machine$double.eps)) - lpc
     }
-    attr(fun, "pc") <- pc
-    attr(fun, "qc") <- qc
-    attr(fun, "link") <- link
-    attr(fun, "lower.tail") <- lower.tail
-    class(fun) <- c("decision2S", "function")
-    fun
+    if (dist) {
+      return(test)
+    }
+    as.numeric(all(test > 0))
+  }
+  attr(fun, "pc") <- pc
+  attr(fun, "qc") <- qc
+  attr(fun, "link") <- link
+  attr(fun, "lower.tail") <- lower.tail
+  class(fun) <- c("decision2S", "function")
+  fun
 }
 
 #' @export
 print.decision2S <- function(x, ...) {
-    cat("2 sample decision function\n")
-    cat("Conditions for acceptance:\n")
-    link <- attr(x, "link")
-    qc <- attr(x, "qc")
-    pc <- attr(x, "pc")
-    low <- attr(x, "lower.tail")
-    cmp <- ifelse(low, "<=", ">")
-    for(i in seq_along(qc)) {
-        cat(paste0("P(theta1 - theta2 ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
-    }
-    cat("Link:", link, "\n")
-    invisible(x)
+  cat("2 sample decision function\n")
+  cat("Conditions for acceptance:\n")
+  link <- attr(x, "link")
+  qc <- attr(x, "qc")
+  pc <- attr(x, "pc")
+  low <- attr(x, "lower.tail")
+  cmp <- ifelse(low, "<=", ">")
+  for (i in seq_along(qc)) {
+    cat(paste0("P(theta1 - theta2 ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
+  }
+  cat("Link:", link, "\n")
+  invisible(x)
 }
 
 #' @describeIn decision2S Deprecated old function name. Please use
 #' \code{decision2S} instead.
 #' @export
-oc2Sdecision <- function(pc=0.975, qc=0, lower.tail=TRUE, link=c("identity", "logit", "log")) {
-    deprecated("oc2Sdecision", "decision2S")
-    return(decision2S(pc, qc, lower.tail, link))
+oc2Sdecision <- function(pc = 0.975, qc = 0, lower.tail = TRUE, link = c("identity", "logit", "log")) {
+  deprecated("oc2Sdecision", "decision2S")
+  return(decision2S(pc, qc, lower.tail, link))
 }

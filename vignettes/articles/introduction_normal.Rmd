@@ -45,11 +45,11 @@ standard errors of the effect estimates.
 ```{r data}
 dat <- crohn
 crohn_sigma <- 88
-dat$y.se <- crohn_sigma/sqrt(dat$n)
+dat$y.se <- crohn_sigma / sqrt(dat$n)
 ```
 
 ```{r dataprint,results="asis",echo=FALSE}
-kable(dat, digits=2)
+kable(dat, digits = 2)
 ```
 
 
@@ -72,11 +72,12 @@ exactly reproducible.
 ```{r gMAP}
 library(RBesT)
 set.seed(689654)
-map_mcmc <- gMAP(cbind(y, y.se) ~ 1 | study, 
-                 weights=n,data=dat,
-                 family=gaussian,
-                 beta.prior=cbind(0, crohn_sigma),
-                 tau.dist="HalfNormal",tau.prior=cbind(0,crohn_sigma/2))
+map_mcmc <- gMAP(cbind(y, y.se) ~ 1 | study,
+  weights = n, data = dat,
+  family = gaussian,
+  beta.prior = cbind(0, crohn_sigma),
+  tau.dist = "HalfNormal", tau.prior = cbind(0, crohn_sigma / 2)
+)
 print(map_mcmc)
 
 ## a graphical representation is also available
@@ -120,9 +121,9 @@ conservative moment-based ESS of 20 was used to reduce the planned
 sample size of the control group.
 
 ```{r ESS}
-round(ess(map))                  ## default elir method
-round(ess(map, method="morita"))
-round(ess(map, method="moment"))
+round(ess(map)) ## default elir method
+round(ess(map, method = "morita"))
+round(ess(map, method = "moment"))
 ```
 
 ## Robustification of MAP Prior
@@ -142,9 +143,9 @@ decreases the ESS.
 
 ```{r ROBUST}
 ## add a 20% non-informative mixture component
-map_robust <- robustify(map, weight=0.2, mean=-50)
+map_robust <- robustify(map, weight = 0.2, mean = -50)
 print(map_robust)
-round(ess(map_robust)) 
+round(ess(map_robust))
 ```
 
 
@@ -181,7 +182,7 @@ change from baseline in CDAI corresponds to improvement.
 ```{r rules}
 ## dual decision criteria
 ## pay attention to "lower.tail" argument and the order of active and pbo
-poc <- decision2S(pc=c(0.95,0.5), qc=c(0,-50), lower.tail=TRUE)
+poc <- decision2S(pc = c(0.95, 0.5), qc = c(0, -50), lower.tail = TRUE)
 print(poc)
 ```
 
@@ -194,21 +195,25 @@ choices of control prior and different sizes of control group.
 
 ```{r design_options}
 ## set up prior for active group
-weak_prior <- mixnorm(c(1,-50,1), sigma=crohn_sigma, param = 'mn')
+weak_prior <- mixnorm(c(1, -50, 1), sigma = crohn_sigma, param = "mn")
 n_act <- 40
 n_pbo <- 20
 
 ## four designs
 ## "b" means a balanced design, 1:1
 ## "ub" means 40 in active and 20 in placebo
-design_noprior_b  <- oc2S(weak_prior, weak_prior, n_act, n_act, poc,
-                          sigma1=crohn_sigma, sigma2=crohn_sigma)
+design_noprior_b <- oc2S(weak_prior, weak_prior, n_act, n_act, poc,
+  sigma1 = crohn_sigma, sigma2 = crohn_sigma
+)
 design_noprior_ub <- oc2S(weak_prior, weak_prior, n_act, n_pbo, poc,
-                          sigma1=crohn_sigma, sigma2=crohn_sigma)
-design_nonrob_ub  <- oc2S(weak_prior, map, n_act, n_pbo, poc,
-                          sigma1=crohn_sigma, sigma2=crohn_sigma)
-design_rob_ub     <- oc2S(weak_prior, map_robust, n_act, n_pbo, poc,
-                          sigma1=crohn_sigma, sigma2=crohn_sigma)
+  sigma1 = crohn_sigma, sigma2 = crohn_sigma
+)
+design_nonrob_ub <- oc2S(weak_prior, map, n_act, n_pbo, poc,
+  sigma1 = crohn_sigma, sigma2 = crohn_sigma
+)
+design_rob_ub <- oc2S(weak_prior, map_robust, n_act, n_pbo, poc,
+  sigma1 = crohn_sigma, sigma2 = crohn_sigma
+)
 ```
 
 
@@ -221,29 +226,38 @@ case to a lower level.
 
 ```{r typeI}
 # the range for true values
-cfb_truth <- seq(-120, -40, by=1)
+cfb_truth <- seq(-120, -40, by = 1)
 
 typeI1 <- design_noprior_b(cfb_truth, cfb_truth)
 typeI2 <- design_noprior_ub(cfb_truth, cfb_truth)
 typeI3 <- design_nonrob_ub(cfb_truth, cfb_truth)
 typeI4 <- design_rob_ub(cfb_truth, cfb_truth)
 
-ocI <- rbind(data.frame(cfb_truth=cfb_truth, typeI=typeI1,
-                        design="40:40 with non-informative priors"),
-             data.frame(cfb_truth=cfb_truth, typeI=typeI2,
-                        design="40:20 with non-informative priors"),
-             data.frame(cfb_truth=cfb_truth, typeI=typeI3,
-                        design="40:20 with non-robust prior for placebo"),
-             data.frame(cfb_truth=cfb_truth, typeI=typeI4,
-                        design="40:20 with robust prior for placebo")
+ocI <- rbind(
+  data.frame(
+    cfb_truth = cfb_truth, typeI = typeI1,
+    design = "40:40 with non-informative priors"
+  ),
+  data.frame(
+    cfb_truth = cfb_truth, typeI = typeI2,
+    design = "40:20 with non-informative priors"
+  ),
+  data.frame(
+    cfb_truth = cfb_truth, typeI = typeI3,
+    design = "40:20 with non-robust prior for placebo"
+  ),
+  data.frame(
+    cfb_truth = cfb_truth, typeI = typeI4,
+    design = "40:20 with robust prior for placebo"
+  )
 )
-ggplot(ocI, aes(cfb_truth, typeI, colour=design)) +
-    geom_line() +
-    ggtitle("Type I Error") +
-    xlab(expression(paste('True value of change from baseline ', mu[act] == mu[pbo]))) +
-    ylab('Type I error') +
-    coord_cartesian(ylim=c(0,0.2)) +
-    theme(legend.justification=c(1,1),legend.position=c(0.95,0.85))
+ggplot(ocI, aes(cfb_truth, typeI, colour = design)) +
+  geom_line() +
+  ggtitle("Type I Error") +
+  xlab(expression(paste("True value of change from baseline ", mu[act] == mu[pbo]))) +
+  ylab("Type I error") +
+  coord_cartesian(ylim = c(0, 0.2)) +
+  theme(legend.justification = c(1, 1), legend.position = c(0.95, 0.85))
 ```
 
 
@@ -255,38 +269,49 @@ with weakly informative priors for both arms or the balanced
 design.
 
 ```{r power}
-delta <- seq(-80,0,by=1)
+delta <- seq(-80, 0, by = 1)
 m <- summary(map)["mean"]
-cfb_truth1 <- m + delta   # active for 1
-cfb_truth2 <- m + 0*delta # pbo for 2
+cfb_truth1 <- m + delta # active for 1
+cfb_truth2 <- m + 0 * delta # pbo for 2
 
 power1 <- design_noprior_b(cfb_truth1, cfb_truth2)
 power2 <- design_noprior_ub(cfb_truth1, cfb_truth2)
 power3 <- design_nonrob_ub(cfb_truth1, cfb_truth2)
 power4 <- design_rob_ub(cfb_truth1, cfb_truth2)
 
-ocP <- rbind(data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
-                        delta=delta, power=power1,
-                        design="40:40 with non-informative priors"),
-             data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
-                        delta=delta, power=power2,
-                        design="40:20 with non-informative priors"),
-             data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
-                        delta=delta, power=power3,
-                        design="40:20 with non-robust prior for placebo"),
-             data.frame(cfb_truth1=cfb_truth1, cfb_truth2=cfb_truth2,
-                        delta=delta, power=power4,
-                        design="40:20 with robust prior for placebo"))
+ocP <- rbind(
+  data.frame(
+    cfb_truth1 = cfb_truth1, cfb_truth2 = cfb_truth2,
+    delta = delta, power = power1,
+    design = "40:40 with non-informative priors"
+  ),
+  data.frame(
+    cfb_truth1 = cfb_truth1, cfb_truth2 = cfb_truth2,
+    delta = delta, power = power2,
+    design = "40:20 with non-informative priors"
+  ),
+  data.frame(
+    cfb_truth1 = cfb_truth1, cfb_truth2 = cfb_truth2,
+    delta = delta, power = power3,
+    design = "40:20 with non-robust prior for placebo"
+  ),
+  data.frame(
+    cfb_truth1 = cfb_truth1, cfb_truth2 = cfb_truth2,
+    delta = delta, power = power4,
+    design = "40:20 with robust prior for placebo"
+  )
+)
 
-ggplot(ocP, aes(delta, power, colour=design)) +
-    geom_line() +
-    ggtitle("Power") + 
-    xlab('True value of difference (act - pbo)')+ ylab('Power') +
-    scale_y_continuous(breaks=c(seq(0,1,0.2),0.9)) +
-    scale_x_continuous(breaks=c(seq(-80,0,20),-70)) +
-    geom_hline(yintercept=0.9,linetype=2) + 
-    geom_vline(xintercept=-70,linetype=2) +
-    theme(legend.justification=c(1,1),legend.position=c(0.95,0.85)) 
+ggplot(ocP, aes(delta, power, colour = design)) +
+  geom_line() +
+  ggtitle("Power") +
+  xlab("True value of difference (act - pbo)") +
+  ylab("Power") +
+  scale_y_continuous(breaks = c(seq(0, 1, 0.2), 0.9)) +
+  scale_x_continuous(breaks = c(seq(-80, 0, 20), -70)) +
+  geom_hline(yintercept = 0.9, linetype = 2) +
+  geom_vline(xintercept = -70, linetype = 2) +
+  theme(legend.justification = c(1, 1), legend.position = c(0.95, 0.85))
 ```
 
 
@@ -310,19 +335,20 @@ y.pbo.se <- 13.9
 n.pbo <- 20
 
 ## first obtain posterior distributions
-post_act <- postmix(weak_prior, m=y.act, se=y.act.se)
-post_pbo <- postmix(map_robust, m=y.pbo, se=y.pbo.se)
+post_act <- postmix(weak_prior, m = y.act, se = y.act.se)
+post_pbo <- postmix(map_robust, m = y.pbo, se = y.pbo.se)
 
 ## then calculate probability for the dual criteria
 ## and compare to the predefined threshold values
-p1 <- pmixdiff(post_act, post_pbo, 0); print(p1)
-p2 <- pmixdiff(post_act, post_pbo, -50); print(p2)
+p1 <- pmixdiff(post_act, post_pbo, 0)
+print(p1)
+p2 <- pmixdiff(post_act, post_pbo, -50)
+print(p2)
 
-print(p1>0.95 & p2>0.5)
+print(p1 > 0.95 & p2 > 0.5)
 
 ## or we can use the decision function
 poc(post_act, post_pbo)
-
 ```
 
 ### References
