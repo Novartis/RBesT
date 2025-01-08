@@ -80,7 +80,7 @@ functions which require a reference scale.
 }}
 \examples{
 
-nm <- mixnorm(rob=c(0.2, 0, 2), inf=c(0.8, 2, 2), sigma=5)
+nm <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
 
 print(nm)
 summary(nm)
@@ -88,16 +88,16 @@ plot(nm)
 
 set.seed(57845)
 mixSamp <- rmix(nm, 500)
-plot(nm, samp=mixSamp)
+plot(nm, samp = mixSamp)
 
 # support defined by quantiles
 qmix(nm, c(0.01, 0.99))
 
 # density function
-dmix(nm, seq(-5,5,by=2))
+dmix(nm, seq(-5, 5, by = 2))
 
 # distribution function
-pmix(nm, seq(-5,5,by=2))
+pmix(nm, seq(-5, 5, by = 2))
 
 # the reference scale can be changed (it determines the ESS)
 ess(nm)

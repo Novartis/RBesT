@@ -77,7 +77,7 @@ likelihood \eqn{n=a} (and \eqn{b=n/m}).}
 }
 \examples{
 # Gamma mixture with robust and informative component
-gmix <- mixgamma(rob=c(0.3, 20, 4), inf=c(0.7, 50, 10))
+gmix <- mixgamma(rob = c(0.3, 20, 4), inf = c(0.7, 50, 10))
 
 # objects can be printed
 gmix
@@ -94,13 +94,15 @@ gmix[[2]]
 gmix[["inf"]]
 
 # alternative mean and standard deviation parametrization
-gmsMix <- mixgamma(rob=c(0.5, 8, 0.5), inf=c(0.5, 9, 2), param="ms")
+gmsMix <- mixgamma(rob = c(0.5, 8, 0.5), inf = c(0.5, 9, 2), param = "ms")
 
 # or mean and number of observations parametrization
-gmnMix <- mixgamma(rob=c(0.2, 2, 1), inf=c(0.8, 2, 5), param="mn")
+gmnMix <- mixgamma(rob = c(0.2, 2, 1), inf = c(0.8, 2, 5), param = "mn")
 
 # and mixed parametrizations are also possible
-gfmix <- mixgamma(rob1=c(0.15, mn2gamma(2, 1)), rob2=c(0.15, ms2gamma(2, 5)), inf=c(0.7, 50, 10))
+gfmix <- mixgamma(rob1 = c(0.15, mn2gamma(2, 1)),
+                  rob2 = c(0.15, ms2gamma(2, 5)),
+                  inf = c(0.7, 50, 10))
 }
 \seealso{
 Other mixdist: 

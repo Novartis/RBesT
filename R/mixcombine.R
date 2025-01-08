@@ -20,27 +20,28 @@
 #' @seealso \code{\link{robustify}}
 #'
 #' @example inst/examples/mixcombine.R
-#' 
+#'
 #' @export
-mixcombine <- function(..., weight, rescale=TRUE) {
-    comp <- list(...)
-    ## ensure that the resulting object is a mixture object only
-    cl <- grep("mix$", class(comp[[1]]), ignore.case=TRUE, value=TRUE)
-    dl <- dlink(comp[[1]])
-    lik <- likelihood(comp[[1]])
-    assert_that(all(sapply(comp, inherits, "mix")), msg="All components must be mixture objects.")
-    assert_that(all(sapply(comp, likelihood) == lik), msg="All components must have the same likelihood set.")
-    mix <- do.call(cbind, comp)
-    if(!missing(weight)) {
-        assert_that(length(weight) == length(comp))
-        mix[1,] <-  mix[1,] * rep(weight, times=sapply(comp, ncol))
-    }
-    if(rescale)
-        mix[1,] <-  mix[1,] / sum(mix[1,])
-    class(mix) <- cl
-    dlink(mix) <- dl
-    likelihood(mix) <- lik
-    if("normMix" %in% cl) sigma(mix) <- sigma(comp[[1]])
-    if("mvnormMix" %in% cl) sigma(mix) <- sigma(comp[[1]])
-    mix
+mixcombine <- function(..., weight, rescale = TRUE) {
+  comp <- list(...)
+  ## ensure that the resulting object is a mixture object only
+  cl <- grep("mix$", class(comp[[1]]), ignore.case = TRUE, value = TRUE)
+  dl <- dlink(comp[[1]])
+  lik <- likelihood(comp[[1]])
+  assert_that(all(sapply(comp, inherits, "mix")), msg = "All components must be mixture objects.")
+  assert_that(all(sapply(comp, likelihood) == lik), msg = "All components must have the same likelihood set.")
+  mix <- do.call(cbind, comp)
+  if (!missing(weight)) {
+    assert_that(length(weight) == length(comp))
+    mix[1, ] <- mix[1, ] * rep(weight, times = sapply(comp, ncol))
+  }
+  if (rescale) {
+    mix[1, ] <- mix[1, ] / sum(mix[1, ])
+  }
+  class(mix) <- cl
+  dlink(mix) <- dl
+  likelihood(mix) <- lik
+  if ("normMix" %in% cl) sigma(mix) <- sigma(comp[[1]])
+  if ("mvnormMix" %in% cl) sigma(mix) <- sigma(comp[[1]])
+  mix
 }

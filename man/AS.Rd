@@ -29,11 +29,12 @@ Society criteria for improvement (ASAS20) at week 6.
                             RBesT.MC.chains=2, RBesT.MC.thin=1)
 
 set.seed(34563)
-map_AS <- gMAP(cbind(r, n-r) ~ 1 | study,
-               family=binomial,
-               data=AS,
-               tau.dist="HalfNormal", tau.prior=1,
-               beta.prior=2)
+map_AS <- gMAP(cbind(r, n - r) ~ 1 | study,
+  family = binomial,
+  data = AS,
+  tau.dist = "HalfNormal", tau.prior = 1,
+  beta.prior = 2
+)
 ## Recover user set sampling defaults
 options(.user_mc_options)
 

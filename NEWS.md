@@ -1,3 +1,21 @@
+# RBesT 1.8-0 - January 8th, 2025
+
+## Enhancements
+
+* Enable ESS calculation for normal mixture densities when used in the
+  context of a standard one-parameter exponential family through the
+  new `family` argument. For example, this can be used to calculate
+  the ESS of a normal mixture density representing a logit transformed
+  response scale.
+* Reformat R sources using `styler`.
+
+## Bugfixes
+
+* Correct boundary behavior of `BinaryExactCI` function whenever no
+  responses or no non-responses are observed. Fixes issue #21.
+* Stabilize internal beta mixture information function, which corrects
+  unstable ESS ELIR computations. Addresses issue #22.
+
 # RBesT 1.7-4 - November 21st, 2024
 
 ## Enhancements

@@ -57,11 +57,11 @@
 #' of the Royal Statistical Society, Series B} 1977; 39 (1): 1-38.
 #'
 #' @examples
-#' bmix <- mixbeta(rob=c(0.2, 1, 1), inf=c(0.8, 10, 2))
+#' bmix <- mixbeta(rob = c(0.2, 1, 1), inf = c(0.8, 10, 2))
 #'
 #' bsamp <- rmix(bmix, 1000)
 #'
-#' bfit <- mixfit(bsamp, type="beta", Nc=2)
+#' bfit <- mixfit(bsamp, type = "beta", Nc = 2)
 #'
 #' # diagnostic plots can easily by generated from the EM fit with
 #' bfit.check <- plot(bfit)
@@ -81,20 +81,25 @@
 #'
 
 #' @export
-mixfit <- function(sample, type=c("norm", "beta", "gamma", "mvnorm"), thin, ...) UseMethod("mixfit")
+mixfit <- function(sample, type = c("norm", "beta", "gamma", "mvnorm"), thin, ...) UseMethod("mixfit")
 
 #' @describeIn mixfit Performs an EM fit for the given
 #' sample. Thinning is applied only if thin is specified.
 #' @export
-mixfit.default <- function(sample, type=c("norm", "beta", "gamma", "mvnorm"), thin, ...) {
-    type <- match.arg(type)
-    assert_that(type %in% c("norm", "beta", "gamma", "mvnorm"))
-    EM <- switch(type, norm=EM_nmm, beta=EM_bmm_ab, gamma=EM_gmm, mvnorm=EM_mnmm)
-    if(!missing(thin)) {
-        assert_that(thin >= 1)
-        sample <- asub(sample, seq(1,NROW(sample),by=thin), dims=1, drop=FALSE)
-    }
-    EM(sample, ...)
+mixfit.default <- function(sample, type = c("norm", "beta", "gamma", "mvnorm"), thin, ...) {
+  type <- match.arg(type)
+  assert_that(type %in% c("norm", "beta", "gamma", "mvnorm"))
+  EM <- switch(type,
+    norm = EM_nmm,
+    beta = EM_bmm_ab,
+    gamma = EM_gmm,
+    mvnorm = EM_mnmm
+  )
+  if (!missing(thin)) {
+    assert_that(thin >= 1)
+    sample <- asub(sample, seq(1, NROW(sample), by = thin), dims = 1, drop = FALSE)
+  }
+  EM(sample, ...)
 }
 
 #' @describeIn mixfit Fits the default predictive distribution from a
@@ -107,45 +112,56 @@ mixfit.default <- function(sample, type=c("norm", "beta", "gamma", "mvnorm"), th
 #' sigma in \code{\link{gMAP}} call.
 #' @export
 mixfit.gMAP <- function(sample, type, thin, ...) {
-    family <- sample$family$family
-    ## automatically thin sample as estimated by gMAP function
-    if(missing(thin)) {
-        thin <- sample$thin
-    }
-    assert_that(thin >= 1)
-    type <- switch(sample$family$family, binomial = "beta", gaussian = "norm", poisson = "gamma", "unknown")
-    sim <- rstan::extract(sample$fit, pars="theta_resp_pred", inc_warmup=FALSE, permuted=FALSE)
-    sim <- as.vector(sim[seq(1,dim(sim)[1],by=thin),,])
-    mix <- mixfit.default(sim, type, thin=1, ...)
-    ## for the case of normal data, read out the estimated reference
-    ## scale
-    if(family == "gaussian" & !is.null(sample$sigma_ref))
-        sigma(mix) <- sample$sigma_ref
-    set_likelihood(mix, family)
+  family <- sample$family$family
+  ## automatically thin sample as estimated by gMAP function
+  if (missing(thin)) {
+    thin <- sample$thin
+  }
+  assert_that(thin >= 1)
+  type <- switch(sample$family$family,
+    binomial = "beta",
+    gaussian = "norm",
+    poisson = "gamma",
+    "unknown"
+  )
+  sim <- rstan::extract(sample$fit, pars = "theta_resp_pred", inc_warmup = FALSE, permuted = FALSE)
+  sim <- as.vector(sim[seq(1, dim(sim)[1], by = thin), , ])
+  mix <- mixfit.default(sim, type, thin = 1, ...)
+  ## for the case of normal data, read out the estimated reference
+  ## scale
+  if (family == "gaussian" & !is.null(sample$sigma_ref)) {
+    sigma(mix) <- sample$sigma_ref
+  }
+  set_likelihood(mix, family)
 }
 
 #' @describeIn mixfit Fits a mixture density for each prediction from
 #' the \code{\link{gMAP}} prediction.
 #' @export
 mixfit.gMAPpred <- function(sample, type, thin, ...) {
-    if(attr(sample, "type") == "response") {
-        type <- switch(attr(sample, "family")$family, binomial = "beta", gaussian = "norm", poisson = "gamma", "unknown")
-        family <- attr(sample, "family")$family
-    } else {
-        type <- "norm"
-        family <- "gaussian"
+  if (attr(sample, "type") == "response") {
+    type <- switch(attr(sample, "family")$family,
+      binomial = "beta",
+      gaussian = "norm",
+      poisson = "gamma",
+      "unknown"
+    )
+    family <- attr(sample, "family")$family
+  } else {
+    type <- "norm"
+    family <- "gaussian"
+  }
+  res <- list()
+  for (i in 1:dim(sample)[2]) {
+    ## for the case of normal data, read out the estimated reference
+    ## scale
+    ## note: gMAPpred objects are already thinned down
+    res[[i]] <- set_likelihood(mixfit.default(sample[, i], type = type, thin = 1, ...), family)
+    if (family == "gaussian" & !is.null(attr(sample, "sigma_ref"))) {
+      sigma(res[[i]]) <- attr(sample, "sigma_ref")
     }
-    res <- list()
-    for(i in 1:dim(sample)[2]) {
-        ## for the case of normal data, read out the estimated reference
-        ## scale
-        ## note: gMAPpred objects are already thinned down
-        res[[i]] <- set_likelihood(mixfit.default(sample[,i], type=type, thin=1, ...), family)
-        if(family == "gaussian" & !is.null(attr(sample, "sigma_ref"))) {
-            sigma(res[[i]]) <- attr(sample, "sigma_ref")
-        }
-    }
-    res
+  }
+  res
 }
 #' @describeIn mixfit Fits a mixture density for an MCMC sample. It is
 #' recommended to provide a thinning argument which roughly yields
@@ -155,18 +171,19 @@ mixfit.gMAPpred <- function(sample, type, thin, ...) {
 #' chains, and draws.
 #' @export
 mixfit.array <- function(sample, type, thin, ...) {
-    if(type != "mvnorm" & dim(sample)[3] != 1)
-        stop("Only univariate data is supported.")
-    mixfit.default(sample, type, thin, ...)
+  if (type != "mvnorm" & dim(sample)[3] != 1) {
+    stop("Only univariate data is supported.")
+  }
+  mixfit.default(sample, type, thin, ...)
 }
 
 set_likelihood <- function(mix, family) {
-    if(family == "binomial") {
-        likelihood(mix) <- "binomial"
-    } else if(family == "gaussian") {
-        likelihood(mix) <- "normal"
-    } else if(family == "poisson") {
-        likelihood(mix) <- "poisson"
-    }
-    mix
+  if (family == "binomial") {
+    likelihood(mix) <- "binomial"
+  } else if (family == "gaussian") {
+    likelihood(mix) <- "normal"
+  } else if (family == "poisson") {
+    likelihood(mix) <- "poisson"
+  }
+  mix
 }

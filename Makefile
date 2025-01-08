@@ -49,12 +49,12 @@ all : $(TARGET)
 	cd $(@D); echo running $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
 	cd $(@D); $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_document(self_contained=TRUE))"
 
-tests/%.Rtest : tests/%.R
+tests/%.Rtest : tests/%.R $(R_PKG_SRCS) NAMESPACE
 	NOT_CRAN=true $(RCMD) -e "devtools::load_all()" -e "test_file('$<')" > $@ 2>&1
 	@printf "Test summary for $(<F): "
 	@grep '^\[' $@ | tail -n 1
 
-tests/%.Rtestfast : tests/%.R
+tests/%.Rtestfast : tests/%.R $(R_PKG_SRCS) NAMESPACE
 	NOT_CRAN=false $(RCMD) -e "devtools::load_all()" -e "test_file('$<')" > $@ 2>&1
 	@printf "Test summary for $(<F): "
 	@grep '^\[' $@ | tail -n 1
@@ -180,6 +180,27 @@ retestfast-all : clean-test $(R_TESTFAST_OBJS)
 
 PHONY += retest-all
 retest-all : clean-test $(R_TEST_OBJS)
+
+PHONY += check-winbuilder-devel
+check-winbuilder-devel : r-source-release
+	cd build; $(RCMD) -e 'target <- tempdir()' \
+			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
+			  -e 'devtools::check_win_devel(pkg=file.path(target, "RBesT"))'
+
+PHONY += check-winbuilder-release
+check-winbuilder-release : r-source-release
+	cd build; $(RCMD) -e 'target <- tempdir()' \
+			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
+			  -e 'devtools::check_win_release(pkg=file.path(target, "RBesT"))'
+
+PHONY += check-winbuilder-oldrelease
+check-winbuilder-oldrelease : r-source-release
+	cd build; $(RCMD) -e 'target <- tempdir()' \
+			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
+			  -e 'devtools::check_win_oldrelease(pkg=file.path(target, "RBesT"))'
+
+PHONY += check-winbuilder
+check-winbuilder : check-winbuilder-devel check-winbuilder-release check-winbuilder-oldrelease
 
 #$(DIR_OBJ)/%.o: %.c $(INCS)
 #    mkdir -p $(@D)

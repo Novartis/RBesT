@@ -136,16 +136,17 @@ ratio used for the design of the trial is $0.8$.
 
 Example data:
 ```{r}
-trials <- data.frame(study  = c("PoC", "PhII", "PhIII_A", "PhIII_B"),
-                     deaths = c(    8,     85,       162,       150),
-                     HR     = c(  0.7,   0.75,      0.83,      0.78),
-                     stringsAsFactors = FALSE
-                     )
+trials <- data.frame(
+  study = c("PoC", "PhII", "PhIII_A", "PhIII_B"),
+  deaths = c(8, 85, 162, 150),
+  HR = c(0.7, 0.75, 0.83, 0.78),
+  stringsAsFactors = FALSE
+)
 ## under the normal approximation of the log-HR, the sampling sd is 2
 ## such that the standard errors are sqrt(4/events)
 trials <- trials %>%
-    mutate(logHR=log(HR), sem=sqrt(4/deaths))
-kable(trials, digits=2)
+  mutate(logHR = log(HR), sem = sqrt(4 / deaths))
+kable(trials, digits = 2)
 ```
 
 The remaining outline of the vignette is to first evaluate the design
@@ -198,16 +199,16 @@ Here we use the unit information prior as non-informative prior and
 define it using the mean & effective sample size (ESS) specification:
 
 ```{r}
-unit_inf <- mixnorm(c(1, 0, 1), sigma=2, param="mn")
+unit_inf <- mixnorm(c(1, 0, 1), sigma = 2, param = "mn")
 unit_inf
 ```
 
 Define conditional power for the overall trial:
 ```{r}
-success_crit <- decision1S(1-alpha, 0)
+success_crit <- decision1S(1 - alpha, 0)
 ## let's print the defined criterion
 success_crit
-design <- oc1S(unit_inf, Nev, success_crit, sigma=2)
+design <- oc1S(unit_inf, Nev, success_crit, sigma = 2)
 ```
 
 Under the alternative these design choices result in 80% power
@@ -220,20 +221,21 @@ The impact of the unit-information prior is minimal which can be seen
 by comparing to the frequentist calculation:
 
 ```{r}
-power.t.test(n=Nev, delta=-1*alt_logHR, sd=2, type="one.sample", sig.level=0.025, alternative="one.sided")
+power.t.test(n = Nev, delta = -1 * alt_logHR, sd = 2, type = "one.sample", sig.level = 0.025, alternative = "one.sided")
 ```
 
 With RBesT we can explore the conditional power for a range of
 alternatives:
 
 ```{r}
-ggplot(data.frame(HR=c(0.5, 1.2)), aes(HR)) +
-    stat_function(fun=compose(design, log)) +
-    vline_at(c(alt_HR, 1.0), linetype=I(2)) +
-    scale_y_continuous(breaks=seq(0,1,by=0.1)) +
-    scale_x_continuous(breaks=c(alt_HR, seq(0,1.2,by=0.2))) +
-    ylab(NULL) + xlab(expression(theta[a])) +
-    ggtitle(paste("Power for N =", Nev, "events"))
+ggplot(data.frame(HR = c(0.5, 1.2)), aes(HR)) +
+  stat_function(fun = compose(design, log)) +
+  vline_at(c(alt_HR, 1.0), linetype = I(2)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1)) +
+  scale_x_continuous(breaks = c(alt_HR, seq(0, 1.2, by = 0.2))) +
+  ylab(NULL) +
+  xlab(expression(theta[a])) +
+  ggtitle(paste("Power for N =", Nev, "events"))
 ```
 
 
@@ -243,7 +245,7 @@ The critical value determines at which observed logHR we *just*
 conclude that the success criterion is fulfilled.
 
 ```{r}
-design_crit <- decision1S_boundary(unit_inf, Nev, success_crit, sigma=2)
+design_crit <- decision1S_boundary(unit_inf, Nev, success_crit, sigma = 2)
 
 design_crit
 exp(design_crit)
@@ -252,7 +254,7 @@ exp(design_crit)
 We can check this:
 
 ```{r}
-success_crit(postmix(unit_inf, m=design_crit, n=379))
+success_crit(postmix(unit_inf, m = design_crit, n = 379))
 ```
 
 Ok, when observing the critical value, we get a success.
@@ -260,7 +262,7 @@ Ok, when observing the critical value, we get a success.
 Now, what if we observe a 1% worse result?
 
 ```{r}
-success_crit(postmix(unit_inf, m=design_crit+log(1.01), n=379))
+success_crit(postmix(unit_inf, m = design_crit + log(1.01), n = 379))
 ```
 
 No success then $\Rightarrow$ this is the critical boundary value.
@@ -273,7 +275,7 @@ Posterior of treatment effect at interim. The trial uses a
 non-informative prior for the treatment effect:
 
 ```{r}
-interim_A <- postmix(unit_inf, m=trials$logHR[3], se=trials$sem[3])
+interim_A <- postmix(unit_inf, m = trials$logHR[3], se = trials$sem[3])
 interim_A
 ```
 
@@ -282,7 +284,7 @@ use for the analysis of the second half is given by the data
 collected so far.
 
 ```{r}
-interim_pos_A <- pos1S(interim_A, Nev-trials$deaths[3], success_crit, sigma=2)
+interim_pos_A <- pos1S(interim_A, Nev - trials$deaths[3], success_crit, sigma = 2)
 ```
 
 The returned function can now calculate the PoS assuming any
@@ -306,7 +308,7 @@ power which is conditional on the observed data,
 $CP_{N-n_I}(\theta|y_{n_I})$:
 
 ```{r}
-interim_oc_A <- oc1S(interim_A, Nev-trials$deaths[3], success_crit, sigma=2)
+interim_oc_A <- oc1S(interim_A, Nev - trials$deaths[3], success_crit, sigma = 2)
 ```
 
 The conditional power assuming the alternative is true (a HR of 0.75):
@@ -325,8 +327,8 @@ interim_pos_A(mixnorm(c(1, alt_logHR, 1E-4)))
 
 For trial B the calculation is:
 ```{r}    
-interim_B <- postmix(unit_inf, m=trials$logHR[4], se=trials$sem[4])
-interim_pos_B <- pos1S(interim_B, Nev-trials$deaths[4], success_crit, sigma=2)
+interim_B <- postmix(unit_inf, m = trials$logHR[4], se = trials$sem[4])
+interim_pos_B <- pos1S(interim_B, Nev - trials$deaths[4], success_crit, sigma = 2)
 interim_pos_B(interim_B)
 ```
 
@@ -340,17 +342,18 @@ trial. We now derive from these a MAP prior; recall that the MAP prior
 is the prediction of the log-hazard ratio of a future trial:
 
 ```{r}
-base <- trials[1:2,]
+base <- trials[1:2, ]
 
 set.seed(342345)
 base_map_mc <- gMAP(cbind(logHR, sem) ~ 1 | study,
-                    family=gaussian,
-                    data=base,
-                    weights=deaths,
-                    tau.dist="HalfNormal", tau.prior=0.5,
-                    beta.prior=cbind(0, 2))
+  family = gaussian,
+  data = base,
+  weights = deaths,
+  tau.dist = "HalfNormal", tau.prior = 0.5,
+  beta.prior = cbind(0, 2)
+)
 
-forest_plot(base_map_mc, est="MAP")
+forest_plot(base_map_mc, est = "MAP")
 
 base_map <- automixfit(base_map_mc)
 
@@ -364,7 +367,7 @@ effect through the interim data itself which we can include into the
 MAP prior:
 
 ```{r}    
-interim_A_combined <- postmix(base_map, m=trials$logHR[3], se=trials$sem[3])
+interim_A_combined <- postmix(base_map, m = trials$logHR[3], se = trials$sem[3])
 ```
 
 The PoS for this posterior at interim (representing historical
@@ -379,7 +382,7 @@ the final analysis will use a non-informative prior.
 
 For trial B the calculation is:
 ```{r}    
-interim_B_combined <- postmix(base_map, m=trials$logHR[4], se=trials$sem[4])
+interim_B_combined <- postmix(base_map, m = trials$logHR[4], se = trials$sem[4])
 interim_pos_B(interim_B_combined)
 ```
 
@@ -389,12 +392,12 @@ However, there is even more information which can be used here,
 since the phase III result of trial B is also available:
 
 ```{r}
-interim_map_mc <- update(base_map_mc, data=trials)
+interim_map_mc <- update(base_map_mc, data = trials)
 ```
 
 Now the trial B specific posterior at interim is
 ```{r}
-kable(fitted(interim_map_mc), digits=3)
+kable(fitted(interim_map_mc), digits = 3)
 ```
 
 which we can extract as:
@@ -403,17 +406,17 @@ which we can extract as:
 1. obtain posterior (which we restrict to the first 4 columns)
 
 ```{r}
-interim_map_post <- as.matrix(interim_map_mc)[,1:4]
+interim_map_post <- as.matrix(interim_map_mc)[, 1:4]
 
 dim(interim_map_post) # posterior is given as matrix: iteration x parameter
 
-head(interim_map_post, n=3)
+head(interim_map_post, n = 3)
 ```
 
 2. turn MCMC posterior sample into parametric mixture
 
 ```{r}
-interim_A_allcombined <- automixfit(interim_map_post[,"theta[3]"])
+interim_A_allcombined <- automixfit(interim_map_post[, "theta[3]"])
 ```
 
 3. and finally evaluate the PoS
@@ -429,7 +432,7 @@ exchangeability.
 For trial B computations are:
 
 ```{r}
-interim_B_allcombined <- automixfit(interim_map_post[,"theta[4]"])
+interim_B_allcombined <- automixfit(interim_map_post[, "theta[4]"])
 interim_pos_B(interim_B_allcombined)
 ```
 
@@ -442,23 +445,24 @@ the historical data in comparison to the twin phase III trials.
 Assign data to historical (2) and concurrent data strata (1):
 
 ```{r}
-trials <- trials %>% mutate(stratum=c(2, 2, 1, 1))
+trials <- trials %>% mutate(stratum = c(2, 2, 1, 1))
 
-kable(trials, digits=2)
+kable(trials, digits = 2)
 
 set.seed(435345)
 interim_diff_map_mc <- gMAP(cbind(logHR, sem) ~ 1 | study,
-                            tau.strata=stratum,
-                            family=gaussian,
-                            data=trials,
-                            weights=deaths,
-                            tau.dist="HalfNormal", tau.prior=c(0.5, 1),
-                            beta.prior=cbind(0, 2))
+  tau.strata = stratum,
+  family = gaussian,
+  data = trials,
+  weights = deaths,
+  tau.dist = "HalfNormal", tau.prior = c(0.5, 1),
+  beta.prior = cbind(0, 2)
+)
 
-interim_diff_map_post <- as.matrix(interim_diff_map_mc)[,1:4]
+interim_diff_map_post <- as.matrix(interim_diff_map_mc)[, 1:4]
 
-interim_A_diff_allcombined <- automixfit(interim_diff_map_post[,"theta[3]"])
-interim_B_diff_allcombined <- automixfit(interim_diff_map_post[,"theta[4]"])
+interim_A_diff_allcombined <- automixfit(interim_diff_map_post[, "theta[3]"])
+interim_B_diff_allcombined <- automixfit(interim_diff_map_post[, "theta[4]"])
 
 interim_pos_A(interim_A_diff_allcombined)
 interim_pos_B(interim_B_diff_allcombined)
@@ -482,7 +486,7 @@ interim_pos_A(interim_A)
 As explained, the conditional power is the operating characerstic
 of a design when conditioning on the already observed data:
 ```{r}
-interim_oc_A <- oc1S(interim_A, Nev-trials$deaths[3], success_crit, sigma=2)
+interim_oc_A <- oc1S(interim_A, Nev - trials$deaths[3], success_crit, sigma = 2)
 ```
 
 The PoS is then the integral of the conditional power over the
@@ -520,13 +524,13 @@ $$
 Thus we need to also get the conditional power for trial B at interim...
 
 ```{r}
-interim_oc_B <- oc1S(interim_B, Nev-trials$deaths[4], success_crit, sigma=2)
+interim_oc_B <- oc1S(interim_B, Nev - trials$deaths[4], success_crit, sigma = 2)
 ```
 
 ...and integrate over the posterior samples (differential discounting case)
 
 ```{r}
-mean(interim_oc_A(interim_diff_map_post[,"theta[3]"]) * interim_oc_B(interim_diff_map_post[,"theta[4]"]))
+mean(interim_oc_A(interim_diff_map_post[, "theta[3]"]) * interim_oc_B(interim_diff_map_post[, "theta[4]"]))
 ```
 
 which is slightly larger than assuming independence:
@@ -536,12 +540,12 @@ interim_pos_A(interim_A) * interim_pos_B(interim_B)
 
 This is due to dependence of the posteriors
 ```{r}
-cor(interim_diff_map_post[,c("theta[3]", "theta[4]")])
+cor(interim_diff_map_post[, c("theta[3]", "theta[4]")])
 ```
 
 For the full exchangeability case we have
 ```{r}
-mean(interim_oc_A(interim_map_post[,"theta[3]"]) * interim_oc_B(interim_map_post[,"theta[4]"]))
+mean(interim_oc_A(interim_map_post[, "theta[3]"]) * interim_oc_B(interim_map_post[, "theta[4]"]))
 ```
 
 
@@ -557,7 +561,7 @@ our preceding calculations.
 
 Phase III trial A:
 ```{r}
-## only interim data of trial A 
+## only interim data of trial A
 interim_pos_A(interim_A)
 ## in addition with prior historical data PoC & phase II data
 interim_pos_A(interim_A_combined)
@@ -600,19 +604,20 @@ chains) to get a very high precision.
 
 ```{r}
 base_map_mc_2 <- gMAP(cbind(logHR, sem) ~ 1 | study,
-                      family=gaussian,
-                      data=base,
-                      weights=deaths,
-                      tau.dist="HalfNormal", tau.prior=0.5,
-                      beta.prior=cbind(0, 2),
-                      chains=ifelse(is_CRAN, 2, 20))
+  family = gaussian,
+  data = base,
+  weights = deaths,
+  tau.dist = "HalfNormal", tau.prior = 0.5,
+  beta.prior = cbind(0, 2),
+  chains = ifelse(is_CRAN, 2, 20)
+)
 ```
 
 
 Force an accurate fit with 5 components:
 
 ```{r}
-base_map_2 <- mixfit(base_map_mc_2, Nc=5)
+base_map_2 <- mixfit(base_map_mc_2, Nc = 5)
 base_map_2
 ```
 
@@ -620,7 +625,7 @@ Now, combine the MAP prior (representing historical knowledge) with
 the interim data of trial A:
 
 ```{r}
-interim_A_combined_2 <- postmix(base_map_2, m=trials$logHR[3], se=trials$sem[3])
+interim_A_combined_2 <- postmix(base_map_2, m = trials$logHR[3], se = trials$sem[3])
 ```
 
 
@@ -628,15 +633,15 @@ interim_A_combined_2 <- postmix(base_map_2, m=trials$logHR[3], se=trials$sem[3])
    phase III A trial, but excluding the phase III B data):
 
 ```{r}
-interim_map_mc_2 <- update(base_map_mc_2, data=trials[-4,])
+interim_map_mc_2 <- update(base_map_mc_2, data = trials[-4, ])
 
-interim_map_post_2 <- as.matrix(interim_map_mc_2)[,1:3]
+interim_map_post_2 <- as.matrix(interim_map_mc_2)[, 1:3]
 ```
 
 
 2. turn MCMC posterior sample into parametric mixture
 ```{r}
-interim_A_allcombined_2 <- mixfit(interim_map_post_2[,"theta[3]"], Nc=5)
+interim_A_allcombined_2 <- mixfit(interim_map_post_2[, "theta[3]"], Nc = 5)
 
 interim_A_allcombined_2
 ```
@@ -645,11 +650,11 @@ interim_A_allcombined_2
 Now let's overlay the two posterior's
 
 ```{r}
-ggplot(data.frame(logHR=c(-0.8,0.25)), aes(logHR)) +
-    stat_function(fun=dmix, args=list(mix=interim_A_combined_2), aes(linetype="MAP")) +
-    stat_function(fun=dmix, args=list(mix=interim_A_allcombined_2), aes(linetype="MAC")) +
-    scale_linetype_discrete("Analysis") +
-    ggtitle("Posterior log hazard of phase III A trial at interim")
+ggplot(data.frame(logHR = c(-0.8, 0.25)), aes(logHR)) +
+  stat_function(fun = dmix, args = list(mix = interim_A_combined_2), aes(linetype = "MAP")) +
+  stat_function(fun = dmix, args = list(mix = interim_A_allcombined_2), aes(linetype = "MAC")) +
+  scale_linetype_discrete("Analysis") +
+  ggtitle("Posterior log hazard of phase III A trial at interim")
 ```
 
 

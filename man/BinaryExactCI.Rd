@@ -24,14 +24,14 @@ This function calculates the exact confidendence interval for a
 response rate presented by \eqn{n} and \eqn{r}.
 }
 \details{
-Confidence intervals are obtained by a procedure first given in 
-Clopper and Pearson (1934). This guarantees that the confidence 
+Confidence intervals are obtained by a procedure first given in
+Clopper and Pearson (1934). This guarantees that the confidence
 level is at least (1-\eqn{\alpha}).
 
 Details can be found in the publication listed below.
 }
 \examples{
-BinaryExactCI(3,20,0.05)
+BinaryExactCI(3, 20, 0.05)
 
 }
 \references{

@@ -34,15 +34,15 @@ NULL
 #' @rdname likelihood
 #' @export
 likelihood <- function(mix) {
-    likelihood <- attr(mix, "likelihood")
-    check_choice(likelihood, c("poisson", "exp", "normal", "binomial"))
-    likelihood
+  likelihood <- attr(mix, "likelihood")
+  check_choice(likelihood, c("poisson", "exp", "normal", "binomial"))
+  likelihood
 }
 
 #' @rdname likelihood
 #' @export
-'likelihood<-' <- function(mix, value) {
-    check_choice(value, c("poisson", "exp", "normal", "binomial"))
-    attr(mix, "likelihood") <- value
-    mix
+"likelihood<-" <- function(mix, value) {
+  check_choice(value, c("poisson", "exp", "normal", "binomial"))
+  attr(mix, "likelihood") <- value
+  mix
 }

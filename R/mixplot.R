@@ -1,5 +1,5 @@
 #' @name mixplot
-#' 
+#'
 #' @title Plot mixture distributions
 #'
 #' @description Plotting for mixture distributions
@@ -28,32 +28,35 @@
 #' @family mixdist
 #' @examples
 #' # beta with two informative components
-#' bm <- mixbeta(inf=c(0.5, 10, 100), inf2=c(0.5, 30, 80))
+#' bm <- mixbeta(inf = c(0.5, 10, 100), inf2 = c(0.5, 30, 80))
 #' plot(bm)
-#' plot(bm, fun=pmix)
+#' plot(bm, fun = pmix)
 #'
 #' # for customizations of the plot we need to load ggplot2 first
 #' library(ggplot2)
 #'
 #' # show a histogram along with the density
-#' plot(bm) + geom_histogram(data=data.frame(x=rmix(bm, 1000)),
-#'                           aes(y=..density..), bins=50, alpha=0.4)
+#' plot(bm) + geom_histogram(
+#'   data = data.frame(x = rmix(bm, 1000)),
+#'   aes(y = ..density..), bins = 50, alpha = 0.4
+#' )
 #'
 #' \donttest{
 #' # note: we can also use bayesplot for histogram plots with a density ...
 #' library(bayesplot)
-#' mh <- mcmc_hist(data.frame(x=rmix(bm, 1000)), freq=FALSE) +
-#'          overlay_function(fun=dmix, args=list(mix=bm))
+#' mh <- mcmc_hist(data.frame(x = rmix(bm, 1000)), freq = FALSE) +
+#'   overlay_function(fun = dmix, args = list(mix = bm))
 #' # ...and even add each component
-#' for(k in 1:ncol(bm))
-#'   mh <- mh + overlay_function(fun=dmix, args=list(mix=bm[[k]]), linetype=I(2))
+#' for (k in 1:ncol(bm)) {
+#'   mh <- mh + overlay_function(fun = dmix, args = list(mix = bm[[k]]), linetype = I(2))
+#' }
 #' print(mh)
 #' }
 #'
 #' # normal mixture
-#' nm <- mixnorm(rob=c(0.2, 0, 2), inf=c(0.8, 6, 2), sigma=5)
+#' nm <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 6, 2), sigma = 5)
 #' plot(nm)
-#' plot(nm, fun=qmix)
+#' plot(nm, fun = qmix)
 #'
 #' # obtain ggplot2 object and change title
 #' pl <- plot(nm)
@@ -62,59 +65,59 @@
 #' @rdname mixplot
 #' @method plot mix
 #' @export
-plot.mix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ...) {
-    funStr <- deparse(substitute(fun))
-    if(length(prob) == 1) {
-        plow <- (1-prob)/2
-        pup <- 1-plow
-        if(funStr != "qmix") {
-            interval <- qmix(x, c(plow, pup))
-        } else {
-            interval <- c(plow, pup)
-        }
+plot.mix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size = 1.25, ...) {
+  funStr <- deparse(substitute(fun))
+  if (length(prob) == 1) {
+    plow <- (1 - prob) / 2
+    pup <- 1 - plow
+    if (funStr != "qmix") {
+      interval <- qmix(x, c(plow, pup))
     } else {
-        plow <- prob[1]
-        pup <- prob[2]
-        interval <- prob
+      interval <- c(plow, pup)
     }
-    assert_that(plow < pup)
-    assert_that(interval[1] < interval[2])
-    fun <- match.fun(fun)
-    discrete <- ifelse(all(is.integer(interval)), TRUE, FALSE )
-    if(discrete) {
-        plot_fun <- function(x, ...) fun(floor(x), ...)
-        plot_geom <- "step"
-    } else {
-        plot_fun <- function(x, ...) fun(x, ...)
-        plot_geom <- "line"
-    }
-    n_fun <- 501
+  } else {
+    plow <- prob[1]
+    pup <- prob[2]
+    interval <- prob
+  }
+  assert_that(plow < pup)
+  assert_that(interval[1] < interval[2])
+  fun <- match.fun(fun)
+  discrete <- ifelse(all(is.integer(interval)), TRUE, FALSE)
+  if (discrete) {
+    plot_fun <- function(x, ...) fun(floor(x), ...)
+    plot_geom <- "step"
+  } else {
+    plot_fun <- function(x, ...) fun(x, ...)
+    plot_geom <- "line"
+  }
+  n_fun <- 501
 
-    num_comp <- ncol(x)
-    pl <- ggplot(data.frame(x=interval), aes(x=x)) +
-        stat_function(geom=plot_geom, fun = plot_fun, args=list(mix=x, log=log), n=n_fun, linewidth=size) +
-        bayesplot::bayesplot_theme_get()
+  num_comp <- ncol(x)
+  pl <- ggplot(data.frame(x = interval), aes(x = x)) +
+    stat_function(geom = plot_geom, fun = plot_fun, args = list(mix = x, log = log), n = n_fun, linewidth = size) +
+    bayesplot::bayesplot_theme_get()
 
-    if(funStr=="dmix") {
-        pl <- pl + ylab("density") + xlab("parameter")
-    } else if(funStr=="pmix") {
-        pl <- pl + ylab("cumulative density") + xlab("quantile")
-    } else if(funStr=="qmix") {
-        pl <- pl + ylab("quantile") + xlab("cumulative density")
+  if (funStr == "dmix") {
+    pl <- pl + ylab("density") + xlab("parameter")
+  } else if (funStr == "pmix") {
+    pl <- pl + ylab("cumulative density") + xlab("quantile")
+  } else if (funStr == "qmix") {
+    pl <- pl + ylab("quantile") + xlab("cumulative density")
+  }
+  if (funStr == "dmix" & comp) {
+    comp_df <- list()
+    for (i in seq_len(num_comp)) {
+      pl <- pl + stat_function(geom = plot_geom, data = data.frame(comp = factor(i, levels = seq_len(num_comp))), mapping = aes(colour = comp), fun = plot_fun, args = list(mix = x[[i]], log = log), n = n_fun, linetype = I(2), linewidth = size, inherit.aes = FALSE)
     }
-    if(funStr=="dmix" & comp) {
-        comp_df <- list()
-        for(i in seq_len(num_comp)) {
-            pl <- pl + stat_function(geom=plot_geom, data=data.frame(comp=factor(i, levels=seq_len(num_comp))), mapping=aes(colour=comp), fun=plot_fun, args=list(mix=x[[i]], log=log), n=n_fun, linetype=I(2), linewidth=size, inherit.aes=FALSE)
-        }
-        pl <- pl + scale_colour_manual("Comp. [%]", values=2:(num_comp+1), labels=paste0(colnames(x), " ", format(100*x[1,],digits=1,nsmall=1)))
-    }
-    pl
+    pl <- pl + scale_colour_manual("Comp. [%]", values = 2:(num_comp + 1), labels = paste0(colnames(x), " ", format(100 * x[1, ], digits = 1, nsmall = 1)))
+  }
+  pl
 }
 
 #' @rdname mixplot
 #' @method plot mvnormMix
 #' @export
-plot.mvnormMix <- function(x, prob=0.99, fun=dmix, log=FALSE, comp=TRUE, size=1.25, ...) {
-    stop("Multivariate normal mixture plotting not supported.")
+plot.mvnormMix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size = 1.25, ...) {
+  stop("Multivariate normal mixture plotting not supported.")
 }

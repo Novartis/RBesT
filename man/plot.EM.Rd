@@ -52,9 +52,9 @@ site}.
 
 \examples{
 
-bmix <- mixbeta(rob=c(0.2, 1, 1), inf=c(0.8, 10, 2))
+bmix <- mixbeta(rob = c(0.2, 1, 1), inf = c(0.8, 10, 2))
 bsamp <- rmix(bmix, 1000)
-bfit <- mixfit(bsamp, type="beta", Nc=2)
+bfit <- mixfit(bsamp, type = "beta", Nc = 2)
 pl <- plot(bfit)
 
 print(pl$mixdens)
@@ -62,7 +62,7 @@ print(pl$mix)
 
 \donttest{
 # a number of additional plots are generated in verbose mode
-.user_option <- options(RBesT.verbose=TRUE)
+.user_option <- options(RBesT.verbose = TRUE)
 pl_all <- plot(bfit)
 
 # recover previous user options

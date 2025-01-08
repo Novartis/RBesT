@@ -13,7 +13,14 @@ ess(mix, method = c("elir", "moment", "morita"), ...)
 
 \method{ess}{gammaMix}(mix, method = c("elir", "moment", "morita"), ..., s = 100, eps = 1e-04)
 
-\method{ess}{normMix}(mix, method = c("elir", "moment", "morita"), ..., sigma, s = 100)
+\method{ess}{normMix}(
+  mix,
+  method = c("elir", "moment", "morita"),
+  ...,
+  family = gaussian,
+  sigma,
+  s = 100
+)
 }
 \arguments{
 \item{mix}{Prior (mixture of conjugate distributions).}
@@ -31,6 +38,9 @@ et al. (2008) for details.}
 of the expected information for the Poisson-Gamma case of
 Morita method (defaults to 1E-4).}
 
+\item{family}{defines data likelihood and link function
+(\code{binomial}, \code{gaussian}, or \code{poisson}).}
+
 \item{sigma}{reference scale.}
 }
 \value{
@@ -44,18 +54,25 @@ equivalent to.
 \details{
 The ESS is calculated using either the expected local
     information ratio (elir) \emph{Neuenschwander et
-    al. (submitted)}, the moments approach or the method by
+    al. (2020)}, the moments approach or the method by
     \emph{Morita et al. (2008)}.
 
-The elir approach is the only ESS which fulfills predictive
-consistency. The predictive consistency of the ESS requires that
-the ESS of a prior is the same as averaging the posterior ESS after
-a fixed amount of events over the prior predictive distribution
-from which the number of forward simulated events is
-subtracted. The elir approach results in ESS estimates which are
-neither conservative nor liberal whereas the moments method yields
-conservative and the morita method liberal results. See the example
-section for a demonstration of predictive consistency.
+The elir approach measures effective sample size in terms of the
+average curvature of the prior in relation to the Fisher
+information. Informally this corresponds to the average peakiness
+of the prior in relation to the information content of a single
+observation. The elir approach is the only ESS which fulfills
+predictive consistency. The predictive consistency of the ESS
+requires that the ESS of a prior is consistent when considering an
+averaged posterior ESS of additional data distributed according to
+the predictive distribution of the prior. The expectation of the
+posterior ESS is taken wrt to the prior predictive distribution and
+the averaged posterior ESS corresponds to the sum of the prior ESS
+and the number of forward simulated data items. The elir approach
+results in ESS estimates which are neither conservative nor liberal
+whereas the moments method yields conservative and the morita
+method liberal results. See the example section for a demonstration
+of predictive consistency.
 
 For the moments method the mean and standard deviation of the
 mixture are calculated and then approximated by the conjugate
@@ -70,6 +87,13 @@ contains many components. The calculation of the Morita approach
 here follows the approach presented in Neuenschwander B. et all
 (2019) which avoids the need for a minimization and does not
 restrict the ESS to be an integer.
+
+The arguments \code{sigma} and \code{family} are specific for
+normal mixture densities. These specify the sampling standard
+deviation for a \code{gaussian} family (the default) while also
+allowing to consider the ESS of standard one-parameter exponential
+families, i.e. \code{binomial} or \code{poisson}. The function
+supports non-gaussian families with unit dispersion only.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -100,10 +124,10 @@ b <- 15
 prior <- mixbeta(c(1, a, b))
 
 ess(prior)
-(a+b)
+(a + b)
 
 # Beta mixture example
-bmix <- mixbeta(rob=c(0.2, 1, 1), inf=c(0.8, 10, 2))
+bmix <- mixbeta(rob = c(0.2, 1, 1), inf = c(0.8, 10, 2))
 
 ess(bmix, "elir")
 
@@ -117,45 +141,58 @@ ab_matched <- ms2beta(bmix_sum["mean"], bmix_sum["sd"])
 # to number of responders/non-responders respectivley
 round(sum(ab_matched))
 
-ess(bmix, method="morita")
+ess(bmix, method = "morita")
+
+# One may also calculate the ESS on the logit scale, which
+# gives slightly different results due to the parameter
+# transformation, e.g.:
+prior_logit <- mixnorm(c(1, log(5 / 15), sqrt(1 / 5 + 1 / 15)))
+ess(prior_logit, family = binomial)
+
+bmix_logit <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, log(10 / 2), sqrt(1 / 10 + 1 / 2)))
+ess(bmix_logit, family = binomial)
 
 # Predictive consistency of elir
 n_forward <- 1E1
-bmixPred <- preddist(bmix, n=n_forward)
+bmixPred <- preddist(bmix, n = n_forward)
 pred_samp <- rmix(bmixPred, 1E2)
-# use more samples here for greater accuracy
-# pred_samp <- rmix(bmixPred, 1E3) 
-pred_ess <- sapply(pred_samp, function(r) ess(postmix(bmix, r=r, n=n_forward), "elir") )
+# use more samples here for greater accuracy, e.g.
+# pred_samp <- rmix(bmixPred, 1E3)
+pred_ess <- sapply(pred_samp, function(r) ess(postmix(bmix, r = r, n = n_forward), "elir"))
 ess(bmix, "elir")
 mean(pred_ess) - n_forward
 
 # Normal mixture example
-nmix <- mixnorm(rob=c(0.5, 0, 2), inf=c(0.5, 3, 4), sigma=10)
+nmix <- mixnorm(rob = c(0.5, 0, 2), inf = c(0.5, 3, 4), sigma = 10)
 
 ess(nmix, "elir")
 
 ess(nmix, "moment")
 
-## the reference scale determines the ESS
+# the reference scale determines the ESS
 sigma(nmix) <- 20
 ess(nmix)
 
+# we may also interpret normal mixtures as densities assigned to
+# parameters of a logit transformed response rate of a binomial
+nmix_logit <- mixnorm(c(1, logit(1 / 4), 2 / sqrt(10)))
+ess(nmix_logit, family = binomial)
+
 # Gamma mixture example
-gmix <- mixgamma(rob=c(0.3, 20, 4), inf=c(0.7, 50, 10))
+gmix <- mixgamma(rob = c(0.3, 20, 4), inf = c(0.7, 50, 10))
 
 ess(gmix) ## interpreted as appropriate for a Poisson likelihood (default)
 
 likelihood(gmix) <- "exp"
 ess(gmix) ## interpreted as appropriate for an exponential likelihood
-
-
 }
 \references{
-Morita S, Thall PF, Mueller P.
-Determining the effective sample size of a parametric prior.
-\emph{Biometrics} 2008;64(2):595-602.
+Morita S, Thall PF, Mueller P.  Determining the
+    effective sample size of a parametric prior.  \emph{Biometrics}
+    2008;64(2):595-602.
 
-Neuenschwander B, Weber S, Schmidli H, O'Hagen A.
-Predictively Consistent Prior Effective Sample Sizes.
-\emph{pre-print} 2019; arXiv:1907.04185
+Neuenschwander B., Weber S., Schmidli H., O’Hagan
+    A. (2020). Predictively consistent prior effective sample
+    sizes. \emph{Biometrics}, 76(2),
+    578–587. https://doi.org/10.1111/biom.13252
 }

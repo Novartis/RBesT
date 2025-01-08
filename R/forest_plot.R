@@ -35,7 +35,7 @@
 #' forest_plot(map_AS)
 #'
 #' # standard forest plot (only stratified estimate and Mean)
-#' forest_plot(map_AS, est=c("Mean"), model="stratified")
+#' forest_plot(map_AS, est = c("Mean"), model = "stratified")
 #'
 #' # to further customize these plots, first load bayesplot and ggplot2
 #' library(bayesplot)
@@ -44,89 +44,95 @@
 #' # to make plots with red colors, big fonts for presentations, suppress
 #' # the x axis label and add another title (with a subtitle)
 #' color_scheme_set("red")
-#' theme_set(theme_default(base_size=16))
-#' forest_plot(map_AS, size=2) +
-#'    yaxis_title(FALSE) +
-#'      ggtitle("Ankylosing Spondylitis Forest Plot",
-#'              subtitle="Control Group Response Rate")
+#' theme_set(theme_default(base_size = 16))
+#' forest_plot(map_AS, size = 2) +
+#'   yaxis_title(FALSE) +
+#'   ggtitle("Ankylosing Spondylitis Forest Plot",
+#'     subtitle = "Control Group Response Rate"
+#'   )
 #'
 #' # the defaults are set with
 #' color_scheme_set("blue")
-#' theme_set(theme_default(base_size=12))
+#' theme_set(theme_default(base_size = 12))
 #'
 #' @export
 forest_plot <- function(x,
-                        prob=0.95,
+                        prob = 0.95,
                         est = c("both", "MAP", "Mean", "none"),
                         model = c("stratified", "both", "meta"),
                         point_est = c("median", "mean"),
-                        size=1.25,
-                        alpha=0.5) {
+                        size = 1.25,
+                        alpha = 0.5) {
+  assert_number(prob, lower = 0, upper = 1)
+  assert_that(inherits(x, "gMAP"))
+  assert_that(x$has_intercept)
+  est <- match.arg(est)
+  low <- (1 - prob) / 2
+  up <- 1 - low
+  strat <- as.data.frame(x$est_strat(1 - prob))
+  strat <- cbind(strat[1:2], median = strat$mean, strat[3:4])
+  names(strat)[3:4] <- c("low", "up")
+  fit <- as.data.frame(fitted(x, type = "response", probs = c(0.5, low, up)))
 
-    assert_number(prob, lower=0, upper=1)
-    assert_that(inherits(x, "gMAP"))
-    assert_that(x$has_intercept)
-    est <- match.arg(est)
-    low <- (1-prob)/2
-    up <- 1-low
-    strat <- as.data.frame(x$est_strat(1-prob))
-    strat <- cbind(strat[1:2], median=strat$mean, strat[3:4])
-    names(strat)[3:4] <- c("low", "up")
-    fit <- as.data.frame(fitted(x, type="response", probs=c(0.5, low, up)))
+  est <- match.arg(est)
+  model <- match.arg(model)
+  point_est <- match.arg(point_est)
 
-    est <- match.arg(est)
-    model <- match.arg(model)
-    point_est <- match.arg(point_est)
+  if (est == "both") est <- c("MAP", "Mean")
+  if (model == "both") model <- c("stratified", "meta")
 
-    if(est   == "both") est   <- c("MAP", "Mean")
-    if(model == "both") model <- c("stratified", "meta")
+  pred_est <- as.data.frame(do.call(rbind, summary(x, probs = c(0.5, low, up), type = "response")[c("theta.pred", "theta")]))
+  pred_est <- transform(pred_est, study = c("MAP", "Mean"), model = "meta")
+  pred_est <- pred_est[c("MAP", "Mean") %in% est, ]
 
-    pred_est <- as.data.frame(do.call(rbind, summary(x, probs=c(0.5, low, up), type="response")[c("theta.pred", "theta")]))
-    pred_est <- transform(pred_est,  study=c("MAP", "Mean") , model="meta")
-    pred_est <- pred_est[c("MAP", "Mean") %in% est,]
+  names(pred_est)[1:5] <- names(strat) <- names(fit) <- c("mean", "sem", "median", "low", "up")
+  comb <- rbind(
+    if ("stratified" %in% model) transform(strat, study = rownames(strat), model = "stratified"),
+    if ("meta" %in% model) transform(fit, study = rownames(strat), model = "meta"),
+    pred_est
+  )
+  comb <- within(comb, {
+    model <- factor(model, levels = c("meta", "stratified"))
+    study <- factor(study, levels = rev(c(rownames(strat), "Mean", "MAP")))
+  })
 
-    names(pred_est)[1:5] <- names(strat) <- names(fit) <- c("mean", "sem", "median", "low", "up")
-    comb <- rbind(if("stratified" %in% model) transform(strat, study=rownames(strat), model="stratified"),
-                  if("meta"       %in% model) transform(fit,   study=rownames(strat), model="meta"),
-                  pred_est
-                  )
-    comb <- within(comb, {
-        model <- factor(model, levels=c("meta", "stratified"))
-        study <- factor(study, levels=rev(c(rownames(strat), "Mean", "MAP")))
-    })
+  opts <- list(position = position_dodge(width = 0.3), size = size)
 
-    opts <- list(position=position_dodge(width=0.3), size=size)
+  xlab_str <- switch(x$family$family,
+    gaussian = "Response",
+    binomial = "Response Rate",
+    poisson = "Counting Rate"
+  )
 
-    xlab_str <- switch(x$family$family,
-                       gaussian="Response",
-                       binomial="Response Rate",
-                       poisson="Counting Rate")
-    
-    graph <- ggplot(comb, aes(x=.data$study, y=.data[[point_est]], ymin=.data$low, ymax=.data$up, linetype=.data$model, color=.data$model))
+  graph <- ggplot(comb, aes(x = .data$study, y = .data[[point_est]], ymin = .data$low, ymax = .data$up, linetype = .data$model, color = .data$model))
 
-    if(any(c("MAP", "Mean") %in% est)) {
-        ref_line <- est[est %in% c("Mean", "MAP")][1]
-        ref_data <- subset(pred_est, study == ref_line)
-        no_ref <- sum(est %in% c("Mean", "MAP"))
-        graph <- graph + geom_rect(ymin=-Inf, ymax=Inf, xmin=0, xmax=no_ref + 0.5,
-                                   fill=get_color("l"),
-                                   color=get_color("l"), show.legend=FALSE) +
-            geom_hline(yintercept=ref_data[1,point_est],
-                       color=get_color("mh"),
-                       alpha=alpha,
-                       size=size)
-    }
+  if (any(c("MAP", "Mean") %in% est)) {
+    ref_line <- est[est %in% c("Mean", "MAP")][1]
+    ref_data <- subset(pred_est, study == ref_line)
+    no_ref <- sum(est %in% c("Mean", "MAP"))
+    graph <- graph + geom_rect(
+      ymin = -Inf, ymax = Inf, xmin = 0, xmax = no_ref + 0.5,
+      fill = get_color("l"),
+      color = get_color("l"), show.legend = FALSE
+    ) +
+      geom_hline(
+        yintercept = ref_data[1, point_est],
+        color = get_color("mh"),
+        alpha = alpha,
+        size = size
+      )
+  }
 
-    graph <- graph +
-        scale_color_manual("Model", values=get_color(c("mh", "m"))) +
-        do.call(geom_pointrange, opts) +
-        ylab(xlab_str) +
-        scale_linetype_discrete("Model") +
-        theme(axis.line.y=element_blank(), axis.ticks.y=element_blank()) +
-        bayesplot::bayesplot_theme_get() +
-        bayesplot::xaxis_title(FALSE) +
-        coord_flip() +
-        bayesplot::legend_none()
+  graph <- graph +
+    scale_color_manual("Model", values = get_color(c("mh", "m"))) +
+    do.call(geom_pointrange, opts) +
+    ylab(xlab_str) +
+    scale_linetype_discrete("Model") +
+    theme(axis.line.y = element_blank(), axis.ticks.y = element_blank()) +
+    bayesplot::bayesplot_theme_get() +
+    bayesplot::xaxis_title(FALSE) +
+    coord_flip() +
+    bayesplot::legend_none()
 
-    graph
+  graph
 }

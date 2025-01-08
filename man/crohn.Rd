@@ -30,11 +30,12 @@ from baseline endpoint is approximately 88.
 
 set.seed(546346)
 map_crohn <- gMAP(cbind(y, y.se) ~ 1 | study,
-                  family=gaussian,
-                  data=transform(crohn, y.se=88/sqrt(n)),
-                  weights=n,
-                  tau.dist="HalfNormal", tau.prior=44,
-                  beta.prior=cbind(0,88))
+  family = gaussian,
+  data = transform(crohn, y.se = 88 / sqrt(n)),
+  weights = n,
+  tau.dist = "HalfNormal", tau.prior = 44,
+  beta.prior = cbind(0, 88)
+)
 ## Recover user set sampling defaults
 options(.user_mc_options)
 
