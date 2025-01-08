@@ -58,32 +58,35 @@ site}.
 
 \examples{
 # beta with two informative components
-bm <- mixbeta(inf=c(0.5, 10, 100), inf2=c(0.5, 30, 80))
+bm <- mixbeta(inf = c(0.5, 10, 100), inf2 = c(0.5, 30, 80))
 plot(bm)
-plot(bm, fun=pmix)
+plot(bm, fun = pmix)
 
 # for customizations of the plot we need to load ggplot2 first
 library(ggplot2)
 
 # show a histogram along with the density
-plot(bm) + geom_histogram(data=data.frame(x=rmix(bm, 1000)),
-                          aes(y=..density..), bins=50, alpha=0.4)
+plot(bm) + geom_histogram(
+  data = data.frame(x = rmix(bm, 1000)),
+  aes(y = ..density..), bins = 50, alpha = 0.4
+)
 
 \donttest{
 # note: we can also use bayesplot for histogram plots with a density ...
 library(bayesplot)
-mh <- mcmc_hist(data.frame(x=rmix(bm, 1000)), freq=FALSE) +
-         overlay_function(fun=dmix, args=list(mix=bm))
+mh <- mcmc_hist(data.frame(x = rmix(bm, 1000)), freq = FALSE) +
+  overlay_function(fun = dmix, args = list(mix = bm))
 # ...and even add each component
-for(k in 1:ncol(bm))
-  mh <- mh + overlay_function(fun=dmix, args=list(mix=bm[[k]]), linetype=I(2))
+for (k in 1:ncol(bm)) {
+  mh <- mh + overlay_function(fun = dmix, args = list(mix = bm[[k]]), linetype = I(2))
+}
 print(mh)
 }
 
 # normal mixture
-nm <- mixnorm(rob=c(0.2, 0, 2), inf=c(0.8, 6, 2), sigma=5)
+nm <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 6, 2), sigma = 5)
 plot(nm)
-plot(nm, fun=qmix)
+plot(nm, fun = qmix)
 
 # obtain ggplot2 object and change title
 pl <- plot(nm)

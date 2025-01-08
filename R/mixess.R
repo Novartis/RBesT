@@ -189,11 +189,6 @@ ess.betaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 10
       )
     }
     elir <- integrate_density(lir(mix, betaMixInfo, bernoulliFisherInfo_inverse), mix)
-    ## TODO: elir can be negative in case any a or b is equal to
-    ## 1. In this case the user may consider using a logit
-    ## transformation approach applied to a normal mixture prior
-    ## on the link scale. Give the user an informational message
-    ## in case this occures once this is implemented.
     if (elir < 0) {
       warning("Negative ESS elir found indicating unstable integration of the elir ratio.\nConsider estimating the ESS elir on the logit scale for the respective transformed density and use the family=binomial argument.")
     }
@@ -207,9 +202,6 @@ ess.betaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 10
     names(res) <- NULL
     return(res)
   }
-
-  alphaP <- mix[2, ]
-  betaP <- mix[3, ]
 
   locEst <- calc_loc(mix, "mode")
 

@@ -384,11 +384,12 @@ parameters.
 # illustrated below.
 # for exact reproducible results, the seed must be set
 set.seed(34563)
-map_AS <- gMAP(cbind(r, n-r) ~ 1 | study,
-               family=binomial,
-               data=AS,
-               tau.dist="HalfNormal", tau.prior=1,
-               beta.prior=2)
+map_AS <- gMAP(cbind(r, n - r) ~ 1 | study,
+  family = binomial,
+  data = AS,
+  tau.dist = "HalfNormal", tau.prior = 1,
+  beta.prior = 2
+)
 print(map_AS)
 
 # obtain numerical summaries
@@ -416,7 +417,7 @@ fitted(map_AS)
 coef(map_AS)
 
 # finally fit MAP prior with parametric mixture
-map_mix <- mixfit(map_AS, Nc=2)
+map_mix <- mixfit(map_AS, Nc = 2)
 plot(map_mix)$mix
 
 \donttest{
@@ -433,25 +434,27 @@ plot(map_automix)$mix
 # n_infinity concept as discussed in Neuenschwander et al., 2010.
 # This assumes a normal approximation which applies for the colitis
 # data set as:
-p_bar <- mean(with(colitis, r/n))
-s <- round(1/sqrt(p_bar * (1-p_bar)), 1)
+p_bar <- mean(with(colitis, r / n))
+s <- round(1 / sqrt(p_bar * (1 - p_bar)), 1)
 # s is the approximate sampling standard deviation and a
 # conservative prior is tau ~ HalfNormal(0,s/2)
-tau_prior_sd <- s/2
+tau_prior_sd <- s / 2
 
 # Evaluate HalfNormal prior for tau
-tau_cat <- c(pooling=0
-            ,small=0.0625
-            ,moderate=0.125
-            ,substantial=0.25
-            ,large=0.5
-            ,veryLarge=1
-            ,stratified=Inf)
+tau_cat <- c(
+  pooling = 0,
+  small = 0.0625,
+  moderate = 0.125,
+  substantial = 0.25,
+  large = 0.5,
+  veryLarge = 1,
+  stratified = Inf
+)
 # Interval probabilites (basically saying we are assuming
 # heterogeniety to be smaller than very large)
-diff(2*pnorm(tau_cat * s, 0, tau_prior_sd))
+diff(2 * pnorm(tau_cat * s, 0, tau_prior_sd))
 # Cumulative probabilities as 1-F
-1 - 2*(pnorm(tau_cat * s, 0, tau_prior_sd) - 0.5)
+1 - 2 * (pnorm(tau_cat * s, 0, tau_prior_sd) - 0.5)
 
 ## Recover user set sampling defaults
 options(.user_mc_options)

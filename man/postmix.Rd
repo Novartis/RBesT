@@ -33,7 +33,7 @@ summary data has to be provided (see below).}
 }
 \description{
 Calculates the posterior distribution for data \code{data} given a prior
-\code{priormix}, where the prior is a mixture of conjugate distributions. 
+\code{priormix}, where the prior is a mixture of conjugate distributions.
 The posterior is then also a mixture of conjugate distributions.
 }
 \details{
@@ -120,29 +120,31 @@ Gamma \tab Exponential \tab Gamma-Exp (\emph{not supported}) \tab \code{n}, \cod
 
 # binary example with individual data (1=event,0=no event), uniform prior
 prior.unif <- mixbeta(c(1, 1, 1))
-data.indiv <- c(1,0,1,1,0,1)
-posterior.indiv <- postmix(prior.unif, data.indiv) 
+data.indiv <- c(1, 0, 1, 1, 0, 1)
+posterior.indiv <- postmix(prior.unif, data.indiv)
 print(posterior.indiv)
 # or with summary data (number of events and number of patients)
-r <- sum(data.indiv); n <- length(data.indiv)
-posterior.sum <- postmix(prior.unif, n=n, r=r)
+r <- sum(data.indiv)
+n <- length(data.indiv)
+posterior.sum <- postmix(prior.unif, n = n, r = r)
 print(posterior.sum)
 
 # binary example with robust informative prior and conflicting data
-prior.rob <- mixbeta(c(0.5,4,10),c(0.5,1,1))
-posterior.rob <- postmix(prior.rob, n=20, r=18)
+prior.rob <- mixbeta(c(0.5, 4, 10), c(0.5, 1, 1))
+posterior.rob <- postmix(prior.rob, n = 20, r = 18)
 print(posterior.rob)
 
 # normal example with individual data
 sigma <- 88
 prior.mean <- -49
-prior.se <- sigma/sqrt(20)
-prior <- mixnorm(c(1,prior.mean,prior.se),sigma=sigma)
-data.indiv <- c(-46,-227,41,-65,-103,-22,7,-169,-69,90)
+prior.se <- sigma / sqrt(20)
+prior <- mixnorm(c(1, prior.mean, prior.se), sigma = sigma)
+data.indiv <- c(-46, -227, 41, -65, -103, -22, 7, -169, -69, 90)
 posterior.indiv <- postmix(prior, data.indiv)
 # or with summary data (mean and number of patients)
-mn <- mean(data.indiv); n <- length(data.indiv)
-posterior.sum <- postmix(prior, m=mn, n=n)
+mn <- mean(data.indiv)
+n <- length(data.indiv)
+posterior.sum <- postmix(prior, m = mn, n = n)
 print(posterior.sum)
 
 }

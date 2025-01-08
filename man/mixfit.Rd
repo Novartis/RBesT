@@ -98,11 +98,11 @@ chains, and draws.
 
 }}
 \examples{
-bmix <- mixbeta(rob=c(0.2, 1, 1), inf=c(0.8, 10, 2))
+bmix <- mixbeta(rob = c(0.2, 1, 1), inf = c(0.8, 10, 2))
 
 bsamp <- rmix(bmix, 1000)
 
-bfit <- mixfit(bsamp, type="beta", Nc=2)
+bfit <- mixfit(bsamp, type = "beta", Nc = 2)
 
 # diagnostic plots can easily by generated from the EM fit with
 bfit.check <- plot(bfit)

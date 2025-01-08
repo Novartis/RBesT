@@ -88,38 +88,42 @@ map_AS_beta <- mixbeta(c(0.62, 19.2, 57.8), c(0.38, 3.5, 9.4))
 # First we need to convert the beta mixture to a respective mixture on
 # the log odds scale and approximate it with a normal mixture density.
 map_AS_samp <- rmix(map_AS_beta, 1E4)
-map_AS <- mixfit(logit(map_AS_samp), type="norm", Nc=2)
+map_AS <- mixfit(logit(map_AS_samp), type = "norm", Nc = 2)
 
 # Trial results for placebo and secukinumab.
-trial <- data.frame(n=c(6, 24),
-                    r=c(1, 15),
-                    arm=factor(c("placebo", "secukinumab")))
+trial <- data.frame(
+  n = c(6, 24),
+  r = c(1, 15),
+  arm = factor(c("placebo", "secukinumab"))
+)
 
 # Define brms model such that the overall intercept corresponds to the
 # placebo response rate on the logit scale. NOTE: The use of
 # center=FALSE is required here as detailed in the note above.
-model <- bf(r | trials(n) ~ 1 + arm, family=binomial, center=FALSE)
+model <- bf(r | trials(n) ~ 1 + arm, family = binomial, center = FALSE)
 # to obtain detailed information on the declared model parameters use
 # get_prior(model, data=trial)
 # declare model prior with reference to mixture normal map prior...
-model_prior <- prior(mixnorm(map_w, map_m, map_s), coef=Intercept) +
-    prior(normal(0, 2), class=b)
+model_prior <- prior(mixnorm(map_w, map_m, map_s), coef = Intercept) +
+  prior(normal(0, 2), class = b)
 
 # ... which must be made available to brms using the mixstanvar adapter.
 # Note that the map_AS prior is labeled "map" as referred to in the
 # previous prior declaration.
-analysis <- brm(model, data=trial, prior=model_prior,
-                stanvars=mixstanvar(map=map_AS),
-                seed=365634, refresh=0)
+analysis <- brm(model,
+  data = trial, prior = model_prior,
+  stanvars = mixstanvar(map = map_AS),
+  seed = 365634, refresh = 0
+)
 
 # Let's compare the logistic regression estimate for the probability
 # of a positive treatment effect (secukinumab response rate exceeding
 # the response rate of placebo) to the direct beta-binomial analysis:
 hypothesis(analysis, "armsecukinumab > 0")
 
-post_secukinumab <- postmix(mixbeta(c(1, 0.5, 1)), r=15, n=24)
-post_placebo     <- postmix(map_AS_beta, r=1, n=6)
-pmixdiff(post_secukinumab,  post_placebo, 0, lower.tail=FALSE)
+post_secukinumab <- postmix(mixbeta(c(1, 0.5, 1)), r = 15, n = 24)
+post_placebo <- postmix(map_AS_beta, r = 1, n = 6)
+pmixdiff(post_secukinumab, post_placebo, 0, lower.tail = FALSE)
 # The posterior probability for a positive treatment effect
 # is very close to unity in both cases.
 }

@@ -89,8 +89,8 @@ Gamma \tab Exponential \tab Gamma-Exp (\emph{not supported}) \tab \code{n}, \cod
 \examples{
 
 # Example 1: predictive distribution from uniform prior.
-bm <- mixbeta(c(1,1,1))
-bmPred <- preddist(bm, n=10)
+bm <- mixbeta(c(1, 1, 1))
+bmPred <- preddist(bm, n = 10)
 # predictive proabilities and cumulative predictive probabilities
 x <- 0:10
 d <- dmix(bmPred, x)
@@ -100,32 +100,32 @@ cd <- pmix(bmPred, x)
 names(cd) <- x
 barplot(cd)
 # median
-mdn <- qmix(bmPred,0.5)
+mdn <- qmix(bmPred, 0.5)
 mdn
 
 # Example 2: 2-comp Beta mixture
 
-bm <- mixbeta( inf=c(0.8,15,50),rob=c(0.2,1,1))
+bm <- mixbeta(inf = c(0.8, 15, 50), rob = c(0.2, 1, 1))
 plot(bm)
-bmPred <- preddist(bm,n=10)
+bmPred <- preddist(bm, n = 10)
 plot(bmPred)
-mdn <- qmix(bmPred,0.5)
+mdn <- qmix(bmPred, 0.5)
 mdn
-d <- dmix(bmPred,x=0:10)
+d <- dmix(bmPred, x = 0:10)
 \donttest{
 n.sim <- 100000
-r <-  rmix(bmPred,n.sim)
+r <- rmix(bmPred, n.sim)
 d
-table(r)/n.sim
+table(r) / n.sim
 }
 
 # Example 3: 3-comp Normal mixture
 
-m3 <- mixnorm( c(0.50,-0.2,0.1),c(0.25,0,0.2), c(0.25,0,0.5), sigma=10)
+m3 <- mixnorm(c(0.50, -0.2, 0.1), c(0.25, 0, 0.2), c(0.25, 0, 0.5), sigma = 10)
 print(m3)
 summary(m3)
 plot(m3)
-predm3 <- preddist(m3,n=2)
+predm3 <- preddist(m3, n = 2)
 plot(predm3)
 print(predm3)
 summary(predm3)

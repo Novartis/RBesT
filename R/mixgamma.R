@@ -63,7 +63,9 @@
 #' gmnMix <- mixgamma(rob = c(0.2, 2, 1), inf = c(0.8, 2, 5), param = "mn")
 #'
 #' # and mixed parametrizations are also possible
-#' gfmix <- mixgamma(rob1 = c(0.15, mn2gamma(2, 1)), rob2 = c(0.15, ms2gamma(2, 5)), inf = c(0.7, 50, 10))
+#' gfmix <- mixgamma(rob1 = c(0.15, mn2gamma(2, 1)),
+#'                   rob2 = c(0.15, ms2gamma(2, 5)),
+#'                   inf = c(0.7, 50, 10))
 NULL
 
 #' @rdname mixgamma

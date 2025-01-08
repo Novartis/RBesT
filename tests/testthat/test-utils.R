@@ -164,6 +164,16 @@ test_that("ess elir for beta mixtures gives a warning for a<1 & b<1 densities", 
   expect_numeric(ess(constrained, "elir"), lower = 0, finite = TRUE, any.missing = FALSE, len = 1)
 })
 
+test_that("conjugate normal case matches canonical formula", {
+  s <- 2
+  sigma_data <- 4
+  nprior <- mixnorm(c(1, -1, s), sigma = sigma_data)
+  nprior_ess <- sigma_data^2/s^2
+  expect_equal(ess(nprior, "moment", sigma = sigma_data), nprior_ess)
+  expect_equal(ess(nprior, "morita", sigma = sigma_data, s=Inf), nprior_ess)
+  expect_equal(ess(nprior, "elir", sigma = sigma_data), nprior_ess)
+})
+
 test_that("ess elir for normal mixtures returns correct values", {
   mix <- mixnorm(inf1 = c(0.5026, -191.1869, 127.4207), inf2 = c(0.2647, -187.5895, 31.6130), inf3 = c(0.2326, -184.7445, 345.3849), sigma = 270.4877)
   expect_gt(ess(mix, sigma = 270.4877), 0)
@@ -176,7 +186,7 @@ test_that("moment matching for beta mixtures is correct", {
 test_that("normal mixtures have reference scale used correctly", {
   nmix_sigma_small <- nmix
   nmix_sigma_large <- nmix
-  sigma_large <- 2*summary(nmix_sigma_large)["sd"]
+  sigma_large <- 2 * summary(nmix_sigma_large)["sd"]
   sigma(nmix_sigma_large) <- sigma_large
   sigma(nmix_sigma_small) <- sigma_large / sqrt(2)
   suppressMessages(e1m <- ess(nmix_sigma_large, "moment"))
@@ -326,8 +336,6 @@ test_that("ess elir for problematic beta mixtures gives correct result 2", {
 
 
 test_that("ess elir for problematic beta mixtures gives warning", {
-  library(RBesT)
-  library(checkmate)
   mixmat1 <- matrix(c(
     0.6092774, 0.2337629, 0.1569597,
     1.0000000, 1.2672179, 3.3856153,
@@ -339,7 +347,9 @@ test_that("ess elir for problematic beta mixtures gives warning", {
 
   ## in case one of the coefficients of a and b is 1, then we can
   ## get negative results... which are unreliable to the user hopefully
-  expect_double(ess(mixb1), finite = TRUE, any.missing = FALSE, len = 1)
+  expect_warning(ess(mixb1))
+  expect_double(suppressWarnings(ess(mixb1)), finite = TRUE,
+                any.missing = FALSE, len = 1)
 
   mixmat2 <- matrix(c(
     0.6051804, 0.2324492, 0.1623704,
@@ -349,7 +359,8 @@ test_that("ess elir for problematic beta mixtures gives warning", {
 
   mixb2 <- do.call(mixbeta, apply(mixmat2, 2, c, simplify = FALSE))
 
-  expect_double(ess(mixb2), lower = 0, finite = TRUE, any.missing = FALSE, len = 1)
+  expect_double(ess(mixb2), lower = 0, finite = TRUE, any.missing = FALSE,
+                len = 1)
 })
 
 test_that("BinaryExactCI has correct boundary behavior", {

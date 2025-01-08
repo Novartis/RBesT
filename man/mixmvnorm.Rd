@@ -66,9 +66,11 @@ reference covariance.
 }
 \examples{
 
-S <- diag(c(1, 2)) \%*\% matrix(c(1, 0.5, 0.5, 1), 2, 2) \%*\% diag(c(1, 2)) 
-mvnm1 <- mixmvnorm(rob=c(0.2, c(0, 0), diag(c(5, 5))),
-                   inf=c(0.8, c(0.5, 1), S/10), sigma=S)
+S <- diag(c(1, 2)) \%*\% matrix(c(1, 0.5, 0.5, 1), 2, 2) \%*\% diag(c(1, 2))
+mvnm1 <- mixmvnorm(
+  rob = c(0.2, c(0, 0), diag(c(5, 5))),
+  inf = c(0.8, c(0.5, 1), S / 10), sigma = S
+)
 
 print(mvnm1)
 summary(mvnm1)
@@ -76,7 +78,6 @@ summary(mvnm1)
 set.seed(657846)
 mixSamp1 <- rmix(mvnm1, 500)
 colMeans(mixSamp1)
-
 
 }
 \seealso{

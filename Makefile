@@ -181,6 +181,27 @@ retestfast-all : clean-test $(R_TESTFAST_OBJS)
 PHONY += retest-all
 retest-all : clean-test $(R_TEST_OBJS)
 
+PHONY += check-winbuilder-devel
+check-winbuilder-devel : r-source-release
+	cd build; $(RCMD) -e 'target <- tempdir()' \
+			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
+			  -e 'devtools::check_win_devel(pkg=file.path(target, "RBesT"))'
+
+PHONY += check-winbuilder-release
+check-winbuilder-release : r-source-release
+	cd build; $(RCMD) -e 'target <- tempdir()' \
+			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
+			  -e 'devtools::check_win_release(pkg=file.path(target, "RBesT"))'
+
+PHONY += check-winbuilder-oldrelease
+check-winbuilder-oldrelease : r-source-release
+	cd build; $(RCMD) -e 'target <- tempdir()' \
+			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
+			  -e 'devtools::check_win_oldrelease(pkg=file.path(target, "RBesT"))'
+
+PHONY += check-winbuilder
+check-winbuilder : check-winbuilder-devel check-winbuilder-release check-winbuilder-oldrelease
+
 #$(DIR_OBJ)/%.o: %.c $(INCS)
 #    mkdir -p $(@D)
 #    $(CC) -o $@ $(CFLAGS) -c $< $(INC_DIRS)

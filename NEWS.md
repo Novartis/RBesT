@@ -1,10 +1,12 @@
-# RBesT 1.8-0 - January 6th, 2025
+# RBesT 1.8-0 - January 8th, 2025
 
 ## Enhancements
 
 * Enable ESS calculation for normal mixture densities when used in the
   context of a standard one-parameter exponential family through the
-  new `family` argument.
+  new `family` argument. For example, this can be used to calculate
+  the ESS of a normal mixture density representing a logit transformed
+  response scale.
 * Reformat R sources using `styler`.
 
 ## Bugfixes
