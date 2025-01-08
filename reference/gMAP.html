@@ -13,7 +13,7 @@ glm conventions."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ glm conventions."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Meta-Analytic-Predictive Analysis for Generalized Linear Models</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/gMAP.R" class="external-link"><code>R/gMAP.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/gMAP.R" class="external-link"><code>R/gMAP.R</code></a></small>
       <div class="d-none name"><code>gMAP.Rd</code></div>
     </div>
 
@@ -112,14 +112,14 @@ and encoding the grouping; see details</p></dd>
 
 
 <dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
-<dd><p>the family of distributions defining the statistical
-model (<code>binomial</code>, <code>gaussian</code>, or <code>poisson</code>)</p></dd>
+<dd><p>defines data likelihood and link function
+(<code>binomial</code>, <code>gaussian</code>, or <code>poisson</code>)</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>optional data frame containing the variables of the
-model. If not found in <code>data</code>, the variables are taken from
-<code>environment(formula)</code>.</p></dd>
+model. If not found in <code>data</code>, the variables are taken
+from <code>environment(formula)</code>.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -134,15 +134,16 @@ data</p></dd>
 <dt id="arg-tau-strata">tau.strata<a class="anchor" aria-label="anchor" href="#arg-tau-strata"></a></dt>
 <dd><p>sets the exchangability stratum per study. That
 is, it is expected that each study belongs to a single
-stratum. Default is to assign all studies to stratum 1. See section
-differential heterogeniety below.</p></dd>
+stratum. Default is to assign all studies to stratum 1. See
+section differential heterogeniety below.</p></dd>
 
 
 <dt id="arg-tau-dist">tau.dist<a class="anchor" aria-label="anchor" href="#arg-tau-dist"></a></dt>
 <dd><p>type of prior distribution for <code>tau</code>;
 supported priors are <code>HalfNormal</code> (default),
-<code>TruncNormal</code>, <code>Uniform</code>, <code>Gamma</code>, <code>InvGamma</code>,
-<code>LogNormal</code>, <code>TruncCauchy</code>, <code>Exp</code> and <code>Fixed</code>.</p></dd>
+<code>TruncNormal</code>, <code>Uniform</code>, <code>Gamma</code>,
+<code>InvGamma</code>, <code>LogNormal</code>, <code>TruncCauchy</code>,
+<code>Exp</code> and <code>Fixed</code>.</p></dd>
 
 
 <dt id="arg-tau-prior">tau.prior<a class="anchor" aria-label="anchor" href="#arg-tau-prior"></a></dt>
@@ -151,7 +152,8 @@ see section prior specification below.</p></dd>
 
 
 <dt id="arg-tau-strata-pred">tau.strata.pred<a class="anchor" aria-label="anchor" href="#arg-tau-strata-pred"></a></dt>
-<dd><p>the index for the prediction stratum; default is 1.</p></dd>
+<dd><p>the index for the prediction stratum;
+default is 1.</p></dd>
 
 
 <dt id="arg-beta-prior">beta.prior<a class="anchor" aria-label="anchor" href="#arg-beta-prior"></a></dt>
@@ -160,15 +162,19 @@ regression coefficients, see section prior specification below.</p></dd>
 
 
 <dt id="arg-prior-pd">prior_PD<a class="anchor" aria-label="anchor" href="#arg-prior-pd"></a></dt>
-<dd><p>logical to indicate if the prior predictive distribution should be sampled (no conditioning on the data). Defaults to <code>FALSE</code>.</p></dd>
+<dd><p>logical to indicate if the prior predictive
+distribution should be sampled (no conditioning on the
+data). Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-redist">REdist<a class="anchor" aria-label="anchor" href="#arg-redist"></a></dt>
-<dd><p>type of random effects distribution. <code>Normal</code> (default) or <code>t</code>.</p></dd>
+<dd><p>type of random effects distribution. <code>Normal</code>
+(default) or <code>t</code>.</p></dd>
 
 
 <dt id="arg-t-df">t.df<a class="anchor" aria-label="anchor" href="#arg-t-df"></a></dt>
-<dd><p>degrees of freedom if random-effects distribution is <code>t</code>.</p></dd>
+<dd><p>degrees of freedom if random-effects distribution is
+<code>t</code>.</p></dd>
 
 
 <dt id="arg-contrasts">contrasts<a class="anchor" aria-label="anchor" href="#arg-contrasts"></a></dt>
@@ -203,7 +209,8 @@ unconstrained space for random initialization. See
 
 
 <dt id="arg-x-object">x, object<a class="anchor" aria-label="anchor" href="#arg-x-object"></a></dt>
-<dd><p><code>gMAP</code> analysis object created by <code>gMAP</code> function</p></dd>
+<dd><p><code>gMAP</code> analysis object created by <code>gMAP</code>
+function</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -219,7 +226,8 @@ unconstrained space for random initialization. See
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>sets reported scale (<code>response</code> (default) or <code>link</code>).</p></dd>
+<dd><p>sets reported scale (<code>response</code> (default) or
+<code>link</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -456,11 +464,12 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span><span class="co"># illustrated below.</span></span></span>
 <span class="r-in"><span><span class="co"># for exact reproducible results, the seed must be set</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">34563</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">map_AS</span> <span class="op">&lt;-</span> <span class="fu">gMAP</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span><span class="op">-</span><span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
-<span class="r-in"><span>               family<span class="op">=</span><span class="va">binomial</span>,</span></span>
-<span class="r-in"><span>               data<span class="op">=</span><span class="va">AS</span>,</span></span>
-<span class="r-in"><span>               tau.dist<span class="op">=</span><span class="st">"HalfNormal"</span>, tau.prior<span class="op">=</span><span class="fl">1</span>,</span></span>
-<span class="r-in"><span>               beta.prior<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">map_AS</span> <span class="op">&lt;-</span> <span class="fu">gMAP</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="va">binomial</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">AS</span>,</span></span>
+<span class="r-in"><span>  tau.dist <span class="op">=</span> <span class="st">"HalfNormal"</span>, tau.prior <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  beta.prior <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming default prior location   for beta: 0</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.11, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
@@ -552,7 +561,7 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.11748 0.1782488 -1.468582 -1.113787 -0.7667301</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># finally fit MAP prior with parametric mixture</span></span></span>
-<span class="r-in"><span><span class="va">map_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">map_AS</span>, Nc<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">map_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">map_AS</span>, Nc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mix</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></span>
 <span class="r-plt img"><img src="gMAP-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
@@ -571,27 +580,29 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span><span class="co"># n_infinity concept as discussed in Neuenschwander et al., 2010.</span></span></span>
 <span class="r-in"><span><span class="co"># This assumes a normal approximation which applies for the colitis</span></span></span>
 <span class="r-in"><span><span class="co"># data set as:</span></span></span>
-<span class="r-in"><span><span class="va">p_bar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">colitis</span>, <span class="va">r</span><span class="op">/</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">p_bar</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">p_bar</span><span class="op">)</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p_bar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">colitis</span>, <span class="va">r</span> <span class="op">/</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">p_bar</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p_bar</span><span class="op">)</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># s is the approximate sampling standard deviation and a</span></span></span>
 <span class="r-in"><span><span class="co"># conservative prior is tau ~ HalfNormal(0,s/2)</span></span></span>
-<span class="r-in"><span><span class="va">tau_prior_sd</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">/</span><span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">tau_prior_sd</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">/</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Evaluate HalfNormal prior for tau</span></span></span>
-<span class="r-in"><span><span class="va">tau_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>pooling<span class="op">=</span><span class="fl">0</span></span></span>
-<span class="r-in"><span>            ,small<span class="op">=</span><span class="fl">0.0625</span></span></span>
-<span class="r-in"><span>            ,moderate<span class="op">=</span><span class="fl">0.125</span></span></span>
-<span class="r-in"><span>            ,substantial<span class="op">=</span><span class="fl">0.25</span></span></span>
-<span class="r-in"><span>            ,large<span class="op">=</span><span class="fl">0.5</span></span></span>
-<span class="r-in"><span>            ,veryLarge<span class="op">=</span><span class="fl">1</span></span></span>
-<span class="r-in"><span>            ,stratified<span class="op">=</span><span class="cn">Inf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tau_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  pooling <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  small <span class="op">=</span> <span class="fl">0.0625</span>,</span></span>
+<span class="r-in"><span>  moderate <span class="op">=</span> <span class="fl">0.125</span>,</span></span>
+<span class="r-in"><span>  substantial <span class="op">=</span> <span class="fl">0.25</span>,</span></span>
+<span class="r-in"><span>  large <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>  veryLarge <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  stratified <span class="op">=</span> <span class="cn">Inf</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Interval probabilites (basically saying we are assuming</span></span></span>
 <span class="r-in"><span><span class="co"># heterogeniety to be smaller than very large)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">tau_cat</span> <span class="op">*</span> <span class="va">s</span>, <span class="fl">0</span>, <span class="va">tau_prior_sd</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">tau_cat</span> <span class="op">*</span> <span class="va">s</span>, <span class="fl">0</span>, <span class="va">tau_prior_sd</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       small    moderate substantial       large   veryLarge  stratified </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.09947645  0.09793620  0.18551227  0.29976457  0.27181024  0.04550026 </span>
 <span class="r-in"><span><span class="co"># Cumulative probabilities as 1-F</span></span></span>
-<span class="r-in"><span><span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">tau_cat</span> <span class="op">*</span> <span class="va">s</span>, <span class="fl">0</span>, <span class="va">tau_prior_sd</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">tau_cat</span> <span class="op">*</span> <span class="va">s</span>, <span class="fl">0</span>, <span class="va">tau_prior_sd</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     pooling       small    moderate substantial       large   veryLarge </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1.00000000  0.90052355  0.80258735  0.61707508  0.31731051  0.04550026 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  stratified </span>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Normal Mixture Density</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/mixnorm.R" class="external-link"><code>R/mixnorm.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixnorm.R" class="external-link"><code>R/mixnorm.R</code></a></small>
       <div class="d-none name"><code>mixnorm.Rd</code></div>
     </div>
 
@@ -156,7 +156,7 @@ functions which require a reference scale.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">nm</span> <span class="op">&lt;-</span> <span class="fu">mixnorm</span><span class="op">(</span>rob<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, sigma<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nm</span> <span class="op">&lt;-</span> <span class="fu">mixnorm</span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">nm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Univariate normal mixture</span>
@@ -174,7 +174,7 @@ functions which require a reference scale.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">57845</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mixSamp</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">rmix</a></span><span class="op">(</span><span class="va">nm</span>, <span class="fl">500</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nm</span>, samp<span class="op">=</span><span class="va">mixSamp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nm</span>, samp <span class="op">=</span> <span class="va">mixSamp</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="mixnorm-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># support defined by quantiles</span></span></span>
@@ -182,11 +182,11 @@ functions which require a reference scale.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -3.532815  6.491874</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># density function</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="mix.html">dmix</a></span><span class="op">(</span><span class="va">nm</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>,<span class="fl">5</span>,by<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="mix.html">dmix</a></span><span class="op">(</span><span class="va">nm</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.002101903 0.019963080 0.087013571 0.176032663 0.153777890 0.053559868</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># distribution function</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="mix.html">pmix</a></span><span class="op">(</span><span class="va">nm</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>,<span class="fl">5</span>,by<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="mix.html">pmix</a></span><span class="op">(</span><span class="va">nm</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.001428036 0.018329173 0.115153269 0.385122523 0.739808529 0.945312306</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the reference scale can be changed (it determines the ESS)</span></span></span>

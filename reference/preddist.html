@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Predictive Distributions for Mixture Distributions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/preddist.R" class="external-link"><code>R/preddist.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/preddist.R" class="external-link"><code>R/preddist.R</code></a></small>
       <div class="d-none name"><code>preddist.Rd</code></div>
     </div>
 
@@ -132,8 +132,8 @@ densities are not (yet) supported.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 1: predictive distribution from uniform prior.</span></span></span>
-<span class="r-in"><span><span class="va">bm</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">bmPred</span> <span class="op">&lt;-</span> <span class="fu">preddist</span><span class="op">(</span><span class="va">bm</span>, n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bm</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bmPred</span> <span class="op">&lt;-</span> <span class="fu">preddist</span><span class="op">(</span><span class="va">bm</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># predictive proabilities and cumulative predictive probabilities</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">dmix</a></span><span class="op">(</span><span class="va">bmPred</span>, <span class="va">x</span><span class="op">)</span></span></span>
@@ -145,29 +145,29 @@ densities are not (yet) supported.</p></li>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="va">cd</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="preddist-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># median</span></span></span>
-<span class="r-in"><span><span class="va">mdn</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">qmix</a></span><span class="op">(</span><span class="va">bmPred</span>,<span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mdn</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">qmix</a></span><span class="op">(</span><span class="va">bmPred</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mdn</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: 2-comp Beta mixture</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">bm</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span> inf<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>,<span class="fl">15</span>,<span class="fl">50</span><span class="op">)</span>,rob<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bm</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span>inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span>, rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bm</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="preddist-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">bmPred</span> <span class="op">&lt;-</span> <span class="fu">preddist</span><span class="op">(</span><span class="va">bm</span>,n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bmPred</span> <span class="op">&lt;-</span> <span class="fu">preddist</span><span class="op">(</span><span class="va">bm</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmPred</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="preddist-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">mdn</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">qmix</a></span><span class="op">(</span><span class="va">bmPred</span>,<span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mdn</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">qmix</a></span><span class="op">(</span><span class="va">bmPred</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mdn</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">dmix</a></span><span class="op">(</span><span class="va">bmPred</span>,x<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">dmix</a></span><span class="op">(</span><span class="va">bmPred</span>, x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">n.sim</span> <span class="op">&lt;-</span> <span class="fl">100000</span></span></span>
-<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span>  <span class="fu"><a href="mix.html">rmix</a></span><span class="op">(</span><span class="va">bmPred</span>,<span class="va">n.sim</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">rmix</a></span><span class="op">(</span><span class="va">bmPred</span>, <span class="va">n.sim</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.08814590 0.19605661 0.23899190 0.19379686 0.11696528 0.05913205</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.03082078 0.02104347 0.01863583 0.01822732 0.01818400</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">/</span><span class="va">n.sim</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">/</span> <span class="va">n.sim</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> r</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       0       1       2       3       4       5       6       7       8       9 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.08968 0.19746 0.23763 0.19322 0.11681 0.05847 0.03068 0.02091 0.01858 0.01803 </span>
@@ -177,7 +177,7 @@ densities are not (yet) supported.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: 3-comp Normal mixture</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.50</span>,<span class="op">-</span><span class="fl">0.2</span>,<span class="fl">0.1</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.5</span><span class="op">)</span>, sigma<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.50</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Univariate normal mixture</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Reference scale: 10</span>
@@ -191,7 +191,7 @@ densities are not (yet) supported.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.1000000  0.2958040 -0.6426984 -0.1490997  0.6426789 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="preddist-5.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">predm3</span> <span class="op">&lt;-</span> <span class="fu">preddist</span><span class="op">(</span><span class="va">m3</span>,n<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">predm3</span> <span class="op">&lt;-</span> <span class="fu">preddist</span><span class="op">(</span><span class="va">m3</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default mixture reference scale 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">predm3</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="preddist-6.png" alt="" width="700" height="433"></span>

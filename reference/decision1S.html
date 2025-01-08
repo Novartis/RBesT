@@ -9,7 +9,7 @@ arbitrary number of conditions."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@ arbitrary number of conditions."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Decision Function for 1 Sample Designs</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/decision1S.R" class="external-link"><code>R/decision1S.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/decision1S.R" class="external-link"><code>R/decision1S.R</code></a></small>
       <div class="d-none name"><code>decision1S.Rd</code></div>
     </div>
 
@@ -139,18 +139,18 @@ criterion. <em>Stat. in Med.</em>. 2011, 30:1618-1627</p>
 <span class="r-in"><span><span class="va">theta_ni</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></span></span>
 <span class="r-in"><span><span class="va">theta_a</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span></span>
-<span class="r-in"><span><span class="va">beta</span>  <span class="op">&lt;-</span> <span class="fl">0.2</span></span></span>
-<span class="r-in"><span><span class="va">za</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">alpha</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">zb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">beta</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span> <span class="op">(</span><span class="va">s</span> <span class="op">*</span> <span class="op">(</span><span class="va">za</span> <span class="op">+</span> <span class="va">zb</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">theta_ni</span> <span class="op">-</span> <span class="va">theta_a</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span>  <span class="co"># n for which design was intended</span></span></span>
+<span class="r-in"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span></span>
+<span class="r-in"><span><span class="va">za</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">zb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">beta</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">s</span> <span class="op">*</span> <span class="op">(</span><span class="va">za</span> <span class="op">+</span> <span class="va">zb</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">theta_ni</span> <span class="op">-</span> <span class="va">theta_a</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="co"># n for which design was intended</span></span></span>
 <span class="r-in"><span><span class="va">nL</span> <span class="op">&lt;-</span> <span class="fl">233</span></span></span>
 <span class="r-in"><span><span class="va">c1</span> <span class="op">&lt;-</span> <span class="va">theta_ni</span> <span class="op">-</span> <span class="va">za</span> <span class="op">*</span> <span class="va">s</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># flat prior</span></span></span>
-<span class="r-in"><span><span class="va">flat_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">100</span><span class="op">)</span>, sigma<span class="op">=</span><span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flat_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># standard NI design</span></span></span>
-<span class="r-in"><span><span class="va">decA</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">decA</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># for double criterion with indecision point (mean estimate must be</span></span></span>
 <span class="r-in"><span><span class="co"># lower than this)</span></span></span>
@@ -158,13 +158,13 @@ criterion. <em>Stat. in Med.</em>. 2011, 30:1618-1627</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># double criterion design</span></span></span>
 <span class="r-in"><span><span class="co"># statistical significance (like NI design)</span></span></span>
-<span class="r-in"><span><span class="va">dec1</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dec1</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># require mean to be at least as good as theta_c</span></span></span>
-<span class="r-in"><span><span class="va">dec2</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">theta_c</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dec2</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">theta_c</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># combination</span></span></span>
-<span class="r-in"><span><span class="va">decComb</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">alpha</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_ni</span>, <span class="va">theta_c</span><span class="op">)</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">decComb</span> <span class="op">&lt;-</span> <span class="fu">decision1S</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_ni</span>, <span class="va">theta_c</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">theta_eval</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_a</span>, <span class="va">theta_c</span>, <span class="va">theta_ni</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">theta_eval</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_a</span>, <span class="va">theta_c</span>, <span class="va">theta_ni</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># we can display the decision function definition</span></span></span>
 <span class="r-in"><span><span class="va">decComb</span></span></span>
@@ -180,10 +180,9 @@ criterion. <em>Stat. in Med.</em>. 2011, 30:1618-1627</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-in"><span><span class="co"># or for a possible outcome of the trial</span></span></span>
 <span class="r-in"><span><span class="co"># here with HR of 0.8 for 40 events</span></span></span>
-<span class="r-in"><span><span class="fu">decComb</span><span class="op">(</span><span class="fu"><a href="postmix.html">postmix</a></span><span class="op">(</span><span class="va">flat_prior</span>, m<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.8</span><span class="op">)</span>, n<span class="op">=</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">decComb</span><span class="op">(</span><span class="fu"><a href="postmix.html">postmix</a></span><span class="op">(</span><span class="va">flat_prior</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.8</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

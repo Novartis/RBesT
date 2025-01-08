@@ -11,7 +11,7 @@ equivalent to."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ equivalent to."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Effective Sample Size for a Conjugate Prior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/mixess.R" class="external-link"><code>R/mixess.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixess.R" class="external-link"><code>R/mixess.R</code></a></small>
       <div class="d-none name"><code>ess.Rd</code></div>
     </div>
 
@@ -63,7 +63,14 @@ equivalent to.</p>
 <span><span class="fu">ess</span><span class="op">(</span><span class="va">mix</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elir"</span>, <span class="st">"moment"</span>, <span class="st">"morita"</span><span class="op">)</span>, <span class="va">...</span>, s <span class="op">=</span> <span class="fl">100</span>, eps <span class="op">=</span> <span class="fl">1e-04</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'normMix'</span></span>
-<span><span class="fu">ess</span><span class="op">(</span><span class="va">mix</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elir"</span>, <span class="st">"moment"</span>, <span class="st">"morita"</span><span class="op">)</span>, <span class="va">...</span>, <span class="va">sigma</span>, s <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">ess</span><span class="op">(</span></span>
+<span>  <span class="va">mix</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elir"</span>, <span class="st">"moment"</span>, <span class="st">"morita"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  family <span class="op">=</span> <span class="va">gaussian</span>,</span>
+<span>  <span class="va">sigma</span>,</span>
+<span>  s <span class="op">=</span> <span class="fl">100</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -95,6 +102,11 @@ of the expected information for the Poisson-Gamma case of
 Morita method (defaults to 1E-4).</p></dd>
 
 
+<dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
+<dd><p>defines data likelihood and link function
+(<code>binomial</code>, <code>gaussian</code>, or <code>poisson</code>).</p></dd>
+
+
 <dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
 <dd><p>reference scale.</p></dd>
 
@@ -107,17 +119,24 @@ Morita method (defaults to 1E-4).</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The ESS is calculated using either the expected local
     information ratio (elir) <em>Neuenschwander et
-    al. (submitted)</em>, the moments approach or the method by
+    al. (2020)</em>, the moments approach or the method by
     <em>Morita et al. (2008)</em>.</p>
-<p>The elir approach is the only ESS which fulfills predictive
-consistency. The predictive consistency of the ESS requires that
-the ESS of a prior is the same as averaging the posterior ESS after
-a fixed amount of events over the prior predictive distribution
-from which the number of forward simulated events is
-subtracted. The elir approach results in ESS estimates which are
-neither conservative nor liberal whereas the moments method yields
-conservative and the morita method liberal results. See the example
-section for a demonstration of predictive consistency.</p>
+<p>The elir approach measures effective sample size in terms of the
+average curvature of the prior in relation to the Fisher
+information. Informally this corresponds to the average peakiness
+of the prior in relation to the information content of a single
+observation. The elir approach is the only ESS which fulfills
+predictive consistency. The predictive consistency of the ESS
+requires that the ESS of a prior is consistent when considering an
+averaged posterior ESS of additional data distributed according to
+the predictive distribution of the prior. The expectation of the
+posterior ESS is taken wrt to the prior predictive distribution and
+the averaged posterior ESS corresponds to the sum of the prior ESS
+and the number of forward simulated data items. The elir approach
+results in ESS estimates which are neither conservative nor liberal
+whereas the moments method yields conservative and the morita
+method liberal results. See the example section for a demonstration
+of predictive consistency.</p>
 <p>For the moments method the mean and standard deviation of the
 mixture are calculated and then approximated by the conjugate
 distribution with the same mean and standard deviation. For
@@ -130,6 +149,12 @@ contains many components. The calculation of the Morita approach
 here follows the approach presented in Neuenschwander B. et all
 (2019) which avoids the need for a minimization and does not
 restrict the ESS to be an integer.</p>
+<p>The arguments <code>sigma</code> and <code>family</code> are specific for
+normal mixture densities. These specify the sampling standard
+deviation for a <code>gaussian</code> family (the default) while also
+allowing to consider the ESS of standard one-parameter exponential
+families, i.e. <code>binomial</code> or <code>poisson</code>. The function
+supports non-gaussian families with unit dispersion only.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
@@ -146,12 +171,13 @@ restrict the ESS to be an integer.</p>
 <table class="table table"><tr><td><strong>Prior/Posterior</strong></td><td><strong>Likelihood</strong></td><td><strong>Predictive</strong></td><td><strong>Summaries</strong></td></tr><tr><td>Beta</td><td>Binomial</td><td>Beta-Binomial</td><td><code>n</code>, <code>r</code></td></tr><tr><td>Normal</td><td>Normal (<em>fixed \(\sigma\)</em>)</td><td>Normal</td><td><code>n</code>, <code>m</code>, <code>se</code></td></tr><tr><td>Gamma</td><td>Poisson</td><td>Gamma-Poisson</td><td><code>n</code>, <code>m</code></td></tr><tr><td>Gamma</td><td>Exponential</td><td>Gamma-Exp (<em>not supported</em>)</td><td><code>n</code>, <code>m</code></td></tr></table></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Morita S, Thall PF, Mueller P.
-Determining the effective sample size of a parametric prior.
-<em>Biometrics</em> 2008;64(2):595-602.</p>
-<p>Neuenschwander B, Weber S, Schmidli H, O'Hagen A.
-Predictively Consistent Prior Effective Sample Sizes.
-<em>pre-print</em> 2019; arXiv:1907.04185</p>
+    <p>Morita S, Thall PF, Mueller P.  Determining the
+    effective sample size of a parametric prior.  <em>Biometrics</em>
+    2008;64(2):595-602.</p>
+<p>Neuenschwander B., Weber S., Schmidli H., O’Hagan
+    A. (2020). Predictively consistent prior effective sample
+    sizes. <em>Biometrics</em>, 76(2),
+    578–587. https://doi.org/10.1111/biom.13252</p>
     </div>
 
     <div class="section level2">
@@ -163,11 +189,11 @@ Predictively Consistent Prior Effective Sample Sizes.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">prior</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
-<span class="r-in"><span><span class="op">(</span><span class="va">a</span><span class="op">+</span><span class="va">b</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Beta mixture example</span></span></span>
-<span class="r-in"><span><span class="va">bmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span>rob<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, inf<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">10</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">10</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix</span>, <span class="st">"elir"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.65152</span>
@@ -184,23 +210,34 @@ Predictively Consistent Prior Effective Sample Sizes.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">ab_matched</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix</span>, method<span class="op">=</span><span class="st">"morita"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix</span>, method <span class="op">=</span> <span class="st">"morita"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.487603</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># One may also calculate the ESS on the logit scale, which</span></span></span>
+<span class="r-in"><span><span class="co"># gives slightly different results due to the parameter</span></span></span>
+<span class="r-in"><span><span class="co"># transformation, e.g.:</span></span></span>
+<span class="r-in"><span><span class="va">prior_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">5</span> <span class="op">/</span> <span class="fl">15</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">5</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">prior_logit</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21.78289</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">bmix_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">10</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix_logit</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10.12276</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predictive consistency of elir</span></span></span>
 <span class="r-in"><span><span class="va">n_forward</span> <span class="op">&lt;-</span> <span class="fl">1E1</span></span></span>
-<span class="r-in"><span><span class="va">bmixPred</span> <span class="op">&lt;-</span> <span class="fu"><a href="preddist.html">preddist</a></span><span class="op">(</span><span class="va">bmix</span>, n<span class="op">=</span><span class="va">n_forward</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bmixPred</span> <span class="op">&lt;-</span> <span class="fu"><a href="preddist.html">preddist</a></span><span class="op">(</span><span class="va">bmix</span>, n <span class="op">=</span> <span class="va">n_forward</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pred_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">rmix</a></span><span class="op">(</span><span class="va">bmixPred</span>, <span class="fl">1E2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># use more samples here for greater accuracy</span></span></span>
-<span class="r-in"><span><span class="co"># pred_samp &lt;- rmix(bmixPred, 1E3) </span></span></span>
-<span class="r-in"><span><span class="va">pred_ess</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">pred_samp</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu">ess</span><span class="op">(</span><span class="fu"><a href="postmix.html">postmix</a></span><span class="op">(</span><span class="va">bmix</span>, r<span class="op">=</span><span class="va">r</span>, n<span class="op">=</span><span class="va">n_forward</span><span class="op">)</span>, <span class="st">"elir"</span><span class="op">)</span> <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># use more samples here for greater accuracy, e.g.</span></span></span>
+<span class="r-in"><span><span class="co"># pred_samp &lt;- rmix(bmixPred, 1E3)</span></span></span>
+<span class="r-in"><span><span class="va">pred_ess</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">pred_samp</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu">ess</span><span class="op">(</span><span class="fu"><a href="postmix.html">postmix</a></span><span class="op">(</span><span class="va">bmix</span>, r <span class="op">=</span> <span class="va">r</span>, n <span class="op">=</span> <span class="va">n_forward</span><span class="op">)</span>, <span class="st">"elir"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix</span>, <span class="st">"elir"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.65152</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred_ess</span><span class="op">)</span> <span class="op">-</span> <span class="va">n_forward</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.071932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.071933</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Normal mixture example</span></span></span>
-<span class="r-in"><span><span class="va">nmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span>rob<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, sigma<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">nmix</span>, <span class="st">"elir"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 10</span>
@@ -210,14 +247,20 @@ Predictively Consistent Prior Effective Sample Sizes.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.163265</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## the reference scale determines the ESS</span></span></span>
+<span class="r-in"><span><span class="co"># the reference scale determines the ESS</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="mixnorm.html">sigma</a></span><span class="op">(</span><span class="va">nmix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">nmix</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 43.31185</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># we may also interpret normal mixtures as densities assigned to</span></span></span>
+<span class="r-in"><span><span class="co"># parameters of a logit transformed response rate of a binomial</span></span></span>
+<span class="r-in"><span><span class="va">nmix_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="lodds.html">logit</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span>, <span class="fl">2</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">nmix_logit</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15.17836</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Gamma mixture example</span></span></span>
-<span class="r-in"><span><span class="va">gmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgamma.html">mixgamma</a></span><span class="op">(</span>rob<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">20</span>, <span class="fl">4</span><span class="op">)</span>, inf<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">50</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixgamma.html">mixgamma</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">20</span>, <span class="fl">4</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">50</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">gmix</span><span class="op">)</span> <span class="co">## interpreted as appropriate for a Poisson likelihood (default)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.159378</span>
@@ -225,8 +268,6 @@ Predictively Consistent Prior Effective Sample Sizes.
 <span class="r-in"><span><span class="fu"><a href="likelihood.html">likelihood</a></span><span class="op">(</span><span class="va">gmix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"exp"</span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">gmix</span><span class="op">)</span> <span class="co">## interpreted as appropriate for an exponential likelihood</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 34.93388</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

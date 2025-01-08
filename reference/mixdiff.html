@@ -11,7 +11,7 @@ distributions."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ distributions."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Difference of mixture distributions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/mixdiff.R" class="external-link"><code>R/mixdiff.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixdiff.R" class="external-link"><code>R/mixdiff.R</code></a></small>
       <div class="d-none name"><code>mixdiff.Rd</code></div>
     </div>
 
@@ -127,37 +127,37 @@ densities and use the numerical integration function
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6005884</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 2. two distributions, one of them a mixture</span></span></span>
-<span class="r-in"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">30</span>,<span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>,<span class="fl">20</span>,<span class="fl">50</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">30</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixbeta.html">mixbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">20</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># random sample of difference</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">23434</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rM</span> <span class="op">&lt;-</span> <span class="fu">rmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="fl">1E4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># histogram of random numbers and exact density</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">rM</span>,prob<span class="op">=</span><span class="cn">TRUE</span>,new<span class="op">=</span><span class="cn">TRUE</span>,nclass<span class="op">=</span><span class="fl">40</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">dmixdiff</span><span class="op">(</span><span class="va">m1</span>,<span class="va">m2</span>,<span class="va">x</span><span class="op">)</span>, add<span class="op">=</span><span class="cn">TRUE</span>, n<span class="op">=</span><span class="fl">51</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">rM</span>, prob <span class="op">=</span> <span class="cn">TRUE</span>, new <span class="op">=</span> <span class="cn">TRUE</span>, nclass <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu">dmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="va">x</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, n <span class="op">=</span> <span class="fl">51</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="mixdiff-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># threshold probabilities for difference, at 0 and 0.2</span></span></span>
 <span class="r-in"><span><span class="fu">pmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2467158</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rM</span><span class="op">&lt;</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rM</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2471</span>
-<span class="r-in"><span><span class="fu">pmixdiff</span><span class="op">(</span><span class="va">m1</span>,<span class="va">m2</span>,<span class="fl">0.2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">pmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="fl">0.2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9025757</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rM</span><span class="op">&lt;</span><span class="fl">0.2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rM</span> <span class="op">&lt;</span> <span class="fl">0.2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.907</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># median of difference</span></span></span>
 <span class="r-in"><span><span class="va">mdn</span> <span class="op">&lt;-</span> <span class="fu">qmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rM</span><span class="op">&lt;</span><span class="va">mdn</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rM</span> <span class="op">&lt;</span> <span class="va">mdn</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.504</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 95%-interval</span></span></span>
-<span class="r-in"><span><span class="fu">qmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">qmixdiff</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5257954  0.2877204</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">rM</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">rM</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       2.5%      97.5% </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.5232376  0.2862964 </span>
 <span class="r-in"><span></span></span>

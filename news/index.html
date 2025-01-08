@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,11 +38,24 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.7-4" id="rbest-17-4---november-21st-2024">RBesT 1.7-4 - November 21st, 2024<a class="anchor" aria-label="anchor" href="#rbest-17-4---november-21st-2024"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.8-0" id="rbest-18-0---january-8th-2025">RBesT 1.8-0 - January 8th, 2025<a class="anchor" aria-label="anchor" href="#rbest-18-0---january-8th-2025"></a></h2>
+<div class="section level3">
+<h3 id="enhancements-1-8-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-0"></a></h3>
+<ul><li>Enable ESS calculation for normal mixture densities when used in the context of a standard one-parameter exponential family through the new <code>family</code> argument. For example, this can be used to calculate the ESS of a normal mixture density representing a logit transformed response scale.</li>
+<li>Reformat R sources using <code>styler</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-1-8-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-8-0"></a></h3>
+<ul><li>Correct boundary behavior of <code>BinaryExactCI</code> function whenever no responses or no non-responses are observed. Fixes issue <a href="https://github.com/Novartis/RBesT/issues/21" class="external-link">#21</a>.</li>
+<li>Stabilize internal beta mixture information function, which corrects unstable ESS ELIR computations. Addresses issue <a href="https://github.com/Novartis/RBesT/issues/22" class="external-link">#22</a>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.7-4" id="rbest-17-4---november-21st-2024">RBesT 1.7-4 - November 21st, 2024<a class="anchor" aria-label="anchor" href="#rbest-17-4---november-21st-2024"></a></h2><p class="text-muted">CRAN release: 2024-11-21</p>
 <div class="section level3">
 <h3 id="enhancements-1-7-4">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-7-4"></a></h3>
 <ul><li>Added for <code>mixstanvar</code> automatic generation of distribution functions allowing truncated priors in <code>brms</code> with mixtures</li>

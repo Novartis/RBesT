@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,9 +64,9 @@
       <h1>Probability of Success at an Interim Analysis</h1>
                         <h4 data-toc-skip class="author">Yue Li</h4>
             
-            <h4 data-toc-skip class="date">2024-11-21</h4>
+            <h4 data-toc-skip class="date">2025-01-08</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/vignettes/articles/PoS_interim.Rmd" class="external-link"><code>vignettes/articles/PoS_interim.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/PoS_interim.Rmd" class="external-link"><code>vignettes/articles/PoS_interim.Rmd</code></a></small>
       <div class="d-none name"><code>PoS_interim.Rmd</code></div>
     </div>
 
@@ -92,14 +92,16 @@ count, assumed to be normally distributed. Decrease in the lesion count
 upon treatment is considered improvement in the patients. Below is the
 summary statistics of this primary endpoint by group at the interim.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>n<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">14</span><span class="op">)</span>,</span>
-<span>                 median_count<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20.5</span>, <span class="fl">21</span><span class="op">)</span>,</span>
-<span>                 mean_count<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">23.3</span>, <span class="fl">27</span><span class="op">)</span>,</span>
-<span>                 mean_log<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.96</span>, <span class="fl">3.03</span><span class="op">)</span>,</span>
-<span>                 sd_log<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.67</span>, <span class="fl">0.774</span><span class="op">)</span>,</span>
-<span>                 row.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"active"</span>, <span class="st">"placebo"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span>se_log<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sd_log</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">sd_log_pooled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">ia</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sd_log</span><span class="op">^</span><span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ia</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">14</span><span class="op">)</span>,</span>
+<span>  median_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20.5</span>, <span class="fl">21</span><span class="op">)</span>,</span>
+<span>  mean_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">23.3</span>, <span class="fl">27</span><span class="op">)</span>,</span>
+<span>  mean_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.96</span>, <span class="fl">3.03</span><span class="op">)</span>,</span>
+<span>  sd_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.67</span>, <span class="fl">0.774</span><span class="op">)</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"active"</span>, <span class="st">"placebo"</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span>se_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sd_log</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sd_log_pooled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">ia</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sd_log</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="va">n</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">kable</span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -135,7 +137,7 @@ summary statistics of this primary endpoint by group at the interim.</p>
 <p>The predefined dual PoC criteria is as follows,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">21</span> <span class="co"># planned total n per arm</span></span>
-<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/decision2S.html">decision2S</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="op">-</span><span class="fl">0.357</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">rules</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/decision2S.html">decision2S</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="fl">0.357</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rules</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 2 sample decision function</span></span>
 <span><span class="co">## Conditions for acceptance:</span></span>
@@ -148,14 +150,14 @@ not met, although it seemed to show some benefit of the active treatment
 over placebo numerically. The variability of this endpoint is higher
 than what was assumed for study sample size calculation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">priorP</span> <span class="op">&lt;-</span> <span class="va">priorT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">0.47</span>, param <span class="op">=</span> <span class="st">'mn'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">priorP</span> <span class="op">&lt;-</span> <span class="va">priorT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">0.47</span>, param <span class="op">=</span> <span class="st">"mn"</span><span class="op">)</span></span>
 <span><span class="co">## posterior at IA data</span></span>
-<span><span class="va">postT_interim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">priorT</span>, m<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"mean_log"</span><span class="op">]</span>, se<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">postP_interim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">priorP</span>, m<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"mean_log"</span><span class="op">]</span>, se<span class="op">=</span><span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">postT_interim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">priorT</span>, m <span class="op">=</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>, <span class="st">"mean_log"</span><span class="op">]</span>, se <span class="op">=</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>, <span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">postP_interim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">priorP</span>, m <span class="op">=</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>, <span class="st">"mean_log"</span><span class="op">]</span>, se <span class="op">=</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>, <span class="st">"se_log"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>, <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.5900663</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>,<span class="op">-</span><span class="fl">0.357</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">postT_interim</span>, <span class="va">postP_interim</span>, <span class="op">-</span><span class="fl">0.357</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.12637</span></span></code></pre>
 <p>The probability of success at the final analysis, i.e. the
 probability of meeting PoC criteria at trial completion given observed
@@ -174,12 +176,12 @@ would be used.</p>
 <code class="sourceCode R"><span><span class="va">pos_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pos2S.html">pos2S</a></span><span class="op">(</span></span>
 <span>  <span class="va">postT_interim</span>,</span>
 <span>  <span class="va">postP_interim</span>,</span>
-<span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"n"</span><span class="op">]</span>,</span>
-<span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"n"</span><span class="op">]</span>,</span>
+<span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>, <span class="st">"n"</span><span class="op">]</span>,</span>
+<span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>, <span class="st">"n"</span><span class="op">]</span>,</span>
 <span>  <span class="va">rules</span>,</span>
 <span>  sigma1 <span class="op">=</span> <span class="va">sd_log_pooled</span>,</span>
 <span>  sigma2 <span class="op">=</span> <span class="va">sd_log_pooled</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The function constructed by <strong><code><a href="../reference/pos2S.html">pos2S()</a></code></strong> can
 produce the predictive probability given any defined distribution for
 the two groups. For example, if the interim posterior distributions are
@@ -192,45 +194,48 @@ success at the final analysis given observed IA data.</p>
 conditional power for any given treatment effect.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ia_oc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oc2S.html">oc2S</a></span><span class="op">(</span></span>
-<span>    <span class="va">postT_interim</span>,</span>
-<span>    <span class="va">postP_interim</span>,</span>
-<span>    <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>,<span class="st">"n"</span><span class="op">]</span>,</span>
-<span>    <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"n"</span><span class="op">]</span>,</span>
-<span>    <span class="va">rules</span>,</span>
-<span>    sigma1 <span class="op">=</span> <span class="va">sd_log_pooled</span>,</span>
-<span>    sigma2 <span class="op">=</span> <span class="va">sd_log_pooled</span></span>
-<span>    <span class="op">)</span></span>
-<span>  </span>
-<span><span class="va">delta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.9</span>, <span class="fl">0.01</span><span class="op">)</span> <span class="co">#pct diff from pbo</span></span>
-<span><span class="va">pbomean</span> <span class="op">&lt;-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>,<span class="st">"mean_log"</span><span class="op">]</span></span>
-<span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pbomean</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">delta</span><span class="op">)</span><span class="op">)</span> <span class="co">#active</span></span>
-<span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pbomean</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">0</span> <span class="op">*</span> <span class="va">delta</span><span class="op">)</span><span class="op">)</span> <span class="co">#placebo</span></span>
-<span>  </span>
+<span>  <span class="va">postT_interim</span>,</span>
+<span>  <span class="va">postP_interim</span>,</span>
+<span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"active"</span>, <span class="st">"n"</span><span class="op">]</span>,</span>
+<span>  <span class="va">n</span> <span class="op">-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>, <span class="st">"n"</span><span class="op">]</span>,</span>
+<span>  <span class="va">rules</span>,</span>
+<span>  sigma1 <span class="op">=</span> <span class="va">sd_log_pooled</span>,</span>
+<span>  sigma2 <span class="op">=</span> <span class="va">sd_log_pooled</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">delta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.9</span>, <span class="fl">0.01</span><span class="op">)</span> <span class="co"># pct diff from pbo</span></span>
+<span><span class="va">pbomean</span> <span class="op">&lt;-</span> <span class="va">ia</span><span class="op">[</span><span class="st">"placebo"</span>, <span class="st">"mean_log"</span><span class="op">]</span></span>
+<span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pbomean</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">delta</span><span class="op">)</span><span class="op">)</span> <span class="co"># active</span></span>
+<span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">pbomean</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">0</span> <span class="op">*</span> <span class="va">delta</span><span class="op">)</span><span class="op">)</span> <span class="co"># placebo</span></span>
+<span></span>
 <span><span class="va">out</span> <span class="op">&lt;-</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>        diff_pct <span class="op">=</span> <span class="va">delta</span>,</span>
-<span>        diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">y1</span> <span class="op">-</span> <span class="va">y2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>        y_act <span class="op">=</span> <span class="va">y1</span>,</span>
-<span>        y_pbo <span class="op">=</span> <span class="va">y2</span>,</span>
-<span>        cp <span class="op">=</span> <span class="fu">ia_oc</span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span><span class="op">)</span></span>
-<span>        <span class="op">)</span></span>
-<span>  </span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">diff_pct</span>, y <span class="op">=</span> <span class="va">cp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">'Conditional power'</span>,</span>
-<span>             x <span class="op">=</span> <span class="st">'True percentage difference from placebo in lesion count'</span>,</span>
-<span>             title <span class="op">=</span> <span class="st">'Conditional power at interim for success at final analysis'</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    diff_pct <span class="op">=</span> <span class="va">delta</span>,</span>
+<span>    diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">y1</span> <span class="op">-</span> <span class="va">y2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    y_act <span class="op">=</span> <span class="va">y1</span>,</span>
+<span>    y_pbo <span class="op">=</span> <span class="va">y2</span>,</span>
+<span>    cp <span class="op">=</span> <span class="fu">ia_oc</span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">out</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">diff_pct</span>, y <span class="op">=</span> <span class="va">cp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    y <span class="op">=</span> <span class="st">"Conditional power"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"True percentage difference from placebo in lesion count"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Conditional power at interim for success at final analysis"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="PoS_interim_files/figure-html/oc-1.png" width="100%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
 </h3>
 <pre><code><span><span class="co">## R version 4.4.2 (2024-10-31)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.5 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.1 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
-<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">##  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
@@ -245,30 +250,29 @@ conditional power for any given treatment effect.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] dplyr_1.1.4   scales_1.3.0  ggplot2_3.5.1 knitr_1.49    RBesT_1.7-4  </span></span>
+<span><span class="co">## [1] dplyr_1.1.4   scales_1.3.0  ggplot2_3.5.1 knitr_1.49    RBesT_1.8-0  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] sass_0.4.9          utf8_1.2.4          generics_0.1.3     </span></span>
-<span><span class="co">##  [4] digest_0.6.37       magrittr_2.0.3      evaluate_1.0.1     </span></span>
-<span><span class="co">##  [7] grid_4.4.2          mvtnorm_1.3-2       fastmap_1.2.0      </span></span>
-<span><span class="co">## [10] jsonlite_1.8.9      pkgbuild_1.4.5      backports_1.5.0    </span></span>
-<span><span class="co">## [13] Formula_1.2-5       gridExtra_2.3       fansi_1.0.6        </span></span>
-<span><span class="co">## [16] QuickJSR_1.4.0      codetools_0.2-20    textshaping_0.4.0  </span></span>
-<span><span class="co">## [19] jquerylib_0.1.4     abind_1.4-8         cli_3.6.3          </span></span>
-<span><span class="co">## [22] rlang_1.1.4         munsell_0.5.1       withr_3.0.2        </span></span>
-<span><span class="co">## [25] cachem_1.1.0        yaml_2.3.10         StanHeaders_2.32.10</span></span>
-<span><span class="co">## [28] parallel_4.4.2      tools_4.4.2         rstan_2.32.6       </span></span>
-<span><span class="co">## [31] inline_0.3.20       rstantools_2.4.0    checkmate_2.3.2    </span></span>
-<span><span class="co">## [34] colorspace_2.1-1    assertthat_0.2.1    vctrs_0.6.5        </span></span>
-<span><span class="co">## [37] R6_2.5.1            matrixStats_1.4.1   stats4_4.4.2       </span></span>
-<span><span class="co">## [40] lifecycle_1.0.4     fs_1.6.5            htmlwidgets_1.6.4  </span></span>
-<span><span class="co">## [43] ragg_1.3.3          pkgconfig_2.0.3     desc_1.4.3         </span></span>
-<span><span class="co">## [46] pkgdown_2.1.1       RcppParallel_5.1.9  pillar_1.9.0       </span></span>
-<span><span class="co">## [49] bslib_0.8.0         gtable_0.3.6        loo_2.8.0          </span></span>
-<span><span class="co">## [52] glue_1.8.0          Rcpp_1.0.13-1       systemfonts_1.1.0  </span></span>
-<span><span class="co">## [55] xfun_0.49           tibble_3.2.1        tidyselect_1.2.1   </span></span>
-<span><span class="co">## [58] farver_2.1.2        htmltools_0.5.8.1   labeling_0.4.3     </span></span>
-<span><span class="co">## [61] rmarkdown_2.29      compiler_4.4.2</span></span></code></pre>
+<span><span class="co">##  [1] sass_0.4.9          generics_0.1.3      digest_0.6.37      </span></span>
+<span><span class="co">##  [4] magrittr_2.0.3      evaluate_1.0.1      grid_4.4.2         </span></span>
+<span><span class="co">##  [7] mvtnorm_1.3-2       fastmap_1.2.0       jsonlite_1.8.9     </span></span>
+<span><span class="co">## [10] pkgbuild_1.4.5      backports_1.5.0     Formula_1.2-5      </span></span>
+<span><span class="co">## [13] gridExtra_2.3       QuickJSR_1.4.0      codetools_0.2-20   </span></span>
+<span><span class="co">## [16] textshaping_0.4.1   jquerylib_0.1.4     abind_1.4-8        </span></span>
+<span><span class="co">## [19] cli_3.6.3           rlang_1.1.4         munsell_0.5.1      </span></span>
+<span><span class="co">## [22] withr_3.0.2         cachem_1.1.0        yaml_2.3.10        </span></span>
+<span><span class="co">## [25] StanHeaders_2.32.10 parallel_4.4.2      tools_4.4.2        </span></span>
+<span><span class="co">## [28] rstan_2.32.6        inline_0.3.20       rstantools_2.4.0   </span></span>
+<span><span class="co">## [31] checkmate_2.3.2     colorspace_2.1-1    assertthat_0.2.1   </span></span>
+<span><span class="co">## [34] vctrs_0.6.5         R6_2.5.1            matrixStats_1.4.1  </span></span>
+<span><span class="co">## [37] stats4_4.4.2        lifecycle_1.0.4     fs_1.6.5           </span></span>
+<span><span class="co">## [40] htmlwidgets_1.6.4   ragg_1.3.3          pkgconfig_2.0.3    </span></span>
+<span><span class="co">## [43] desc_1.4.3          pkgdown_2.1.1       RcppParallel_5.1.9 </span></span>
+<span><span class="co">## [46] pillar_1.10.0       bslib_0.8.0         gtable_0.3.6       </span></span>
+<span><span class="co">## [49] loo_2.8.0           glue_1.8.0          Rcpp_1.0.13-1      </span></span>
+<span><span class="co">## [52] systemfonts_1.1.0   xfun_0.49           tibble_3.2.1       </span></span>
+<span><span class="co">## [55] tidyselect_1.2.1    farver_2.1.2        htmltools_0.5.8.1  </span></span>
+<span><span class="co">## [58] labeling_0.4.3      rmarkdown_2.29      compiler_4.4.2</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

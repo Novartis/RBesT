@@ -15,7 +15,7 @@ Society criteria for improvement (ASAS20) at week 6."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ Society criteria for improvement (ASAS20) at week 6."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Ankylosing Spondylitis.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/AS.R" class="external-link"><code>R/AS.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/AS.R" class="external-link"><code>R/AS.R</code></a></small>
       <div class="d-none name"><code>AS.Rd</code></div>
     </div>
 
@@ -89,11 +89,12 @@ Society criteria for improvement (ASAS20) at week 6.</p>
 <span class="r-in"><span>                            RBesT.MC.chains<span class="op">=</span><span class="fl">2</span>, RBesT.MC.thin<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">34563</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">map_AS</span> <span class="op">&lt;-</span> <span class="fu"><a href="gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span><span class="op">-</span><span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
-<span class="r-in"><span>               family<span class="op">=</span><span class="va">binomial</span>,</span></span>
-<span class="r-in"><span>               data<span class="op">=</span><span class="va">AS</span>,</span></span>
-<span class="r-in"><span>               tau.dist<span class="op">=</span><span class="st">"HalfNormal"</span>, tau.prior<span class="op">=</span><span class="fl">1</span>,</span></span>
-<span class="r-in"><span>               beta.prior<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">map_AS</span> <span class="op">&lt;-</span> <span class="fu"><a href="gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="va">binomial</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">AS</span>,</span></span>
+<span class="r-in"><span>  tau.dist <span class="op">=</span> <span class="st">"HalfNormal"</span>, tau.prior <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  beta.prior <span class="op">=</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming default prior location   for beta: 0</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.11, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>

@@ -15,7 +15,7 @@ operating characteristics calculations."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7-4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ operating characteristics calculations."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Operating Characteristics for 1 Sample Design</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.7-4/R/oc1S.R" class="external-link"><code>R/oc1S.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/oc1S.R" class="external-link"><code>R/oc1S.R</code></a></small>
       <div class="d-none name"><code>oc1S.Rd</code></div>
     </div>
 
@@ -160,38 +160,38 @@ the boundary is searched for \(y\).</p></li>
 <span class="r-in"><span><span class="co"># non-inferiority example using normal approximation of log-hazard</span></span></span>
 <span class="r-in"><span><span class="co"># ratio, see ?decision1S for all details</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">flat_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">100</span><span class="op">)</span>, sigma<span class="op">=</span><span class="va">s</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">flat_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="va">s</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nL</span> <span class="op">&lt;-</span> <span class="fl">233</span></span></span>
 <span class="r-in"><span><span class="va">theta_ni</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></span></span>
 <span class="r-in"><span><span class="va">theta_a</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
 <span class="r-in"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span></span>
-<span class="r-in"><span><span class="va">beta</span>  <span class="op">&lt;-</span> <span class="fl">0.2</span></span></span>
-<span class="r-in"><span><span class="va">za</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">alpha</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">zb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">beta</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span> <span class="op">(</span><span class="va">s</span> <span class="op">*</span> <span class="op">(</span><span class="va">za</span> <span class="op">+</span> <span class="va">zb</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">theta_ni</span> <span class="op">-</span> <span class="va">theta_a</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fl">0.2</span></span></span>
+<span class="r-in"><span><span class="va">za</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">zb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">beta</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">s</span> <span class="op">*</span> <span class="op">(</span><span class="va">za</span> <span class="op">+</span> <span class="va">zb</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">theta_ni</span> <span class="op">-</span> <span class="va">theta_a</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta_c</span> <span class="op">&lt;-</span> <span class="va">theta_ni</span> <span class="op">-</span> <span class="va">za</span> <span class="op">*</span> <span class="va">s</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># standard NI design</span></span></span>
-<span class="r-in"><span><span class="va">decA</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">decA</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># double criterion design</span></span></span>
 <span class="r-in"><span><span class="co"># statistical significance (like NI design)</span></span></span>
-<span class="r-in"><span><span class="va">dec1</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dec1</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="va">theta_ni</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># require mean to be at least as good as theta_c</span></span></span>
-<span class="r-in"><span><span class="va">dec2</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">theta_c</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dec2</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="va">theta_c</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># combination</span></span></span>
-<span class="r-in"><span><span class="va">decComb</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">alpha</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_ni</span>, <span class="va">theta_c</span><span class="op">)</span>, lower.tail<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">decComb</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_ni</span>, <span class="va">theta_c</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">theta_eval</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_a</span>, <span class="va">theta_c</span>, <span class="va">theta_ni</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">theta_eval</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_a</span>, <span class="va">theta_c</span>, <span class="va">theta_ni</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># evaluate different designs at two sample sizes</span></span></span>
-<span class="r-in"><span><span class="va">designA_n1</span>  <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">n1</span>, <span class="va">decA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">designA_n1</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">n1</span>, <span class="va">decA</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
-<span class="r-in"><span><span class="va">designA_nL</span>  <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">nL</span>, <span class="va">decA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">designA_nL</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">nL</span>, <span class="va">decA</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
-<span class="r-in"><span><span class="va">designC_n1</span>  <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">n1</span>, <span class="va">decComb</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">designC_n1</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">n1</span>, <span class="va">decComb</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
-<span class="r-in"><span><span class="va">designC_nL</span>  <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">nL</span>, <span class="va">decComb</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">designC_nL</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">nL</span>, <span class="va">decComb</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># evaluate designs at the key log-HR of positive treatment (HR&lt;1),</span></span></span>
@@ -222,7 +222,6 @@ the boundary is searched for \(y\).</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># see also ?decision1S_boundary to see which of the two criterions</span></span></span>
 <span class="r-in"><span><span class="co"># will drive the decision</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
