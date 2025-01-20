@@ -1,3 +1,10 @@
+# RBesT 1.8-1 - January 20th, 2025
+
+## Bugfixes
+
+* Fixed an issue with the `ess` function for beta and gamma mixtures
+  when used inside of `lapply` or `sapply`.
+
 # RBesT 1.8-0 - January 8th, 2025
 
 ## Enhancements

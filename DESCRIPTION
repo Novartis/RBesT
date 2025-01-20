@@ -8,8 +8,8 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     for details on applying this package while Neuenschwander et al. (2010)
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
-Version: 1.8-0
-Date: 2025-01-08
+Version: 1.8-1
+Date: 2025-01-20
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
@@ -17,6 +17,7 @@ Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Baldur", "Magnusson", email="baldur.magnusson@novartis.com", role="ctb")
             ,person("Yue", "Li", email="yue-1.li@novartis.com", role="ctb")
             ,person("Satrajit", "Roychoudhury", email="satrajit.roychoudhury@novartis.com", role="ctb")
+            ,person("Lukas A.", "Widmer", email="lukas_andreas.widmer@novartis.com", role = "ctb", comment = c(ORCID = "0000-0003-1471-3493"))
             ,person("Trustees of", "Columbia University", role="cph", comment="R/stanmodels.R, configure, configure.win")
 	    )
 Depends:
@@ -71,5 +72,5 @@ Suggests:
 VignetteBuilder: knitr
 SystemRequirements: GNU make, pandoc (>= 1.12.3), pngquant, C++17
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3
