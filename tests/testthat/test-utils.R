@@ -183,6 +183,10 @@ test_that("moment matching for beta mixtures is correct", {
   expect_equal(ess(bmix, method = "moment"), sum(ab_matched))
 })
 
+test_that("beta mix ess works when run through sapply", {
+  expect_numeric(sapply(X = list(bmix), FUN=ess))
+})
+
 test_that("normal mixtures have reference scale used correctly", {
   nmix_sigma_small <- nmix
   nmix_sigma_large <- nmix
@@ -223,6 +227,9 @@ test_that("gamma mixtures have likelihood property respected", {
   expect_true(e1r != e2r)
 })
 
+test_that("gamma mix ess works when run through sapply", {
+  expect_numeric(sapply(X = list(gmix), FUN=ess))
+})
 
 test_that("gamma 1-component density gives canonical results", {
   guni1 <- gmix[[1, rescale = TRUE]]

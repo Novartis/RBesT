@@ -177,7 +177,9 @@ weighted_lir_link <- function(mix, info, fisher_inverse, link) {
 ess.betaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 100) {
   method <- match.arg(method)
 
-  assert_that(!("family" %in% names(match.call())), msg = "Argument family is only supported for normal mixtures.")
+  call_arg_names <- names(match.call())
+  family_arg_is_set <- "family" %in% call_arg_names
+  assert_that(!family_arg_is_set, msg = "Argument family is only supported for normal mixtures.")
 
   if (method == "elir") {
     if (!test_numeric(mix[2, ], lower = 1, finite = TRUE, any.missing = FALSE) ||
@@ -270,7 +272,9 @@ binomialInfo <- function(r, theta, n) {
 ess.gammaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 100, eps = 1E-4) {
   method <- match.arg(method)
 
-  assert_that(!("family" %in% names(match.call())), msg = "Argument family is only supported for normal mixtures.")
+  call_arg_names <- names(match.call())
+  family_arg_is_set <- "family" %in% call_arg_names
+  assert_that(!family_arg_is_set, msg = "Argument family is only supported for normal mixtures.")
 
   lik <- likelihood(mix)
 
