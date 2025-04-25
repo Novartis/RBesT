@@ -80,18 +80,18 @@ sample. Thinning is applied only if thin is specified.
 \item \code{mixfit(gMAP)}: Fits the default predictive distribution from a
 gMAP analysis. Automatically obtains the predictive distribution of
 the intercept only case on the response scale mixture from the
-\code{\link{gMAP}} object. For the binomial case a beta mixture,
+\code{\link[=gMAP]{gMAP()}} object. For the binomial case a beta mixture,
 for the gaussian case a normal mixture and for the Poisson case a
 gamma mixture will be used. In the gaussian case, the resulting
 normal mixture will set the reference scale to the estimated
-sigma in \code{\link{gMAP}} call.
+sigma in \code{\link[=gMAP]{gMAP()}} call.
 
 \item \code{mixfit(gMAPpred)}: Fits a mixture density for each prediction from
-the \code{\link{gMAP}} prediction.
+the \code{\link[=gMAP]{gMAP()}} prediction.
 
 \item \code{mixfit(array)}: Fits a mixture density for an MCMC sample. It is
 recommended to provide a thinning argument which roughly yields
-independent draws (i.e. use \code{\link{acf}} to identify a
+independent draws (i.e. use \code{\link[=acf]{acf()}} to identify a
 thinning lag with small auto-correlation). The input array is
 expected to have 3 dimensions which are nested as iterations,
 chains, and draws.

@@ -7,9 +7,9 @@
 \format{
 A data frame with 8 rows and 3 variables:
 \describe{
-  \item{study}{study}
-  \item{n}{study size}
-  \item{r}{number of events}
+\item{study}{study}
+\item{n}{study size}
+\item{r}{number of events}
 }
 }
 \usage{
@@ -18,7 +18,7 @@ AS
 \description{
 Data set containing historical information for placebo for a phase
 II trial of ankylosing spondylitis patients. The primary efficacy
-endpoint was the percentage of patients with a 20% response
+endpoint was the percentage of patients with a 20\% response
 according to the Assessment of SpondyloArthritis international
 Society criteria for improvement (ASAS20) at week 6.
 }

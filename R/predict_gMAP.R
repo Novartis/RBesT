@@ -10,17 +10,17 @@
 #' input into the gMAP analysis. If left out, then a posterior prediction for
 #' the fitted data entries from the gMAP object is performed (shrinkage estimates).
 #' @param probs defines quantiles to be reported.
-#' @param type sets reported scale (\code{response} (default) or \code{link}).
+#' @param type sets reported scale (`response` (default) or `link`).
 #' @param na.action how to handle missings.
-#' @param thin thinning applied is derived from the \code{gMAP} object.
+#' @param thin thinning applied is derived from the `gMAP` object.
 #' @param digits number of displayed significant digits.
 #' @param ... ignored.
 #'
 #' @details Predictions are made using the \eqn{\tau} prediction
 #' stratum of the gMAP object. For details on the syntax, please refer
-#' to \code{\link{predict.glm}} and the example below.
+#' to [predict.glm()] and the example below.
 #'
-#' @seealso \code{\link{gMAP}}, \code{\link{predict.glm}}
+#' @seealso [gMAP()], [predict.glm()]
 #'
 #' @template example-start
 #' @example inst/examples/predict_gMAP.R
@@ -28,7 +28,15 @@
 #' @rdname predict.gMAP
 #' @method predict gMAP
 #' @export
-predict.gMAP <- function(object, newdata, type = c("response", "link"), probs = c(0.025, 0.5, 0.975), na.action = na.pass, thin, ...) {
+predict.gMAP <- function(
+  object,
+  newdata,
+  type = c("response", "link"),
+  probs = c(0.025, 0.5, 0.975),
+  na.action = na.pass,
+  thin,
+  ...
+) {
   f <- object$formula
   mf <- object$model
   tt <- terms(f, data = mf, lhs = 1, rhs = 1)
@@ -42,21 +50,31 @@ predict.gMAP <- function(object, newdata, type = c("response", "link"), probs = 
     posterior_predict <- FALSE
     Terms <- delete.response(tt)
     ## replace model frame with newdata context
-    m <- model.frame(Terms, newdata,
+    m <- model.frame(
+      Terms,
+      newdata,
       na.action = na.action,
       xlev = .getXlevels(tt, mf)
     )
     if (!is.null(cl <- attr(Terms, "dataClasses"))) {
       .checkMFClasses(cl, m)
     }
-    X <- model.matrix(Terms, m, contrasts.arg = attr(model.matrix(f, mf, rhs = 1), "contrasts"))
+    X <- model.matrix(
+      Terms,
+      m,
+      contrasts.arg = attr(model.matrix(f, mf, rhs = 1), "contrasts")
+    )
     log_offset <- rep(0, nrow(X))
     if (!is.null(off.num <- attr(tt, "offset"))) {
       for (i in off.num) {
-        log_offset <- log_offset + eval(attr(
-          tt,
-          "variables"
-        )[[i + 1]], newdata)
+        log_offset <- log_offset +
+          eval(
+            attr(
+              tt,
+              "variables"
+            )[[i + 1]],
+            newdata
+          )
       }
     }
     if (!is.null(object$call$offset)) {
@@ -86,13 +104,26 @@ predict.gMAP <- function(object, newdata, type = c("response", "link"), probs = 
     thin <- object$thin
   }
 
-  beta <- rstan::extract(object$fit, inc_warmup = FALSE, permuted = FALSE, pars = "beta")
+  beta <- rstan::extract(
+    object$fit,
+    inc_warmup = FALSE,
+    permuted = FALSE,
+    pars = "beta"
+  )
   n.pred <- nrow(X)
   n.iter <- dim(beta)[1]
   n.chains <- dim(beta)[2]
 
   if (posterior_predict) {
-    pred <- aperm(rstan::extract(object$fit, inc_warmup = FALSE, permuted = FALSE, pars = "theta"), c(3, 1, 2))
+    pred <- aperm(
+      rstan::extract(
+        object$fit,
+        inc_warmup = FALSE,
+        permuted = FALSE,
+        pars = "theta"
+      ),
+      c(3, 1, 2)
+    )
   } else {
     pred <- apply(beta, c(1, 2), function(x) X %*% x)
     if (n.pred == 1) {
@@ -113,7 +144,12 @@ predict.gMAP <- function(object, newdata, type = c("response", "link"), probs = 
     ## sample random effects for as many groups defined, which can
     ## be more than the ones in the data set, since we sample for
     ## all defined factor levels
-    tau <- as.vector(rstan::extract(object$fit, inc_warmup = FALSE, permuted = FALSE, pars = paste0("tau[", object$tau.strata.pred, "]"))[sub_ind, , ])
+    tau <- as.vector(rstan::extract(
+      object$fit,
+      inc_warmup = FALSE,
+      permuted = FALSE,
+      pars = paste0("tau[", object$tau.strata.pred, "]")
+    )[sub_ind, , ])
     if (object$REdist == "normal") {
       re <- tau * matrix(rnorm(n.groups * S, 0, 1), nrow = S)
     }

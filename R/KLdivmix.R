@@ -6,7 +6,13 @@ KLdivmix <- function(mixRef, mixTest) {
   }
   ## note: setting stop.on.error to FALSE manages to avoid boundary
   ## value issues
-  integrate(function(x) {
-    dmix(mixRef, x) * (dmix(mixRef, x, log = TRUE) - dmix(mixTest, x, log = TRUE))
-  }, interval[1], interval[2], stop.on.error = FALSE)$value
+  integrate(
+    function(x) {
+      dmix(mixRef, x) *
+        (dmix(mixRef, x, log = TRUE) - dmix(mixTest, x, log = TRUE))
+    },
+    interval[1],
+    interval[2],
+    stop.on.error = FALSE
+  )$value
 }

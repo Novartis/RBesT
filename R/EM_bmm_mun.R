@@ -1,6 +1,16 @@
 ## EM for Beta Mixture Models (BMM) with Nc components
 
-EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500, tol, Neps, eps = c(w = 0.005, m = 0.005, N = 0.005)) {
+EM_bmm_mun <- function(
+  x,
+  Nc,
+  mix_init,
+  Ninit = 50,
+  verbose = FALSE,
+  Niter.max = 500,
+  tol,
+  Neps,
+  eps = c(w = 0.005, m = 0.005, N = 0.005)
+) {
   N <- length(x)
   assert_that(N + Nc >= Ninit)
 
@@ -9,12 +19,20 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
   ## ensures proper handling during fit.
   x0 <- x == 0
   if (any(x0)) {
-    message("Detected ", sum(x0), " value(s) which are exactly 0.\nTo avoid numerical issues during EM such values are moved to smallest eps on machine.")
+    message(
+      "Detected ",
+      sum(x0),
+      " value(s) which are exactly 0.\nTo avoid numerical issues during EM such values are moved to smallest eps on machine."
+    )
     x[x0] <- .Machine$double.eps
   }
   x1 <- x == 1
   if (any(x1)) {
-    message("Detected ", sum(x1), " value(s) which are exactly 1.\nTo avoid numerical issues during EM such values are moved to one minus smallest eps on machine.")
+    message(
+      "Detected ",
+      sum(x1),
+      " value(s) which are exactly 1.\nTo avoid numerical issues during EM such values are moved to one minus smallest eps on machine."
+    )
     x[x1] <- 1 - .Machine$double.eps
   }
 
@@ -30,7 +48,10 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
   if (missing(mix_init)) {
     ## assume that the sample is ordered randomly
     ind <- seq(1, N - Nc, length = Ninit)
-    knnInit <- list(mu = matrix(0, nrow = Nc, ncol = 1), p = rep(1 / Nc, times = Nc))
+    knnInit <- list(
+      mu = matrix(0, nrow = Nc, ncol = 1),
+      p = rep(1 / Nc, times = Nc)
+    )
     for (k in seq(Nc)) {
       knnInit$mu[k, 1] <- mean(x[ind + k - 1])
     }
@@ -50,7 +71,11 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
     cmin <- which.min(KNN$p)
     muInit[cmin] <- sum(KNN$p * KNN$center)
     ## muInit[cmin] <- mean(x) ## could be considered here
-    nInit[cmin] <- pmax(muInit[cmin] * (1 - muInit[cmin]) / var(x) - 1, 1, na.rm = TRUE)
+    nInit[cmin] <- pmax(
+      muInit[cmin] * (1 - muInit[cmin]) / var(x) - 1,
+      1,
+      na.rm = TRUE
+    )
     ## Nmax <- max(2, max(nInit))
     ## ensure n is positive for each cluster; if this is not the
     ## case, sample uniformly from the range of n we have
@@ -116,7 +141,11 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
   traceMix <- list()
   traceLli <- c()
   Dlli <- Inf
-  runMixPar <- array(-Inf, dim = c(Neps, 3, Nc), dimnames = list(NULL, rownames(mixEstPar), NULL))
+  runMixPar <- array(
+    -Inf,
+    dim = c(Neps, 3, Nc),
+    dimnames = list(NULL, rownames(mixEstPar), NULL)
+  )
   runOrder <- 0:(Neps - 1)
   Npar <- Nc + 2 * Nc
   if (Nc == 1) Npar <- Npar - 1
@@ -140,7 +169,10 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
     ## calculations are done in log-space to avoid numerical
     ## difficulties if some points are far away from some
     ## component and hence recieve very low density
-    lli <- t(matrix(log(mixEst[1, ]) + dbeta(xRep, mixEst[2, ], mixEst[3, ], log = TRUE), nrow = Nc))
+    lli <- t(matrix(
+      log(mixEst[1, ]) + dbeta(xRep, mixEst[2, ], mixEst[3, ], log = TRUE),
+      nrow = Nc
+    ))
     lnresp <- matrixStats::rowLogSumExps(lli)
     ## ensure that the log-likelihood does not go out of numerical
     ## reasonable bounds
@@ -156,15 +188,36 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
       Dlli <- (traceLli[iter + 1] - traceLli[iter - 1]) / 2
     }
     if (Nc > 1) {
-      smean <- apply(runMixPar[order(runOrder), , , drop = FALSE], c(2, 3), function(x) mean(abs(diff(x))))
+      smean <- apply(
+        runMixPar[order(runOrder), , , drop = FALSE],
+        c(2, 3),
+        function(x) mean(abs(diff(x)))
+      )
       eps.converged <- sum(sweep(smean, 1, eps, "-") < 0)
     } else {
-      smean <- apply(runMixPar[order(runOrder), -1, , drop = FALSE], c(2, 3), function(x) mean(abs(diff(x))))
+      smean <- apply(
+        runMixPar[order(runOrder), -1, , drop = FALSE],
+        c(2, 3),
+        function(x) mean(abs(diff(x)))
+      )
       eps.converged <- sum(sweep(smean, 1, eps[-1], "-") < 0)
     }
     if (is.na(eps.converged)) eps.converged <- 0
     if (verbose) {
-      message("Iteration ", iter, ": log-likelihood = ", lliCur, "; Dlli = ", Dlli, "; converged = ", eps.converged, " / ", Npar, "\n", sep = "")
+      message(
+        "Iteration ",
+        iter,
+        ": log-likelihood = ",
+        lliCur,
+        "; Dlli = ",
+        Dlli,
+        "; converged = ",
+        eps.converged,
+        " / ",
+        Npar,
+        "\n",
+        sep = ""
+      )
     }
     if (checkTol & Dlli < tol) {
       break
@@ -195,7 +248,13 @@ EM_bmm_mun <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max =
     for (i in 1:Nc) {
       Lest <- optim(mixEstPar[c(2, 3), i], bmm_mun_ml(c1[i], c2[i]))
       if (Lest$convergence != 0) {
-        warning("Warning: Component", i, "in iteration", iter, "had convergence problems!")
+        warning(
+          "Warning: Component",
+          i,
+          "in iteration",
+          iter,
+          "had convergence problems!"
+        )
       }
       mixEstPar[c(2, 3), i] <- Lest$par
       mui <- inv_logit(Lest$par[1])

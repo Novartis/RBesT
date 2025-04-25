@@ -9,7 +9,15 @@
 #' @param Niter.max maximum number of admissible iterations
 #'
 #' @keywords internal
-knn <- function(X, K = 2, init, Ninit = 50, verbose = FALSE, tol, Niter.max = 500) {
+knn <- function(
+  X,
+  K = 2,
+  init,
+  Ninit = 50,
+  verbose = FALSE,
+  tol,
+  Niter.max = 500
+) {
   ## in case X is no matrix, interpret it as uni-variate case
   if (!is.matrix(X)) {
     X <- matrix(X, ncol = 1)
@@ -33,7 +41,11 @@ knn <- function(X, K = 2, init, Ninit = 50, verbose = FALSE, tol, Niter.max = 50
     muEst <- matrix(0, K, Nd)
     ## sample for each component from the base data
     for (i in seq(K)) {
-      muEst[i, ] <- colMeans(X[sample.int(N, min(Ninit, N), replace = FALSE), , drop = FALSE])
+      muEst[i, ] <- colMeans(X[
+        sample.int(N, min(Ninit, N), replace = FALSE),
+        ,
+        drop = FALSE
+      ])
     }
   } else {
     pEst <- init$p
@@ -91,7 +103,13 @@ knn <- function(X, K = 2, init, Ninit = 50, verbose = FALSE, tol, Niter.max = 50
     warning("Maximum number of iterations reached.")
   }
 
-  res <- list(center = muEst, p = colMeans(resp), J = J, delta = delta, niter = iter)
+  res <- list(
+    center = muEst,
+    p = colMeans(resp),
+    J = J,
+    delta = delta,
+    niter = iter
+  )
   ## res$cluster <- apply(resp==1, 1, which)
   ## 10x faster
   res$cluster <- ((which(t(resp == 1)) - 1) %% K) + 1

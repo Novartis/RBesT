@@ -21,7 +21,7 @@ For introductory material, please refer to the vignettes which include
 \item Robust MAP, advanced usage
 }
 
-The main function of the package is \code{\link{gMAP}}. See it's
+The main function of the package is \code{\link[=gMAP]{gMAP()}}. See it's
 help page for a detailed description of the statistical model.
 }
 \section{Global Options}{
@@ -33,18 +33,18 @@ Option \tab Default \tab Description \cr
 \code{RBesT.MC.iter} \tab 6000 \tab total MCMC iterations \cr
 \code{RBesT.MC.chains} \tab 4 \tab MCMC chains\cr
 \code{RBesT.MC.thin} \tab 4 \tab MCMC thinning \cr
-\code{RBesT.MC.control} \tab \code{list(adapt_delta=0.99,} \tab sets \code{control} argument for Stan call\cr
- \tab \code{stepsize=0.01,} \tab \cr
- \tab \code{max_treedepth=20)} \tab \cr
+\code{RBesT.MC.control} \tab \verb{list(adapt_delta=0.99,} \tab sets \code{control} argument for Stan call\cr
+\tab \verb{stepsize=0.01,} \tab \cr
+\tab \verb{max_treedepth=20)} \tab \cr
 \code{RBesT.MC.ncp} \tab 1 \tab parametrization: 0=CP, 1=NCP, 2=Automatic  \cr
-\code{RBesT.MC.init} \tab 1 \tab range of initial uniform [-1,1] is the default  \cr
+\code{RBesT.MC.init} \tab 1 \tab range of initial uniform \eqn{[-1,1]} is the default  \cr
 \code{RBesT.MC.rescale} \tab \code{TRUE} \tab Automatic rescaling of raw parameters  \cr
 \code{RBesT.verbose} \tab \code{FALSE} \tab requests outputs to be more verbose\cr
-\code{RBesT.integrate_args} \tab \code{list(lower=-Inf,} \tab arguments passed to \code{integrate} for\cr
- \tab \code{upper=Inf,} \tab intergation of densities\cr
-\tab \code{rel.tol=.Machine$double.eps^0.25,} \tab \cr
-\tab \code{abs.tol=.Machine$double.eps^0.25,} \tab \cr
-\tab \code{subdivisions=1E3)} \tab \cr
+\code{RBesT.integrate_args} \tab \verb{list(lower=-Inf,} \tab arguments passed to \code{integrate} for\cr
+\tab \verb{upper=Inf,} \tab intergation of densities\cr
+\tab \verb{rel.tol=.Machine$double.eps^0.25,} \tab \cr
+\tab \verb{abs.tol=.Machine$double.eps^0.25,} \tab \cr
+\tab \verb{subdivisions=1E3)} \tab \cr
 \code{RBesT.integrate_prob_eps} \tab \code{1E-6} \tab probability mass left out from tails if integration needs to be restricted in range \cr
 }
 }

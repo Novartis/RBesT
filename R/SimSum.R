@@ -12,7 +12,7 @@
 #' deviation and the specified qantiles which are by default the
 #' median and the 95% interval.
 #'
-#' If a mulit-dimensional array is specified as \code{x}, then the
+#' If a mulit-dimensional array is specified as `x`, then the
 #' function will by default calculate the summaries over the margin of
 #' the largest dimension. For the case of a vector and a matrix, the
 #' function will transpose the results for better readabiliy.
@@ -20,7 +20,13 @@
 #' @keywords internal
 #'
 `SimSum` <-
-  function(x, min.max = FALSE, n.sim = FALSE, probs = c(0.025, 0.5, 0.975), margin = ifelse(is.null(dim(x) | length(dim(x)) == 1), 2, length(dim(x)))) {
+  function(
+    x,
+    min.max = FALSE,
+    n.sim = FALSE,
+    probs = c(0.025, 0.5, 0.975),
+    margin = ifelse(is.null(dim(x) | length(dim(x)) == 1), 2, length(dim(x)))
+  ) {
     # 	Version 1.1, 16-Oct-2014
     if (is.null(dim(x)) | length(dim(x)) == 1) {
       x <- matrix(x, ncol = 1)

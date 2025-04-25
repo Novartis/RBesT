@@ -13,23 +13,56 @@ Nsamp <- 1e6
 probs <- seq(0.1, 0.9, by = 0.1)
 
 ## define the different test cases
-beta <- list(mix1 = mixbeta(c(1, 11, 4)), mix2 = mixbeta(c(1, 8, 7)), q = c(0, 0.3), p = probs)
-betaMix <- list(mix1 = mixbeta(c(0.8, 11, 4), c(0.2, 1, 1)), mix2 = mixbeta(c(0.8, 8, 7), c(0.2, 1, 1)), q = c(0, 0.3), p = probs)
+beta <- list(
+  mix1 = mixbeta(c(1, 11, 4)),
+  mix2 = mixbeta(c(1, 8, 7)),
+  q = c(0, 0.3),
+  p = probs
+)
+betaMix <- list(
+  mix1 = mixbeta(c(0.8, 11, 4), c(0.2, 1, 1)),
+  mix2 = mixbeta(c(0.8, 8, 7), c(0.2, 1, 1)),
+  q = c(0, 0.3),
+  p = probs
+)
 
-gamma <- list(mix1 = mixgamma(c(1, 20, 4)), mix2 = mixgamma(c(1, 50, 10)), q = c(0, -2), p = probs)
-gammaMix <- list(mix1 = mixgamma(rob = c(0.75, 8, 0.5), inf = c(0.25, 9, 2), param = "ms"), mix2 = mixgamma(c(1, 50, 10)), q = c(0, -2), p = probs)
+gamma <- list(
+  mix1 = mixgamma(c(1, 20, 4)),
+  mix2 = mixgamma(c(1, 50, 10)),
+  q = c(0, -2),
+  p = probs
+)
+gammaMix <- list(
+  mix1 = mixgamma(rob = c(0.75, 8, 0.5), inf = c(0.25, 9, 2), param = "ms"),
+  mix2 = mixgamma(c(1, 50, 10)),
+  q = c(0, -2),
+  p = probs
+)
 
 nm <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
 
-norm <- list(mix1 = mixnorm(c(1, 10, sqrt(1 / 4))), mix2 = mixnorm(c(1, 11, sqrt(1 / 4))), q = c(0, 1.5), p = probs)
+norm <- list(
+  mix1 = mixnorm(c(1, 10, sqrt(1 / 4))),
+  mix2 = mixnorm(c(1, 11, sqrt(1 / 4))),
+  q = c(0, 1.5),
+  p = probs
+)
 norm_ref <- mixnorm(c(1, 10 - 11, sqrt(1 / 4 + 1 / 4)))
 
-normMix <- list(mix1 = mixnorm(c(0.2, 0, 2), c(0.8, 2, 2)), mix2 = mixnorm(c(1, 2, sqrt(4))), q = c(0, 1.5), p = probs)
+normMix <- list(
+  mix1 = mixnorm(c(0.2, 0, 2), c(0.8, 2, 2)),
+  mix2 = mixnorm(c(1, 2, sqrt(4))),
+  q = c(0, 1.5),
+  p = probs
+)
 normMix_ref <- mixnorm(c(0.2, 0 - 2, sqrt(4 + 4)), c(0.8, 2 - 2, sqrt(4 + 4)))
 
 mixdiff_sample <- function(mix1, mix2, q, p, N = Nsamp) {
   samp <- rmix(mix1, N) - rmix(mix2, N)
-  list(probs = vapply(q, function(v) mean(samp < v), c(p = 0.1)), quants = quantile(samp, p))
+  list(
+    probs = vapply(q, function(v) mean(samp < v), c(p = 0.1)),
+    quants = quantile(samp, p)
+  )
 }
 
 mixdiff_cmp <- function(case, rev = FALSE) {

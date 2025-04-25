@@ -19,7 +19,7 @@ stops \code{automixfit} once the AIC becomes worse.}
 
 \item{verbose}{Enable verbose logging.}
 
-\item{...}{Further arguments passed to \code{\link{mixfit}},
+\item{...}{Further arguments passed to \code{\link[=mixfit]{mixfit()}},
 including \code{type}.}
 }
 \value{

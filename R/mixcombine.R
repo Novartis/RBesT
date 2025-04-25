@@ -17,7 +17,7 @@
 #' @return
 #' A R-object with the new mixture distribution.
 #' @family mixdist
-#' @seealso \code{\link{robustify}}
+#' @seealso [robustify()]
 #'
 #' @example inst/examples/mixcombine.R
 #'
@@ -28,8 +28,14 @@ mixcombine <- function(..., weight, rescale = TRUE) {
   cl <- grep("mix$", class(comp[[1]]), ignore.case = TRUE, value = TRUE)
   dl <- dlink(comp[[1]])
   lik <- likelihood(comp[[1]])
-  assert_that(all(sapply(comp, inherits, "mix")), msg = "All components must be mixture objects.")
-  assert_that(all(sapply(comp, likelihood) == lik), msg = "All components must have the same likelihood set.")
+  assert_that(
+    all(sapply(comp, inherits, "mix")),
+    msg = "All components must be mixture objects."
+  )
+  assert_that(
+    all(sapply(comp, likelihood) == lik),
+    msg = "All components must have the same likelihood set."
+  )
   mix <- do.call(cbind, comp)
   if (!missing(weight)) {
     assert_that(length(weight) == length(comp))

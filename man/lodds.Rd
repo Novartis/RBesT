@@ -12,25 +12,25 @@ inv_logit(eta)
 }
 \arguments{
 \item{mu}{A numeric object with probabilies, with values in the in
-the range [0,1]. Missing values (NAs) are allowed.}
+the range \eqn{[0,1]}. Missing values (\code{NA}s) are allowed.}
 
 \item{eta}{A numeric object with log-odds values, with values in
-the range [-Inf,Inf]. Missing values (NAs) are allowed.}
+the range \eqn{[-\infty,\infty]}. Missing values (\code{NA}s) are allowed.}
 }
 \value{
 A numeric object of the same type as mu and eta containing
 the logits or inverse logit of the input values.  The logit and
 inverse transformation equates to
 
-\deqn{\mbox{logit}(\mu) = \log(\mu/(1-\mu))}{logit(\mu) = log(\mu/(1-\mu))}
-\deqn{\mbox{logit}^{-1}(\eta)= \exp(\eta)/(1 + \exp(\eta)).}{logit^-1(\eta) = exp(\eta)/(1 + exp(\eta)).}
+\deqn{\text{logit}(\mu) = \log(\mu/(1-\mu))}{logit(\mu) = log(\mu/(1-\mu))}
+\deqn{\text{logit}^{-1}(\eta)= \exp(\eta)/(1 + \exp(\eta)).}{logit^-1(\eta) = exp(\eta)/(1 + exp(\eta)).}
 }
 \description{
 Calculates the logit (log-odds) and inverse-logit.
 }
 \details{
-Values of mu equal to 0 or 1 will return -Inf or Inf
-respectively.
+Values of mu equal to 0 or 1 will return \eqn{-\infty} or
+\eqn{\infty} respectively.
 }
 \examples{
 logit(0.2)

@@ -73,7 +73,7 @@ distribution of the data implied by a distirbution of the
 parameters \eqn{\theta_1} and \eqn{\theta_2}.
 
 The calculation is analogous to the operating characeristics
-\code{\link{oc2S}} with the difference that instead of assuming
+\code{\link[=oc2S]{oc2S()}} with the difference that instead of assuming
 known (point-wise) true parameter values a distribution is
 specified for each parameter.
 
@@ -95,7 +95,7 @@ distribution, the BetaBinomial, instead of the binomial
 distribution will be performed over the data space wherever the
 decision function is evaluated to 1. All other aspects of the
 calculation are as for the 2-sample operating characteristics, see
-\code{\link{oc2S}}.
+\code{\link[=oc2S]{oc2S()}}.
 }
 \section{Methods (by class)}{
 \itemize{

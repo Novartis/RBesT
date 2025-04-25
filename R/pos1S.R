@@ -1,6 +1,6 @@
 #' Probability of Success for a 1 Sample Design
 #'
-#' The \code{pos1S} function defines a 1 sample design (prior, sample
+#' The `pos1S` function defines a 1 sample design (prior, sample
 #' size, decision function) for the calculation of the frequency at
 #' which the decision is evaluated to 1 when assuming a distribution
 #' for the parameter. A function is returned which performs the
@@ -8,14 +8,14 @@
 #'
 #' @template args-boundary1S
 #'
-#' @details The \code{pos1S} function defines a 1 sample design and
+#' @details The `pos1S` function defines a 1 sample design and
 #' returns a function which calculates its probability of success.
 #' The probability of success is the frequency with which the decision
 #' function is evaluated to 1 under the assumption of a given true
 #' distribution of the data implied by a distirbution of the parameter
 #' \eqn{\theta}.
 #'
-#' Calling the \code{pos1S} function calculates the critical value
+#' Calling the `pos1S` function calculates the critical value
 #' \eqn{y_c} and returns a function which can be used to evaluate the
 #' PoS for different predictive distributions and is evaluated as
 #'
@@ -25,10 +25,10 @@
 #' distribution and \eqn{p(\theta)} specifies the assumed true
 #' distribution of the parameter \eqn{\theta}. The distribution
 #' \eqn{p(\theta)} is a mixture distribution and given as the
-#' \code{mix} argument to the function.
+#' `mix` argument to the function.
 #'
 #' @return Returns a function that takes as single argument
-#' \code{mix}, which is the mixture distribution of the control
+#' `mix`, which is the mixture distribution of the control
 #' parameter. Calling this function with a mixture distribution then
 #' calculates the PoS.
 #'

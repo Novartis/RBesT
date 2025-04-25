@@ -5,10 +5,10 @@
 #' @description Plotting for mixture distributions
 #'
 #' @param x mixture distribution
-#' @param prob  defining lower and upper percentile of x-axis. Defaults to the 99\% central probability mass.
-#' @param fun function to plot which can be any of \code{dmix}, \code{qmix} or \code{pmix}.
-#' @param log log argument passed to the function specified in \code{fun}.
-#' @param comp for the density function this can be set to \code{TRUE}
+#' @param prob  defining lower and upper percentile of x-axis. Defaults to the 99\\% central probability mass.
+#' @param fun function to plot which can be any of `dmix`, `qmix` or `pmix`.
+#' @param log log argument passed to the function specified in `fun`.
+#' @param comp for the density function this can be set to `TRUE`
 #' which will display colour-coded each mixture component of the
 #' density in addition to the density.
 #' @param size controls the linesize in plots.
@@ -16,14 +16,14 @@
 #'
 #' @details Plot function for mixture distribution objects. It shows
 #' the density/quantile/cumulative distribution (corresponds to
-#' \code{d/q/pmix} function) for some specific central probability
-#' mass defined by \code{prob}. By default the x-axis is chosen to
-#' show 99\% of the probability density mass.
+#' `d/q/pmix` function) for some specific central probability
+#' mass defined by `prob`. By default the x-axis is chosen to
+#' show 99\\% of the probability density mass.
 #'
 #' @template plot-help
 #'
 #' @return
-#' A \code{\link[ggplot2]{ggplot}} object is returned.
+#' A [ggplot2::ggplot()] object is returned.
 #'
 #' @family mixdist
 #' @examples
@@ -65,7 +65,15 @@
 #' @rdname mixplot
 #' @method plot mix
 #' @export
-plot.mix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size = 1.25, ...) {
+plot.mix <- function(
+  x,
+  prob = 0.99,
+  fun = dmix,
+  log = FALSE,
+  comp = TRUE,
+  size = 1.25,
+  ...
+) {
   funStr <- deparse(substitute(fun))
   if (length(prob) == 1) {
     plow <- (1 - prob) / 2
@@ -95,7 +103,13 @@ plot.mix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size 
 
   num_comp <- ncol(x)
   pl <- ggplot(data.frame(x = interval), aes(x = x)) +
-    stat_function(geom = plot_geom, fun = plot_fun, args = list(mix = x, log = log), n = n_fun, linewidth = size) +
+    stat_function(
+      geom = plot_geom,
+      fun = plot_fun,
+      args = list(mix = x, log = log),
+      n = n_fun,
+      linewidth = size
+    ) +
     bayesplot::bayesplot_theme_get()
 
   if (funStr == "dmix") {
@@ -108,9 +122,29 @@ plot.mix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size 
   if (funStr == "dmix" & comp) {
     comp_df <- list()
     for (i in seq_len(num_comp)) {
-      pl <- pl + stat_function(geom = plot_geom, data = data.frame(comp = factor(i, levels = seq_len(num_comp))), mapping = aes(colour = comp), fun = plot_fun, args = list(mix = x[[i]], log = log), n = n_fun, linetype = I(2), linewidth = size, inherit.aes = FALSE)
+      pl <- pl +
+        stat_function(
+          geom = plot_geom,
+          data = data.frame(comp = factor(i, levels = seq_len(num_comp))),
+          mapping = aes(colour = comp),
+          fun = plot_fun,
+          args = list(mix = x[[i]], log = log),
+          n = n_fun,
+          linetype = I(2),
+          linewidth = size,
+          inherit.aes = FALSE
+        )
     }
-    pl <- pl + scale_colour_manual("Comp. [%]", values = 2:(num_comp + 1), labels = paste0(colnames(x), " ", format(100 * x[1, ], digits = 1, nsmall = 1)))
+    pl <- pl +
+      scale_colour_manual(
+        "Comp. [%]",
+        values = 2:(num_comp + 1),
+        labels = paste0(
+          colnames(x),
+          " ",
+          format(100 * x[1, ], digits = 1, nsmall = 1)
+        )
+      )
   }
   pl
 }
@@ -118,6 +152,14 @@ plot.mix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size 
 #' @rdname mixplot
 #' @method plot mvnormMix
 #' @export
-plot.mvnormMix <- function(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size = 1.25, ...) {
+plot.mvnormMix <- function(
+  x,
+  prob = 0.99,
+  fun = dmix,
+  log = FALSE,
+  comp = TRUE,
+  size = 1.25,
+  ...
+) {
   stop("Multivariate normal mixture plotting not supported.")
 }

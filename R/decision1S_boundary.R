@@ -14,7 +14,7 @@
 #'
 #' which is the maximal value of \eqn{y} whenever the decision \eqn{D(y)}
 #' function changes its value from 1 to 0 for a decision function
-#' with \code{lower.tail=TRUE} (otherwise the definition is \eqn{y_c =
+#' with `lower.tail=TRUE` (otherwise the definition is \eqn{y_c =
 #' \max_{y}\{D(y) = 0\}}{y_c = max_{y}{D(y) = 0}}). The decision
 #' function may change at most at a single critical value as only
 #' one-sided decision functions are supported. Here,
@@ -23,13 +23,13 @@
 #' case as the mean \eqn{\bar{y} = 1/n \sum_{i=1}^n y_i}.
 #'
 #' The convention for the critical value \eqn{y_c} depends on whether
-#' a left (\code{lower.tail=TRUE}) or right-sided decision function
-#' (\code{lower.tail=FALSE}) is used. For \code{lower.tail=TRUE} the
+#' a left (`lower.tail=TRUE`) or right-sided decision function
+#' (`lower.tail=FALSE`) is used. For `lower.tail=TRUE` the
 #' critical value \eqn{y_c} is the largest value for which the
 #' decision is 1, \eqn{D(y \leq y_c) = 1}, while for
-#' \code{lower.tail=FALSE} then \eqn{D(y > y_c) = 1} holds. This is
+#' `lower.tail=FALSE` then \eqn{D(y > y_c) = 1} holds. This is
 #' aligned with the cumulative density function definition within R
-#' (see for example \code{\link{pbinom}}).
+#' (see for example [pbinom()]).
 #'
 #' @return Returns the critical value \eqn{y_c}.
 #'
@@ -69,9 +69,11 @@
 #' decision1S_boundary(flat_prior, nL, dec2)
 #'
 #' @export
-decision1S_boundary <- function(prior, n, decision, ...) UseMethod("decision1S_boundary")
+decision1S_boundary <- function(prior, n, decision, ...)
+  UseMethod("decision1S_boundary")
 #' @export
-decision1S_boundary.default <- function(prior, n, decision, ...) "Unknown density"
+decision1S_boundary.default <- function(prior, n, decision, ...)
+  "Unknown density"
 
 #' @templateVar fun decision1S_boundary
 #' @template design1S-binomial
@@ -92,8 +94,11 @@ decision1S_boundary.betaMix <- function(prior, n, decision, ...) {
       crit <- ifelse(bounds[1] < 0, n, -1)
     }
   } else {
-    crit <- uniroot_int(VdecisionLazy, c(0, n),
-      f.lower = bounds[1], f.upper = bounds[2]
+    crit <- uniroot_int(
+      VdecisionLazy,
+      c(0, n),
+      f.lower = bounds[1],
+      f.upper = bounds[2]
     )
   }
 
@@ -131,16 +136,25 @@ solve_boundary1S_normMix <- function(decision, mix, n, lim) {
     dec_bounds <- ind_fun(lim)
   }
 
-  uniroot(ind_fun,
+  uniroot(
+    ind_fun,
     interval = lim,
-    f.lower = dec_bounds[1], f.upper = dec_bounds[2]
+    f.lower = dec_bounds[1],
+    f.upper = dec_bounds[2]
   )$root
 }
 
 #' @templateVar fun decision1S_boundary
 #' @template design1S-normal
 #' @export
-decision1S_boundary.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
+decision1S_boundary.normMix <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps = 1e-6,
+  ...
+) {
   ## distributions of the means of the data generating distributions
   ## for now we assume that the underlying standard deviation
   ## matches the respective reference scales
@@ -214,7 +228,8 @@ decision1S_boundary.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
     }
   } else {
     ## find decision boundary
-    crit <- uniroot_int(Vdecision,
+    crit <- uniroot_int(
+      Vdecision,
       c(lim[1], lim[2]),
       f.lower = bounds[1],
       f.upper = bounds[2]

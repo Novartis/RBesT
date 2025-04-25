@@ -13,7 +13,7 @@
 #'   \item{y}{mean CDAI change}
 #' }
 #'
-#' @references Hueber W. et. al, \emph{Gut}, 2012, 61(12):1693-1700
+#' @references Hueber W. et. al, *Gut*, 2012, 61(12):1693-1700
 #'
 #' @template example-start
 #' @examples

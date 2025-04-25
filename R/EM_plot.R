@@ -1,26 +1,26 @@
 #' Diagnostic plots for EM fits
 #'
-#' Produce diagnostic plots of EM fits returned from \code{\link{mixfit}}.
+#' Produce diagnostic plots of EM fits returned from [mixfit()].
 #'
 #' @param x EM fit
-#' @param size Optional argument passed to \code{ggplot2} routines
+#' @param size Optional argument passed to `ggplot2` routines
 #' which control line thickness.
 #' @param link Choice of an applied link function. Can take one of the
-#' values \code{identity} (default), \code{logit} or \code{log}.
+#' values `identity` (default), `logit` or `log`.
 #' @param ... Ignored.
 #'
 #' Overlays the fitted mixture density with a histogram and a density
 #' plot of the raw sample fitted. Applying a link function can be
-#' beneficial, for example a \code{logit} (\code{log}) link for beta
+#' beneficial, for example a `logit` (`log`) link for beta
 #' (gamma) mixtures obtained from a Binomial (Poisson)
-#' \code{\link{gMAP}} analysis.
+#' [gMAP()] analysis.
 #'
 #' @template plot-help
 #'
-#' @return A list of \code{\link[ggplot2]{ggplot}} plots for
+#' @return A list of [ggplot2::ggplot()] plots for
 #' diagnostics of the EM run. Detailed EM diagnostic plots are
-#' included only if the global option \code{RBesT.verbose} is set to
-#' \code{TRUE}. These include plots of the parameters of each
+#' included only if the global option `RBesT.verbose` is set to
+#' `TRUE`. These include plots of the parameters of each
 #' component vs the iteration. The plot of the mixture density with a
 #' histogram and a density of the fitted sample is always returned.
 #'
@@ -117,7 +117,10 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
     for (p in pars) {
       pl[[p]] <- basePl + aes(y = .data$p)
     }
-    pl$lli <- ggplot(subset(LL, iteration > 0), aes(x = .data$iteration, y = .data$lli)) +
+    pl$lli <- ggplot(
+      subset(LL, iteration > 0),
+      aes(x = .data$iteration, y = .data$lli)
+    ) +
       geom_line(size = size) +
       ylab("log-likelihood")
   }
@@ -143,31 +146,60 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
       subtitle <- NULL
     }
 
-    pl$mixdens <- bayesplot::mcmc_dens(samp) + bayesplot::facet_text(FALSE) +
-      stat_function(inherit.aes = FALSE, fun = dmix, args = list(mix = x), size = size, n = n_fun) +
-      ggtitle("Parametric Mixture (black line) and Kernel Estimate of Sample Density", subtitle = subtitle) +
+    pl$mixdens <- bayesplot::mcmc_dens(samp) +
+      bayesplot::facet_text(FALSE) +
+      stat_function(
+        inherit.aes = FALSE,
+        fun = dmix,
+        args = list(mix = x),
+        size = size,
+        n = n_fun
+      ) +
+      ggtitle(
+        "Parametric Mixture (black line) and Kernel Estimate of Sample Density",
+        subtitle = subtitle
+      ) +
       bayesplot::xaxis_title(FALSE)
 
     pl$mixecdf <- ggplot(samp, aes(x = .data$Sample)) +
       stat_ecdf(geom = "area", size = 0, fill = cols$light) +
       stat_ecdf(geom = "step", size = size, colour = cols$mid) +
       stat_function(fun = pmix, args = list(mix = x), size = size, n = n_fun) +
-      ggtitle("Estimated Cumulative Density from Parametric Mixture (black line) and Sample", subtitle = subtitle) +
+      ggtitle(
+        "Estimated Cumulative Density from Parametric Mixture (black line) and Sample",
+        subtitle = subtitle
+      ) +
       bayesplot::bayesplot_theme_get() +
       bayesplot::yaxis_title(FALSE) +
       bayesplot::xaxis_title(FALSE) +
       bayesplot::facet_text(FALSE)
 
-    pl$mix <- bayesplot::mcmc_hist(samp, binwidth = diff(interval) / 50, freq = FALSE) + bayesplot::facet_text(FALSE) +
-      stat_function(inherit.aes = FALSE, fun = dmix, args = list(mix = x), size = size, n = n_fun) +
-      ggtitle("Parametric Mixture Density (black line) and Histogram of Sample", subtitle = subtitle) +
+    pl$mix <- bayesplot::mcmc_hist(
+      samp,
+      binwidth = diff(interval) / 50,
+      freq = FALSE
+    ) +
+      bayesplot::facet_text(FALSE) +
+      stat_function(
+        inherit.aes = FALSE,
+        fun = dmix,
+        args = list(mix = x),
+        size = size,
+        n = n_fun
+      ) +
+      ggtitle(
+        "Parametric Mixture Density (black line) and Histogram of Sample",
+        subtitle = subtitle
+      ) +
       bayesplot::xaxis_title(FALSE)
   } else if (inherits(x, "mvnormMix")) {
     var1 <- var2 <- NULL
     ## multivariate case: only support mvnorm for now (the only
     ## one supported as of Aug 2023). Plot the pair-wise marginal
     ## densities, which are the pair-wise marginal mixtures.
-    message("Diagnostic plots for mixture multivariate normal densities are experimental.\nPlease note that these are subject to changes in future releases.")
+    message(
+      "Diagnostic plots for mixture multivariate normal densities are experimental.\nPlease note that these are subject to changes in future releases."
+    )
     samp <- attr(x, "x")
     p <- ncol(samp)
     dim_labels <- mvnorm_dim_labels(x[-1, 1])
@@ -188,31 +220,61 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
       layout[v1, v2] <- i
       if (v1 == v2) {
         interval <- quantile(samp[, v1], c(0.025, 0.975))
-        pl_pairs[[label]] <- bayesplot::mcmc_hist(samp[, v1, drop = FALSE], binwidth = diff(interval) / 50, freq = FALSE) +
+        pl_pairs[[label]] <- bayesplot::mcmc_hist(
+          samp[, v1, drop = FALSE],
+          binwidth = diff(interval) / 50,
+          freq = FALSE
+        ) +
           bayesplot::facet_text(FALSE) +
-          stat_function(inherit.aes = FALSE, fun = function(mix, x) dmix(mix, matrix(x, nrow = length(x))), args = list(mix = mix_sub)) +
+          stat_function(
+            inherit.aes = FALSE,
+            fun = function(mix, x) dmix(mix, matrix(x, nrow = length(x))),
+            args = list(mix = mix_sub)
+          ) +
           ylab(dim_labels[v2]) +
           xlab(dim_labels[v2])
       } else {
         data_ranges <- apply(samp[, c(v2, v1), drop = FALSE], 2, range)
         colnames(data_ranges) <- c("x", "y")
-        data_grid <- expand.grid(apply(data_ranges, 2, function(r) seq(r[1], r[2], length = breaks), simplify = FALSE))
+        data_grid <- expand.grid(apply(
+          data_ranges,
+          2,
+          function(r) seq(r[1], r[2], length = breaks),
+          simplify = FALSE
+        ))
         data_grid$z <- dmix(mix_sub, as.matrix(data_grid), log = TRUE)
-        pl_pairs[[label]] <- bayesplot::mcmc_scatter(samp[, c(v2, v1), drop = FALSE], alpha = 0.1) +
+        pl_pairs[[label]] <- bayesplot::mcmc_scatter(
+          samp[, c(v2, v1), drop = FALSE],
+          alpha = 0.1
+        ) +
           bayesplot::facet_text(FALSE) +
-          geom_contour(aes(z = .data$z), data = data_grid, bins = nbins, colour = "black") +
+          geom_contour(
+            aes(z = .data$z),
+            data = data_grid,
+            bins = nbins,
+            colour = "black"
+          ) +
           xlab(dim_labels[v2]) +
           ylab(dim_labels[v1])
       }
       pl_pairs_compact[[label]] <- pl_pairs[[label]]
       if (v1 != p) {
-        pl_pairs_compact[[label]] <- pl_pairs_compact[[label]] + bayesplot::xaxis_title(FALSE) + bayesplot::xaxis_ticks(FALSE) + bayesplot::xaxis_text(FALSE)
+        pl_pairs_compact[[label]] <- pl_pairs_compact[[label]] +
+          bayesplot::xaxis_title(FALSE) +
+          bayesplot::xaxis_ticks(FALSE) +
+          bayesplot::xaxis_text(FALSE)
       }
       if (v2 != 1) {
-        pl_pairs_compact[[label]] <- pl_pairs_compact[[label]] + bayesplot::yaxis_title(FALSE) + bayesplot::yaxis_ticks(FALSE) + bayesplot::yaxis_text(FALSE)
+        pl_pairs_compact[[label]] <- pl_pairs_compact[[label]] +
+          bayesplot::yaxis_title(FALSE) +
+          bayesplot::yaxis_ticks(FALSE) +
+          bayesplot::yaxis_text(FALSE)
       }
     }
-    pl$mixpairs <- bayesplot::bayesplot_grid(plots = pl_pairs_compact, grid_args = list(nrow = p, ncol = p, layout_matrix = layout))
+    pl$mixpairs <- bayesplot::bayesplot_grid(
+      plots = pl_pairs_compact,
+      grid_args = list(nrow = p, ncol = p, layout_matrix = layout)
+    )
     pl$mixpairs$bayesplots <- pl_pairs
   }
 

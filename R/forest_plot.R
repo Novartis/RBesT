@@ -1,18 +1,18 @@
 #' Forest Plot
 #'
-#' Creates a forest plot for \code{\link{gMAP}} analysis objects.
+#' Creates a forest plot for [gMAP()] analysis objects.
 #'
-#' @param x \code{\link{gMAP}} object.
+#' @param x [gMAP()] object.
 #' @param prob confidence interval width and probability mass of credible intervals.
-#' @param est can be set to one of \code{both} (default), \code{MAP}, \code{Mean} or \code{none}. Controls which model estimates are to be included.
-#' @param model controls which estimates are displayed per study. Either \code{stratified} (default), \code{both} or \code{meta}.
-#' @param point_est shown point estimate. Either \code{median} (default) or \code{mean}.
+#' @param est can be set to one of `both` (default), `MAP`, `Mean` or `none`. Controls which model estimates are to be included.
+#' @param model controls which estimates are displayed per study. Either `stratified` (default), `both` or `meta`.
+#' @param point_est shown point estimate. Either `median` (default) or `mean`.
 #' @param size controls point and linesize.
-#' @param alpha transparency of reference line. Setting \code{alpha=0}
+#' @param alpha transparency of reference line. Setting `alpha=0`
 #' suppresses the reference line.
 #'
 #' @details The function creates a forest plot suitable for
-#' \code{\link{gMAP}} analyses. Note that the Meta-Analytic-Predictive
+#' [gMAP()] analyses. Note that the Meta-Analytic-Predictive
 #' prior is included by default in the plot as opposed to only showing
 #' the estimated model mean. See the examples below to obtain standard
 #' forest plots.
@@ -25,7 +25,7 @@
 #'
 #' @return The function returns a \pkg{ggplot2} plot object.
 #'
-#' @seealso \code{\link{gMAP}}
+#' @seealso [gMAP()]
 #'
 #' @examples
 #' # we consider the example AS MAP analysis
@@ -56,13 +56,15 @@
 #' theme_set(theme_default(base_size = 12))
 #'
 #' @export
-forest_plot <- function(x,
-                        prob = 0.95,
-                        est = c("both", "MAP", "Mean", "none"),
-                        model = c("stratified", "both", "meta"),
-                        point_est = c("median", "mean"),
-                        size = 1.25,
-                        alpha = 0.5) {
+forest_plot <- function(
+  x,
+  prob = 0.95,
+  est = c("both", "MAP", "Mean", "none"),
+  model = c("stratified", "both", "meta"),
+  point_est = c("median", "mean"),
+  size = 1.25,
+  alpha = 0.5
+) {
   assert_number(prob, lower = 0, upper = 1)
   assert_that(inherits(x, "gMAP"))
   assert_that(x$has_intercept)
@@ -81,14 +83,28 @@ forest_plot <- function(x,
   if (est == "both") est <- c("MAP", "Mean")
   if (model == "both") model <- c("stratified", "meta")
 
-  pred_est <- as.data.frame(do.call(rbind, summary(x, probs = c(0.5, low, up), type = "response")[c("theta.pred", "theta")]))
+  pred_est <- as.data.frame(do.call(
+    rbind,
+    summary(x, probs = c(0.5, low, up), type = "response")[c(
+      "theta.pred",
+      "theta"
+    )]
+  ))
   pred_est <- transform(pred_est, study = c("MAP", "Mean"), model = "meta")
   pred_est <- pred_est[c("MAP", "Mean") %in% est, ]
 
-  names(pred_est)[1:5] <- names(strat) <- names(fit) <- c("mean", "sem", "median", "low", "up")
+  names(pred_est)[1:5] <- names(strat) <- names(fit) <- c(
+    "mean",
+    "sem",
+    "median",
+    "low",
+    "up"
+  )
   comb <- rbind(
-    if ("stratified" %in% model) transform(strat, study = rownames(strat), model = "stratified"),
-    if ("meta" %in% model) transform(fit, study = rownames(strat), model = "meta"),
+    if ("stratified" %in% model)
+      transform(strat, study = rownames(strat), model = "stratified"),
+    if ("meta" %in% model)
+      transform(fit, study = rownames(strat), model = "meta"),
     pred_est
   )
   comb <- within(comb, {
@@ -98,23 +114,39 @@ forest_plot <- function(x,
 
   opts <- list(position = position_dodge(width = 0.3), size = size)
 
-  xlab_str <- switch(x$family$family,
+  xlab_str <- switch(
+    x$family$family,
     gaussian = "Response",
     binomial = "Response Rate",
     poisson = "Counting Rate"
   )
 
-  graph <- ggplot(comb, aes(x = .data$study, y = .data[[point_est]], ymin = .data$low, ymax = .data$up, linetype = .data$model, color = .data$model))
+  graph <- ggplot(
+    comb,
+    aes(
+      x = .data$study,
+      y = .data[[point_est]],
+      ymin = .data$low,
+      ymax = .data$up,
+      linetype = .data$model,
+      color = .data$model
+    )
+  )
 
   if (any(c("MAP", "Mean") %in% est)) {
     ref_line <- est[est %in% c("Mean", "MAP")][1]
     ref_data <- subset(pred_est, study == ref_line)
     no_ref <- sum(est %in% c("Mean", "MAP"))
-    graph <- graph + geom_rect(
-      ymin = -Inf, ymax = Inf, xmin = 0, xmax = no_ref + 0.5,
-      fill = get_color("l"),
-      color = get_color("l"), show.legend = FALSE
-    ) +
+    graph <- graph +
+      geom_rect(
+        ymin = -Inf,
+        ymax = Inf,
+        xmin = 0,
+        xmax = no_ref + 0.5,
+        fill = get_color("l"),
+        color = get_color("l"),
+        show.legend = FALSE
+      ) +
       geom_hline(
         yintercept = ref_data[1, point_est],
         color = get_color("mh"),

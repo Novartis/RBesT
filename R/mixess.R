@@ -5,9 +5,9 @@
 #' equivalent to.
 #'
 #' @param mix Prior (mixture of conjugate distributions).
-#' @param method Selects the used method. Can be either \code{elir}
-#'     (default), \code{moment} or \code{morita}.
-#' @param s For \code{morita} method large constant to ensure that the
+#' @param method Selects the used method. Can be either `elir`
+#'     (default), `moment` or `morita`.
+#' @param s For `morita` method large constant to ensure that the
 #'     prior scaled by this value is vague (default 100); see Morita
 #'     et al. (2008) for details.
 #' @param eps Probability mass left out from the numerical integration
@@ -15,13 +15,13 @@
 #'     Morita method (defaults to 1E-4).
 #' @param sigma reference scale.
 #' @param family defines data likelihood and link function
-#'     (\code{binomial}, \code{gaussian}, or \code{poisson}).
+#'     (`binomial`, `gaussian`, or `poisson`).
 #' @param ... Optional arguments applicable to specific methods.
 #'
 #' @details The ESS is calculated using either the expected local
-#'     information ratio (elir) \emph{Neuenschwander et
-#'     al. (2020)}, the moments approach or the method by
-#'     \emph{Morita et al. (2008)}.
+#'     information ratio (elir) *Neuenschwander et
+#'     al. (2020)*, the moments approach or the method by
+#'     *Morita et al. (2008)*.
 #'
 #' The elir approach measures effective sample size in terms of the
 #' average curvature of the prior in relation to the Fisher
@@ -54,11 +54,11 @@
 #' (2019) which avoids the need for a minimization and does not
 #' restrict the ESS to be an integer.
 #'
-#' The arguments \code{sigma} and \code{family} are specific for
+#' The arguments `sigma` and `family` are specific for
 #' normal mixture densities. These specify the sampling standard
-#' deviation for a \code{gaussian} family (the default) while also
+#' deviation for a `gaussian` family (the default) while also
 #' allowing to consider the ESS of standard one-parameter exponential
-#' families, i.e. \code{binomial} or \code{poisson}. The function
+#' families, i.e. `binomial` or `poisson`. The function
 #' supports non-gaussian families with unit dispersion only.
 #'
 #' @return Returns the ESS of the prior as floating point number.
@@ -66,20 +66,22 @@
 #' @template conjugate_pairs
 #'
 #' @references Morita S, Thall PF, Mueller P.  Determining the
-#'     effective sample size of a parametric prior.  \emph{Biometrics}
+#'     effective sample size of a parametric prior.  *Biometrics*
 #'     2008;64(2):595-602.
 #'
 #' @references Neuenschwander B., Weber S., Schmidli H., O’Hagan
 #'     A. (2020). Predictively consistent prior effective sample
-#'     sizes. \emph{Biometrics}, 76(2),
+#'     sizes. *Biometrics*, 76(2),
 #'     578–587. https://doi.org/10.1111/biom.13252
 #'
 #' @example inst/examples/ess.R
 #'
 #' @export
-ess <- function(mix, method = c("elir", "moment", "morita"), ...) UseMethod("ess")
+ess <- function(mix, method = c("elir", "moment", "morita"), ...)
+  UseMethod("ess")
 #' @export
-ess.default <- function(mix, method = c("elir", "moment", "morita"), ...) stop("Unknown density")
+ess.default <- function(mix, method = c("elir", "moment", "morita"), ...)
+  stop("Unknown density")
 
 
 calc_loc <- function(mix, loc = c("mode", "median", "mean")) {
@@ -89,7 +91,9 @@ calc_loc <- function(mix, loc = c("mode", "median", "mean")) {
     locEst <- mixmode(mix)
 
     if (length(attr(locEst, "modes")) > 1) {
-      warning("Detected multiple modes.\nThe ESS is determined for the largest mode, but ESS concept is ill-defined for multi-modal distributions.")
+      warning(
+        "Detected multiple modes.\nThe ESS is determined for the largest mode, but ESS concept is ill-defined for multi-modal distributions."
+      )
     } else {
       attr(locEst, "modes") <- NULL
     }
@@ -125,7 +129,8 @@ mixInfo <- function(mix, x, dens, gradl, hessl) {
     gsum <- (sum(exp(lwdensComp) * dgl))^2
   }
   if (all(!is.na(dhl)) && (all(dhl < 0) || all(dhl > 0))) {
-    hsum <- sign(dhl[1]) * exp(matrixStats::logSumExp(lwdensComp + log(abs(dhl))))
+    hsum <- sign(dhl[1]) *
+      exp(matrixStats::logSumExp(lwdensComp + log(abs(dhl))))
   } else {
     hsum <- (sum(exp(lwdensComp) * dhl))
   }
@@ -174,25 +179,40 @@ weighted_lir_link <- function(mix, info, fisher_inverse, link) {
 # only difference: evaluated at mode of prior rather than at mean; and the flattened prior are derived with respect to the scale of 1 instead of being relative to the input scale
 #' @describeIn ess ESS for beta mixtures.
 #' @export
-ess.betaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 100) {
+ess.betaMix <- function(
+  mix,
+  method = c("elir", "moment", "morita"),
+  ...,
+  s = 100
+) {
   method <- match.arg(method)
 
   call_arg_names <- names(match.call())
   family_arg_is_set <- "family" %in% call_arg_names
-  assert_that(!family_arg_is_set, msg = "Argument family is only supported for normal mixtures.")
+  assert_that(
+    !family_arg_is_set,
+    msg = "Argument family is only supported for normal mixtures."
+  )
 
   if (method == "elir") {
-    if (!test_numeric(mix[2, ], lower = 1, finite = TRUE, any.missing = FALSE) ||
-      !test_numeric(mix[3, ], lower = 1, finite = TRUE, any.missing = FALSE)) {
+    if (
+      !test_numeric(mix[2, ], lower = 1, finite = TRUE, any.missing = FALSE) ||
+        !test_numeric(mix[3, ], lower = 1, finite = TRUE, any.missing = FALSE)
+    ) {
       stop(
         "At least one parameter of the beta mixtures is less than 1.\n",
         "This leads to an ill-defined elir ess since the defining integral diverges.\n",
         "Consider constraining all parameters to be greater than 1 (use constrain_gt1=TRUE argument for EM fitting functions)."
       )
     }
-    elir <- integrate_density(lir(mix, betaMixInfo, bernoulliFisherInfo_inverse), mix)
+    elir <- integrate_density(
+      lir(mix, betaMixInfo, bernoulliFisherInfo_inverse),
+      mix
+    )
     if (elir < 0) {
-      warning("Negative ESS elir found indicating unstable integration of the elir ratio.\nConsider estimating the ESS elir on the logit scale for the respective transformed density and use the family=binomial argument.")
+      warning(
+        "Negative ESS elir found indicating unstable integration of the elir ratio.\nConsider estimating the ESS elir on the logit scale for the respective transformed density and use the family=binomial argument."
+      )
     }
     return(elir)
   }
@@ -223,11 +243,15 @@ ess.betaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 10
   ## we warn if any of the mixture components has a scale (n) which
   ## is less than 10/s such that the
   if (any(rowSums(mix[2:3, , drop = FALSE]) < 10 / s)) {
-    warning("Some of the mixture components have a scale which is large compared to the rescaling factor s. Consider increasing s.")
+    warning(
+      "Some of the mixture components have a scale which is large compared to the rescaling factor s. Consider increasing s."
+    )
   }
 
   pd0 <- dmix(preddist(mix, n = 1), 0)
-  Einfo <- binomialInfo(0, locEst, 1) * pd0 + binomialInfo(1, locEst, 1) * (1 - pd0)
+  Einfo <- binomialInfo(0, locEst, 1) *
+    pd0 +
+    binomialInfo(1, locEst, 1) * (1 - pd0)
 
   ## Eq. 9 of Neuenschwander et al. (2019)
   return(unname((deriv2.prior - info.prior0) / Einfo))
@@ -269,21 +293,36 @@ binomialInfo <- function(r, theta, n) {
 
 #' @describeIn ess ESS for gamma mixtures.
 #' @export
-ess.gammaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 100, eps = 1E-4) {
+ess.gammaMix <- function(
+  mix,
+  method = c("elir", "moment", "morita"),
+  ...,
+  s = 100,
+  eps = 1E-4
+) {
   method <- match.arg(method)
 
   call_arg_names <- names(match.call())
   family_arg_is_set <- "family" %in% call_arg_names
-  assert_that(!family_arg_is_set, msg = "Argument family is only supported for normal mixtures.")
+  assert_that(
+    !family_arg_is_set,
+    msg = "Argument family is only supported for normal mixtures."
+  )
 
   lik <- likelihood(mix)
 
   if (method == "elir") {
     if (lik == "poisson") {
-      return(integrate_density(lir(mix, gammaMixInfo, poissonFisherInfo_inverse), mix))
+      return(integrate_density(
+        lir(mix, gammaMixInfo, poissonFisherInfo_inverse),
+        mix
+      ))
     }
     if (lik == "exp") {
-      return(integrate_density(lir(mix, gammaMixInfo, expFisherInfo_inverse), mix))
+      return(integrate_density(
+        lir(mix, gammaMixInfo, expFisherInfo_inverse),
+        mix
+      ))
     }
   }
 
@@ -330,7 +369,9 @@ ess.gammaMix <- function(mix, method = c("elir", "moment", "morita"), ..., s = 1
   }
 
   if (any(priorN < 10 / s)) {
-    warning("Some of the mixture components have a scale which is large compared to the rescaling factor s. Consider increasing s.")
+    warning(
+      "Some of the mixture components have a scale which is large compared to the rescaling factor s. Consider increasing s."
+    )
   }
 
   return(unname((deriv2.prior - info.prior0) / Einfo))
@@ -365,7 +406,14 @@ expInfo <- function(y, theta) {
 
 #' @describeIn ess ESS for normal mixtures.
 #' @export
-ess.normMix <- function(mix, method = c("elir", "moment", "morita"), ..., family = gaussian, sigma, s = 100) {
+ess.normMix <- function(
+  mix,
+  method = c("elir", "moment", "morita"),
+  ...,
+  family = gaussian,
+  sigma,
+  s = 100
+) {
   method <- match.arg(method)
 
   if (is.character(family)) {
@@ -381,10 +429,15 @@ ess.normMix <- function(mix, method = c("elir", "moment", "morita"), ..., family
 
   is_gaussian_family <- family$family == "gaussian"
   if (!is_gaussian_family) {
-    assert_that(family$dispersion == 1, msg = "Only dispersion unity is supported for non-gaussian families.")
+    assert_that(
+      family$dispersion == 1,
+      msg = "Only dispersion unity is supported for non-gaussian families."
+    )
   }
 
-  normTransformedFisherInfo_inverse <- make_normTransformedFisherInfo_inverse(family)
+  normTransformedFisherInfo_inverse <- make_normTransformedFisherInfo_inverse(
+    family
+  )
 
   if (!is_gaussian_family) {
     sigma <- 1
@@ -403,7 +456,10 @@ ess.normMix <- function(mix, method = c("elir", "moment", "morita"), ..., family
   sigmaSq <- sigma^2
 
   if (method == "elir") {
-    elir <- integrate_density(lir(mix, normMixInfo, normTransformedFisherInfo_inverse), mix)
+    elir <- integrate_density(
+      lir(mix, normMixInfo, normTransformedFisherInfo_inverse),
+      mix
+    )
     if (is_gaussian_family) {
       ## in this case we have to account for the non-unity scale
       ## of the Gaussian likelihood
@@ -411,7 +467,6 @@ ess.normMix <- function(mix, method = c("elir", "moment", "morita"), ..., family
     }
     return(elir)
   }
-
 
   ## simple and conservative moment matching compared to the
   ## expected fisher information over the prior parameter space

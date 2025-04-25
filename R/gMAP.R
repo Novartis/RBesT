@@ -3,15 +3,15 @@
 #' Meta-Analytic-Predictive (MAP) analysis for generalized linear
 #' models suitable for normal, binary, or Poisson data. Model
 #' specification and overall syntax follows mainly
-#' \code{\link[stats:glm]{glm}} conventions.
+#' [stats::glm()] conventions.
 #'
 #' @param formula the model formula describing the linear predictor
 #'     and encoding the grouping; see details
 #' @param family defines data likelihood and link function
-#'     (\code{binomial}, \code{gaussian}, or \code{poisson})
+#'     (`binomial`, `gaussian`, or `poisson`)
 #' @param data optional data frame containing the variables of the
-#'     model. If not found in \code{data}, the variables are taken
-#'     from \code{environment(formula)}.
+#'     model. If not found in `data`, the variables are taken
+#'     from `environment(formula)`.
 #' @param weights optional weight vector; see details below.
 #' @param offset offset term in statistical model used for Poisson
 #'     data
@@ -21,30 +21,30 @@
 #'     section differential heterogeniety below.
 #' @param tau.strata.pred the index for the prediction stratum;
 #'     default is 1.
-#' @param tau.dist type of prior distribution for \code{tau};
-#'     supported priors are \code{HalfNormal} (default),
-#'     \code{TruncNormal}, \code{Uniform}, \code{Gamma},
-#'     \code{InvGamma}, \code{LogNormal}, \code{TruncCauchy},
-#'     \code{Exp} and \code{Fixed}.
-#' @param tau.prior parameters of prior distribution for \code{tau};
+#' @param tau.dist type of prior distribution for `tau`;
+#'     supported priors are `HalfNormal` (default),
+#'     `TruncNormal`, `Uniform`, `Gamma`,
+#'     `InvGamma`, `LogNormal`, `TruncCauchy`,
+#'     `Exp` and `Fixed`.
+#' @param tau.prior parameters of prior distribution for `tau`;
 #'     see section prior specification below.
 #' @param beta.prior mean and standard deviation for normal priors of
 #'     regression coefficients, see section prior specification below.
 #' @param prior_PD logical to indicate if the prior predictive
 #'     distribution should be sampled (no conditioning on the
-#'     data). Defaults to \code{FALSE}.
-#' @param REdist type of random effects distribution. \code{Normal}
-#'     (default) or \code{t}.
+#'     data). Defaults to `FALSE`.
+#' @param REdist type of random effects distribution. `Normal`
+#'     (default) or `t`.
 #' @param t.df degrees of freedom if random-effects distribution is
-#'     \code{t}.
-#' @param contrasts an optional list; See \code{contrasts.arg} from
-#'     \code{\link[stats:model.matrix.default]{model.matrix.default}}.
+#'     `t`.
+#' @param contrasts an optional list; See `contrasts.arg` from
+#'     [stats::model.matrix.default()].
 #' @template args-sampling
 #' @param digits number of displayed significant digits.
 #' @param probs defines quantiles to be reported.
-#' @param type sets reported scale (\code{response} (default) or
-#'     \code{link}).
-#' @param x,object \code{gMAP} analysis object created by \code{gMAP}
+#' @param type sets reported scale (`response` (default) or
+#'     `link`).
+#' @param x,object `gMAP` analysis object created by `gMAP`
 #'     function
 #' @param ... optional arguments are ignored
 #'
@@ -71,7 +71,7 @@
 #'
 #' Lastly, the Bayesian implementation assumes independent normal
 #' priors for the \eqn{k} regression coefficients and a prior for the
-#' between-group standard deviation \eqn{\tau} (see \code{taud.dist}
+#' between-group standard deviation \eqn{\tau} (see `taud.dist`
 #' for available distributions).
 #'
 #' The MAP prior will then be derived from the above model as the
@@ -109,7 +109,7 @@
 #'
 #' \deqn{n_\infty = \left(\frac{\tau^2}{\sigma^2}\right)^{-1},}{n_\infty = (\tau^2/\sigma^2)^-1}
 #'
-#' (\emph{Neuenschwander et al., 2010}). Hence, the ratio
+#' (*Neuenschwander et al., 2010*). Hence, the ratio
 #' \eqn{\tau/\sigma} limits the amount of information a MAP prior is
 #' equivalent to. This allows for a classification of \eqn{\tau}
 #' values in relation to \eqn{\sigma}, which is crucial to define a
@@ -135,40 +135,40 @@
 #' \eqn{\sigma}. See examples below for concrete cases.
 #'
 #' The design matrix \eqn{X} is defined by the formula for the linear
-#' predictor and is always of the form \code{response ~ predictor |
-#' grouping}, which follows \code{\link[stats:glm]{glm}}
+#' predictor and is always of the form `response ~ predictor |
+#' grouping`, which follows [stats::glm()]
 #' conventions. The syntax has been extended to include a
 #' specification of the grouping (for example study) factor of the
-#' data with a horizontal bar, \code{|}. The bar separates the
+#' data with a horizontal bar, `|`. The bar separates the
 #' optionally specified grouping level, i.e. in the binary endpoint
-#' case \code{cbind(r, n-r) ~ 1 | study}. By default it is assumed
+#' case `cbind(r, n-r) ~ 1 | study`. By default it is assumed
 #' that each row corresponds to an individual group (for which an
 #' individual parameter is estimated). Specifics for the different
 #' endpoints are:
 #'
 #' \describe{
 #'
-#' \item{normal}{\code{family=gaussian} assumes an identity link
-#' function. The \code{response} should be given as matrix with two
+#' \item{normal}{`family=gaussian` assumes an identity link
+#' function. The `response` should be given as matrix with two
 #' columns with the first column being the observed mean value
 #' \eqn{y_{ih}}{y_ih} and the second column the standard error
 #' \eqn{se_{ih}}{se_ih} (of the mean). Additionally, it is recommended
-#' to specify with the \code{weight} argument the number of units
+#' to specify with the `weight` argument the number of units
 #' which contributed to the (mean) measurement
 #' \eqn{y_{ih}}{y_ih}. This information is used to estimate
 #' \eqn{\sigma}.}
 #'
-#' \item{binary}{\code{family=binomial} assumes a logit link
-#' function. The \code{response} must be given as two-column matrix
+#' \item{binary}{`family=binomial` assumes a logit link
+#' function. The `response` must be given as two-column matrix
 #' with number of responders \eqn{r} (first column) and non-responders
 #' \eqn{n-r} (second column).}
 #'
-#' \item{Poisson}{\code{family=poisson} assumes a log link
-#' function. The \code{response} is a vector of counts. The total
-#' exposure times can be specified by an \code{offset}, which will be
-#' linearly added to the linear predictor. The \code{offset} can be
-#' given as part of the formula, \code{y ~ 1 + offset(log(exposure))}
-#' or as the \code{offset} argument to \code{gMAP}. Note that the
+#' \item{Poisson}{`family=poisson` assumes a log link
+#' function. The `response` is a vector of counts. The total
+#' exposure times can be specified by an `offset`, which will be
+#' linearly added to the linear predictor. The `offset` can be
+#' given as part of the formula, `y ~ 1 + offset(log(exposure))`
+#' or as the `offset` argument to `gMAP`. Note that the
 #' exposure unit must be given as log-offset.}
 #'
 #' }
@@ -191,7 +191,7 @@
 #' heterogeneity (less relevance) for the observational studies can
 #' then be expressed by appropriate priors for \eqn{\tau_1} and
 #' \eqn{\tau_2}. In this case, \eqn{S=2} and the strata assignments
-#' (see \code{tau.strata} argument) would be \eqn{s(1)=s(2)=1,
+#' (see `tau.strata` argument) would be \eqn{s(1)=s(2)=1,
 #' s(3)=\ldots=s(6)=2}.
 #'
 #' @section Prior Specification:
@@ -215,28 +215,28 @@
 #' with as many columns as regression coefficients can be given.
 #' }
 #'
-#' It is recommended to always specify a \code{beta.prior}. Per
+#' It is recommended to always specify a `beta.prior`. Per
 #' default a mean of 0 is set. The standard deviation is set to 2 for
-#' the binary case, to 100 * \code{sd(y)} for the normal case and to
-#' \code{sd(log(y + 0.5 + offset))} for the Poisson case.
+#' the binary case, to 100 * `sd(y)` for the normal case and to
+#' `sd(log(y + 0.5 + offset))` for the Poisson case.
 #'
 #' For the between-trial heterogeniety \eqn{\tau} prior, a dispersion
 #' parameter must always be given for each exchangeability
-#' stratum. For the different \code{tau.prior} distributions, two
+#' stratum. For the different `tau.prior` distributions, two
 #' parameters are needed out of which one is set to a default value if
 #' applicable:
 #'
 #' \tabular{lccl}{
 #' Prior \tab \eqn{a} \tab \eqn{b} \tab default \cr
-#' \code{HalfNormal}  \tab \eqn{\mu = 0} \tab  \eqn{\sigma} \tab \cr
-#' \code{TruncNormal} \tab \eqn{\mu} \tab  \eqn{\sigma} \tab \eqn{\mu = 0} \cr
-#' \code{Uniform}     \tab a \tab b \tab a = 0 \cr
-#' \code{Gamma}       \tab \eqn{\alpha} \tab \eqn{\beta} \tab \cr
-#' \code{InvGamma}    \tab \eqn{\alpha} \tab \eqn{\beta} \tab \cr
-#' \code{LogNormal}   \tab \eqn{\mu_{\log}}{\mu_log} \tab \eqn{\sigma_{\log}}{\sigma_log} \tab \cr
-#' \code{TruncCauchy} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\mu = 0} \cr
-#' \code{Exp}         \tab \eqn{\beta} \tab 0 \tab \cr
-#' \code{Fixed}       \tab a \tab 0 \tab \cr
+#' `HalfNormal`  \tab \eqn{\mu = 0} \tab  \eqn{\sigma} \tab \cr
+#' `TruncNormal` \tab \eqn{\mu} \tab  \eqn{\sigma} \tab \eqn{\mu = 0} \cr
+#' `Uniform`     \tab a \tab b \tab a = 0 \cr
+#' `Gamma`       \tab \eqn{\alpha} \tab \eqn{\beta} \tab \cr
+#' `InvGamma`    \tab \eqn{\alpha} \tab \eqn{\beta} \tab \cr
+#' `LogNormal`   \tab \eqn{\mu_{\log}}{\mu_log} \tab \eqn{\sigma_{\log}}{\sigma_log} \tab \cr
+#' `TruncCauchy` \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\mu = 0} \cr
+#' `Exp`         \tab \eqn{\beta} \tab 0 \tab \cr
+#' `Fixed`       \tab a \tab 0 \tab \cr
 #' }
 #'
 #' For a prior distribution with a default location parameter, a
@@ -247,31 +247,31 @@
 #' and b.
 #'
 #' @section Random seed: The MAP analysis is performed using
-#' Markov-Chain-Monte-Carlo (MCMC) in \code{\link[rstan]{rstan}}. MCMC
+#' Markov-Chain-Monte-Carlo (MCMC) in [rstan::rstan()]. MCMC
 #' is a stochastic algorithm. To obtain exactly reproducible results
-#' you must use the \code{\link[base:set.seed]{set.seed}} function
-#' before calling \code{gMAP}. See \code{\link[=RBesT-package]{RBesT}}
+#' you must use the [base::set.seed()] function
+#' before calling `gMAP`. See [`RBesT()`][RBesT-package]
 #' overview page for global options on setting further MCMC simulation
 #' parameters.
 #'
-#' @return The function returns a S3 object of type \code{gMAP}. See
+#' @return The function returns a S3 object of type `gMAP`. See
 #' the methods section below for applicable functions to query the
 #' object.
 #'
 #' @references Neuenschwander B, Capkun-Niggli G, Branson M,
 #' Spiegelhalter DJ. Summarizing historical information on controls in
-#' clinical trials. \emph{Clin Trials}. 2010; 7(1):5-18
+#' clinical trials. *Clin Trials*. 2010; 7(1):5-18
 #'
 #' Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D,
 #' Neuenschwander B.  Robust meta-analytic-predictive priors in
 #' clinical trials with historical control information.
-#' \emph{Biometrics} 2014;70(4):1023-1032.
+#' *Biometrics* 2014;70(4):1023-1032.
 #'
 #' Weber S, Li Y, Seaman III J.W., Kakizume T, Schmidli H. Applying
 #' Meta-Analytic Predictive Priors with the {R} {B}ayesian evidence
-#' synthesis tools. \emph{JSS} 2021; 100(19):1-32
+#' synthesis tools. *JSS* 2021; 100(19):1-32
 #'
-#' @seealso \code{\link{plot.gMAP}}, \code{\link{forest_plot}}, \code{\link{automixfit}}, \code{\link{predict.gMAP}}
+#' @seealso [plot.gMAP()], [forest_plot()], [automixfit()], [predict.gMAP()]
 #'
 #' @template example-start
 #' @examples
@@ -358,26 +358,38 @@
 #'
 #' @template example-stop
 #' @export
-gMAP <- function(formula,
-                 family = gaussian,
-                 data,
-                 weights,
-                 offset,
-                 tau.strata,
-                 tau.dist = c("HalfNormal", "TruncNormal", "Uniform", "Gamma", "InvGamma", "LogNormal", "TruncCauchy", "Exp", "Fixed"),
-                 tau.prior,
-                 tau.strata.pred = 1,
-                 beta.prior,
-                 prior_PD = FALSE,
-                 REdist = c("normal", "t"),
-                 t.df = 5,
-                 contrasts = NULL,
-                 iter = getOption("RBesT.MC.iter", 6000),
-                 warmup = getOption("RBesT.MC.warmup", 2000),
-                 thin = getOption("RBesT.MC.thin", 4),
-                 init = getOption("RBesT.MC.init", 1),
-                 chains = getOption("RBesT.MC.chains", 4),
-                 cores = getOption("mc.cores", 1L)) {
+gMAP <- function(
+  formula,
+  family = gaussian,
+  data,
+  weights,
+  offset,
+  tau.strata,
+  tau.dist = c(
+    "HalfNormal",
+    "TruncNormal",
+    "Uniform",
+    "Gamma",
+    "InvGamma",
+    "LogNormal",
+    "TruncCauchy",
+    "Exp",
+    "Fixed"
+  ),
+  tau.prior,
+  tau.strata.pred = 1,
+  beta.prior,
+  prior_PD = FALSE,
+  REdist = c("normal", "t"),
+  t.df = 5,
+  contrasts = NULL,
+  iter = getOption("RBesT.MC.iter", 6000),
+  warmup = getOption("RBesT.MC.warmup", 2000),
+  thin = getOption("RBesT.MC.thin", 4),
+  init = getOption("RBesT.MC.init", 1),
+  chains = getOption("RBesT.MC.chains", 4),
+  cores = getOption("mc.cores", 1L)
+) {
   call <- match.call()
 
   if (is.character(family)) {
@@ -396,7 +408,19 @@ gMAP <- function(formula,
   }
 
   mf <- match.call(expand.dots = FALSE)
-  m <- match(c("formula", "data", "subset", "offset", "weights", "tau.strata", "na.action"), names(mf), 0)
+  m <- match(
+    c(
+      "formula",
+      "data",
+      "subset",
+      "offset",
+      "weights",
+      "tau.strata",
+      "na.action"
+    ),
+    names(mf),
+    0
+  )
   mf <- mf[c(1, m)]
 
   f <- Formula::Formula(formula)
@@ -488,7 +512,9 @@ gMAP <- function(formula,
   if (family$family == "gaussian") {
     assert_that(family$link == "identity")
     if (is.null(y.aux)) {
-      message("No standard error specified for normal data. Assuming standard error of 1 for all data items.")
+      message(
+        "No standard error specified for normal data. Assuming standard error of 1 for all data items."
+      )
       y.aux <- rep(1, H)
     }
     y_se <- y.aux
@@ -525,7 +551,10 @@ gMAP <- function(formula,
     count <- y
     sigma_guess <- 1 / exp(mean(log(y + 0.5) - log_offset))
     if (n.groups.obs > 1) {
-      tau_guess <- max(sigma_guess / 10, sd(tapply(log(y + 0.5) - log_offset, group.index, mean)))
+      tau_guess <- max(
+        sigma_guess / 10,
+        sd(tapply(log(y + 0.5) - log_offset, group.index, mean))
+      )
     } else {
       tau_guess <- sigma_guess
     }
@@ -563,7 +592,11 @@ gMAP <- function(formula,
     for (g in levels(group.factor)) {
       gind <- group.factor == g
       if (length(unique(tau.strata.factor[gind])) != 1) {
-        stop("Found multiple tau strata defined for group", g, "!\nEach tau stratum must correspond to a unique group.")
+        stop(
+          "Found multiple tau strata defined for group",
+          g,
+          "!\nEach tau stratum must correspond to a unique group."
+        )
       }
     }
   }
@@ -580,12 +613,32 @@ gMAP <- function(formula,
   ## stratified estimates
   est_strat <- function(alpha) {
     z <- qnorm(1 - alpha / 2)
-    theta_resp.strat <- switch(family$family,
+    theta_resp.strat <- switch(
+      family$family,
       gaussian = cbind(y, y_se, y - z * y_se, y + z * y_se),
-      binomial = cbind(r / r_n, sqrt(r / (r_n) * (1 - r / r_n) / r_n), BinaryExactCI(r, r_n, alpha, drop = FALSE)),
-      poisson = cbind(count / exp(log_offset), sqrt(count / exp(2 * log_offset)), do.call(cbind, lapply(c(low = alpha / 2, high = 1 - alpha / 2), qgamma, shape = count + 0.5 * (count == 0), rate = exp(log_offset))))
+      binomial = cbind(
+        r / r_n,
+        sqrt(r / (r_n) * (1 - r / r_n) / r_n),
+        BinaryExactCI(r, r_n, alpha, drop = FALSE)
+      ),
+      poisson = cbind(
+        count / exp(log_offset),
+        sqrt(count / exp(2 * log_offset)),
+        do.call(
+          cbind,
+          lapply(
+            c(low = alpha / 2, high = 1 - alpha / 2),
+            qgamma,
+            shape = count + 0.5 * (count == 0),
+            rate = exp(log_offset)
+          )
+        )
+      )
     )
-    dimnames(theta_resp.strat) <- list(ulabels, c("mean", "se", paste0(c(100 * alpha / 2, 100 * (1 - alpha / 2)), "%")))
+    dimnames(theta_resp.strat) <- list(
+      ulabels,
+      c("mean", "se", paste0(c(100 * alpha / 2, 100 * (1 - alpha / 2)), "%"))
+    )
     theta_resp.strat
   }
   theta_resp.strat <- est_strat(0.05)
@@ -593,9 +646,21 @@ gMAP <- function(formula,
 
   ## pooled estimates via glm fit
   fit.pooled <- if (family$family == "gaussian") {
-    glm.fit(X, y, weights = as.vector(1 / y_se^2), offset = log_offset, family = family)
+    glm.fit(
+      X,
+      y,
+      weights = as.vector(1 / y_se^2),
+      offset = log_offset,
+      family = family
+    )
   } else {
-    glm.fit(X, model.response(mf), weights = as.vector(weights), offset = as.vector(log_offset), family = family)
+    glm.fit(
+      X,
+      model.response(mf),
+      weights = as.vector(weights),
+      offset = as.vector(log_offset),
+      family = family
+    )
   }
   theta.pooled <- fit.pooled$fitted.values
   theta_resp.pooled <- family$linkinv(fit.pooled$fitted.values)
@@ -617,7 +682,10 @@ gMAP <- function(formula,
     if (family$family == "binomial") {
       beta.prior <- c(2)
     }
-    message(paste("Assuming default prior dispersion for beta:", paste(beta.prior, collapse = ", ")))
+    message(paste(
+      "Assuming default prior dispersion for beta:",
+      paste(beta.prior, collapse = ", ")
+    ))
   }
   if (NCOL(beta.prior) == 1) {
     if (length(beta.prior) != 1) {
@@ -626,22 +694,36 @@ gMAP <- function(formula,
       beta.prior <- rep(beta.prior, mX)
     }
     beta.prior.location <- rep(0, mX)
-    message("Assuming default prior location   for beta: ", paste(beta.prior.location, collapse = ", "))
+    message(
+      "Assuming default prior location   for beta: ",
+      paste(beta.prior.location, collapse = ", ")
+    )
     if (mX > 1) {
-      warning("Check default prior location for intercept and regression coefficients!")
+      warning(
+        "Check default prior location for intercept and regression coefficients!"
+      )
     }
     beta.prior <- cbind(mean = beta.prior.location, sd = beta.prior)
   }
   if (!is.matrix(beta.prior)) {
-    beta.prior <- matrix(beta.prior, mX, 2, byrow = TRUE, list(NULL, c("mean", "sd")))
+    beta.prior <- matrix(
+      beta.prior,
+      mX,
+      2,
+      byrow = TRUE,
+      list(NULL, c("mean", "sd"))
+    )
   }
 
   tau.dist <- match.arg(tau.dist)
 
   if (missing(tau.prior)) {
     ## abort execution if tau.prior not given
-    stop("tau.prior must be set. This parameter is problem specific. Please consult documentation for details.")
-    tau.prior <- switch(tau.dist,
+    stop(
+      "tau.prior must be set. This parameter is problem specific. Please consult documentation for details."
+    )
+    tau.prior <- switch(
+      tau.dist,
       Fixed = c(1, 0),
       HalfNormal = c(0, 1),
       TruncNormal = c(0, 1),
@@ -663,8 +745,14 @@ gMAP <- function(formula,
     if (n.tau.strata == 1 & length(tau.prior) == 2) {
       tau.prior <- matrix(tau.prior, nrow = 1, ncol = 2)
     }
-    if (n.tau.strata > 1 & !is.matrix(tau.prior) & tau.dist %in% c("LogNormal", "Gamma", "InvGamma")) {
-      stop("Random effects dispersion distribution LogNormal, Gamma and InvGamma require matrix for tau.prior.")
+    if (
+      n.tau.strata > 1 &
+        !is.matrix(tau.prior) &
+        tau.dist %in% c("LogNormal", "Gamma", "InvGamma")
+    ) {
+      stop(
+        "Random effects dispersion distribution LogNormal, Gamma and InvGamma require matrix for tau.prior."
+      )
     }
     if (!is.matrix(tau.prior)) {
       if (tau.dist %in% c("Fixed", "Exp")) {
@@ -676,14 +764,17 @@ gMAP <- function(formula,
   }
 
   if (NROW(tau.prior) < n.tau.strata) {
-    stop("Multiple tau.strata defined, but tau.prior parameter not set for all strata.")
+    stop(
+      "Multiple tau.strata defined, but tau.prior parameter not set for all strata."
+    )
   }
   if (NROW(tau.prior) > n.tau.strata) {
     stop("More tau priors defined than tau.strata defined.")
   }
 
   ## code prior distribution
-  tau_prior_dist <- switch(tau.dist,
+  tau_prior_dist <- switch(
+    tau.dist,
     Fixed = -1,
     HalfNormal = 0,
     TruncNormal = 1,
@@ -704,11 +795,7 @@ gMAP <- function(formula,
   re_dist <- ifelse(REdist == "normal", 0, 1)
   re_dist_t_df <- t.df
 
-  link <- switch(family$family,
-    gaussian = 1,
-    binomial = 2,
-    poisson  = 3
-  )
+  link <- switch(family$family, gaussian = 1, binomial = 2, poisson = 3)
 
   ## Model parametrization
   ## 0 = Use CP
@@ -745,7 +832,10 @@ gMAP <- function(formula,
   ## the resulting sd according to the ratio of
   ## n_inf/n_(n.groups-1)/2 (eq. 11, Neuenschwander 2010)
   if (n.groups > 1) {
-    ms <- square_root_gamma_stats((n.groups - 1) / 2, 2 * tau_guess^2 / (n.groups - 1))
+    ms <- square_root_gamma_stats(
+      (n.groups - 1) / 2,
+      2 * tau_guess^2 / (n.groups - 1)
+    )
     ms[2] <- sqrt(1 + 2 / (n.groups - 1)) * ms[2]
     tau_raw_guess <- c(
       log(ms[1]) - log(sqrt((1 + ms[2]^2 / ms[1]^2))),
@@ -763,16 +853,29 @@ gMAP <- function(formula,
   assert_logical(prior_PD, FALSE, len = 1)
 
   fitData <- list(
-    "H", "X", "mX", "link",
-    "y", "y_se",
-    "r", "r_n",
-    "count", "log_offset",
+    "H",
+    "X",
+    "mX",
+    "link",
+    "y",
+    "y_se",
+    "r",
+    "r_n",
+    "count",
+    "log_offset",
     "tau_prior_dist",
-    "re_dist", "re_dist_t_df",
-    "group.index", "n.groups",
-    "tau.strata.index", "n.tau.strata", "tau.strata.pred",
-    "beta.prior", "tau.prior",
-    "ncp", "tau_raw_guess", "beta_raw_guess",
+    "re_dist",
+    "re_dist_t_df",
+    "group.index",
+    "n.groups",
+    "tau.strata.index",
+    "n.tau.strata",
+    "tau.strata.pred",
+    "beta.prior",
+    "tau.prior",
+    "ncp",
+    "tau_raw_guess",
+    "beta_raw_guess",
     "prior_PD"
   )
 
@@ -794,7 +897,10 @@ gMAP <- function(formula,
 
   rescale <- getOption("RBesT.MC.rescale", TRUE)
   control_user <- getOption("RBesT.MC.control", list())
-  control <- modifyList(list(adapt_delta = 0.99, stepsize = 0.01, max_treedepth = 20), control_user)
+  control <- modifyList(
+    list(adapt_delta = 0.99, stepsize = 0.01, max_treedepth = 20),
+    control_user
+  )
   verbose <- getOption("RBesT.verbose", FALSE)
 
   assert_flag(rescale)
@@ -816,23 +922,26 @@ gMAP <- function(formula,
   }
 
   ## MODEL RUN
-  stan_msg <- capture.output(fit <- rstan::sampling(stanmodels$gMAP,
-    data = dataL,
-    ## pars=para,
-    warmup = warmup,
-    iter = iter,
-    chains = chains,
-    cores = cores,
-    thin = thin,
-    init = init,
-    refresh = 0,
-    control = control,
-    algorithm = "NUTS",
-    open_progress = FALSE,
-    pars = exclude_pars,
-    include = FALSE,
-    save_warmup = TRUE
-  ))
+  stan_msg <- capture.output(
+    fit <- rstan::sampling(
+      stanmodels$gMAP,
+      data = dataL,
+      ## pars=para,
+      warmup = warmup,
+      iter = iter,
+      chains = chains,
+      cores = cores,
+      thin = thin,
+      init = init,
+      refresh = 0,
+      control = control,
+      algorithm = "NUTS",
+      open_progress = FALSE,
+      pars = exclude_pars,
+      include = FALSE,
+      save_warmup = TRUE
+    )
+  )
 
   if (attributes(fit)$mode != 0) {
     stop("Stan sampler did not run successfully!")
@@ -861,13 +970,17 @@ gMAP <- function(formula,
   Rhat.max <- max(fit_sum[, "Rhat"], na.rm = TRUE)
 
   if (Rhat.max > 1.1) {
-    warning("Maximal Rhat > 1.1. Consider increasing RBesT.MC.warmup MCMC parameter.")
+    warning(
+      "Maximal Rhat > 1.1. Consider increasing RBesT.MC.warmup MCMC parameter."
+    )
   }
 
   Neff.min <- min(fit_sum[c(beta_ind, tau_ind, lp_ind), "n_eff"], na.rm = TRUE)
 
   if (Neff.min < 1e3) {
-    message("Final MCMC sample equivalent to less than 1000 independent draws.\nPlease consider increasing the MCMC simulation size.")
+    message(
+      "Final MCMC sample equivalent to less than 1000 independent draws.\nPlease consider increasing the MCMC simulation size."
+    )
   }
 
   ## set internal RBesT thinning to 1
@@ -877,9 +990,16 @@ gMAP <- function(formula,
   ## divergence in the sampling phase, these are not supposed to
   ## happen and can often be avoided by increasing adapt_delta
   sampler_params <- get_sampler_params(fit, inc_warmup = FALSE)
-  n_divergent <- sum(sapply(sampler_params, function(x) sum(x[, "divergent__"])))
+  n_divergent <- sum(sapply(
+    sampler_params,
+    function(x) sum(x[, "divergent__"])
+  ))
   if (n_divergent > 0) {
-    warning(paste("In total", n_divergent, "divergent transitions occured during the sampling phase.\nPlease consider increasing adapt_delta closer to 1 with the following command prior to gMAP:\noptions(RBesT.MC.control=list(adapt_delta=0.999))"))
+    warning(paste(
+      "In total",
+      n_divergent,
+      "divergent transitions occured during the sampling phase.\nPlease consider increasing adapt_delta closer to 1 with the following command prior to gMAP:\noptions(RBesT.MC.control=list(adapt_delta=0.999))"
+    ))
   }
 
   Out <- list(
@@ -921,7 +1041,9 @@ gMAP <- function(formula,
 #' @export
 print.gMAP <- function(x, digits = 3, probs = c(0.025, 0.5, 0.975), ...) {
   cat("Generalized Meta Analytic Predictive Prior Analysis\n")
-  cat("\nCall:  ", paste(deparse(x$call), sep = "\n", collapse = "\n"),
+  cat(
+    "\nCall:  ",
+    paste(deparse(x$call), sep = "\n", collapse = "\n"),
     "\n\n",
     sep = ""
   )
@@ -930,19 +1052,33 @@ print.gMAP <- function(x, digits = 3, probs = c(0.025, 0.5, 0.975), ...) {
   cat("Maximal Rhat              :", signif(x$Rhat.max, digits = digits), "\n")
 
   if (x$family$family == "gaussian" & !is.null(x$sigma_ref)) {
-    cat("Estimated reference scale :", signif(x$sigma_ref, digits = digits), "\n")
+    cat(
+      "Estimated reference scale :",
+      signif(x$sigma_ref, digits = digits),
+      "\n"
+    )
   }
 
-  csum_tau <- rstan::summary(x$fit, probs = probs, pars = paste0("tau[", x$tau.strata.pred, "]"))$summary
+  csum_tau <- rstan::summary(
+    x$fit,
+    probs = probs,
+    pars = paste0("tau[", x$tau.strata.pred, "]")
+  )$summary
 
-  f <- colnames(csum_tau)[-match(c("se_mean", "n_eff", "Rhat"), colnames(csum_tau))]
+  f <- colnames(csum_tau)[
+    -match(c("se_mean", "n_eff", "Rhat"), colnames(csum_tau))
+  ]
   csum_tau <- csum_tau[, f]
 
   cat("\nBetween-trial heterogeneity of tau prediction stratum\n")
   print(signif(csum_tau, digits = digits))
 
   if (x$has_intercept) {
-    csum_map <- rstan::summary(x$fit, probs = probs, pars = "theta_resp_pred")$summary
+    csum_map <- rstan::summary(
+      x$fit,
+      probs = probs,
+      pars = "theta_resp_pred"
+    )$summary
     csum_map <- csum_map[, f]
     cat("\nMAP Prior MCMC sample\n")
     print(signif(csum_map, digits = digits))
@@ -952,7 +1088,11 @@ print.gMAP <- function(x, digits = 3, probs = c(0.025, 0.5, 0.975), ...) {
   num_sim <- length(rstan::get_divergent_iterations(x$fit))
   if (div_trans > 0) {
     warning(
-      "The sampler detected ", div_trans, " out of ", num_sim, " transitions ending in a divergence after warmup.\n",
+      "The sampler detected ",
+      div_trans,
+      " out of ",
+      num_sim,
+      " transitions ending in a divergence after warmup.\n",
       "Increasing 'adapt_delta' closer to 1 may help to avoid these. Use for example: \n",
       paste0("options(RBesT.MC.control=list(adapt_delta=0.999))"),
       call. = FALSE
@@ -973,9 +1113,14 @@ print.gMAP <- function(x, digits = 3, probs = c(0.025, 0.5, 0.975), ...) {
 
 #' @describeIn gMAP returns the quantiles of the posterior shrinkage
 #' estimates for each data item used during the analysis of the given
-#' \code{gMAP} object.
+#' `gMAP` object.
 #' @export
-fitted.gMAP <- function(object, type = c("response", "link"), probs = c(0.025, 0.5, 0.975), ...) {
+fitted.gMAP <- function(
+  object,
+  type = c("response", "link"),
+  probs = c(0.025, 0.5, 0.975),
+  ...
+) {
   type <- match.arg(type)
   trans <- if (type == "response") object$family$linkinv else identity
   sim <- rstan::extract(object$fit, pars = "theta")$theta
@@ -985,7 +1130,7 @@ fitted.gMAP <- function(object, type = c("response", "link"), probs = c(0.025, 0
 }
 
 #' @describeIn gMAP returns the quantiles of the predictive
-#' distribution. User can choose with \code{type} if the result is on
+#' distribution. User can choose with `type` if the result is on
 #' the response or the link scale.
 #' @export
 coef.gMAP <- function(object, probs = c(0.025, 0.5, 0.975), ...) {
@@ -1006,44 +1151,85 @@ as.matrix.gMAP <- function(x, ...) {
 #' @method model.matrix gMAP
 #' @export
 model.matrix.gMAP <- function(object, ...) {
-  return(model.matrix.default(object, object$data, contrasts.arg = object$contrast))
+  return(model.matrix.default(
+    object,
+    object$data,
+    contrasts.arg = object$contrast
+  ))
 }
 
 
 #' @describeIn gMAP returns the summaries of a gMAP.
-#' analysis. Output is a \code{gMAPsummary} object, which is a list containing
+#' analysis. Output is a `gMAPsummary` object, which is a list containing
 #' \describe{
-#' \item{\code{tau}}{posterior summary of the heterogeneity standard deviation}
-#' \item{\code{beta}}{posterior summary of the regression coefficients}
-#' \item{\code{theta.pred}}{summary of the predictive distribution (given in dependence on the \code{type} argument either on \code{response} or \code{link} scale)}
-#' \item{\code{theta}}{posterior summary of the mean estimate (also depends on the \code{type} argument)}
+#' \item{`tau`}{posterior summary of the heterogeneity standard deviation}
+#' \item{`beta`}{posterior summary of the regression coefficients}
+#' \item{`theta.pred`}{summary of the predictive distribution (given in dependence on the `type` argument either on `response` or `link` scale)}
+#' \item{`theta`}{posterior summary of the mean estimate (also depends on the `type` argument)}
 #' }
 #' @method summary gMAP
 #' @export
-summary.gMAP <- function(object, type = c("response", "link"), probs = c(0.025, 0.5, 0.975), ...) {
+summary.gMAP <- function(
+  object,
+  type = c("response", "link"),
+  probs = c(0.025, 0.5, 0.975),
+  ...
+) {
   call <- match.call()
   type <- match.arg(type)
-  csum_beta <- rstan::summary(object$fit, probs = probs, pars = c("beta"))$summary
+  csum_beta <- rstan::summary(
+    object$fit,
+    probs = probs,
+    pars = c("beta")
+  )$summary
   csum_tau <- rstan::summary(object$fit, probs = probs, pars = c("tau"))$summary
   if (object$has_intercept) {
     if (type == "response") {
-      csum_pred <- rstan::summary(object$fit, probs = probs, pars = c("theta_resp_pred"))$summary
-      csum_mean <- SimSum(object$family$linkinv(rstan::extract(object$fit, pars = c("beta[1]"))[[1]]), probs = probs)
+      csum_pred <- rstan::summary(
+        object$fit,
+        probs = probs,
+        pars = c("theta_resp_pred")
+      )$summary
+      csum_mean <- SimSum(
+        object$family$linkinv(rstan::extract(object$fit, pars = c("beta[1]"))[[
+          1
+        ]]),
+        probs = probs
+      )
       rownames(csum_mean) <- "theta_resp"
     } else {
-      csum_pred <- rstan::summary(object$fit, probs = probs, pars = c("theta_pred"))$summary
-      csum_mean <- rstan::summary(object$fit, probs = probs, pars = c("beta[1]"))$summary
+      csum_pred <- rstan::summary(
+        object$fit,
+        probs = probs,
+        pars = c("theta_pred")
+      )$summary
+      csum_mean <- rstan::summary(
+        object$fit,
+        probs = probs,
+        pars = c("beta[1]")
+      )$summary
       rownames(csum_mean) <- "theta"
     }
   } else {
     csum_pred <- NULL
     csum_mean <- NULL
   }
-  f <- colnames(csum_beta)[-match(c("se_mean", "n_eff", "Rhat"), colnames(csum_beta))]
+  f <- colnames(csum_beta)[
+    -match(c("se_mean", "n_eff", "Rhat"), colnames(csum_beta))
+  ]
   rownames(csum_beta) <- colnames(object$X)
-  Out <- list(tau = subset(csum_tau, select = f), beta = subset(csum_beta, select = f))
+  Out <- list(
+    tau = subset(csum_tau, select = f),
+    beta = subset(csum_beta, select = f)
+  )
   if (object$has_intercept) {
-    Out <- c(Out, list(theta.pred = subset(csum_pred, select = f), theta = subset(csum_mean, select = f)))
+    Out <- c(
+      Out,
+      list(
+        theta.pred = subset(csum_pred, select = f),
+        theta = subset(csum_mean, select = f)
+      )
+    )
   }
   structure(Out, class = c("gMAPsummary"), call = call)
 }

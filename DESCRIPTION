@@ -8,8 +8,8 @@ Description: Tool-set to support Bayesian evidence synthesis.  This
     for details on applying this package while Neuenschwander et al. (2010)
     <doi:10.1177/1740774509356002> and Schmidli et al. (2014)
     <doi:10.1111/biom.12242> explain details on the methodology.
-Version: 1.8-1
-Date: 2025-01-20
+Version: 1.8-2
+Date: 2025-04-25
 Authors@R: c(person("Novartis", "Pharma AG", role = "cph")
             ,person("Sebastian", "Weber", email="sebastian.weber@novartis.com", role=c("aut", "cre"))
             ,person("Beat", "Neuenschwander", email="beat.neuenschwander@novartis.com", role="ctb")
@@ -39,7 +39,9 @@ Imports:
     utils,
     matrixStats,
     abind,
-    rlang
+    rlang,
+    jsonlite,
+    lifecycle
 LinkingTo:
     BH (>= 1.72.0),
     Rcpp (>= 0.12.0),
@@ -68,9 +70,11 @@ Suggests:
     parallel,
     brms,
     glue,
-    ragg
+    ragg,
+    withr
 VignetteBuilder: knitr
 SystemRequirements: GNU make, pandoc (>= 1.12.3), pngquant, C++17
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

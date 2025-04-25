@@ -6,7 +6,12 @@ mixmode <- function(mix, interval = 0.99, verbose = FALSE) {
     mixComp[1, ] <- 1
     qlow <- (1 - interval) / 2
     qup <- 1 - qlow
-    optimise(function(x) dmix(mix, x, log = TRUE), qmix(mixComp, c(qlow, qup)), maximum = TRUE, tol = tol)$maximum
+    optimise(
+      function(x) dmix(mix, x, log = TRUE),
+      qmix(mixComp, c(qlow, qup)),
+      maximum = TRUE,
+      tol = tol
+    )$maximum
   }
   ## find around each component the maximum as otherwise optimise
   ## can run into a local extremum

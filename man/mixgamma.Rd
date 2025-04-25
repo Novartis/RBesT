@@ -109,6 +109,7 @@ Other mixdist:
 \code{\link{mix}},
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
+\code{\link{mixjson}},
 \code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
 \code{\link{mixplot}}

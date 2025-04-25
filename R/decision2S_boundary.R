@@ -1,6 +1,6 @@
 #' Decision Boundary for 2 Sample Designs
 #'
-#' The \code{decision2S_boundary} function defines a 2 sample design
+#' The `decision2S_boundary` function defines a 2 sample design
 #' (priors, sample sizes, decision function) for the calculation of
 #' the decision boundary. A function is returned which calculates the
 #' critical value of the first sample \eqn{y_{1,c}} as a function of
@@ -19,7 +19,7 @@
 #' which is the critical value of \eqn{y_{1,c}} conditional on the
 #' value of \eqn{y_2} whenever the decision \eqn{D(y_1,y_2)} function
 #' changes its value from 0 to 1 for a decision function with
-#' \code{lower.tail=TRUE} (otherwise the definition is \eqn{D_1(y_2) =
+#' `lower.tail=TRUE` (otherwise the definition is \eqn{D_1(y_2) =
 #' \max_{y_1}\{D(y_1,y_2) = 0\}}{D_1(y_2) = max_{y_1}{D(y_1,y_2) =
 #' 0}}). The decision function may change at most at a single critical
 #' value for given \eqn{y_{2}} as only one-sided decision functions
@@ -64,9 +64,11 @@
 #' futilityCrit(postmix(priorP, m = y1c - 1E-3, n = 10), postmix(priorT, m = -10, n = 20))
 #'
 #' @export
-decision2S_boundary <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("decision2S_boundary")
+decision2S_boundary <- function(prior1, prior2, n1, n2, decision, ...)
+  UseMethod("decision2S_boundary")
 #' @export
-decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...) "Unknown density"
+decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...)
+  "Unknown density"
 
 #' @templateVar fun decision2S_boundary
 #' @template design2S-binomial
@@ -74,7 +76,15 @@ decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...) "
 # returned function will use the additional \code{lim2}
 # argument to limit the search for the critical value.
 #' @export
-decision2S_boundary.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
+decision2S_boundary.betaMix <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
   ## only n2=0 is supported
   assert_number(n1, lower = 1, finite = TRUE)
   assert_number(n2, lower = 0, finite = TRUE)
@@ -131,7 +141,9 @@ decision2S_boundary.betaMix <- function(prior1, prior2, n1, n2, decision, eps, .
         next
       }
       ## find boundary
-      boundary[y2ind] <<- uniroot_int(decFun, lim1,
+      boundary[y2ind] <<- uniroot_int(
+        decFun,
+        lim1,
         f.lower = ind_llim,
         f.upper = ind_ulim
       )
@@ -165,8 +177,12 @@ decision2S_boundary.betaMix <- function(prior1, prior2, n1, n2, decision, eps, .
       }
       lim2 <- c(min(y2), max(y2))
       ## check if the decision grid needs to be recomputed
-      if (lim1[1] < clim1[1] | lim1[2] > clim1[2] |
-        lim2[1] < clim2[1] | lim2[2] > clim2[2]) {
+      if (
+        lim1[1] < clim1[1] |
+          lim1[2] > clim1[2] |
+          lim2[1] < clim2[1] |
+          lim2[2] > clim2[2]
+      ) {
         ## ensure that lim1 never shrinks
         lim1[1] <- min(lim1[1], clim1[1])
         lim1[2] <- max(lim1[2], clim1[2])
@@ -213,7 +229,16 @@ decision2S_boundary.betaMix <- function(prior1, prior2, n1, n2, decision, eps, .
 ## the function finds at a regular grid between llim1 and ulim1 the
 ## roots of the decision function and returns an interpolation
 ## function object
-solve_boundary2S_normMix <- function(decision, mix1, mix2, n1, n2, lim1, lim2, delta2) {
+solve_boundary2S_normMix <- function(
+  decision,
+  mix1,
+  mix2,
+  n1,
+  n2,
+  lim1,
+  lim2,
+  delta2
+) {
   grid <- seq(lim2[1], lim2[2], length = diff(lim2) / delta2)
 
   sigma1 <- sigma(mix1)
@@ -249,8 +274,12 @@ solve_boundary2S_normMix <- function(decision, mix1, mix2, n1, n2, lim1, lim2, d
       lim1 <- c(lim1[1] - w / 2, lim1[2] + w / 2)
       dec_bounds <- ind_fun(lim1)
     }
-    y1c <- uniroot(ind_fun, lim1,
-      f.lower = dec_bounds[1], f.upper = dec_bounds[2], tol = tol
+    y1c <- uniroot(
+      ind_fun,
+      lim1,
+      f.lower = dec_bounds[1],
+      f.upper = dec_bounds[2],
+      tol = tol
     )$root
     crit[i] <- y1c
     ## set lim1 tightly around the current critical value and use the
@@ -264,7 +293,18 @@ solve_boundary2S_normMix <- function(decision, mix1, mix2, n1, n2, lim1, lim2, d
 #' @templateVar fun decision2S_boundary
 #' @template design2S-normal
 #' @export
-decision2S_boundary.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps = 1e-6, Ngrid = 10, ...) {
+decision2S_boundary.normMix <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps = 1e-6,
+  Ngrid = 10,
+  ...
+) {
   ## distributions of the means of the data generating distributions
   ## for now we assume that the underlying standard deviation
   ## matches the respective reference scales
@@ -338,20 +378,47 @@ decision2S_boundary.normMix <- function(prior1, prior2, n1, n2, decision, sigma1
       }
       if (nrow(boundary_discrete) == 0) {
         ## boundary hasn't been calculated before, do it all
-        boundary_discrete <<- solve_boundary2S_normMix(decision, prior1, prior2, n1, n2, lim1, lim2, delta2)
+        boundary_discrete <<- solve_boundary2S_normMix(
+          decision,
+          prior1,
+          prior2,
+          n1,
+          n2,
+          lim1,
+          lim2,
+          delta2
+        )
         new_lim2 <- lim2
       } else {
         if (lim2[1] < clim2[1]) {
           ## the lower bound is not low enough... only add the region which is missing
           new_left_lim2 <- min(lim2[1], clim2[1] - 2 * delta2)
-          boundary_extra <- solve_boundary2S_normMix(decision, prior1, prior2, n1, n2, lim1, c(new_left_lim2, clim2[1] - delta2), delta2)
+          boundary_extra <- solve_boundary2S_normMix(
+            decision,
+            prior1,
+            prior2,
+            n1,
+            n2,
+            lim1,
+            c(new_left_lim2, clim2[1] - delta2),
+            delta2
+          )
           new_lim2[1] <- new_left_lim2
           boundary_discrete <<- rbind(boundary_extra, boundary_discrete)
         }
         if (lim2[2] > clim2[2]) {
           ## the upper bound is not large enough.. again only add whats missing
           new_right_lim2 <- max(lim2[2], clim2[2] + 2 * delta2)
-          boundary_extra <- solve_boundary2S_normMix(decision, prior1, prior2, n1, n2, lim1, c(clim2[2] + delta2, new_right_lim2), delta2)
+          boundary_extra <- solve_boundary2S_normMix(
+            decision,
+            prior1,
+            prior2,
+            n1,
+            n2,
+            lim1,
+            c(clim2[2] + delta2, new_right_lim2),
+            delta2
+          )
           new_lim2[2] <- new_right_lim2
           boundary_discrete <<- rbind(boundary_discrete, boundary_extra)
         }
@@ -359,7 +426,11 @@ decision2S_boundary.normMix <- function(prior1, prior2, n1, n2, decision, sigma1
       ## only for debugging
       ## assert_that(all(order(boundary_discrete[,1]) == 1:nrow(boundary_discrete)), msg="x grid must stay ordered!")
       if (linear_boundary) {
-        boundary <<- approxfun(boundary_discrete[, 1], boundary_discrete[, 2], rule = 2)
+        boundary <<- approxfun(
+          boundary_discrete[, 1],
+          boundary_discrete[, 2],
+          rule = 2
+        )
       } else {
         boundary <<- splinefun(boundary_discrete[, 1], boundary_discrete[, 2])
       }
@@ -376,7 +447,15 @@ decision2S_boundary.normMix <- function(prior1, prior2, n1, n2, decision, sigma1
 #' @templateVar fun decision2S_boundary
 #' @template design2S-poisson
 #' @export
-decision2S_boundary.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
+decision2S_boundary.gammaMix <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
   assert_that(likelihood(prior1) == "poisson")
   assert_that(likelihood(prior2) == "poisson")
 
@@ -411,8 +490,12 @@ decision2S_boundary.gammaMix <- function(prior1, prior2, n1, n2, decision, eps =
     assert_number(lim2[2], lower = 0, finite = TRUE)
 
     ## check if the boundary needs to be recomputed
-    if (lim1[1] < clim1[1] | lim1[2] > clim1[2] |
-      lim2[1] < clim2[1] | lim2[2] > clim2[2]) {
+    if (
+      lim1[1] < clim1[1] |
+        lim1[2] > clim1[2] |
+        lim2[1] < clim2[1] |
+        lim2[2] > clim2[2]
+    ) {
       ## ensure that lim1 never shrinks in size
       lim1[1] <- min(lim1[1], clim1[1])
       lim1[2] <- max(lim1[2], clim1[2])
@@ -423,7 +506,11 @@ decision2S_boundary.gammaMix <- function(prior1, prior2, n1, n2, decision, eps =
         if (n2 == 0) {
           cond_dec <- cond_decisionStep(prior2)
         } else {
-          cond_dec <- cond_decisionStep(postmix(prior2, n = n2, m = grid[i] / n2))
+          cond_dec <- cond_decisionStep(postmix(
+            prior2,
+            n = n2,
+            m = grid[i] / n2
+          ))
         }
         low <- cond_dec(lim1[1])
         high <- cond_dec(lim1[2])
@@ -435,7 +522,9 @@ decision2S_boundary.gammaMix <- function(prior1, prior2, n1, n2, decision, eps =
           boundary[i] <<- Inf
           next
         }
-        boundary[i] <<- uniroot_int(cond_dec, lim1,
+        boundary[i] <<- uniroot_int(
+          cond_dec,
+          lim1,
           f.lower = low,
           f.upper = high
         )

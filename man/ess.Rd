@@ -53,9 +53,9 @@ equivalent to.
 }
 \details{
 The ESS is calculated using either the expected local
-    information ratio (elir) \emph{Neuenschwander et
-    al. (2020)}, the moments approach or the method by
-    \emph{Morita et al. (2008)}.
+information ratio (elir) \emph{Neuenschwander et
+al. (2020)}, the moments approach or the method by
+\emph{Morita et al. (2008)}.
 
 The elir approach measures effective sample size in terms of the
 average curvature of the prior in relation to the Fisher
@@ -108,8 +108,8 @@ supports non-gaussian families with unit dispersion only.
 
 
 \tabular{lccc}{
-\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive} 
- \tab \strong{Summaries} \cr
+\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive}
+\tab \strong{Summaries} \cr
 Beta \tab Binomial \tab Beta-Binomial \tab \code{n}, \code{r} \cr
 Normal \tab Normal (\emph{fixed \eqn{\sigma}}) \tab Normal \tab \code{n}, \code{m}, \code{se}  \cr
 Gamma \tab Poisson \tab Gamma-Poisson \tab  \code{n}, \code{m} \cr
@@ -188,11 +188,11 @@ ess(gmix) ## interpreted as appropriate for an exponential likelihood
 }
 \references{
 Morita S, Thall PF, Mueller P.  Determining the
-    effective sample size of a parametric prior.  \emph{Biometrics}
-    2008;64(2):595-602.
+effective sample size of a parametric prior.  \emph{Biometrics}
+2008;64(2):595-602.
 
 Neuenschwander B., Weber S., Schmidli H., O’Hagan
-    A. (2020). Predictively consistent prior effective sample
-    sizes. \emph{Biometrics}, 76(2),
-    578–587. https://doi.org/10.1111/biom.13252
+A. (2020). Predictively consistent prior effective sample
+sizes. \emph{Biometrics}, 76(2),
+578–587. https://doi.org/10.1111/biom.13252
 }

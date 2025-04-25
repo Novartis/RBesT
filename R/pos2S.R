@@ -1,6 +1,6 @@
 #' Probability of Success for 2 Sample Design
 #'
-#' The \code{pos2S} function defines a 2 sample design (priors, sample
+#' The `pos2S` function defines a 2 sample design (priors, sample
 #' sizes & decision function) for the calculation of the probability
 #' of success. A function is returned which calculates the calculates
 #' the frequency at which the decision function is evaluated to 1 when
@@ -8,7 +8,7 @@
 #'
 #' @template args-boundary2S
 #'
-#' @details The \code{pos2S} function defines a 2 sample design and
+#' @details The `pos2S` function defines a 2 sample design and
 #' returns a function which calculates its probability of success.
 #' The probability of success is the frequency with which the decision
 #' function is evaluated to 1 under the assumption of a given true
@@ -16,11 +16,11 @@
 #' parameters \eqn{\theta_1} and \eqn{\theta_2}.
 #'
 #' The calculation is analogous to the operating characeristics
-#' \code{\link{oc2S}} with the difference that instead of assuming
+#' [oc2S()] with the difference that instead of assuming
 #' known (point-wise) true parameter values a distribution is
 #' specified for each parameter.
 #'
-#' Calling the \code{pos2S} function calculates the decision boundary
+#' Calling the `pos2S` function calculates the decision boundary
 #' \eqn{D_1(y_2)} and returns a function which can be used to evaluate the
 #' PoS for different predictive distributions. It is evaluated as
 #'
@@ -31,17 +31,17 @@
 #' the assumed true distribution of the parameters \eqn{\theta_1} and
 #' \eqn{\theta_2}, respectively. Each distribution \eqn{p(\theta_1)}
 #' and \eqn{p(\theta_2)} is a mixture distribution and given as the
-#' \code{mix1} and \code{mix2} argument to the function.
+#' `mix1` and `mix2` argument to the function.
 #'
 #' For example, in the binary case an integration of the predictive
 #' distribution, the BetaBinomial, instead of the binomial
 #' distribution will be performed over the data space wherever the
 #' decision function is evaluated to 1. All other aspects of the
 #' calculation are as for the 2-sample operating characteristics, see
-#' \code{\link{oc2S}}.
+#' [oc2S()].
 #'
 #' @return Returns a function which when called with two arguments
-#' \code{mix1} and \code{mix2} will return the frequencies at
+#' `mix1` and `mix2` will return the frequencies at
 #' which the decision function is evaluated to 1. Each argument is
 #' expected to be a mixture distribution representing the assumed true
 #' distribution of the parameter in each group.
@@ -75,7 +75,8 @@
 #' @export
 pos2S <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("pos2S")
 #' @export
-pos2S.default <- function(prior1, prior2, n1, n2, decision, ...) "Unknown density"
+pos2S.default <- function(prior1, prior2, n1, n2, decision, ...)
+  "Unknown density"
 
 #' @templateVar fun pos2S
 #' @template design2S-binomial
@@ -127,7 +128,12 @@ pos2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
       } else {
         ## calculate for the predictive for dtheta1 the
         ## probability mass past (or before) the boundary
-        res[y2ind] <- pmix(pred_mix1, boundary[y2ind], lower.tail = lower.tail, log.p = TRUE)
+        res[y2ind] <- pmix(
+          pred_mix1,
+          boundary[y2ind],
+          lower.tail = lower.tail,
+          log.p = TRUE
+        )
       }
       ## finally weight with the density according to the occurence
       ## of i due to theta2; the pmax avoids -Inf in a case of Prob==0
@@ -142,7 +148,18 @@ pos2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
 #' @templateVar fun pos2S
 #' @template design2S-normal
 #' @export
-pos2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps = 1e-6, Ngrid = 10, ...) {
+pos2S.normMix <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps = 1e-6,
+  Ngrid = 10,
+  ...
+) {
   ## distributions of the means of the data generating distributions
   ## for now we assume that the underlying standard deviation
   ## matches the respective reference scales
@@ -161,7 +178,17 @@ pos2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps 
   assert_number(sigma2, lower = 0)
   sigma(prior2) <- sigma2
 
-  crit_y1 <- decision2S_boundary(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps, Ngrid)
+  crit_y1 <- decision2S_boundary(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid
+  )
 
   lower.tail <- attr(decision, "lower.tail")
 
@@ -186,9 +213,24 @@ pos2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps 
 
     if (n2 == 0) {
       mean_prior2 <- summary(prior2, probs = c())["mean"]
-      return(pmix(pred_mix1_mean, crit_y1(mean_prior2), lower.tail = lower.tail))
+      return(pmix(
+        pred_mix1_mean,
+        crit_y1(mean_prior2),
+        lower.tail = lower.tail
+      ))
     } else {
-      return(integrate_density_log(function(x) pmix(pred_mix1_mean, crit_y1(x, lim1 = lim1), lower.tail = lower.tail, log.p = TRUE), pred_mix2_mean, logit(eps / 2), logit(1 - eps / 2)))
+      return(integrate_density_log(
+        function(x)
+          pmix(
+            pred_mix1_mean,
+            crit_y1(x, lim1 = lim1),
+            lower.tail = lower.tail,
+            log.p = TRUE
+          ),
+        pred_mix2_mean,
+        logit(eps / 2),
+        logit(1 - eps / 2)
+      ))
     }
   }
 
@@ -228,8 +270,15 @@ pos2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
     ## ensure that the boundaries are cached
     crit_y1(lim2, lim1 = lim1)
     grid <- seq(lim2[1], lim2[2])
-    exp(matrixStats::logSumExp(dmix(pred_mix2_sum, grid, log = TRUE)
-    + pmix(pred_mix1_sum, crit_y1(grid, lim1 = lim1), lower.tail = lower.tail, log.p = TRUE)))
+    exp(matrixStats::logSumExp(
+      dmix(pred_mix2_sum, grid, log = TRUE) +
+        pmix(
+          pred_mix1_sum,
+          crit_y1(grid, lim1 = lim1),
+          lower.tail = lower.tail,
+          log.p = TRUE
+        )
+    ))
   }
   design_fun
 }

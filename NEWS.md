@@ -1,3 +1,16 @@
+# RBesT 1.8-2 - April 25th, 2025
+
+## Enhancements
+
+* Add experimental `write_mix_json` and `read_mix_json` functions
+  which write and read mixture objects as JSON to/from files.
+* Add `"msr"` parametrization to `mixmvnorm` which allows to consturct
+  multi-variate normal mixtures in a parametrization using the mean
+  vector, standard deviations and the correlations. This functionality
+  is based on the new `msr2mvnorm` utility function.
+* Allow standard deviations of 0 for components of a multi-variate
+  normal mixture.
+
 # RBesT 1.8-1 - January 20th, 2025
 
 ## Bugfixes

@@ -41,18 +41,26 @@ dlink_new <- function(name, link, inv, Jinv_orig, lJinv_orig, lJinv_link) {
     lJinv_link <- match.fun(lJinv_link)
   }
 
-  structure(list(
-    name = name, link = link, invlink = inv,
-    Jinv_orig = Jinv_orig,
-    lJinv_orig = lJinv_orig,
-    lJinv_link = lJinv_link
-  ), class = "dlink")
+  structure(
+    list(
+      name = name,
+      link = link,
+      invlink = inv,
+      Jinv_orig = Jinv_orig,
+      lJinv_orig = lJinv_orig,
+      lJinv_link = lJinv_link
+    ),
+    class = "dlink"
+  )
 }
 
 identity_dlink <- dlink_new(
   "identity",
-  identity, identity,
-  Curry(fill, value = 1), Curry(fill, value = 0), Curry(fill, value = 0)
+  identity,
+  identity,
+  Curry(fill, value = 1),
+  Curry(fill, value = 0),
+  Curry(fill, value = 0)
 )
 
 logit_Jinverse_orig <- function(mu) mu * (1 - mu)
@@ -61,14 +69,20 @@ logit_lJinverse_link <- function(l) log_inv_logit(l) + log_inv_logit(-l)
 
 logit_dlink <- dlink_new(
   "logit",
-  binomial()$linkfun, binomial()$linkinv,
-  logit_Jinverse_orig, logit_lJinverse_orig, logit_lJinverse_link
+  binomial()$linkfun,
+  binomial()$linkinv,
+  logit_Jinverse_orig,
+  logit_lJinverse_orig,
+  logit_lJinverse_link
 )
 
 log_dlink <- dlink_new(
   "log",
-  log, exp,
-  identity, log, identity
+  log,
+  exp,
+  identity,
+  log,
+  identity
 )
 
 link_map <- list(

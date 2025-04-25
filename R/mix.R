@@ -11,11 +11,11 @@
 #' @param mix mixture distribution object
 #' @param x,q vector of quantiles
 #' @param p vector of probabilities
-#' @param n number of observations. If \code{length(n) > 1}, the length is taken to be the number
+#' @param n number of observations. If `length(n) > 1`, the length is taken to be the number
 #' required
-#' @param log,log.p logical; if \code{TRUE} (not default), probabilities \eqn{p} are given as \eqn{\log(p)}
-#' @param lower.tail logical; if \code{TRUE} (default), probabilities are \eqn{P[X\leq x]} otherwise, \eqn{P[X>x]}
-#' @param rescale logical; if \code{TRUE}, mixture weights will be rescaled to sum to 1
+#' @param log,log.p logical; if `TRUE` (not default), probabilities \eqn{p} are given as \eqn{\log(p)}
+#' @param lower.tail logical; if `TRUE` (default), probabilities are \eqn{P[X\leq x]} otherwise, \eqn{P[X>x]}
+#' @param rescale logical; if `TRUE`, mixture weights will be rescaled to sum to 1
 #' @param ... components to subset given mixture.
 #'
 #' @details A mixture distribution is defined as a linear
@@ -29,45 +29,45 @@
 #' parametrized by two parameters such that each component \eqn{k} is
 #' defined by a triplet, \eqn{(w_k,a_k,b_k)}.
 #'
-#' Individual mixture components can be extracted using the \code{[[}
+#' Individual mixture components can be extracted using the `[[`
 #' operator, see examples below.
 #'
 #' The supported densities are normal, beta and gamma which can be
-#' instantiated with \code{\link{mixnorm}}, \code{\link{mixbeta}}, or
-#' \code{\link{mixgamma}}, respectively. In addition, the respective
+#' instantiated with [mixnorm()], [mixbeta()], or
+#' [mixgamma()], respectively. In addition, the respective
 #' predictive distributions are supported. These can be obtained by
-#' calling \code{\link{preddist}} which returns appropriate normal,
+#' calling [preddist()] which returns appropriate normal,
 #' beta-binomial or Poisson-gamma mixtures.
 #'
-#' For convenience a \code{summary} function is defined for all
+#' For convenience a `summary` function is defined for all
 #' mixtures. It returns the mean, standard deviation and the requested
-#' quantiles which can be specified with the argument \code{probs}.
+#' quantiles which can be specified with the argument `probs`.
 #'
 #' @return
 #'
-#' \code{dmix} gives the weighted sum of the densities of each
+#' `dmix` gives the weighted sum of the densities of each
 #' component.
 #'
-#' \code{pmix} calculates the distribution function by
+#' `pmix` calculates the distribution function by
 #' evaluating the weighted sum of each components distribution
 #' function.
 #'
-#' \code{qmix} returns the quantile for the given \code{p}
+#' `qmix` returns the quantile for the given `p`
 #' by using that the distribution function is monotonous and hence a
 #' gradient based minimization scheme can be used to find the matching
-#' quantile \code{q}.
+#' quantile `q`.
 #'
-#' \code{rmix} generates a random sample of size
-#' \code{n} by first sampling a latent component indicator in the
+#' `rmix` generates a random sample of size
+#' `n` by first sampling a latent component indicator in the
 #' range \eqn{1..K} for each draw and then the function samples from
 #' each component a random draw using the respective sampling
-#' function. The \code{rnorm} function returns the random draws as
-#' numerical vector with an additional attribute \code{ind} which
+#' function. The `rnorm` function returns the random draws as
+#' numerical vector with an additional attribute `ind` which
 #' gives the sampled component indicator.
 #'
 #' @template conjugate_pairs
 #'
-#' @seealso \code{\link{plot.mix}}
+#' @seealso [plot.mix()]
 #' @family mixdist
 #'
 #' @examples
@@ -140,10 +140,29 @@ dmix_impl <- function(dens, mix, x, log) {
   ## as nc components which we sum together with a fast colSums call.
   Nx <- length(x)
   if (is.mixidentity_link(mix)) {
-    log_dens <- matrixStats::colLogSumExps(matrix(log(mix[1, ]) + dens(rep(x, each = Nc), rep(mix[2, ], times = Nx), rep(mix[3, ], times = Nx), log = TRUE), nrow = Nc))
+    log_dens <- matrixStats::colLogSumExps(matrix(
+      log(mix[1, ]) +
+        dens(
+          rep(x, each = Nc),
+          rep(mix[2, ], times = Nx),
+          rep(mix[3, ], times = Nx),
+          log = TRUE
+        ),
+      nrow = Nc
+    ))
   } else {
     ox <- rep(mixinvlink(mix, x), each = Nc)
-    log_dens <- matrixStats::colLogSumExps(matrix(log(mix[1, ]) + rep(mixlJinv_link(mix, x), each = Nc) + dens(ox, rep(mix[2, ], times = Nx), rep(mix[3, ], times = Nx), log = TRUE), nrow = Nc))
+    log_dens <- matrixStats::colLogSumExps(matrix(
+      log(mix[1, ]) +
+        rep(mixlJinv_link(mix, x), each = Nc) +
+        dens(
+          ox,
+          rep(mix[2, ], times = Nx),
+          rep(mix[3, ], times = Nx),
+          log = TRUE
+        ),
+      nrow = Nc
+    ))
   }
   if (!log) {
     return(exp(log_dens))
@@ -159,13 +178,16 @@ dmix.betaMix <- function(mix, x, log = FALSE) dmix_impl(dbeta, mix, x, log)
 dmix.normMix <- function(mix, x, log = FALSE) dmix_impl(dnorm, mix, x, log)
 
 #' @export
-dmix.betaBinomialMix <- function(mix, x, log = FALSE) dmix_impl(Curry(dBetaBinomial, n = attr(mix, "n")), mix, x, log)
+dmix.betaBinomialMix <- function(mix, x, log = FALSE)
+  dmix_impl(Curry(dBetaBinomial, n = attr(mix, "n")), mix, x, log)
 
 ## internal redefinition of negative binomial
 ## .dnbinomAB <- function(x, a, b, n=1, log=FALSE) dnbinom(x, size=a, prob=(b/n)/((b/n)+1), log=log)
-.dnbinomAB <- function(x, a, b, n = 1, log = FALSE) dnbinom(x, size = a, prob = b / (b + n), log = log)
+.dnbinomAB <- function(x, a, b, n = 1, log = FALSE)
+  dnbinom(x, size = a, prob = b / (b + n), log = log)
 #' @export
-dmix.gammaPoissonMix <- function(mix, x, log = FALSE) dmix_impl(Curry(.dnbinomAB, n = attr(mix, "n")), mix, x, log)
+dmix.gammaPoissonMix <- function(mix, x, log = FALSE)
+  dmix_impl(Curry(.dnbinomAB, n = attr(mix, "n")), mix, x, log)
 
 #' @export
 dmix.mvnormMix <- function(mix, x, log = FALSE) {
@@ -184,7 +206,14 @@ dmix.mvnormMix <- function(mix, x, log = FALSE) {
   comp_res <- matrix(NA_real_, nrow = Nx, ncol = Nc)
   for (i in 1:Nc) {
     S <- mvnormsigma(mix[-1, i])
-    comp_res[, i] <- log(mix[1, i]) + mvtnorm::dmvnorm(x, mix[2:(p + 1), i], sigma = S, log = TRUE, checkSymmetry = FALSE)
+    comp_res[, i] <- log(mix[1, i]) +
+      mvtnorm::dmvnorm(
+        x,
+        mix[2:(p + 1), i],
+        sigma = S,
+        log = TRUE,
+        checkSymmetry = FALSE
+      )
   }
   res <- matrixStats::rowLogSumExps(comp_res)
   if (!log) {
@@ -195,7 +224,8 @@ dmix.mvnormMix <- function(mix, x, log = FALSE) {
 
 ## DISTRIBUTION FUNCTIONS
 #' @export
-pmix.default <- function(mix, q, lower.tail = TRUE, log.p = FALSE) stop("Unknown mixture")
+pmix.default <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+  stop("Unknown mixture")
 
 pmix_impl <- function(dist, mix, q, lower.tail = TRUE, log.p = FALSE) {
   Nc <- ncol(mix)
@@ -206,19 +236,42 @@ pmix_impl <- function(dist, mix, q, lower.tail = TRUE, log.p = FALSE) {
   oq <- mixinvlink(mix, q)
   Nq <- length(q)
   if (!log.p) {
-    return(matrixStats::colSums2(matrix(mix[1, ] * dist(rep(oq, each = Nc), rep(mix[2, ], times = Nq), rep(mix[3, ], times = Nq), lower.tail = lower.tail, log.p = FALSE), nrow = Nc)))
+    return(matrixStats::colSums2(matrix(
+      mix[1, ] *
+        dist(
+          rep(oq, each = Nc),
+          rep(mix[2, ], times = Nq),
+          rep(mix[3, ], times = Nq),
+          lower.tail = lower.tail,
+          log.p = FALSE
+        ),
+      nrow = Nc
+    )))
   }
   ## log version is slower, but numerically more stable
-  res <- matrixStats::colLogSumExps(matrix(log(mix[1, ]) + dist(rep(oq, each = Nc), rep(mix[2, ], times = Nq), rep(mix[3, ], times = Nq), lower.tail = lower.tail, log.p = TRUE), nrow = Nc))
+  res <- matrixStats::colLogSumExps(matrix(
+    log(mix[1, ]) +
+      dist(
+        rep(oq, each = Nc),
+        rep(mix[2, ], times = Nq),
+        rep(mix[3, ], times = Nq),
+        lower.tail = lower.tail,
+        log.p = TRUE
+      ),
+    nrow = Nc
+  ))
   return(res)
 }
 
 #' @export
-pmix.gammaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) pmix_impl(pgamma, mix, q, lower.tail, log.p)
+pmix.gammaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+  pmix_impl(pgamma, mix, q, lower.tail, log.p)
 #' @export
-pmix.betaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) pmix_impl(pbeta, mix, q, lower.tail, log.p)
+pmix.betaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+  pmix_impl(pbeta, mix, q, lower.tail, log.p)
 #' @export
-pmix.normMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) pmix_impl(pnorm, mix, q, lower.tail, log.p)
+pmix.normMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+  pmix_impl(pnorm, mix, q, lower.tail, log.p)
 
 #' @export
 ## pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p=FALSE) pmix_impl(Curry(pBetaBinomial, n=attr(mix, "n")), mix, q, lower.tail, log.p)
@@ -254,18 +307,28 @@ pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
 
 ## internal redefinition of negative binomial
 ## .pnbinomAB <- function(q, a, b, lower.tail = TRUE, log.p = FALSE ) pnbinom(q, size=a, prob=b/(b+1), lower.tail = lower.tail, log.p = log.p )
-.pnbinomAB <- function(q, a, b, n = 1, lower.tail = TRUE, log.p = FALSE) pnbinom(q, size = a, prob = b / (b + n), lower.tail = lower.tail, log.p = log.p)
+.pnbinomAB <- function(q, a, b, n = 1, lower.tail = TRUE, log.p = FALSE)
+  pnbinom(
+    q,
+    size = a,
+    prob = b / (b + n),
+    lower.tail = lower.tail,
+    log.p = log.p
+  )
 #' @export
-pmix.gammaPoissonMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) pmix_impl(Curry(.pnbinomAB, n = attr(mix, "n")), mix, q, lower.tail, log.p)
+pmix.gammaPoissonMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+  pmix_impl(Curry(.pnbinomAB, n = attr(mix, "n")), mix, q, lower.tail, log.p)
 
 #' @export
-pmix.mvnormMix <- function(mix, q, ...) stop("Multivariate normal mixture cumulative density not supported.")
+pmix.mvnormMix <- function(mix, q, ...)
+  stop("Multivariate normal mixture cumulative density not supported.")
 
 
 ## QUANTILE FUNCTION
 
 #' @export
-qmix.default <- function(mix, p, lower.tail = TRUE, log.p = FALSE) stop("Unknown mixture")
+qmix.default <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+  stop("Unknown mixture")
 
 qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
   Nc <- ncol(mix)
@@ -276,14 +339,18 @@ qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
   }
   ## in the simple case of a single component, use R's functions
   if (Nc == 1) {
-    return(mixlink(mix, quant(p, mix[2, 1], mix[3, 1], lower.tail = lower.tail, log.p = log.p)))
+    return(mixlink(
+      mix,
+      quant(p, mix[2, 1], mix[3, 1], lower.tail = lower.tail, log.p = log.p)
+    ))
   }
   assert_that(abs(sum(mix["w", ]) - 1) < sqrt(.Machine$double.eps))
   ## first get the support of the mixture, i.e. the 99.9% CI of each
   ## mixture or lower, if the requested quantile is more in the
   ## tails
   eps <- 1E-1
-  plow <- if (log.p) min(c(eps, exp(p), (1 - exp(p)))) / 2 else min(c(eps, p, (1 - p))) / 2
+  plow <- if (log.p) min(c(eps, exp(p), (1 - exp(p)))) / 2 else
+    min(c(eps, p, (1 - p))) / 2
   phigh <- 1 - plow
   qlow <- mixlink(mix, min(quant(rep.int(plow, Nc), mix[2, ], mix[3, ])))
   qhigh <- mixlink(mix, max(quant(rep.int(phigh, Nc), mix[2, ], mix[3, ])))
@@ -309,7 +376,17 @@ qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
     )
     res[i] <- u$root
     if (u$estim.prec > 1E-3) {
-      warning("Quantile ", p[i], " possibly imprecise.\nEstimated precision= ", u$estim.prec, ".\nRange = ", qlow, " to ", qhigh, "\n")
+      warning(
+        "Quantile ",
+        p[i],
+        " possibly imprecise.\nEstimated precision= ",
+        u$estim.prec,
+        ".\nRange = ",
+        qlow,
+        " to ",
+        qhigh,
+        "\n"
+      )
     }
     ## }
   }
@@ -317,11 +394,14 @@ qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @export
-qmix.gammaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) qmix_impl(qgamma, mix, p, lower.tail, log.p)
+qmix.gammaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+  qmix_impl(qgamma, mix, p, lower.tail, log.p)
 #' @export
-qmix.betaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) qmix_impl(qbeta, mix, p, lower.tail, log.p)
+qmix.betaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+  qmix_impl(qbeta, mix, p, lower.tail, log.p)
 #' @export
-qmix.normMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) qmix_impl(qnorm, mix, p, lower.tail, log.p)
+qmix.normMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+  qmix_impl(qnorm, mix, p, lower.tail, log.p)
 
 #' @export
 qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
@@ -337,7 +417,14 @@ qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
 
 ## internal redefinition of negative binomial
 ## .qnbinomAB <- function(p, a, b, lower.tail = TRUE, log.p = FALSE ) qnbinom(p, size=a, prob=b/(b+1), lower.tail = lower.tail, log.p = log.p )
-.qnbinomAB <- function(p, a, b, n = 1, lower.tail = TRUE, log.p = FALSE) qnbinom(p, size = a, prob = b / (b + n), lower.tail = lower.tail, log.p = log.p)
+.qnbinomAB <- function(p, a, b, n = 1, lower.tail = TRUE, log.p = FALSE)
+  qnbinom(
+    p,
+    size = a,
+    prob = b / (b + n),
+    lower.tail = lower.tail,
+    log.p = log.p
+  )
 ## qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p=FALSE) qmix_impl(Curry(.qnbinomAB, n=attr(mix, "n")), mix, p, lower.tail, log.p, discrete=TRUE)
 
 ## switched to numeric implementation as discretization seems to cause
@@ -348,7 +435,8 @@ qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   ## numerical evaulation
   n <- attr(mix, "n")
   eps <- 1e-6
-  plow <- if (log.p) min(c(eps, exp(p), (1 - exp(p)))) / 2 else min(c(eps, p, (1 - p))) / 2
+  plow <- if (log.p) min(c(eps, exp(p), (1 - exp(p)))) / 2 else
+    min(c(eps, p, (1 - p))) / 2
   phigh <- 1 - plow
   Nc <- ncol(mix)
   qhigh <- max(.qnbinomAB(rep.int(phigh, Nc), mix[2, ], mix[3, ], n = n))
@@ -361,7 +449,8 @@ qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @export
-qmix.mvnormMix <- function(mix, p, ...) stop("Multivariate normal mixture quantiles not supported.")
+qmix.mvnormMix <- function(mix, p, ...)
+  stop("Multivariate normal mixture quantiles not supported.")
 
 ### RANDOM NUMBER GENERATION
 
@@ -395,7 +484,8 @@ rmix.betaBinomialMix <- function(mix, n) {
 ## .rnbinomAB <- function(n, a, b) rnbinom(n, size=a, prob=b/(b+1))
 .rnbinomAB <- function(N, a, b, n = 1) rnbinom(N, size = a, prob = b / (b + n))
 #' @export
-rmix.gammaPoissonMix <- function(mix, n) rmix_impl(Curry(.rnbinomAB, n = attr(mix, "n")), mix, n)
+rmix.gammaPoissonMix <- function(mix, n)
+  rmix_impl(Curry(.rnbinomAB, n = attr(mix, "n")), mix, n)
 
 #' @export
 rmix.mvnormMix <- function(mix, n) {
@@ -418,7 +508,8 @@ rmix.mvnormMix <- function(mix, n) {
         S <- mvnormsigma(mix[-1, comp])
         rmvnorm(cn, m, S, checkSymmetry = FALSE)
       },
-      r$values, r$lengths,
+      r$values,
+      r$lengths,
       SIMPLIFY = FALSE
     )
   )[oidx, , drop = FALSE]

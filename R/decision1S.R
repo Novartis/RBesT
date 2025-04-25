@@ -4,16 +4,16 @@
 #' arbitrary number of conditions.
 #'
 #' @param pc Vector of critical cumulative probabilities.
-#' @param qc Vector of respective critical values. Must match the length of \code{pc}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities
+#' @param qc Vector of respective critical values. Must match the length of `pc`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities
 #' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}.
 #'
 #' @details The function creates a one-sided decision function which
 #' takes two arguments. The first argument is expected to be a mixture
 #' (posterior) distribution. This distribution is tested whether it
 #' fulfills all the required threshold conditions specified with the
-#' \code{pc} and \code{qc} arguments and returns 1 if all conditions
-#' are met and 0 otherwise. Hence, for \code{lower.tail=TRUE}
+#' `pc` and `qc` arguments and returns 1 if all conditions
+#' are met and 0 otherwise. Hence, for `lower.tail=TRUE`
 #' condition \eqn{i} is equivalent to
 #'
 #' \deqn{P(\theta \leq q_{c,i}) > p_{c,i}}
@@ -25,14 +25,14 @@
 #'
 #' \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
 #'
-#' When the second argument is set to \code{TRUE} a distance metric is
+#' When the second argument is set to `TRUE` a distance metric is
 #' returned component-wise per defined condition as
 #'
 #' \deqn{ D_i = \log(P(\theta < q_{c,i})) - \log(p_{c,i}) .}
 #'
 #' These indicator functions can be used as input for 1-sample
-#' boundary, OC or PoS calculations using \code{\link{oc1S}} or
-#' \code{\link{pos1S}} .
+#' boundary, OC or PoS calculations using [oc1S()] or
+#' [pos1S()] .
 #'
 #' @family design1S
 #'
@@ -47,7 +47,7 @@
 #'
 #' @references Neuenschwander B, Rouyrre N, Hollaender H, Zuber E,
 #' Branson M. A proof of concept phase II non-inferiority
-#' criterion. \emph{Stat. in Med.}. 2011, 30:1618-1627
+#' criterion. *Stat. in Med.*. 2011, 30:1618-1627
 #'
 #' @examples
 #'
@@ -132,7 +132,7 @@ print.decision1S <- function(x, ...) {
 }
 
 #' @describeIn decision1S Deprecated old function name. Please use
-#' \code{decision1S} instead.
+#' `decision1S` instead.
 #' @export
 oc1Sdecision <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
   deprecated("oc1Sdecision", "decision1S")

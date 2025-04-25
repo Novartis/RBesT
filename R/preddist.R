@@ -122,14 +122,15 @@ preddist.normMix <- function(mix, n = 1, sigma, ...) {
 preddist.gammaMix <- function(mix, n = 1, ...) {
   assert_set_equal(likelihood(mix), "poisson")
   attr(mix, "n") <- n
-  class(mix) <- c(switch(likelihood(mix),
-    poisson = "gammaPoissonMix",
-    exp = "gammaExpMix"
-  ), "mix")
+  class(mix) <- c(
+    switch(likelihood(mix), poisson = "gammaPoissonMix", exp = "gammaExpMix"),
+    "mix"
+  )
   mix
 }
 
 #' @describeIn preddist Multivariate normal mixtures predictive
 #'     densities are not (yet) supported.
 #' @export
-preddist.mvnormMix <- function(mix, ...) stop("Multivariate normal mixture predictive density not supported.")
+preddist.mvnormMix <- function(mix, ...)
+  stop("Multivariate normal mixture predictive density not supported.")

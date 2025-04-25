@@ -10,7 +10,6 @@
 ## - two component mixture with heavy tails
 ## - three component mixture with bi-modal density and heavy tails
 
-
 ## number of samples drawn from test distributions
 if (identical(Sys.getenv("NOT_CRAN"), "true")) {
   ## through testing if not on CRAN
@@ -29,19 +28,21 @@ if (identical(Sys.getenv("NOT_CRAN"), "true")) {
 
 ref <- list()
 
-ref$norm_single <- mixnorm(c(1, 1, 5),
-  param = "mn", sigma = 1
-)
+ref$norm_single <- mixnorm(c(1, 1, 5), param = "mn", sigma = 1)
 
-ref$norm_heavy <- mixnorm(c(0.5, 0, 0.25),
+ref$norm_heavy <- mixnorm(
+  c(0.5, 0, 0.25),
   c(0.5, 1, 5),
-  param = "mn", sigma = 1
+  param = "mn",
+  sigma = 1
 )
 
-ref$norm_bi <- mixnorm(c(0.5, 0, 0.5),
+ref$norm_bi <- mixnorm(
+  c(0.5, 0, 0.5),
   c(0.25, 1, 5),
   c(0.25, -1, 2),
-  param = "mn", sigma = 1
+  param = "mn",
+  sigma = 1
 )
 
 p <- 4
@@ -52,59 +53,58 @@ s <- c(1, 2, 3, 4)
 S <- diag(s, p) %*% Rho %*% diag(s, p)
 zero <- rep(0, p)
 
-ref$mvnorm_single <- mixmvnorm(c(1, zero, 5),
-  param = "mn", sigma = S
-)
+ref$mvnorm_single <- mixmvnorm(c(1, zero, 5), param = "mn", sigma = S)
 
-ref$mvnorm_heavy <- mixmvnorm(c(0.5, zero, 0.25),
+ref$mvnorm_heavy <- mixmvnorm(
+  c(0.5, zero, 0.25),
   c(0.5, zero + 1, 5),
-  param = "mn", sigma = S
+  param = "mn",
+  sigma = S
 )
 
-ref$mvnorm_bi <- mixmvnorm(c(0.5, zero, 0.5),
+ref$mvnorm_bi <- mixmvnorm(
+  c(0.5, zero, 0.5),
   c(0.25, zero + 1, 5),
   c(0.25, zero - 1, 2),
-  param = "mn", sigma = S
+  param = "mn",
+  sigma = S
 )
 
-ref$mvnorm_bi_1D <- mixmvnorm(c(0.5, 0, 0.5),
+ref$mvnorm_bi_1D <- mixmvnorm(
+  c(0.5, 0, 0.5),
   c(0.25, 1, 5),
   c(0.25, -1, 2),
-  param = "mn", sigma = S[1, 1, drop = FALSE]
+  param = "mn",
+  sigma = S[1, 1, drop = FALSE]
 )
 
 
-ref$beta_single <- mixbeta(c(1, 0.3, 10),
-  param = "mn"
-)
+ref$beta_single <- mixbeta(c(1, 0.3, 10), param = "mn")
 
 ## density which is challenging for the constrained version of the
 ## beta EM (and leads to a large KLdiv)
 ref$beta_single_alt <- mixbeta(c(1, 0.2, 3))
 
-ref$beta_heavy <- mixbeta(c(0.8, 0.3, 10),
-  c(0.2, 0.5, 2.5),
-  param = "mn"
-)
+ref$beta_heavy <- mixbeta(c(0.8, 0.3, 10), c(0.2, 0.5, 2.5), param = "mn")
 
-ref$beta_bi <- mixbeta(c(0.3, 0.3, 20),
+ref$beta_bi <- mixbeta(
+  c(0.3, 0.3, 20),
   c(0.2, 0.5, 2),
   c(0.5, 0.7, 10),
   param = "mn"
 )
 
-ref$gamma_single <- mixgamma(c(1, 7.5, 5),
-  param = "mn",
-  likelihood = "poisson"
-)
+ref$gamma_single <- mixgamma(c(1, 7.5, 5), param = "mn", likelihood = "poisson")
 
-ref$gamma_heavy <- mixgamma(c(0.5, 7.5, 0.5),
+ref$gamma_heavy <- mixgamma(
+  c(0.5, 7.5, 0.5),
   c(0.5, 5, 10),
   param = "mn",
   likelihood = "poisson"
 )
 
-ref$gamma_bi <- mixgamma(c(0.5, 7.5, 1),
+ref$gamma_bi <- mixgamma(
+  c(0.5, 7.5, 1),
   c(0.25, 15, 15),
   c(0.25, 5, 10),
   param = "mn",
@@ -115,8 +115,10 @@ EM_test <- function(mixTest, seed, Nsim = 1e4, verbose = FALSE, ...) {
   set.seed(seed)
   samp <- rmix(mixTest, Nsim)
   set.seed(seed)
-  EMmix1 <- mixfit(samp,
-    type = switch(class(mixTest)[1],
+  EMmix1 <- mixfit(
+    samp,
+    type = switch(
+      class(mixTest)[1],
       gammaMix = "gamma",
       normMix = "norm",
       betaMix = "beta",
@@ -125,15 +127,18 @@ EM_test <- function(mixTest, seed, Nsim = 1e4, verbose = FALSE, ...) {
     thin = 1,
     eps = 2,
     Nc = ncol(mixTest),
-    verbose = verbose, ...
+    verbose = verbose,
+    ...
   )
   kl1 <- abs(KLdivmix(mixTest, EMmix1))
   expect_true(kl1 < KLthresh)
   ## results must not depend on the seed, but only on the order of
   ## the input sample
   set.seed(seed + 657858)
-  EMmix2 <- mixfit(samp,
-    type = switch(class(mixTest)[1],
+  EMmix2 <- mixfit(
+    samp,
+    type = switch(
+      class(mixTest)[1],
       gammaMix = "gamma",
       normMix = "norm",
       betaMix = "beta",
@@ -142,34 +147,45 @@ EM_test <- function(mixTest, seed, Nsim = 1e4, verbose = FALSE, ...) {
     thin = 1,
     eps = 2,
     Nc = ncol(mixTest),
-    verbose = verbose, ...
+    verbose = verbose,
+    ...
   )
-  expect_true(all(EMmix1 == EMmix2), info = "Result of EM is independent of random seed.")
+  expect_true(
+    all(EMmix1 == EMmix2),
+    info = "Result of EM is independent of random seed."
+  )
 }
 
 EM_mvn_test <- function(mixTest, seed, Nsim = 1e4, verbose = FALSE, ...) {
   set.seed(seed)
   samp <- rmix(mixTest, Nsim)
   set.seed(seed)
-  EMmix1 <- mixfit(samp,
+  EMmix1 <- mixfit(
+    samp,
     type = "mvnorm",
     thin = 1,
     eps = 2,
     Nc = ncol(mixTest),
-    verbose = verbose, ...
+    verbose = verbose,
+    ...
   )
   expect_equal(summary(mixTest)$mean, summary(EMmix1)$mean, tolerance = 0.1)
   expect_equal(summary(mixTest)$cov, summary(EMmix1)$cov, tolerance = 0.1)
   expect_equal(likelihood(EMmix1), likelihood(mixTest))
   set.seed(seed + 476767)
-  EMmix2 <- mixfit(samp,
+  EMmix2 <- mixfit(
+    samp,
     type = "mvnorm",
     thin = 1,
     eps = 2,
     Nc = ncol(mixTest),
-    verbose = verbose, ...
+    verbose = verbose,
+    ...
   )
-  expect_true(all(EMmix1 == EMmix2), info = "Result of EM is independent of random seed.")
+  expect_true(
+    all(EMmix1 == EMmix2),
+    info = "Result of EM is independent of random seed."
+  )
 }
 
 test_that("Normal EM fits single component", {

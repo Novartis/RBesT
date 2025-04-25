@@ -80,10 +80,10 @@ Individual mixture components can be extracted using the \code{[[}
 operator, see examples below.
 
 The supported densities are normal, beta and gamma which can be
-instantiated with \code{\link{mixnorm}}, \code{\link{mixbeta}}, or
-\code{\link{mixgamma}}, respectively. In addition, the respective
+instantiated with \code{\link[=mixnorm]{mixnorm()}}, \code{\link[=mixbeta]{mixbeta()}}, or
+\code{\link[=mixgamma]{mixgamma()}}, respectively. In addition, the respective
 predictive distributions are supported. These can be obtained by
-calling \code{\link{preddist}} which returns appropriate normal,
+calling \code{\link[=preddist]{preddist()}} which returns appropriate normal,
 beta-binomial or Poisson-gamma mixtures.
 
 For convenience a \code{summary} function is defined for all
@@ -94,8 +94,8 @@ quantiles which can be specified with the argument \code{probs}.
 
 
 \tabular{lccc}{
-\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive} 
- \tab \strong{Summaries} \cr
+\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive}
+\tab \strong{Summaries} \cr
 Beta \tab Binomial \tab Beta-Binomial \tab \code{n}, \code{r} \cr
 Normal \tab Normal (\emph{fixed \eqn{\sigma}}) \tab Normal \tab \code{n}, \code{m}, \code{se}  \cr
 Gamma \tab Poisson \tab Gamma-Poisson \tab  \code{n}, \code{m} \cr
@@ -116,12 +116,13 @@ summary(bm)
 
 }
 \seealso{
-\code{\link{plot.mix}}
+\code{\link[=plot.mix]{plot.mix()}}
 
 Other mixdist: 
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
+\code{\link{mixjson}},
 \code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
 \code{\link{mixplot}}

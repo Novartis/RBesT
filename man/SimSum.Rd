@@ -29,7 +29,7 @@ The function calculates summary statistics from arbitrary arrays.
 \details{
 The function calculates by default the mean, standard
 deviation and the specified qantiles which are by default the
-median and the 95% interval.
+median and the 95\% interval.
 
 If a mulit-dimensional array is specified as \code{x}, then the
 function will by default calculate the summaries over the margin of
