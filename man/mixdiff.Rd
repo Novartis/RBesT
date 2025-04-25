@@ -25,7 +25,7 @@ rmixdiff(mix1, mix2, n)
 
 \item{q}{vector of quantiles for which cumulative probabilities are computed}
 
-\item{lower.tail}{logical; if \code{TRUE} (default), probabilities are P[X <= x], otherwise P[X > x].}
+\item{lower.tail}{logical; if \code{TRUE} (default), probabilities are \eqn{P[X <= x]}, otherwise \eqn{P[X > x]}.}
 
 \item{p}{vector of cumulative probabilities for which quantiles are computed}
 
@@ -53,7 +53,7 @@ The cumulative distribution function equates to
 
 Both integrals are performed over the full support of the
 densities and use the numerical integration function
-\code{\link{integrate}}.
+\code{\link[=integrate]{integrate()}}.
 }
 \examples{
 

@@ -15,7 +15,7 @@ forest_plot(
 )
 }
 \arguments{
-\item{x}{\code{\link{gMAP}} object.}
+\item{x}{\code{\link[=gMAP]{gMAP()}} object.}
 
 \item{prob}{confidence interval width and probability mass of credible intervals.}
 
@@ -34,11 +34,11 @@ suppresses the reference line.}
 The function returns a \pkg{ggplot2} plot object.
 }
 \description{
-Creates a forest plot for \code{\link{gMAP}} analysis objects.
+Creates a forest plot for \code{\link[=gMAP]{gMAP()}} analysis objects.
 }
 \details{
 The function creates a forest plot suitable for
-\code{\link{gMAP}} analyses. Note that the Meta-Analytic-Predictive
+\code{\link[=gMAP]{gMAP()}} analyses. Note that the Meta-Analytic-Predictive
 prior is included by default in the plot as opposed to only showing
 the estimated model mean. See the examples below to obtain standard
 forest plots.
@@ -93,5 +93,5 @@ theme_set(theme_default(base_size = 12))
 
 }
 \seealso{
-\code{\link{gMAP}}
+\code{\link[=gMAP]{gMAP()}}
 }

@@ -95,7 +95,7 @@ error \code{se} and sample mean \code{m}. If the sample size
 reference scale of the prior is used to calculate the standard
 error. Should standard error \code{se} and sample size \code{n} be
 given, then the reference scale of the prior is updated; however it
-is recommended to use the command \code{\link{sigma}} to set the
+is recommended to use the command \code{\link[=sigma]{sigma()}} to set the
 reference standard deviation.
 
 \item \code{postmix(gammaMix)}: Calculates the posterior gamma mixture
@@ -107,8 +107,8 @@ Poisson case is supported in this version.
 
 
 \tabular{lccc}{
-\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive} 
- \tab \strong{Summaries} \cr
+\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive}
+\tab \strong{Summaries} \cr
 Beta \tab Binomial \tab Beta-Binomial \tab \code{n}, \code{r} \cr
 Normal \tab Normal (\emph{fixed \eqn{\sigma}}) \tab Normal \tab \code{n}, \code{m}, \code{se}  \cr
 Gamma \tab Poisson \tab Gamma-Poisson \tab  \code{n}, \code{m} \cr

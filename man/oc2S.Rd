@@ -73,10 +73,10 @@ distribution of the data defined by the known parameter
 \eqn{\theta_1} and \eqn{\theta_2}. The 2 sample design is defined
 by the priors, the sample sizes and the decision function,
 \eqn{D(y_1,y_2)}. These uniquely define the decision boundary , see
-\code{\link{decision2S_boundary}}.
+\code{\link[=decision2S_boundary]{decision2S_boundary()}}.
 
 Calling the \code{oc2S} function calculates the decision boundary
-\eqn{D_1(y_2)} (see \code{\link{decision2S_boundary}}) and returns
+\eqn{D_1(y_2)} (see \code{\link[=decision2S_boundary]{decision2S_boundary()}}) and returns
 a function which can be used to calculate the desired frequency
 which is evaluated as
 

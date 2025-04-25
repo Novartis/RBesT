@@ -55,8 +55,8 @@ returned component-wise per defined condition as
 \deqn{ D_i = \log(P(\theta < q_{c,i})) - \log(p_{c,i}) .}
 
 These indicator functions can be used as input for 1-sample
-boundary, OC or PoS calculations using \code{\link{oc1S}} or
-\code{\link{pos1S}} .
+boundary, OC or PoS calculations using \code{\link[=oc1S]{oc1S()}} or
+\code{\link[=pos1S]{pos1S()}} .
 }
 \section{Functions}{
 \itemize{

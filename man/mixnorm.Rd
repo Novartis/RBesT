@@ -111,6 +111,7 @@ Other mixdist:
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
+\code{\link{mixjson}},
 \code{\link{mixmvnorm}()},
 \code{\link{mixplot}}
 }

@@ -95,7 +95,7 @@ data). Defaults to \code{FALSE}.}
 \code{t}.}
 
 \item{contrasts}{an optional list; See \code{contrasts.arg} from
-\code{\link[stats:model.matrix.default]{model.matrix.default}}.}
+\code{\link[stats:model.matrix]{stats::model.matrix.default()}}.}
 
 \item{iter}{number of iterations (including warmup).}
 
@@ -132,7 +132,7 @@ object.
 Meta-Analytic-Predictive (MAP) analysis for generalized linear
 models suitable for normal, binary, or Poisson data. Model
 specification and overall syntax follows mainly
-\code{\link[stats:glm]{glm}} conventions.
+\code{\link[stats:glm]{stats::glm()}} conventions.
 }
 \details{
 The meta-analytic-predictive (MAP) approach derives a prior from
@@ -220,8 +220,7 @@ Poisson endpoints, normal approximations can be used to determine
 \eqn{\sigma}. See examples below for concrete cases.
 
 The design matrix \eqn{X} is defined by the formula for the linear
-predictor and is always of the form \code{response ~ predictor |
-grouping}, which follows \code{\link[stats:glm]{glm}}
+predictor and is always of the form \code{response ~ predictor | grouping}, which follows \code{\link[stats:glm]{stats::glm()}}
 conventions. The syntax has been extended to include a
 specification of the grouping (for example study) factor of the
 data with a horizontal bar, \code{|}. The bar separates the
@@ -361,10 +360,10 @@ and b.
 
 \section{Random seed}{
  The MAP analysis is performed using
-Markov-Chain-Monte-Carlo (MCMC) in \code{\link[rstan]{rstan}}. MCMC
+Markov-Chain-Monte-Carlo (MCMC) in \code{\link[rstan:rstan]{rstan::rstan()}}. MCMC
 is a stochastic algorithm. To obtain exactly reproducible results
-you must use the \code{\link[base:set.seed]{set.seed}} function
-before calling \code{gMAP}. See \code{\link[=RBesT-package]{RBesT}}
+you must use the \code{\link[base:Random]{base::set.seed()}} function
+before calling \code{gMAP}. See \code{\link[=RBesT-package]{RBesT()}}
 overview page for global options on setting further MCMC simulation
 parameters.
 }
@@ -475,5 +474,5 @@ Meta-Analytic Predictive Priors with the {R} {B}ayesian evidence
 synthesis tools. \emph{JSS} 2021; 100(19):1-32
 }
 \seealso{
-\code{\link{plot.gMAP}}, \code{\link{forest_plot}}, \code{\link{automixfit}}, \code{\link{predict.gMAP}}
+\code{\link[=plot.gMAP]{plot.gMAP()}}, \code{\link[=forest_plot]{forest_plot()}}, \code{\link[=automixfit]{automixfit()}}, \code{\link[=predict.gMAP]{predict.gMAP()}}
 }

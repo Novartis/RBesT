@@ -7,14 +7,14 @@
 \method{plot}{gMAP}(x, size = NULL, ...)
 }
 \arguments{
-\item{x}{\code{\link{gMAP}} object}
+\item{x}{\code{\link[=gMAP]{gMAP()}} object}
 
 \item{size}{Controls line sizes of traceplots and forest plot.}
 
 \item{...}{Ignored.}
 }
 \value{
-The function returns a list of \code{\link[ggplot2:ggplot]{ggplot}}
+The function returns a list of \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}
 objects.
 }
 \description{
@@ -22,9 +22,9 @@ Diagnostic plots for gMAP analyses
 }
 \details{
 Creates MCMC diagnostics and a forest plot (including
-model estimates) for a \code{\link{gMAP}} analysis. For a
+model estimates) for a \code{\link[=gMAP]{gMAP()}} analysis. For a
 customized forest plot, please use the dedicated function
-\code{\link{forest_plot}}.
+\code{\link[=forest_plot]{forest_plot()}}.
 }
 \section{Customizing \pkg{ggplot2} plots}{
 

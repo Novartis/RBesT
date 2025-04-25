@@ -13,10 +13,10 @@ BinaryExactCI(r, n, alpha = 0.05, drop = TRUE)
 
 \item{alpha}{confidence level}
 
-\item{drop}{Determines if \code{\link{drop}} will be called on the result}
+\item{drop}{Determines if \code{\link[=drop]{drop()}} will be called on the result}
 }
 \value{
-100 (1-\eqn{\alpha})\% exact confidence interval for given
+100 (1-\eqn{\alpha})\\% exact confidence interval for given
 response rate
 }
 \description{

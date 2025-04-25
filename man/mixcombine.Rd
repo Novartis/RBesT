@@ -37,12 +37,13 @@ unif <- mixbeta(rob = c(1, 1, 1))
 mixcombine(bm, unif, weight = c(9, 1))
 }
 \seealso{
-\code{\link{robustify}}
+\code{\link[=robustify]{robustify()}}
 
 Other mixdist: 
 \code{\link{mix}},
 \code{\link{mixbeta}()},
 \code{\link{mixgamma}()},
+\code{\link{mixjson}},
 \code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()},
 \code{\link{mixplot}}

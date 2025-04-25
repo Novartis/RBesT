@@ -13,7 +13,7 @@
 \arguments{
 \item{x}{mixture distribution}
 
-\item{prob}{defining lower and upper percentile of x-axis. Defaults to the 99\% central probability mass.}
+\item{prob}{defining lower and upper percentile of x-axis. Defaults to the 99\\\% central probability mass.}
 
 \item{fun}{function to plot which can be any of \code{dmix}, \code{qmix} or \code{pmix}.}
 
@@ -28,7 +28,7 @@ density in addition to the density.}
 \item{...}{extra arguments passed on to the plotted function.}
 }
 \value{
-A \code{\link[ggplot2]{ggplot}} object is returned.
+A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object is returned.
 }
 \description{
 Plotting for mixture distributions
@@ -38,7 +38,7 @@ Plot function for mixture distribution objects. It shows
 the density/quantile/cumulative distribution (corresponds to
 \code{d/q/pmix} function) for some specific central probability
 mass defined by \code{prob}. By default the x-axis is chosen to
-show 99\% of the probability density mass.
+show 99\\\% of the probability density mass.
 }
 \section{Customizing \pkg{ggplot2} plots}{
 
@@ -99,6 +99,7 @@ Other mixdist:
 \code{\link{mixbeta}()},
 \code{\link{mixcombine}()},
 \code{\link{mixgamma}()},
+\code{\link{mixjson}},
 \code{\link{mixmvnorm}()},
 \code{\link{mixnorm}()}
 }

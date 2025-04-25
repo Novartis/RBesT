@@ -39,7 +39,7 @@ Add a non-informative component to a mixture prior.
 }
 \details{
 It is recommended to robustify informative priors derived
-with \code{\link{gMAP}} using unit-information priors . This
+with \code{\link[=gMAP]{gMAP()}} using unit-information priors . This
 protects against prior-data conflict, see for example
 \emph{Schmidli et al., 2015}.
 
@@ -106,5 +106,5 @@ Hypotheses and its Relationship to the Schwarz Criterion \emph{J
 Amer Statist Assoc} 1995; 90(431):928-934.
 }
 \seealso{
-\code{\link{mixcombine}}
+\code{\link[=mixcombine]{mixcombine()}}
 }

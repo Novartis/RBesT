@@ -63,7 +63,7 @@ critical value \eqn{y_c} is the largest value for which the
 decision is 1, \eqn{D(y \leq y_c) = 1}, while for
 \code{lower.tail=FALSE} then \eqn{D(y > y_c) = 1} holds. This is
 aligned with the cumulative density function definition within R
-(see for example \code{\link{pbinom}}).
+(see for example \code{\link[=pbinom]{pbinom()}}).
 }
 \section{Methods (by class)}{
 \itemize{

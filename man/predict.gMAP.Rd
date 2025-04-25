@@ -48,7 +48,7 @@ Produces a sample of the predictive distribution.
 \details{
 Predictions are made using the \eqn{\tau} prediction
 stratum of the gMAP object. For details on the syntax, please refer
-to \code{\link{predict.glm}} and the example below.
+to \code{\link[=predict.glm]{predict.glm()}} and the example below.
 }
 \examples{
 ## Setting up dummy sampling for fast execution of example
@@ -95,5 +95,5 @@ options(.user_mc_options)
 
 }
 \seealso{
-\code{\link{gMAP}}, \code{\link{predict.glm}}
+\code{\link[=gMAP]{gMAP()}}, \code{\link[=predict.glm]{predict.glm()}}
 }

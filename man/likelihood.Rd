@@ -26,8 +26,8 @@ is called a conjugate prior for the likelihood function.
 
 
 \tabular{lccc}{
-\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive} 
- \tab \strong{Summaries} \cr
+\strong{Prior/Posterior} \tab \strong{Likelihood} \tab \strong{Predictive}
+\tab \strong{Summaries} \cr
 Beta \tab Binomial \tab Beta-Binomial \tab \code{n}, \code{r} \cr
 Normal \tab Normal (\emph{fixed \eqn{\sigma}}) \tab Normal \tab \code{n}, \code{m}, \code{se}  \cr
 Gamma \tab Poisson \tab Gamma-Poisson \tab  \code{n}, \code{m} \cr

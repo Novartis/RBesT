@@ -21,10 +21,10 @@ Overlays the fitted mixture density with a histogram and a density
 plot of the raw sample fitted. Applying a link function can be
 beneficial, for example a \code{logit} (\code{log}) link for beta
 (gamma) mixtures obtained from a Binomial (Poisson)
-\code{\link{gMAP}} analysis.}
+\code{\link[=gMAP]{gMAP()}} analysis.}
 }
 \value{
-A list of \code{\link[ggplot2]{ggplot}} plots for
+A list of \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plots for
 diagnostics of the EM run. Detailed EM diagnostic plots are
 included only if the global option \code{RBesT.verbose} is set to
 \code{TRUE}. These include plots of the parameters of each
@@ -32,7 +32,7 @@ component vs the iteration. The plot of the mixture density with a
 histogram and a density of the fitted sample is always returned.
 }
 \description{
-Produce diagnostic plots of EM fits returned from \code{\link{mixfit}}.
+Produce diagnostic plots of EM fits returned from \code{\link[=mixfit]{mixfit()}}.
 }
 \section{Customizing \pkg{ggplot2} plots}{
 

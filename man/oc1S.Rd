@@ -53,10 +53,10 @@ distribution of the data defined by a known parameter
 \eqn{\theta}. The 1 sample design is defined by the prior, the
 sample size and the decision function, \eqn{D(y)}. These uniquely
 define the decision boundary, see
-\code{\link{decision1S_boundary}}.
+\code{\link[=decision1S_boundary]{decision1S_boundary()}}.
 
 When calling the \code{oc1S} function, then internally the critical
-value \eqn{y_c} (using \code{\link{decision1S_boundary}}) is
+value \eqn{y_c} (using \code{\link[=decision1S_boundary]{decision1S_boundary()}}) is
 calculated and a function is returns which can be used to
 calculated the desired frequency which is evaluated as
 
