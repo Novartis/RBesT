@@ -5,7 +5,7 @@ distributions.  (d/p/q/r)mix are generic and work with any mixture
 supported by BesT (see table below)."><meta property="og:description" content="Density, cumulative distribution function, quantile
 function and random number generation for supported mixture
 distributions.  (d/p/q/r)mix are generic and work with any mixture
-supported by BesT (see table below)."></head><body>
+supported by BesT (see table below)."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@ supported by BesT (see table below)."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ supported by BesT (see table below)."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Mixture Distributions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.8-1/R/mix.R" class="external-link"><code>R/mix.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mix.R" class="external-link"><code>R/mix.R</code></a></small>
       <div class="d-none name"><code>mix.Rd</code></div>
     </div>
 
@@ -138,10 +138,10 @@ defined by a triplet, \((w_k,a_k,b_k)\).</p>
 <p>Individual mixture components can be extracted using the <code>[[</code>
 operator, see examples below.</p>
 <p>The supported densities are normal, beta and gamma which can be
-instantiated with <code><a href="mixnorm.html">mixnorm</a></code>, <code><a href="mixbeta.html">mixbeta</a></code>, or
-<code><a href="mixgamma.html">mixgamma</a></code>, respectively. In addition, the respective
+instantiated with <code><a href="mixnorm.html">mixnorm()</a></code>, <code><a href="mixbeta.html">mixbeta()</a></code>, or
+<code><a href="mixgamma.html">mixgamma()</a></code>, respectively. In addition, the respective
 predictive distributions are supported. These can be obtained by
-calling <code><a href="preddist.html">preddist</a></code> which returns appropriate normal,
+calling <code><a href="preddist.html">preddist()</a></code> which returns appropriate normal,
 beta-binomial or Poisson-gamma mixtures.</p>
 <p>For convenience a <code>summary</code> function is defined for all
 mixtures. It returns the mean, standard deviation and the requested
@@ -155,11 +155,12 @@ quantiles which can be specified with the argument <code>probs</code>.</p>
 <table class="table table"><tr><td><strong>Prior/Posterior</strong></td><td><strong>Likelihood</strong></td><td><strong>Predictive</strong></td><td><strong>Summaries</strong></td></tr><tr><td>Beta</td><td>Binomial</td><td>Beta-Binomial</td><td><code>n</code>, <code>r</code></td></tr><tr><td>Normal</td><td>Normal (<em>fixed \(\sigma\)</em>)</td><td>Normal</td><td><code>n</code>, <code>m</code>, <code>se</code></td></tr><tr><td>Gamma</td><td>Poisson</td><td>Gamma-Poisson</td><td><code>n</code>, <code>m</code></td></tr><tr><td>Gamma</td><td>Exponential</td><td>Gamma-Exp (<em>not supported</em>)</td><td><code>n</code>, <code>m</code></td></tr></table></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mixplot.html">plot.mix</a></code></p>
+    <div class="dont-index"><p><code><a href="mixplot.html">plot.mix()</a></code></p>
 <p>Other mixdist:
 <code><a href="mixbeta.html">mixbeta</a>()</code>,
 <code><a href="mixcombine.html">mixcombine</a>()</code>,
 <code><a href="mixgamma.html">mixgamma</a>()</code>,
+<code><a href="mixjson.html">mixjson</a></code>,
 <code><a href="mixmvnorm.html">mixmvnorm</a>()</code>,
 <code><a href="mixnorm.html">mixnorm</a>()</code>,
 <code><a href="mixplot.html">mixplot</a></code></p></div>

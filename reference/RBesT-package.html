@@ -5,7 +5,7 @@ perform analyses. Supported endpoints include normal, binary and
 Poisson."><meta property="og:description" content="The RBesT tools are designed to support in the derivation of
 parametric informative priors, asses design characeristics and
 perform analyses. Supported endpoints include normal, binary and
-Poisson."></head><body>
+Poisson."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@ Poisson."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ Poisson."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>R Bayesian Evidence Synthesis Tools</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.8-1/R/RBesT-package.R" class="external-link"><code>R/RBesT-package.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/RBesT-package.R" class="external-link"><code>R/RBesT-package.R</code></a></small>
       <div class="d-none name"><code>RBesT-package.Rd</code></div>
     </div>
 
@@ -63,7 +63,7 @@ Poisson.</p>
 <li><p>Introduction (normal)</p></li>
 <li><p>Customizing RBesT Plots</p></li>
 <li><p>Robust MAP, advanced usage</p></li>
-</ul><p>The main function of the package is <code><a href="gMAP.html">gMAP</a></code>. See it's
+</ul><p>The main function of the package is <code><a href="gMAP.html">gMAP()</a></code>. See it's
 help page for a detailed description of the statistical model.</p>
     </div>
     <div class="section level2">
@@ -71,7 +71,7 @@ help page for a detailed description of the statistical model.</p>
 
 
 
-<table class="table table"><tr><td>Option</td><td>Default</td><td>Description</td></tr><tr><td><code>RBesT.MC.warmup</code></td><td>2000</td><td>MCMC warmup iterations</td></tr><tr><td><code>RBesT.MC.iter</code></td><td>6000</td><td>total MCMC iterations</td></tr><tr><td><code>RBesT.MC.chains</code></td><td>4</td><td>MCMC chains</td></tr><tr><td><code>RBesT.MC.thin</code></td><td>4</td><td>MCMC thinning</td></tr><tr><td><code>RBesT.MC.control</code></td><td><code>list(adapt_delta=0.99,</code></td><td>sets <code>control</code> argument for Stan call</td></tr><tr><td></td><td><code>stepsize=0.01,</code></td><td></td></tr><tr><td></td><td><code>max_treedepth=20)</code></td><td></td></tr><tr><td><code>RBesT.MC.ncp</code></td><td>1</td><td>parametrization: 0=CP, 1=NCP, 2=Automatic</td></tr><tr><td><code>RBesT.MC.init</code></td><td>1</td><td>range of initial uniform [-1,1] is the default</td></tr><tr><td><code>RBesT.MC.rescale</code></td><td><code>TRUE</code></td><td>Automatic rescaling of raw parameters</td></tr><tr><td><code>RBesT.verbose</code></td><td><code>FALSE</code></td><td>requests outputs to be more verbose</td></tr><tr><td><code>RBesT.integrate_args</code></td><td><code>list(lower=-Inf,</code></td><td>arguments passed to <code>integrate</code> for</td></tr><tr><td></td><td><code>upper=Inf,</code></td><td>intergation of densities</td></tr><tr><td></td><td><code>rel.tol=.Machine$double.eps^0.25,</code></td><td></td></tr><tr><td></td><td><code>abs.tol=.Machine$double.eps^0.25,</code></td><td></td></tr><tr><td></td><td><code>subdivisions=1E3)</code></td><td></td></tr><tr><td><code>RBesT.integrate_prob_eps</code></td><td><code>1E-6</code></td><td>probability mass left out from tails if integration needs to be restricted in range</td></tr></table></div>
+<table class="table table"><tr><td>Option</td><td>Default</td><td>Description</td></tr><tr><td><code>RBesT.MC.warmup</code></td><td>2000</td><td>MCMC warmup iterations</td></tr><tr><td><code>RBesT.MC.iter</code></td><td>6000</td><td>total MCMC iterations</td></tr><tr><td><code>RBesT.MC.chains</code></td><td>4</td><td>MCMC chains</td></tr><tr><td><code>RBesT.MC.thin</code></td><td>4</td><td>MCMC thinning</td></tr><tr><td><code>RBesT.MC.control</code></td><td><code>list(adapt_delta=0.99,</code></td><td>sets <code>control</code> argument for Stan call</td></tr><tr><td></td><td><code>stepsize=0.01,</code></td><td></td></tr><tr><td></td><td><code>max_treedepth=20)</code></td><td></td></tr><tr><td><code>RBesT.MC.ncp</code></td><td>1</td><td>parametrization: 0=CP, 1=NCP, 2=Automatic</td></tr><tr><td><code>RBesT.MC.init</code></td><td>1</td><td>range of initial uniform \([-1,1]\) is the default</td></tr><tr><td><code>RBesT.MC.rescale</code></td><td><code>TRUE</code></td><td>Automatic rescaling of raw parameters</td></tr><tr><td><code>RBesT.verbose</code></td><td><code>FALSE</code></td><td>requests outputs to be more verbose</td></tr><tr><td><code>RBesT.integrate_args</code></td><td><code>list(lower=-Inf,</code></td><td>arguments passed to <code>integrate</code> for</td></tr><tr><td></td><td><code>upper=Inf,</code></td><td>intergation of densities</td></tr><tr><td></td><td><code>rel.tol=.Machine$double.eps^0.25,</code></td><td></td></tr><tr><td></td><td><code>abs.tol=.Machine$double.eps^0.25,</code></td><td></td></tr><tr><td></td><td><code>subdivisions=1E3)</code></td><td></td></tr><tr><td><code>RBesT.integrate_prob_eps</code></td><td><code>1E-6</code></td><td>probability mass left out from tails if integration needs to be restricted in range</td></tr></table></div>
     <div class="section level2">
     <h2 id="version-history">Version History<a class="anchor" aria-label="anchor" href="#version-history"></a></h2>
 

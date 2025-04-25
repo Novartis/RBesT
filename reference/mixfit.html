@@ -3,7 +3,7 @@
 densities to numerical samples. This provides a convenient approach
 to approximate MCMC samples with a parametric mixture distribution."><meta property="og:description" content="Expectation-Maximization (EM) based fitting of parametric mixture
 densities to numerical samples. This provides a convenient approach
-to approximate MCMC samples with a parametric mixture distribution."></head><body>
+to approximate MCMC samples with a parametric mixture distribution."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -11,7 +11,7 @@ to approximate MCMC samples with a parametric mixture distribution."></head><bod
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ to approximate MCMC samples with a parametric mixture distribution."></head><bod
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Fit of Mixture Densities to Samples</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.8-1/R/mixfit.R" class="external-link"><code>R/mixfit.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixfit.R" class="external-link"><code>R/mixfit.R</code></a></small>
       <div class="d-none name"><code>mixfit.Rd</code></div>
     </div>
 
@@ -158,16 +158,16 @@ sample. Thinning is applied only if thin is specified.</p></li>
 <li><p><code>mixfit(gMAP)</code>: Fits the default predictive distribution from a
 gMAP analysis. Automatically obtains the predictive distribution of
 the intercept only case on the response scale mixture from the
-<code><a href="gMAP.html">gMAP</a></code> object. For the binomial case a beta mixture,
+<code><a href="gMAP.html">gMAP()</a></code> object. For the binomial case a beta mixture,
 for the gaussian case a normal mixture and for the Poisson case a
 gamma mixture will be used. In the gaussian case, the resulting
 normal mixture will set the reference scale to the estimated
-sigma in <code><a href="gMAP.html">gMAP</a></code> call.</p></li>
+sigma in <code><a href="gMAP.html">gMAP()</a></code> call.</p></li>
 <li><p><code>mixfit(gMAPpred)</code>: Fits a mixture density for each prediction from
-the <code><a href="gMAP.html">gMAP</a></code> prediction.</p></li>
+the <code><a href="gMAP.html">gMAP()</a></code> prediction.</p></li>
 <li><p><code>mixfit(array)</code>: Fits a mixture density for an MCMC sample. It is
 recommended to provide a thinning argument which roughly yields
-independent draws (i.e. use <code><a href="https://rdrr.io/r/stats/acf.html" class="external-link">acf</a></code> to identify a
+independent draws (i.e. use <code><a href="https://rdrr.io/r/stats/acf.html" class="external-link">acf()</a></code> to identify a
 thinning lag with small auto-correlation). The input array is
 expected to have 3 dimensions which are nested as iterations,
 chains, and draws.</p></li>

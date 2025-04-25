@@ -3,7 +3,7 @@
 critical value at which the decision function will change from 0
 (failure) to 1 (success)."><meta property="og:description" content="Calculates the decision boundary for a 1 sample design. This is the
 critical value at which the decision function will change from 0
-(failure) to 1 (success)."></head><body>
+(failure) to 1 (success)."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -11,7 +11,7 @@ critical value at which the decision function will change from 0
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ critical value at which the decision function will change from 0
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Decision Boundary for 1 Sample Designs</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.8-1/R/decision1S_boundary.R" class="external-link"><code>R/decision1S_boundary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/decision1S_boundary.R" class="external-link"><code>R/decision1S_boundary.R</code></a></small>
       <div class="d-none name"><code>decision1S_boundary.Rd</code></div>
     </div>
 
@@ -123,7 +123,7 @@ critical value \(y_c\) is the largest value for which the
 decision is 1, \(D(y \leq y_c) = 1\), while for
 <code>lower.tail=FALSE</code> then \(D(y &gt; y_c) = 1\) holds. This is
 aligned with the cumulative density function definition within R
-(see for example <code><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">pbinom</a></code>).</p>
+(see for example <code><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">pbinom()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>

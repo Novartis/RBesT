@@ -3,7 +3,7 @@
 ESS indicates how many experimental units the prior is roughly
 equivalent to."><meta property="og:description" content="Calculates the Effective Sample Size (ESS) for a mixture prior. The
 ESS indicates how many experimental units the prior is roughly
-equivalent to."></head><body>
+equivalent to."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -11,7 +11,7 @@ equivalent to."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ equivalent to."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Effective Sample Size for a Conjugate Prior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.8-1/R/mixess.R" class="external-link"><code>R/mixess.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixess.R" class="external-link"><code>R/mixess.R</code></a></small>
       <div class="d-none name"><code>ess.Rd</code></div>
     </div>
 
@@ -118,9 +118,9 @@ Morita method (defaults to 1E-4).</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The ESS is calculated using either the expected local
-    information ratio (elir) <em>Neuenschwander et
-    al. (2020)</em>, the moments approach or the method by
-    <em>Morita et al. (2008)</em>.</p>
+information ratio (elir) <em>Neuenschwander et
+al. (2020)</em>, the moments approach or the method by
+<em>Morita et al. (2008)</em>.</p>
 <p>The elir approach measures effective sample size in terms of the
 average curvature of the prior in relation to the Fisher
 information. Informally this corresponds to the average peakiness
@@ -172,12 +172,12 @@ supports non-gaussian families with unit dispersion only.</p>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Morita S, Thall PF, Mueller P.  Determining the
-    effective sample size of a parametric prior.  <em>Biometrics</em>
-    2008;64(2):595-602.</p>
+effective sample size of a parametric prior.  <em>Biometrics</em>
+2008;64(2):595-602.</p>
 <p>Neuenschwander B., Weber S., Schmidli H., O’Hagan
-    A. (2020). Predictively consistent prior effective sample
-    sizes. <em>Biometrics</em>, 76(2),
-    578–587. https://doi.org/10.1111/biom.13252</p>
+A. (2020). Predictively consistent prior effective sample
+sizes. <em>Biometrics</em>, 76(2),
+578–587. https://doi.org/10.1111/biom.13252</p>
     </div>
 
     <div class="section level2">
