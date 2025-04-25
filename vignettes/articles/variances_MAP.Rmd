@@ -15,6 +15,8 @@ vignette: >
 ```{r, child="../settings-sampling.txt"}
 ```
 ```{r, include=FALSE}
+library(RBesT)
+library(ggplot2)
 library(dplyr)
 library(purrr)
 library(knitr)
@@ -188,8 +190,12 @@ v <- psigamma(a, 1)
 ## analytic density and approximate normal
 sim <- rmix(gamma_dist, 1E5)
 mcmc_hist(data.frame(logGamma = log(sim)), freq = FALSE, binwidth = 0.1) +
-  overlay_function(fun = dlogGamma, args = list(a = a, b = b), aes(linetype = "LogGamma")) +
-  overlay_function(fun = dnorm, args = list(mean = m, sd = sqrt(v)), aes(linetype = "NormalApprox"))
+  stat_function(aes(x, linetype = "LogGamma"),
+                data.frame(x=c(0,2.25)),
+                fun = dlogGamma, args = list(a = a, b = b)) +
+  stat_function(aes(x, linetype = "NormalApprox"),
+                data.frame(x=c(0,2.25)),
+                fun = dnorm, args = list(mean = m, sd = sqrt(v)))
 ```
 
 We see that for $\nu=9$ only, the approximation with a normal density

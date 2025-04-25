@@ -1,5 +1,15 @@
 ## EM for GMM with Nc components
-EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500, tol, Neps, eps = c(weight = 0.005, alpha = 0.005, beta = 0.005)) {
+EM_gmm <- function(
+  x,
+  Nc,
+  mix_init,
+  Ninit = 50,
+  verbose = FALSE,
+  Niter.max = 500,
+  tol,
+  Neps,
+  eps = c(weight = 0.005, alpha = 0.005, beta = 0.005)
+) {
   N <- length(x)
   assert_that(N + Nc >= Ninit)
 
@@ -7,7 +17,11 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
   ## valid. Moving these to eps ensures proper handling during fit.
   x0 <- x == 0
   if (any(x0)) {
-    message("Detected ", sum(x0), " value(s) which are exactly 0.\nTo avoid numerical issues during EM such values are moved to smallest eps on machine.")
+    message(
+      "Detected ",
+      sum(x0),
+      " value(s) which are exactly 0.\nTo avoid numerical issues during EM such values are moved to smallest eps on machine."
+    )
     x[x0] <- .Machine$double.eps
   }
 
@@ -20,7 +34,10 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
   if (missing(mix_init)) {
     ## assume that the sample is ordered randomly
     ind <- seq(1, N - Nc, length = Ninit)
-    knnInit <- list(mu = matrix(0, nrow = Nc, ncol = 1), p = rep(1 / Nc, times = Nc))
+    knnInit <- list(
+      mu = matrix(0, nrow = Nc, ncol = 1),
+      p = rep(1 / Nc, times = Nc)
+    )
     for (k in seq(Nc)) {
       knnInit$mu[k, 1] <- mean(x[ind + k - 1])
     }
@@ -95,7 +112,6 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
   assert_that(Neps > 1)
   assert_that(ceiling(Neps) == floor(Neps))
 
-
   ## eps can also be given as a single integer which is interpreted
   ## as number of digits
   if (length(eps) == 1) eps <- rep(10^(-eps), 3)
@@ -105,7 +121,11 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
   traceMix <- list()
   traceLli <- c()
   Dlli <- Inf
-  runMixPar <- array(-Inf, dim = c(Neps, 3, Nc), dimnames = list(NULL, rownames(mixEstPar), NULL))
+  runMixPar <- array(
+    -Inf,
+    dim = c(Neps, 3, Nc),
+    dimnames = list(NULL, rownames(mixEstPar), NULL)
+  )
   runOrder <- 0:(Neps - 1)
   Npar <- Nc + 2 * Nc
   if (Nc == 1) Npar <- Npar - 1
@@ -136,7 +156,12 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
     a <- mixEst[2, ]
     b <- mixEst[3, ]
     ## Gamma density: x^(a-1) * exp(-b * x) * b^a / Gamma(a)
-    lli <- sweep(sweep(Lx, 2, a - 1, "*") - sweep(xRep, 2, b, "*"), 2, a * log(b) - lgamma(a) + log(w), "+")
+    lli <- sweep(
+      sweep(Lx, 2, a - 1, "*") - sweep(xRep, 2, b, "*"),
+      2,
+      a * log(b) - lgamma(a) + log(w),
+      "+"
+    )
 
     ## ensure that the log-likelihood does not go out of numerical
     ## reasonable bounds
@@ -155,15 +180,36 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
       Dlli <- (traceLli[iter + 1] - traceLli[iter - 1]) / 2
     }
     if (Nc > 1) {
-      smean <- apply(runMixPar[order(runOrder), , , drop = FALSE], c(2, 3), function(x) mean(abs(diff(x))))
+      smean <- apply(
+        runMixPar[order(runOrder), , , drop = FALSE],
+        c(2, 3),
+        function(x) mean(abs(diff(x)))
+      )
       eps.converged <- sum(sweep(smean, 1, eps, "-") < 0)
     } else {
-      smean <- apply(runMixPar[order(runOrder), -1, , drop = FALSE], c(2, 3), function(x) mean(abs(diff(x))))
+      smean <- apply(
+        runMixPar[order(runOrder), -1, , drop = FALSE],
+        c(2, 3),
+        function(x) mean(abs(diff(x)))
+      )
       eps.converged <- sum(sweep(smean, 1, eps[-1], "-") < 0)
     }
     if (is.na(eps.converged)) eps.converged <- 0
     if (verbose) {
-      message("Iteration ", iter, ": log-likelihood = ", lliCur, "; Dlli = ", Dlli, "; converged = ", eps.converged, " / ", Npar, "\n", sep = "")
+      message(
+        "Iteration ",
+        iter,
+        ": log-likelihood = ",
+        lliCur,
+        "; Dlli = ",
+        Dlli,
+        "; converged = ",
+        eps.converged,
+        " / ",
+        Npar,
+        "\n",
+        sep = ""
+      )
     }
     if (checkTol & Dlli < tol) {
       break
@@ -199,7 +245,13 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
       ## theta <- c(log(mixEst[2,i]))
       ## Lest <- optim(theta, gmm_ml(c1[i]), gr=gmm_ml_grad(c1[i]), method="BFGS", control=list(maxit=500))
       if (abs(Lest$objective) > 1E-4) {
-        warning("Warning: Component", i, "in iteration", iter, "had convergence problems!")
+        warning(
+          "Warning: Component",
+          i,
+          "in iteration",
+          iter,
+          "had convergence problems!"
+        )
       }
       mixEstPar[2, i] <- Lest$minimum
       mixEstPar[3, i] <- Lest$minimum + c2[i]
@@ -243,6 +295,11 @@ EM_gmm <- function(x, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500
 
 #' @export
 print.EMgmm <- function(x, ...) {
-  cat("EM for Gamma Mixture Model\nLog-Likelihood = ", logLik(x), "\n\n", sep = "")
+  cat(
+    "EM for Gamma Mixture Model\nLog-Likelihood = ",
+    logLik(x),
+    "\n\n",
+    sep = ""
+  )
   NextMethod()
 }

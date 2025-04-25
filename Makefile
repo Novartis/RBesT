@@ -5,7 +5,7 @@ TARGET = r-source
 OUTDIR = ./build
 
 # includes all src dirs excluding R/
-SRCDIR = ./demo ./inst/stan ./inst/stan/include ./man-roxygen
+SRCDIR = ./demo ./inst/stan ./inst/stan/include ./man-roxygen ./vignettes
 ##DIR_OBJ = ./obj
 
 OUTDIR_ABS=$(abspath $(OUTDIR))
@@ -86,7 +86,10 @@ man/package-doc: $(R_PKG_SRCS) $(BIN_OBJS)
 	"${R_HOME}/bin/Rscript" -e 'roxygen2::roxygenize()'
 	touch man/package-doc
 
-inst/sbc/sbc_report.html : inst/sbc/calibration.rds
+inst/sbc/sbc_report.html : inst/sbc/sbc_report.R inst/sbc/calibration.rds
+	cd $(@D); echo running $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_vignette(self_contained=TRUE))"
+	cd $(@D); $(RCMD) -e "rmarkdown::render('$(<F)', output_format=rmarkdown::html_vignette(self_contained=TRUE))"
+
 
 inst/sbc/calibration.rds :
 	echo "Please run inst/sbc/make_reference_rankhist.R"
@@ -166,6 +169,12 @@ build/installed/$(RPKG)/DESCRIPTION : build/r-source-fast
 	install -d build/installed
 	cd build; $(RCMD) CMD INSTALL --library=./installed --no-docs --no-multiarch --no-test-load --no-clean-on-error $(RPKG)-source.tar.gz
 
+docs/index.html : $(SRCS)
+	NOT_CRAN=true $(RCMD) -e 'pkgdown::build_site()'
+
+PHONY += pkgdown
+pkgdown: docs/index.html
+
 PHONY += dev-install
 dev-install: build/installed/$(RPKG)/DESCRIPTION
 
@@ -185,19 +194,19 @@ PHONY += check-winbuilder-devel
 check-winbuilder-devel : r-source-release
 	cd build; $(RCMD) -e 'target <- tempdir()' \
 			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
-			  -e 'devtools::check_win_devel(pkg=file.path(target, "RBesT"))'
+			  -e 'devtools::check_win_devel(pkg=file.path(target, "$(RPKG)"))'
 
 PHONY += check-winbuilder-release
 check-winbuilder-release : r-source-release
 	cd build; $(RCMD) -e 'target <- tempdir()' \
 			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
-			  -e 'devtools::check_win_release(pkg=file.path(target, "RBesT"))'
+			  -e 'devtools::check_win_release(pkg=file.path(target, "$(RPKG)"))'
 
 PHONY += check-winbuilder-oldrelease
 check-winbuilder-oldrelease : r-source-release
 	cd build; $(RCMD) -e 'target <- tempdir()' \
 			  -e 'untar("$(RPKG)_$(PKG_VERSION).tar.gz", exdir=target)' \
-			  -e 'devtools::check_win_oldrelease(pkg=file.path(target, "RBesT"))'
+			  -e 'devtools::check_win_oldrelease(pkg=file.path(target, "$(RPKG)"))'
 
 PHONY += check-winbuilder
 check-winbuilder : check-winbuilder-devel check-winbuilder-release check-winbuilder-oldrelease

@@ -57,7 +57,11 @@ dec1 <- decision1S(1 - alpha, theta_ni, lower.tail = TRUE)
 ## require mean to be at least as good as theta_c
 dec2 <- decision1S(0.5, theta_c, lower.tail = TRUE)
 ## combination
-decComb <- decision1S(c(1 - alpha, 0.5), c(theta_ni, theta_c), lower.tail = TRUE)
+decComb <- decision1S(
+  c(1 - alpha, 0.5),
+  c(theta_ni, theta_c),
+  lower.tail = TRUE
+)
 
 thetaD <- c(theta_c, theta_ni)
 
@@ -126,10 +130,22 @@ test_that("Binary crticial value, lower.tail=FALSE", {
 })
 
 test_that("Binary boundary case, lower.tail=TRUE", {
-  expect_numeric(design_binary(1), lower = 0, upper = 1, finite = TRUE, any.missing = FALSE)
+  expect_numeric(
+    design_binary(1),
+    lower = 0,
+    upper = 1,
+    finite = TRUE,
+    any.missing = FALSE
+  )
 })
 test_that("Binary boundary case, lower.tail=FALSE", {
-  expect_numeric(design_binaryB(0), lower = 0, upper = 1, finite = TRUE, any.missing = FALSE)
+  expect_numeric(
+    design_binaryB(0),
+    lower = 0,
+    upper = 1,
+    finite = TRUE,
+    any.missing = FALSE
+  )
 })
 
 ## poisson case

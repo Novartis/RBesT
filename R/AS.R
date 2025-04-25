@@ -12,7 +12,7 @@
 #'   \item{n}{study size}
 #'   \item{r}{number of events}
 #' }
-#' @references Baeten D. et. al, \emph{The Lancet}, 2013, (382), 9906, p 1705
+#' @references Baeten D. et. al, *The Lancet*, 2013, (382), 9906, p 1705
 #'
 #' @template example-start
 #' @examples

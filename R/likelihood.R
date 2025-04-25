@@ -5,8 +5,8 @@
 #' @description Read and set the likelihood distribution corresponding to the conjugate prior distribution.
 #'
 #' @param mix Prior mixture distribution.
-#' @param value New likelihood. \strong{Should} only be changed for Gamma priors as these are supported
-#' with either Poisson (\code{value="poisson"}) or Exponential (\code{value="exp"}) likelihoods.
+#' @param value New likelihood. **Should** only be changed for Gamma priors as these are supported
+#' with either Poisson (`value="poisson"`) or Exponential (`value="exp"`) likelihoods.
 #'
 #' @details
 #' If the prior and posterior distributions are in the same family, then the prior distribution

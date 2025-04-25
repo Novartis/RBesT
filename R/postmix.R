@@ -1,8 +1,8 @@
 #' Conjugate Posterior Analysis
 #'
 #' @description
-#' Calculates the posterior distribution for data \code{data} given a prior
-#' \code{priormix}, where the prior is a mixture of conjugate distributions.
+#' Calculates the posterior distribution for data `data` given a prior
+#' `priormix`, where the prior is a mixture of conjugate distributions.
 #' The posterior is then also a mixture of conjugate distributions.
 #'
 #' @param priormix prior (mixture of conjugate distributions).
@@ -41,10 +41,10 @@
 #' w^*_k / \sum_{k=1}^K w^*_k}. In other words, the weight of
 #' component \eqn{k} is proportional to the likelihood that data
 #' \eqn{y} is generated from the respective component, i.e. the
-#' marginal probability; for details, see for example \emph{Schmidli
-#' et al., 2015}.
+#' marginal probability; for details, see for example *Schmidli
+#' et al., 2015*.
 #'
-#' \emph{Note:} The prior weights \eqn{w_k} are fixed, but the
+#' *Note:* The prior weights \eqn{w_k} are fixed, but the
 #' posterior weights \eqn{w'_k \neq w_k} still change due to the
 #' changing normalization.
 #'
@@ -56,7 +56,7 @@
 #'
 #' @references Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B.
 #' Robust meta-analytic-predictive priors in clinical trials with historical control information.
-#' \emph{Biometrics} 2014;70(4):1023-1032.
+#' *Biometrics* 2014;70(4):1023-1032.
 #'
 #' @examples
 #'
@@ -98,7 +98,7 @@ postmix.default <- function(priormix, data, ...) "Unknown distribution"
 #' @describeIn postmix Calculates the posterior beta mixture
 #' distribution. The individual data vector is expected to be a vector
 #' of 0 and 1, i.e. a series of Bernoulli experiments. Alternatively,
-#' the sufficient statistics \code{n} and \code{r} can be given,
+#' the sufficient statistics `n` and `r` can be given,
 #' i.e. number of trials and successes, respectively.
 #' @param r Number of successes.
 #' @export
@@ -108,7 +108,14 @@ postmix.betaMix <- function(priormix, data, n, r, ...) {
     r <- sum(data)
     n <- length(data)
   }
-  w <- log(priormix[1, , drop = FALSE]) + dBetaBinomial(r, n, priormix[2, , drop = FALSE], priormix[3, , drop = FALSE], log = TRUE)
+  w <- log(priormix[1, , drop = FALSE]) +
+    dBetaBinomial(
+      r,
+      n,
+      priormix[2, , drop = FALSE],
+      priormix[3, , drop = FALSE],
+      log = TRUE
+    )
   priormix[1, ] <- exp(w - matrixStats::logSumExp(w))
   priormix[2, ] <- priormix[2, , drop = FALSE] + r
   priormix[3, ] <- priormix[3, , drop = FALSE] + n - r
@@ -119,14 +126,14 @@ postmix.betaMix <- function(priormix, data, n, r, ...) {
 
 #' @describeIn postmix Calculates the posterior normal mixture
 #' distribution with the sampling likelihood being a normal with fixed
-#' standard deviation. Either an individual data vector \code{data}
+#' standard deviation. Either an individual data vector `data`
 #' can be given or the sufficient statistics which are the standard
-#' error \code{se} and sample mean \code{m}. If the sample size
-#' \code{n} is used instead of the sample standard error, then the
+#' error `se` and sample mean `m`. If the sample size
+#' `n` is used instead of the sample standard error, then the
 #' reference scale of the prior is used to calculate the standard
-#' error. Should standard error \code{se} and sample size \code{n} be
+#' error. Should standard error `se` and sample size `n` be
 #' given, then the reference scale of the prior is updated; however it
-#' is recommended to use the command \code{\link{sigma}} to set the
+#' is recommended to use the command [sigma()] to set the
 #' reference standard deviation.
 #' @param m Sample mean.
 #' @param se Sample standard error.
@@ -142,7 +149,11 @@ postmix.normMix <- function(priormix, data, n, m, se, ...) {
     }
     if (!missing(se) & !missing(n)) {
       sigma(priormix) <- se * sqrt(n)
-      message(paste0("Updating reference scale to ", sigma(priormix), ".\nIt is recommended to use the sigma command instead.\nSee ?sigma or ?mixnorm."))
+      message(paste0(
+        "Updating reference scale to ",
+        sigma(priormix),
+        ".\nIt is recommended to use the sigma command instead.\nSee ?sigma or ?mixnorm."
+      ))
     }
     if (missing(se) & !missing(n)) {
       message("Using default prior reference scale ", sigma(priormix))
@@ -157,11 +168,13 @@ postmix.normMix <- function(priormix, data, n, m, se, ...) {
   ## old weights times the likelihood under the predictive of each
   ## component in log space
   sigmaPred <- sqrt(priormix[3, , drop = FALSE]^2 + se^2)
-  lw <- log(priormix[1, , drop = FALSE]) + dnorm(m, priormix[2, , drop = FALSE], sigmaPred, log = TRUE)
+  lw <- log(priormix[1, , drop = FALSE]) +
+    dnorm(m, priormix[2, , drop = FALSE], sigmaPred, log = TRUE)
   priormix[1, ] <- exp(lw - matrixStats::logSumExp(lw))
   ## posterior means are precision weighted average of prior mean
   ## and data
-  priormix[2, ] <- (priormix[2, , drop = FALSE] * priorPrec + m * dataPrec) / postPrec
+  priormix[2, ] <- (priormix[2, , drop = FALSE] * priorPrec + m * dataPrec) /
+    postPrec
   priormix[3, ] <- 1 / sqrt(postPrec)
   class(priormix) <- c("normMix", "mix")
   priormix
@@ -174,7 +187,11 @@ postmix.normMix <- function(priormix, data, n, m, se, ...) {
 postmix.gammaMix <- function(priormix, data, n, m, ...) {
   type <- likelihood(priormix)
   if (type != "poisson") {
-    stop("NOT YET SUPPORTED: Updating Gamma priors is not yet supported for", type, "data. Sorry.")
+    stop(
+      "NOT YET SUPPORTED: Updating Gamma priors is not yet supported for",
+      type,
+      "data. Sorry."
+    )
   }
   if (!missing(data)) {
     s <- sum(data)
@@ -186,8 +203,10 @@ postmix.gammaMix <- function(priormix, data, n, m, ...) {
   ## the predictive distribution for n events with sufficient
   ## statistics s is the negative binomial with beta->beta/n
   if (n > 0) {
-    w <- log(priormix[1, , drop = FALSE]) + .dnbinomAB(s, priormix[2, ], priormix[3, ] / n, log = TRUE)
-  } else { ## case n=0
+    w <- log(priormix[1, , drop = FALSE]) +
+      .dnbinomAB(s, priormix[2, ], priormix[3, ] / n, log = TRUE)
+  } else {
+    ## case n=0
     w <- log(priormix[1, , drop = FALSE])
   }
   priormix[1, ] <- exp(w - matrixStats::logSumExp(w))

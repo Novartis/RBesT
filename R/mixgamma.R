@@ -7,36 +7,36 @@
 #' @param ... List of mixture components.
 #' @param param Determines how the parameters in the list are
 #' interpreted. See details.
-#' @param likelihood Defines with what likelihood the Gamma density is used (Poisson or Exp). Defaults to \code{poisson}.
+#' @param likelihood Defines with what likelihood the Gamma density is used (Poisson or Exp). Defaults to `poisson`.
 #' @param m Vector of means of the Gamma mixture components
 #' @param s Vector of standard deviations of the gamma mixture components,
 #' @param n Vector of sample sizes of the Gamma mixture components.
 #' @param drop Delete the dimensions of an array which have only one level.
 #' @param object Gamma mixture object.
-#' @param probs Quantiles reported by the \code{summary} function.
+#' @param probs Quantiles reported by the `summary` function.
 #'
-#' @details Each entry in the \code{...} argument list is expected to
+#' @details Each entry in the `...` argument list is expected to
 #' be a triplet of numbers which defines the weight \eqn{w_k}, first
 #' and second parameter of the mixture component \eqn{k}. A triplet
 #' can optionally be named which will be used appropriately.
 #'
 #' The first and second parameter can be given in different
-#' parametrizations which is set by the \code{param} option:
+#' parametrizations which is set by the `param` option:
 #' \describe{
-#' \item{ab}{Natural parametrization of Gamma density (\code{a}=shape and \code{b}=rate). Default. }
+#' \item{ab}{Natural parametrization of Gamma density (`a`=shape and `b`=rate). Default. }
 #' \item{ms}{Mean and standard deviation, \eqn{m=a/b} and \eqn{s=\sqrt{a}/b}.}
 #' \item{mn}{Mean and number of observations. Translation to natural
-#' parameter depends on the \code{likelihood} argument. For a Poisson
+#' parameter depends on the `likelihood` argument. For a Poisson
 #' likelihood \eqn{n=b} (and \eqn{a=m \cdot n}{a=m n}), for an Exp
 #' likelihood \eqn{n=a} (and \eqn{b=n/m}).}
 #' }
 #'
 #' @family mixdist
 #'
-#' @return \code{mixgamma} returns a gamma mixture with the specified mixture components.
-#' \code{ms2gamma} and
-#' \code{mn2gamma} return the equivalent natural \code{a} and \code{b} parametrization given
-#' parameters \code{m}, \code{s}, or \code{n}.
+#' @return `mixgamma` returns a gamma mixture with the specified mixture components.
+#' `ms2gamma` and
+#' `mn2gamma` return the equivalent natural `a` and `b` parametrization given
+#' parameters `m`, `s`, or `n`.
 #'
 #' @examples
 #' # Gamma mixture with robust and informative component
@@ -70,12 +70,17 @@ NULL
 
 #' @rdname mixgamma
 #' @export
-mixgamma <- function(..., param = c("ab", "ms", "mn"), likelihood = c("poisson", "exp")) {
+mixgamma <- function(
+  ...,
+  param = c("ab", "ms", "mn"),
+  likelihood = c("poisson", "exp")
+) {
   mix <- mixdist3(...)
   assert_matrix(mix, nrows = 3, any.missing = FALSE)
   param <- match.arg(param)
   likelihood <- match.arg(likelihood)
-  mix[c(2, 3), ] <- switch(param,
+  mix[c(2, 3), ] <- switch(
+    param,
     ab = mix[c(2, 3), ],
     ms = t(ms2gamma(mix[2, ], mix[3, ], FALSE)),
     mn = t(mn2gamma(mix[2, ], mix[3, ], likelihood, FALSE))
@@ -102,7 +107,8 @@ ms2gamma <- function(m, s, drop = TRUE) {
 mn2gamma <- function(m, n, likelihood = c("poisson", "exp"), drop = TRUE) {
   assert_that(all(n >= 0))
   likelihood <- match.arg(likelihood)
-  ab <- switch(likelihood,
+  ab <- switch(
+    likelihood,
     poisson = cbind(a = m * n, b = n),
     exp = cbind(a = n, b = n / m)
   )

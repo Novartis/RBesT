@@ -15,4 +15,5 @@ support.gammaMix <- function(mix) mixlink(mix, c(0, Inf))
 #' @export
 support.normMix <- function(mix) mixlink(mix, c(-Inf, Inf))
 #' @export
-support.mvnormMix <- function(mix) matrix(c(-Inf, Inf), nrow = mvnormdim(mix[-1, 1]), ncol = 2)
+support.mvnormMix <- function(mix)
+  matrix(c(-Inf, Inf), nrow = mvnormdim(mix[-1, 1]), ncol = 2)

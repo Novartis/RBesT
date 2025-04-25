@@ -23,6 +23,7 @@ src/stan_files/.*\.hpp$
 ^.brms-cache
 ^.gitignore$
 ^.gitattributes$
+^vignettes/.gitignore$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

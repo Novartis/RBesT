@@ -10,7 +10,7 @@
 #' @param q vector of quantiles for which cumulative probabilities are computed
 #' @param p vector of cumulative probabilities for which quantiles are computed
 #' @param n size of random sample
-#' @param lower.tail logical; if \code{TRUE} (default), probabilities are P[X <= x], otherwise P[X > x].
+#' @param lower.tail logical; if `TRUE` (default), probabilities are \eqn{P[X <= x]}, otherwise \eqn{P[X > x]}.
 #'
 #' @details If \eqn{x_1 \sim f_1(x_1)}{x_1 ~ f_1(x_1)} and \eqn{x_2 \sim
 #' f_2(x_2)}{x_2 ~ f_2(x)}, the density of the difference \eqn{d
@@ -24,7 +24,7 @@
 #'
 #' Both integrals are performed over the full support of the
 #' densities and use the numerical integration function
-#' \code{\link{integrate}}.
+#' [integrate()].
 #'
 # The quantile function is implemented using a gradient based
 # minimization of the squared difference of the cumulative
@@ -91,7 +91,10 @@ mixnormdiff <- function(mix1, mix2) {
 #' @rdname mixdiff
 #' @export
 dmixdiff <- function(mix1, mix2, x) {
-  assert_that(!inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"), msg = "Multivariate normal mixture density not supported.")
+  assert_that(
+    !inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"),
+    msg = "Multivariate normal mixture density not supported."
+  )
   if (inherits(mix1, "normMix") & inherits(mix2, "normMix")) {
     return(dmix(mixnormdiff(mix1, mix2), x = x))
   }
@@ -112,11 +115,19 @@ dmixdiff <- function(mix1, mix2, x) {
   ## then we swap the integration order
   if (Nc2 == 1) {
     .dens <- function(sx) {
-      integrate_density_log(function(x) lscale + dmix(mix1, x + sx, log = TRUE), mix2) / scale
+      integrate_density_log(
+        function(x) lscale + dmix(mix1, x + sx, log = TRUE),
+        mix2
+      ) /
+        scale
     }
   } else {
     .dens <- function(sx) {
-      integrate_density_log(function(x) lscale + dmix(mix2, x - sx, log = TRUE), mix1) / scale
+      integrate_density_log(
+        function(x) lscale + dmix(mix2, x - sx, log = TRUE),
+        mix1
+      ) /
+        scale
     }
   }
 
@@ -127,7 +138,10 @@ dmixdiff <- function(mix1, mix2, x) {
 #' @rdname mixdiff
 #' @export
 pmixdiff <- function(mix1, mix2, q, lower.tail = TRUE) {
-  assert_that(!inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"), msg = "Multivariate normal mixture density not supported.")
+  assert_that(
+    !inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"),
+    msg = "Multivariate normal mixture density not supported."
+  )
   if (inherits(mix1, "normMix") & inherits(mix2, "normMix")) {
     return(pmix(mixnormdiff(mix1, mix2), q = q, lower.tail = lower.tail))
   }
@@ -143,12 +157,19 @@ pmixdiff <- function(mix1, mix2, q, lower.tail = TRUE) {
   ## take advantage of this
   if (Nc2 == 1) {
     .prob <- function(sx) {
-      integrate_density_log(function(x) pmix(mix1, sx + x, lower.tail = TRUE, log.p = TRUE), mix2)
+      integrate_density_log(
+        function(x) pmix(mix1, sx + x, lower.tail = TRUE, log.p = TRUE),
+        mix2
+      )
     }
   } else {
     .prob <- function(sx) {
       ## integrate_density_log(function(x) pmix(mix2, x-sx, lower.tail=FALSE, log.p=TRUE), mix1)
-      1 - integrate_density_log(function(x) pmix(mix2, x - sx, lower.tail = TRUE, log.p = TRUE), mix1)
+      1 -
+        integrate_density_log(
+          function(x) pmix(mix2, x - sx, lower.tail = TRUE, log.p = TRUE),
+          mix1
+        )
     }
   }
 
@@ -162,7 +183,10 @@ pmixdiff <- function(mix1, mix2, q, lower.tail = TRUE) {
 #' @rdname mixdiff
 #' @export
 qmixdiff <- function(mix1, mix2, p, lower.tail = TRUE) {
-  assert_that(!inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"), msg = "Multivariate normal mixture density not supported.")
+  assert_that(
+    !inherits(mix1, "mvnormMix") & !inherits(mix2, "mvnormMix"),
+    msg = "Multivariate normal mixture density not supported."
+  )
   if (inherits(mix1, "normMix")) {
     return(qmix(mixnormdiff(mix1, mix2), p = p, lower.tail = lower.tail))
   }
@@ -185,18 +209,34 @@ qmixdiff <- function(mix1, mix2, p, lower.tail = TRUE) {
   for (i in seq_along(p)) {
     ## take advantage of the monotonicity of the CDF function such
     ## that we can use a gradient based method to find the root
-    o <- optimise(function(x) {
-      (pmixdiff(mix1, mix2, x, lower.tail = lower.tail) - p[i])^2
-    }, c(qlow, qhigh))
+    o <- optimise(
+      function(x) {
+        (pmixdiff(mix1, mix2, x, lower.tail = lower.tail) - p[i])^2
+      },
+      c(qlow, qhigh)
+    )
     res[i] <- o$minimum
     if (o$objective > 1e-3) {
       ## in that case fall back to binary search which is more robust
-      u <- uniroot(function(x) {
-        pmixdiff(mix1, mix2, x, lower.tail = lower.tail) - p[i]
-      }, c(qlow, qhigh))
+      u <- uniroot(
+        function(x) {
+          pmixdiff(mix1, mix2, x, lower.tail = lower.tail) - p[i]
+        },
+        c(qlow, qhigh)
+      )
       res[i] <- u$root
       if (u$estim.prec > 1E-3) {
-        warning("Quantile ", p[i], " possibly imprecise.\nEstimated precision= ", u$estim.prec, ".\nRange = ", qlow, " to ", qhigh, "\n")
+        warning(
+          "Quantile ",
+          p[i],
+          " possibly imprecise.\nEstimated precision= ",
+          u$estim.prec,
+          ".\nRange = ",
+          qlow,
+          " to ",
+          qhigh,
+          "\n"
+        )
       }
     }
   }

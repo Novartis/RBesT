@@ -12,5 +12,5 @@
 #' }
 #' @references Neuenschwander B, Capkun-Niggli G, Branson M,
 #' Spiegelhalter DJ. Summarizing historical information on controls in
-#' clinical trials. \emph{Clin Trials}. 2010; 7(1):5-18
+#' clinical trials. *Clin Trials*. 2010; 7(1):5-18
 "transplant"

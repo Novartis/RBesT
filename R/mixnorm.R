@@ -13,33 +13,33 @@
 #' @param n Vector of sample sizes.
 #' @param drop Delete the dimensions of an array which have only one level.
 #' @param object Normal mixture object.
-#' @param probs Quantiles reported by the \code{summary} function.
-#' @param value New value of the reference scale \code{sigma}.
+#' @param probs Quantiles reported by the `summary` function.
+#' @param value New value of the reference scale `sigma`.
 #'
-#' @details Each entry in the \code{...} argument list is expected to
+#' @details Each entry in the `...` argument list is expected to
 #' be a triplet of numbers which defines the weight \eqn{w_k}, first
 #' and second parameter of the mixture component \eqn{k}. A triplet
 #' can optionally be named which will be used appropriately.
 #'
 #' The first and second parameter can be given in different
-#' parametrizations which is set by the \code{param} option:
+#' parametrizations which is set by the `param` option:
 #' \describe{
 #' \item{ms}{Mean and standard deviation. Default.}
-#' \item{mn}{Mean and number of observations. \code{n} determines \code{s} via the relation \eqn{s=\sigma/\sqrt{n}} with \eqn{\sigma} being the fixed reference scale.}
+#' \item{mn}{Mean and number of observations. `n` determines `s` via the relation \eqn{s=\sigma/\sqrt{n}} with \eqn{\sigma} being the fixed reference scale.}
 #' }
 #'
 #' The reference scale \eqn{\sigma} is the fixed standard deviation in
 #' the one-parameter normal-normal model (observation standard
-#' deviation). The function \code{sigma} can be used to query the
+#' deviation). The function `sigma` can be used to query the
 #' reference scale and may also be used to assign a new reference
-#' scale, see examples below. In case the \code{sigma} is not
-#' specified, the user has to supply \code{sigma} as argument to
+#' scale, see examples below. In case the `sigma` is not
+#' specified, the user has to supply `sigma` as argument to
 #' functions which require a reference scale.
 #'
 #' @family mixdist
 #'
 #' @return Returns a normal mixture with the specified mixture
-#' components. \code{mn2norm} returns the mean and standard deviation
+#' components. `mn2norm` returns the mean and standard deviation
 #' given a mean and sample size parametrization.
 #'
 #' @examples
@@ -76,7 +76,8 @@ mixnorm <- function(..., sigma, param = c("ms", "mn")) {
   mix <- mixdist3(...)
   assert_matrix(mix, nrows = 3, any.missing = FALSE)
   param <- match.arg(param)
-  mix[c(2, 3), ] <- switch(param,
+  mix[c(2, 3), ] <- switch(
+    param,
     ms = mix[c(2, 3), ],
     mn = t(mn2norm(mix[2, ], mix[3, ], sigma, FALSE))
   )
@@ -142,7 +143,7 @@ sigma.normMix <- function(object, ...) {
   attr(object, "sigma")
 }
 
-#' @describeIn mixnorm Allows to assign a new reference scale \code{sigma}.
+#' @describeIn mixnorm Allows to assign a new reference scale `sigma`.
 #' @export
 "sigma<-" <- function(object, value) {
   assert_number(value, lower = 0, null.ok = TRUE)

@@ -1,6 +1,6 @@
 #' Operating Characteristics for 1 Sample Design
 #'
-#' The \code{oc1S} function defines a 1 sample design (prior, sample
+#' The `oc1S` function defines a 1 sample design (prior, sample
 #' size, decision function) for the calculation of the frequency at
 #' which the decision is evaluated to 1 conditional on assuming
 #' known parameters.  A function is returned which performs the actual
@@ -8,7 +8,7 @@
 #'
 #' @template args-boundary1S
 #'
-#' @details The \code{oc1S} function defines a 1 sample design and
+#' @details The `oc1S` function defines a 1 sample design and
 #' returns a function which calculates its operating
 #' characteristics. This is the frequency with which the decision
 #' function is evaluated to 1 under the assumption of a given true
@@ -16,16 +16,16 @@
 #' \eqn{\theta}. The 1 sample design is defined by the prior, the
 #' sample size and the decision function, \eqn{D(y)}. These uniquely
 #' define the decision boundary, see
-#' \code{\link{decision1S_boundary}}.
+#' [decision1S_boundary()].
 #'
-#' When calling the \code{oc1S} function, then internally the critical
-#' value \eqn{y_c} (using \code{\link{decision1S_boundary}}) is
+#' When calling the `oc1S` function, then internally the critical
+#' value \eqn{y_c} (using [decision1S_boundary()]) is
 #' calculated and a function is returns which can be used to
 #' calculated the desired frequency which is evaluated as
 #'
 #' \deqn{ F(y_c|\theta). }
 #'
-#' @return Returns a function with one argument \code{theta} which
+#' @return Returns a function with one argument `theta` which
 #' calculates the frequency at which the decision function is
 #' evaluated to 1 for the defined 1 sample design. Note that the
 #' returned function takes vectors arguments.

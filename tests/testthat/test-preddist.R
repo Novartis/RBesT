@@ -24,7 +24,15 @@ normMix <- mixnorm(c(0.2, 0, 2), c(0.8, 2, 1), sigma = 1)
 
 n <- 25
 
-preddist_cmp <- function(mix, n, n_rng, N = Nsamp, qntls = p_quants, stat = c("sum", "mean"), Teps = eps) {
+preddist_cmp <- function(
+  mix,
+  n,
+  n_rng,
+  N = Nsamp,
+  qntls = p_quants,
+  stat = c("sum", "mean"),
+  Teps = eps
+) {
   skip_on_cran()
 
   ## sample for each draw a single hyper-parameter which is then
@@ -87,5 +95,11 @@ test_that("Predictive for a normal evaluates correctly (normal)", {
   preddist_cmp(norm, n, Curry(rnorm, n = n, sd = sigma(norm)), stat = "mean")
 })
 test_that("Predictive for a normal mixture evaluates correctly (normal)", {
-  preddist_cmp(normMix, n, Curry(rnorm, n = n, sd = sigma(normMix)), stat = "mean", Teps = 1E-1)
+  preddist_cmp(
+    normMix,
+    n,
+    Curry(rnorm, n = n, sd = sigma(normMix)),
+    stat = "mean",
+    Teps = 1E-1
+  )
 })

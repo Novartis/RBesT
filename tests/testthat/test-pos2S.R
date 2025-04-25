@@ -51,15 +51,28 @@ ia2 <- postmix(prior2, m = 0, se = s / sqrt(15))
 
 test_that("Normal PoS 2 sample function matches MC integration of CPO", {
   test_pos2S(
-    prior1, prior2,
-    ia1, ia2,
-    N1, N2,
-    dec, decU
+    prior1,
+    prior2,
+    ia1,
+    ia2,
+    N1,
+    N2,
+    dec,
+    decU
   )
 })
 
 ## also run a MC comparison
-pos2S_normal_MC <- function(prior1, prior2, N1, N2, dtheta1, dtheta2, pcrit = 0.975, qcrit = 0) {
+pos2S_normal_MC <- function(
+  prior1,
+  prior2,
+  N1,
+  N2,
+  dtheta1,
+  dtheta2,
+  pcrit = 0.975,
+  qcrit = 0
+) {
   skip_on_cran()
 
   mean_sd1 <- sigma(prior1) / sqrt(N1)
@@ -90,7 +103,16 @@ pos2S_normal_MC <- function(prior1, prior2, N1, N2, dtheta1, dtheta2, pcrit = 0.
 }
 
 test_that("Normal PoS 2 sample function matches MC integration", {
-  pos_mc <- pos2S_normal_MC(prior1, prior2, N1, N2, ia1, ia2, pcrit = 0.8, qcrit = 0)
+  pos_mc <- pos2S_normal_MC(
+    prior1,
+    prior2,
+    N1,
+    N2,
+    ia1,
+    ia2,
+    pcrit = 0.8,
+    qcrit = 0
+  )
   pos_analytic <- pos2S(prior1, prior2, N1, N2, dec)
   expect_true(all(abs(pos_mc - pos_analytic(ia1, ia2)) < eps))
 })
@@ -100,10 +122,14 @@ beta_ia1 <- postmix(beta_prior, r = 20, n = 50)
 beta_ia2 <- postmix(beta_prior, r = 30, n = 50)
 test_that("Binomial PoS 2 sample function matches MC integration of CPO", {
   test_pos2S(
-    beta_prior, beta_prior,
-    beta_ia1, beta_ia2,
-    N1, N2,
-    dec, decU
+    beta_prior,
+    beta_prior,
+    beta_ia1,
+    beta_ia2,
+    N1,
+    N2,
+    dec,
+    decU
   )
 })
 
@@ -116,10 +142,14 @@ gamma_ia1 <- postmix(gamma_prior, m = 0.7, n = 60)
 gamma_ia2 <- postmix(gamma_prior, m = 1.2, n = 60)
 test_that("Poisson PoS 2 sample function matches MC integration of CPO", {
   test_pos2S(
-    gamma_prior, gamma_prior,
-    gamma_ia1, gamma_ia2,
-    N1, N2,
-    dec_count, dec_countU
+    gamma_prior,
+    gamma_prior,
+    gamma_ia1,
+    gamma_ia2,
+    N1,
+    N2,
+    dec_count,
+    dec_countU
   )
 })
 
@@ -134,8 +164,28 @@ test_that("Binomial PoS 2 with IA returns results", {
   post_treatIA <- postmix(neutr_prior, r = 3, n = n0)
   # Criterion for PPoS at IA
   pos_final <- pos2S(post_treatIA, post_placeboIA, n - n0, n - n0, successCrit)
-  pos_final_alt <- pos2S(post_treatIA, post_placeboIA, n_alt - n0, n_alt - n0, successCrit)
+  pos_final_alt <- pos2S(
+    post_treatIA,
+    post_placeboIA,
+    n_alt - n0,
+    n_alt - n0,
+    successCrit
+  )
   # Predictive proba of success at the end
-  expect_number(pos_final_alt(post_treatIA, post_placeboIA), na.ok = FALSE, lower = 0, upper = 1, finite = TRUE, null.ok = FALSE)
-  expect_number(pos_final(post_treatIA, post_placeboIA), na.ok = FALSE, lower = 0, upper = 1, finite = TRUE, null.ok = FALSE)
+  expect_number(
+    pos_final_alt(post_treatIA, post_placeboIA),
+    na.ok = FALSE,
+    lower = 0,
+    upper = 1,
+    finite = TRUE,
+    null.ok = FALSE
+  )
+  expect_number(
+    pos_final(post_treatIA, post_placeboIA),
+    na.ok = FALSE,
+    lower = 0,
+    upper = 1,
+    finite = TRUE,
+    null.ok = FALSE
+  )
 })

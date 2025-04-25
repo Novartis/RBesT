@@ -6,20 +6,20 @@
 #' @param pc Vector of critical cumulative probabilities of the
 #' difference distribution.
 #' @param qc Vector of respective critical values of the difference
-#' distribution. Must match the length of \code{pc}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities
+#' distribution. Must match the length of `pc`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities
 #' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}.
 #' @param link Enables application of a link function prior to
 #' evaluating the difference distribution. Can take one of the values
-#' \code{identity} (default), \code{logit} or \code{log}.
+#' `identity` (default), `logit` or `log`.
 #'
 #' @details This function creates a one-sided decision function on the
 #' basis of the difference distribution in a 2 sample situation. To
-#' support double criterion designs, see \emph{Neuenschwander et al.,
-#' 2010}, an arbitrary number of criterions can be given. The decision
+#' support double criterion designs, see *Neuenschwander et al.,
+#' 2010*, an arbitrary number of criterions can be given. The decision
 #' function demands that the probability mass below the critical value
-#' \code{qc} of the difference \eqn{\theta_1 - \theta_2} is at least
-#' \code{pc}. Hence, for \code{lower.tail=TRUE} condition \eqn{i} is
+#' `qc` of the difference \eqn{\theta_1 - \theta_2} is at least
+#' `pc`. Hence, for `lower.tail=TRUE` condition \eqn{i} is
 #' equivalent to
 #'
 #' \deqn{P(\theta_1 - \theta_2 \leq q_{c,i}) > p_{c,i}}
@@ -32,20 +32,20 @@
 #' \deqn{\Pi_i H_i(P(\theta_1 - \theta_2 \leq q_{c,i}) - p_{c,i} ),}
 #'
 #' which is \eqn{1} if all conditions are met and \eqn{0}
-#' otherwise. For \code{lower.tail=FALSE} differences must be greater
-#' than the given quantiles \code{qc}.
+#' otherwise. For `lower.tail=FALSE` differences must be greater
+#' than the given quantiles `qc`.
 #'
-#' Note that whenever a \code{link} other than \code{identity} is
+#' Note that whenever a `link` other than `identity` is
 #' requested, then the underlying densities are first transformed
 #' using the link function and then the probabilties for the
 #' differences are calculated in the transformed space. Hence, for a
-#' binary endpoint the default \code{identity} link will calculate
-#' risk differences, the \code{logit} link will lead to decisions
-#' based on the differences in \code{logit}s corresponding to a
-#' criterion based on the log-odds. The \code{log} link will evaluate
+#' binary endpoint the default `identity` link will calculate
+#' risk differences, the `logit` link will lead to decisions
+#' based on the differences in `logit`s corresponding to a
+#' criterion based on the log-odds. The `log` link will evaluate
 #' ratios instead of absolute differences which could be useful for a
 #' binary endpoint or counting rates. The respective critical
-#' quantiles \code{qc} must be given on the transformed scale.
+#' quantiles `qc` must be given on the transformed scale.
 #'
 #' @return The function returns a decision function which takes three
 #' arguments. The first and second argument are expected to be mixture
@@ -58,7 +58,7 @@
 #'
 #' @references Gsponer T, Gerber F, Bornkamp B, Ohlssen D,
 #' Vandemeulebroecke M, Schmidli H.A practical guide to Bayesian group
-#' sequential designs. \emph{Pharm. Stat.}. 2014; 13: 71-80
+#' sequential designs. *Pharm. Stat.*. 2014; 13: 71-80
 #'
 #' @family design2S
 #'
@@ -98,7 +98,12 @@
 #' decL3(post2, post1)
 #'
 #' @export
-decision2S <- function(pc = 0.975, qc = 0, lower.tail = TRUE, link = c("identity", "logit", "log")) {
+decision2S <- function(
+  pc = 0.975,
+  qc = 0,
+  lower.tail = TRUE,
+  link = c("identity", "logit", "log")
+) {
   assert_that(length(pc) == length(qc))
   lpc <- log(pc)
   link <- match.arg(link)
@@ -110,9 +115,14 @@ decision2S <- function(pc = 0.975, qc = 0, lower.tail = TRUE, link = c("identity
     ## calculation of the convolution dramatically, i.e. the
     ## convolution is done analytically exact
     test <- if (inherits(mix1, "normMix")) {
-      pmix(mixnormdiff(mix1, mix2), qc, lower.tail = lower.tail, log.p = TRUE) - lpc
+      pmix(mixnormdiff(mix1, mix2), qc, lower.tail = lower.tail, log.p = TRUE) -
+        lpc
     } else {
-      log(pmax(pmixdiff(mix1, mix2, qc, lower.tail = lower.tail), .Machine$double.eps)) - lpc
+      log(pmax(
+        pmixdiff(mix1, mix2, qc, lower.tail = lower.tail),
+        .Machine$double.eps
+      )) -
+        lpc
     }
     if (dist) {
       return(test)
@@ -144,9 +154,14 @@ print.decision2S <- function(x, ...) {
 }
 
 #' @describeIn decision2S Deprecated old function name. Please use
-#' \code{decision2S} instead.
+#' `decision2S` instead.
 #' @export
-oc2Sdecision <- function(pc = 0.975, qc = 0, lower.tail = TRUE, link = c("identity", "logit", "log")) {
+oc2Sdecision <- function(
+  pc = 0.975,
+  qc = 0,
+  lower.tail = TRUE,
+  link = c("identity", "logit", "log")
+) {
   deprecated("oc2Sdecision", "decision2S")
   return(decision2S(pc, qc, lower.tail, link))
 }

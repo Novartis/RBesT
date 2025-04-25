@@ -7,7 +7,15 @@
 ## modelling using the t distribution". D. Peel and G.J. McLachlan,
 ## Statistics and Computing (2000), 10, 339-348,
 
-EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, tol = 1e-1) {
+EM_msmm <- function(
+  X,
+  Nc,
+  init,
+  Ninit = 50,
+  verbose = TRUE,
+  Niter.max = 500,
+  tol = 1e-1
+) {
   ## in case X is no matrix, interpret it as uni-variate case
   if (!is.matrix(X)) {
     X <- matrix(X, ncol = 1)
@@ -20,13 +28,18 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
   if (missing(init)) {
     ## assume that the sample is ordered randomly
     ind <- seq(1, N - Nc, length = Ninit)
-    knnInit <- list(mu = matrix(0, nrow = Nc, ncol = Nd), p = (1 / seq(1, Nc)) / sum(seq(1, Nc)))
+    knnInit <- list(
+      mu = matrix(0, nrow = Nc, ncol = Nd),
+      p = (1 / seq(1, Nc)) / sum(seq(1, Nc))
+    )
     for (k in seq(Nc)) {
       knnInit$mu[k, ] <- colMeans(X[ind + k - 1, , drop = FALSE])
     }
     ## use k means clustering with K=Nc as init; ignore warnings
     ## as we may hit the maximal number of iterations
-    suppressWarnings(KNN <- knn(X, K = Nc, init = knnInit, verbose = verbose, Niter.max = 50))
+    suppressWarnings(
+      KNN <- knn(X, K = Nc, init = knnInit, verbose = verbose, Niter.max = 50)
+    )
     pEst <- KNN$p
     cmin <- which.min(pEst)
     muEst <- KNN$center
@@ -83,7 +96,11 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
 
   nu_ml <- function(c1) {
     function(nu) {
-      (log(nu / 2) - digamma(nu / 2) + c1 + digamma((nu + Nd) / 2) - log((nu + Nd) / 2))^2
+      (log(nu / 2) -
+        digamma(nu / 2) +
+        c1 +
+        digamma((nu + Nd) / 2) -
+        log((nu + Nd) / 2))^2
     }
   }
 
@@ -93,7 +110,14 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
     ## difficulties if some points are far away from some
     ## component and hence recieve very low density
     for (i in seq(Nc)) {
-      lli[, i] <- log(pEst[i]) + mvtnorm::dmvt(X, muEst[i, ], as.matrix(covEst[i, , ]), nuEst[i], log = TRUE)
+      lli[, i] <- log(pEst[i]) +
+        mvtnorm::dmvt(
+          X,
+          muEst[i, ],
+          as.matrix(covEst[i, , ]),
+          nuEst[i],
+          log = TRUE
+        )
     }
     ## ensure that the log-likelihood does not go out of numerical
     ## reasonable bounds
@@ -109,7 +133,15 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
       Dlli <- (traceLli[iter + 1] - traceLli[iter - 1]) / 2
     }
     if (verbose) {
-      message("Iteration", iter, ": log-likelihood", lliCur, "; Dlli =", Dlli, "\n")
+      message(
+        "Iteration",
+        iter,
+        ": log-likelihood",
+        lliCur,
+        "; Dlli =",
+        Dlli,
+        "\n"
+      )
     }
     if (Dlli < tol) {
       break
@@ -167,7 +199,8 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
       ## muEst[i,] <- colSums(W[,i] * X) / wSum[i] ## Eq. 30
       ## xc <- exp(0.5 * lW[,i]) * sweep(X, 2, muEst[i,], check.margin = FALSE)
       ## covEst[i,,] <- crossprod(xc) / zSum[i]          ## Eq. 31
-      xc <- exp(0.5 * (lW[, i] - lzSum[i])) * sweep(X, 2, muEst[i, ], check.margin = FALSE)
+      xc <- exp(0.5 * (lW[, i] - lzSum[i])) *
+        sweep(X, 2, muEst[i, ], check.margin = FALSE)
       covEst[i, , ] <- crossprod(xc) ## Eq. 31 (divisor moved to xc)
       muEst[i, ] <- colSums(exp(lW[, i]) * X) / wSum[i] ## Eq. 30
       ## ensure that diagonal stays non-zero
@@ -187,7 +220,15 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
       } else if (nuEstML$objective > 1e-3 & nuEstML$minimum < 50) {
         ## only warn if we had trouble finding the minimum
         ## when below 50, larger values are anyway normals
-        warning("Component ", i, " in iteration ", iter, " had convergence problems.\nObjective function = ", nuEstML$objective, "\n")
+        warning(
+          "Component ",
+          i,
+          " in iteration ",
+          iter,
+          " had convergence problems.\nObjective function = ",
+          nuEstML$objective,
+          "\n"
+        )
       }
       nuEst[i] <- nuEstML$minimum
     }
@@ -219,5 +260,16 @@ EM_msmm <- function(X, Nc, init, Ninit = 50, verbose = TRUE, Niter.max = 500, to
     tauEst <- sqrt(as.vector(covEst))
   }
 
-  invisible(list(cov = covEst, center = muEst, nu = nuEst, p = pEst, rho = rhoEst, tau = tauEst, lli = lliCur, df = df, Dlli = Dlli, niter = iter))
+  invisible(list(
+    cov = covEst,
+    center = muEst,
+    nu = nuEst,
+    p = pEst,
+    rho = rhoEst,
+    tau = tauEst,
+    lli = lliCur,
+    df = df,
+    Dlli = Dlli,
+    niter = iter
+  ))
 }

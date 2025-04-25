@@ -1,17 +1,17 @@
 #' Diagnostic plots for gMAP analyses
 #'
-#' @param x \code{\link{gMAP}} object
+#' @param x [gMAP()] object
 #' @param size Controls line sizes of traceplots and forest plot.
 #' @param ... Ignored.
 #'
 #' @details Creates MCMC diagnostics and a forest plot (including
-#' model estimates) for a \code{\link{gMAP}} analysis. For a
+#' model estimates) for a [gMAP()] analysis. For a
 #' customized forest plot, please use the dedicated function
-#' \code{\link{forest_plot}}.
+#' [forest_plot()].
 #'
 #' @template plot-help
 #'
-#' @return The function returns a list of \code{\link[ggplot2:ggplot]{ggplot}}
+#' @return The function returns a list of [ggplot2::ggplot()]
 #' objects.
 #'
 #' @method plot gMAP
@@ -43,41 +43,120 @@ plot.gMAP <- function(x, size = NULL, ...) {
 
   if (plot_verbose) {
     ## traces are only shown if in verbose mode...
-    pl$traceBeta <- do.call(bayesplot::mcmc_trace, c(list(
-      x = draws_all, pars = beta_pars, size = size, n_warmup = n_warmup,
-      facet_args = list(labeller = ggplot2::label_parsed)
-    ), div_opts)) +
+    pl$traceBeta <- do.call(
+      bayesplot::mcmc_trace,
+      c(
+        list(
+          x = draws_all,
+          pars = beta_pars,
+          size = size,
+          n_warmup = n_warmup,
+          facet_args = list(labeller = ggplot2::label_parsed)
+        ),
+        div_opts
+      )
+    ) +
       ggtitle(expression(paste("Trace of Regression Coefficient ", beta))) +
-      bayesplot::facet_text(length(beta_pars) != 1) + xlab("Iteration")
-    pl$traceTau <- do.call(bayesplot::mcmc_trace, c(list(
-      x = draws_all, pars = tau_pars, size = size, n_warmup = n_warmup,
-      facet_args = list(labeller = ggplot2::label_parsed)
-    ), div_opts)) +
+      bayesplot::facet_text(length(beta_pars) != 1) +
+      xlab("Iteration")
+    pl$traceTau <- do.call(
+      bayesplot::mcmc_trace,
+      c(
+        list(
+          x = draws_all,
+          pars = tau_pars,
+          size = size,
+          n_warmup = n_warmup,
+          facet_args = list(labeller = ggplot2::label_parsed)
+        ),
+        div_opts
+      )
+    ) +
       bayesplot::facet_text(length(tau_pars) != 1) +
       ggtitle(expression(paste("Trace of Heterogeneity Parameter ", tau))) +
       xlab("Iteration")
-    pl$traceLogTau <- do.call(bayesplot::mcmc_trace, c(list(
-      x = draws_all, pars = tau_pars, size = size, n_warmup = n_warmup,
-      facet_args = list(labeller = ggplot2::label_parsed), transformations = tau_log_trans
-    ), div_opts)) +
+    pl$traceLogTau <- do.call(
+      bayesplot::mcmc_trace,
+      c(
+        list(
+          x = draws_all,
+          pars = tau_pars,
+          size = size,
+          n_warmup = n_warmup,
+          facet_args = list(labeller = ggplot2::label_parsed),
+          transformations = tau_log_trans
+        ),
+        div_opts
+      )
+    ) +
       bayesplot::facet_text(length(tau_pars) != 1) +
-      ggtitle(expression(paste("Trace of Heterogeneity Parameter ", tau, " on log-scale"))) +
+      ggtitle(expression(paste(
+        "Trace of Heterogeneity Parameter ",
+        tau,
+        " on log-scale"
+      ))) +
       xlab("Iteration")
 
     ## ... as well as auxilary model parameters
-    pl$densityBeta <- bayesplot::mcmc_dens_overlay(x = draws, pars = beta_pars, facet_args = list(labeller = ggplot2::label_parsed, strip.position = "bottom")) +
+    pl$densityBeta <- bayesplot::mcmc_dens_overlay(
+      x = draws,
+      pars = beta_pars,
+      facet_args = list(
+        labeller = ggplot2::label_parsed,
+        strip.position = "bottom"
+      )
+    ) +
       ggtitle(expression(paste("Density of Regression Coefficient ", beta)))
-    pl$densityTau <- bayesplot::mcmc_dens_overlay(x = draws, pars = tau_pars, facet_args = list(labeller = ggplot2::label_parsed, strip.position = "bottom")) +
+    pl$densityTau <- bayesplot::mcmc_dens_overlay(
+      x = draws,
+      pars = tau_pars,
+      facet_args = list(
+        labeller = ggplot2::label_parsed,
+        strip.position = "bottom"
+      )
+    ) +
       ggtitle(expression(paste("Density of Heterogeneity Parameter ", tau)))
-    pl$densityLogTau <- bayesplot::mcmc_dens_overlay(x = draws, pars = tau_pars, facet_args = list(labeller = ggplot2::label_parsed, strip.position = "bottom"), transformations = tau_log_trans) +
-      ggtitle(expression(paste("Density of Heterogeneity Parameter ", tau, " on log-scale")))
+    pl$densityLogTau <- bayesplot::mcmc_dens_overlay(
+      x = draws,
+      pars = tau_pars,
+      facet_args = list(
+        labeller = ggplot2::label_parsed,
+        strip.position = "bottom"
+      ),
+      transformations = tau_log_trans
+    ) +
+      ggtitle(expression(paste(
+        "Density of Heterogeneity Parameter ",
+        tau,
+        " on log-scale"
+      )))
   }
 
   if (x$has_intercept) {
-    pl$densityThetaStar <- bayesplot::mcmc_dens_overlay(x = draws, pars = "theta_resp_pred") + xlab(expression(theta[symbol("*")])) + bayesplot::facet_text(FALSE) + ggtitle(expression(paste("Density of MAP Prior ", theta[symbol("*")])))
-    pl$densityThetaStarLink <- bayesplot::mcmc_dens_overlay(x = draws, pars = "theta_pred") + xlab(expression(theta[symbol("*")])) + bayesplot::facet_text(FALSE) + ggtitle(expression(paste("Density of MAP Prior ", theta[symbol("*")], " (link scale)")))
+    pl$densityThetaStar <- bayesplot::mcmc_dens_overlay(
+      x = draws,
+      pars = "theta_resp_pred"
+    ) +
+      xlab(expression(theta[symbol("*")])) +
+      bayesplot::facet_text(FALSE) +
+      ggtitle(expression(paste("Density of MAP Prior ", theta[symbol("*")])))
+    pl$densityThetaStarLink <- bayesplot::mcmc_dens_overlay(
+      x = draws,
+      pars = "theta_pred"
+    ) +
+      xlab(expression(theta[symbol("*")])) +
+      bayesplot::facet_text(FALSE) +
+      ggtitle(expression(paste(
+        "Density of MAP Prior ",
+        theta[symbol("*")],
+        " (link scale)"
+      )))
 
-    pl$forest_model <- forest_plot(x, model = "both", size = if (is.null(size)) 1.25 else size)
+    pl$forest_model <- forest_plot(
+      x,
+      model = "both",
+      size = if (is.null(size)) 1.25 else size
+    )
   } else {
     message("No intercept defined.")
   }

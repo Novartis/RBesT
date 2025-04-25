@@ -4,10 +4,14 @@
 #' change of sign and returns the integer which is closest to 0.
 #'
 #' @keywords internal
-uniroot_int <- function(f, interval, ...,
-                        f.lower = f(interval[1], ...),
-                        f.upper = f(interval[2], ...),
-                        maxIter = 1000) {
+uniroot_int <- function(
+  f,
+  interval,
+  ...,
+  f.lower = f(interval[1], ...),
+  f.upper = f(interval[2], ...),
+  maxIter = 1000
+) {
   lo <- interval[1]
   hi <- interval[2]
 
@@ -55,9 +59,10 @@ uniroot_int.all <- function(f, interval, maxIter = 1000, n = 100, ...) {
   print(ii)
   print(xseq[c(ii, ii[length(ii)] + 1)])
   for (i in ii) {
-    Equi <- c(Equi, uniroot_int(f, c(xseq[i], xseq[i + 1]), ...,
-      maxIter = maxIter
-    ))
+    Equi <- c(
+      Equi,
+      uniroot_int(f, c(xseq[i], xseq[i + 1]), ..., maxIter = maxIter)
+    )
   }
   return(Equi)
 }

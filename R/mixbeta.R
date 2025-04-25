@@ -12,26 +12,26 @@
 #' @param n Vector of number of observations.
 #' @param drop Delete the dimensions of an array which have only one level.
 #' @param object Beta mixture object.
-#' @param probs Quantiles reported by the \code{summary} function.
+#' @param probs Quantiles reported by the `summary` function.
 #'
-#' @details Each entry in the \code{...} argument list is expected to
+#' @details Each entry in the `...` argument list is expected to
 #' be a triplet of numbers which defines the weight \eqn{w_k}, first
 #' and second parameter of the mixture component \eqn{k}. A triplet
 #' can optionally be named which will be used appropriately.
 #'
 #' The first and second parameter can be given in different
-#' parametrizations which is set by the \code{param} option:
+#' parametrizations which is set by the `param` option:
 #' \describe{
-#' \item{ab}{Natural parametrization of Beta density (\code{a}=shape1 and \code{b}=shape2). Default. }
+#' \item{ab}{Natural parametrization of Beta density (`a`=shape1 and `b`=shape2). Default. }
 #' \item{ms}{Mean and standard deviation, \eqn{m=a/(a+b)} and \eqn{s=\sqrt{\frac{m(1-m)}{1+n}}}, where \eqn{n=a+b} is the number of observations. Note that \eqn{s} must be less than \eqn{\sqrt{m(1-m)}}.}
 #' \item{mn}{Mean and number of observations, \eqn{n=a+b}.}
 #' }
 #'
 #' @family mixdist
 #'
-#' @return \code{mixbeta} returns a beta mixture with the specified mixture components. \code{ms2beta} and
-#' \code{mn2beta} return the equivalent natural \code{a} and \code{b} parametrization given parameters \code{m},
-#' \code{s}, or \code{n}.
+#' @return `mixbeta` returns a beta mixture with the specified mixture components. `ms2beta` and
+#' `mn2beta` return the equivalent natural `a` and `b` parametrization given parameters `m`,
+#' `s`, or `n`.
 #'
 #' @examples
 #' ## a beta mixture
@@ -58,7 +58,8 @@ mixbeta <- function(..., param = c("ab", "ms", "mn")) {
   mix <- mixdist3(...)
   assert_matrix(mix, nrows = 3, any.missing = FALSE)
   param <- match.arg(param)
-  mix[c(2, 3), ] <- switch(param,
+  mix[c(2, 3), ] <- switch(
+    param,
     ab = mix[c(2, 3), ],
     ms = t(ms2beta(mix[2, ], mix[3, ], FALSE)),
     mn = t(mn2beta(mix[2, ], mix[3, ], FALSE))

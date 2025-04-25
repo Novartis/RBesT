@@ -8,7 +8,7 @@ knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
 knitr::opts_chunk$set(
   dev = "ragg_png",
   dpi = 72,
-  fig.retina = 2,
+  fig.retina = 1,
   fig.width = 1.62*4,
   fig.height = 4,
   fig.align = "center",

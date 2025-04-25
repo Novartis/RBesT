@@ -1,6 +1,6 @@
 #' Operating Characteristics for 2 Sample Design
 #'
-#' The \code{oc2S} function defines a 2 sample design (priors, sample
+#' The `oc2S` function defines a 2 sample design (priors, sample
 #' sizes & decision function) for the calculation of operating
 #' characeristics. A function is returned which calculates the
 #' calculates the frequency at which the decision function is
@@ -8,7 +8,7 @@
 #'
 #' @template args-boundary2S
 #'
-#' @details The \code{oc2S} function defines a 2 sample design and
+#' @details The `oc2S` function defines a 2 sample design and
 #' returns a function which calculates its operating
 #' characteristics. This is the frequency with which the decision
 #' function is evaluated to 1 under the assumption of a given true
@@ -16,10 +16,10 @@
 #' \eqn{\theta_1} and \eqn{\theta_2}. The 2 sample design is defined
 #' by the priors, the sample sizes and the decision function,
 #' \eqn{D(y_1,y_2)}. These uniquely define the decision boundary , see
-#' \code{\link{decision2S_boundary}}.
+#' [decision2S_boundary()].
 #'
-#' Calling the \code{oc2S} function calculates the decision boundary
-#' \eqn{D_1(y_2)} (see \code{\link{decision2S_boundary}}) and returns
+#' Calling the `oc2S` function calculates the decision boundary
+#' \eqn{D_1(y_2)} (see [decision2S_boundary()]) and returns
 #' a function which can be used to calculate the desired frequency
 #' which is evaluated as
 #'
@@ -29,14 +29,14 @@
 #' priors.
 #'
 #' @return Returns a function which when called with two arguments
-#' \code{theta1} and \code{theta2} will return the frequencies at
+#' `theta1` and `theta2` will return the frequencies at
 #' which the decision function is evaluated to 1 whenever the data is
 #' distributed according to the known parameter values in each
 #' sample. Note that the returned function takes vector arguments.
 #'
 #' @references Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B.
 #' Robust meta-analytic-predictive priors in clinical trials with historical control information.
-#' \emph{Biometrics} 2014;70(4):1023-1032.
+#' *Biometrics* 2014;70(4):1023-1032.
 #'
 #' @family design2S
 #'
@@ -70,7 +70,8 @@
 #' @export
 oc2S <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("oc2S")
 #' @export
-oc2S.default <- function(prior1, prior2, n1, n2, decision, ...) "Unknown density"
+oc2S.default <- function(prior1, prior2, n1, n2, decision, ...)
+  "Unknown density"
 
 #' @templateVar fun oc2S
 #' @template design2S-binomial
@@ -138,7 +139,13 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
       } else {
         ## calculate for all requested theta1 the probability mass
         ## past (or before) the boundary
-        res[y2ind, ] <- pbinom(boundary[y2ind], n1, T$theta1, lower.tail = lower.tail, log.p = TRUE)
+        res[y2ind, ] <- pbinom(
+          boundary[y2ind],
+          n1,
+          T$theta1,
+          lower.tail = lower.tail,
+          log.p = TRUE
+        )
       }
       ## finally weight with the density according to the occurence
       ## of i due to theta2; the pmax avoids -Inf in a case of Prob==0
@@ -154,7 +161,18 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
 #' @templateVar fun oc2S
 #' @template design2S-normal
 #' @export
-oc2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps = 1e-6, Ngrid = 10, ...) {
+oc2S.normMix <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps = 1e-6,
+  Ngrid = 10,
+  ...
+) {
   ## distributions of the means of the data generating distributions
   ## for now we assume that the underlying standard deviation
   ## matches the respective reference scales
@@ -172,7 +190,17 @@ oc2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps =
   sigma(prior1) <- sigma1
   sigma(prior2) <- sigma2
 
-  crit_y1 <- decision2S_boundary(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps, Ngrid)
+  crit_y1 <- decision2S_boundary(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid
+  )
 
   lower.tail <- attr(decision, "lower.tail")
 
@@ -194,7 +222,19 @@ oc2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps =
     if (n2 == 0) {
       return(pnorm(crit_y1(theta2), theta1, sem1, lower.tail = lower.tail))
     } else {
-      return(integrate_density_log(function(x) pnorm(crit_y1(x, lim1 = lim1), theta1, sem1, lower.tail = lower.tail, log.p = TRUE), mixnorm(c(1, theta2, sem2), sigma = sem2), logit(eps / 2), logit(1 - eps / 2)))
+      return(integrate_density_log(
+        function(x)
+          pnorm(
+            crit_y1(x, lim1 = lim1),
+            theta1,
+            sem1,
+            lower.tail = lower.tail,
+            log.p = TRUE
+          ),
+        mixnorm(c(1, theta2, sem2), sigma = sem2),
+        logit(eps / 2),
+        logit(1 - eps / 2)
+      ))
     }
   }
 
@@ -222,8 +262,14 @@ oc2S.normMix <- function(prior1, prior2, n1, n2, decision, sigma1, sigma2, eps =
 
     ## ensure that boundary is calculated for the full range
     ## needed
-    lim1 <- c(qnorm(eps / 2, min(theta1), sem1), qnorm(1 - eps / 2, max(theta1), sem1))
-    lim2 <- c(qnorm(eps / 2, min(theta2), sem2), qnorm(1 - eps / 2, max(theta2), sem2))
+    lim1 <- c(
+      qnorm(eps / 2, min(theta1), sem1),
+      qnorm(1 - eps / 2, max(theta1), sem1)
+    )
+    lim2 <- c(
+      qnorm(eps / 2, min(theta2), sem2),
+      qnorm(1 - eps / 2, max(theta2), sem2)
+    )
 
     ## call boundary function to cache all results for all
     ## requested computations
@@ -257,8 +303,15 @@ oc2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
     lim1 <- qpois(c(eps / 2, 1 - eps / 2), lambda1)
     grid <- seq(qpois(eps / 2, lambda2), qpois(1 - eps / 2, lambda2))
 
-    exp(matrixStats::logSumExp(dpois(grid, lambda2, log = TRUE)
-    + ppois(crit_y1(grid, lim1 = lim1), lambda1, lower.tail = lower.tail, log.p = TRUE)))
+    exp(matrixStats::logSumExp(
+      dpois(grid, lambda2, log = TRUE) +
+        ppois(
+          crit_y1(grid, lim1 = lim1),
+          lambda1,
+          lower.tail = lower.tail,
+          log.p = TRUE
+        )
+    ))
   }
 
   Vfreq <- Vectorize(freq)

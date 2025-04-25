@@ -3,7 +3,17 @@
 ## cluster weights and covariance matrices (taken from the knn
 ## determined clusters)
 
-EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 500, tol, Neps, eps = c(w = 0.005, m = 0.005, s = 0.005)) {
+EM_mnmm <- function(
+  X,
+  Nc,
+  mix_init,
+  Ninit = 50,
+  verbose = FALSE,
+  Niter.max = 500,
+  tol,
+  Neps,
+  eps = c(w = 0.005, m = 0.005, s = 0.005)
+) {
   ## in case X is no matrix, interpret it as uni-variate case
   if (!is.matrix(X)) {
     X <- matrix(X, ncol = 1)
@@ -16,7 +26,14 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
   ## initialize normal EM using a Student-t EM which is very robust
   ## against outliers
   if (missing(mix_init)) {
-    mix_init <- EM_msmm(X, Nc, Ninit = Ninit, verbose = verbose, Niter.max = round(Niter.max / 2), tol = 0.1)
+    mix_init <- EM_msmm(
+      X,
+      Nc,
+      Ninit = Ninit,
+      verbose = verbose,
+      Niter.max = round(Niter.max / 2),
+      tol = 0.1
+    )
   }
   pEst <- mix_init$p
   muEst <- mix_init$center
@@ -25,7 +42,10 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
   ## take current estimates and transform to scale on which
   ## convergence is assessed
   est2par <- function(p, mu, cov) {
-    est <- rbind(logit(p), matrix(sapply(1:Nc, function(i) mv2vec(mu[i, ], cov[i, , ])), ncol = Nc))
+    est <- rbind(
+      logit(p),
+      matrix(sapply(1:Nc, function(i) mv2vec(mu[i, ], cov[i, , ])), ncol = Nc)
+    )
     est[(1 + Nd + 1):(1 + 2 * Nd), ] <- log(est[(1 + Nd + 1):(1 + 2 * Nd), ])
     est
   }
@@ -67,7 +87,12 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
   df.comp <- cov.df + Nd + 1
 
   ## expand eps according to the dimensionality
-  eps <- c(eps[1], rep(eps[2], Nd), rep(eps[3], Nd), rep(eps[2], (Nd - 1) * Nd / 2))
+  eps <- c(
+    eps[1],
+    rep(eps[2], Nd),
+    rep(eps[3], Nd),
+    rep(eps[2], (Nd - 1) * Nd / 2)
+  )
 
   iter <- 0
   logN <- log(N)
@@ -91,7 +116,14 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
     ## difficulties if some points are far away from some
     ## component and hence recieve very low density
     for (i in seq(Nc)) {
-      lli[, i] <- log(pEst[i]) + dmvnorm(X, muEst[i, ], as.matrix(covEst[i, , ]), log = TRUE, checkSymmetry = FALSE)
+      lli[, i] <- log(pEst[i]) +
+        dmvnorm(
+          X,
+          muEst[i, ],
+          as.matrix(covEst[i, , ]),
+          log = TRUE,
+          checkSymmetry = FALSE
+        )
     }
     ## ensure that the log-likelihood does not go out of numerical
     ## reasonable bounds
@@ -109,15 +141,36 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
       Dlli <- (traceLli[iter + 1] - traceLli[iter - 1]) / 2
     }
     if (Nc > 1) {
-      smean <- apply(runMixPar[order(runOrder), , , drop = FALSE], c(2, 3), function(x) mean(abs(diff(x))))
+      smean <- apply(
+        runMixPar[order(runOrder), , , drop = FALSE],
+        c(2, 3),
+        function(x) mean(abs(diff(x)))
+      )
       eps.converged <- sum(sweep(smean, 1, eps, "-") < 0)
     } else {
-      smean <- apply(runMixPar[order(runOrder), -1, , drop = FALSE], c(2, 3), function(x) mean(abs(diff(x))))
+      smean <- apply(
+        runMixPar[order(runOrder), -1, , drop = FALSE],
+        c(2, 3),
+        function(x) mean(abs(diff(x)))
+      )
       eps.converged <- sum(sweep(smean, 1, eps[-1], "-") < 0)
     }
     if (is.na(eps.converged)) eps.converged <- 0
     if (verbose) {
-      message("Iteration ", iter, ": log-likelihood = ", lliCur, "; Dlli = ", Dlli, "; converged = ", eps.converged, " / ", Npar, "\n", sep = "")
+      message(
+        "Iteration ",
+        iter,
+        ": log-likelihood = ",
+        lliCur,
+        "; Dlli = ",
+        Dlli,
+        "; converged = ",
+        eps.converged,
+        " / ",
+        Npar,
+        "\n",
+        sep = ""
+      )
     }
     if (checkTol & Dlli < tol) {
       break
@@ -181,7 +234,14 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
 
   ## mixEst <- list(p=pEst, mean=muEst, sigma=covEst)
 
-  mixEst <- do.call(mixmvnorm, lapply(1:Nc, function(i) c(pEst[i], muEst[i, , drop = TRUE], matrix(covEst[i, , ], Nd, Nd))))
+  mixEst <- do.call(
+    mixmvnorm,
+    lapply(
+      1:Nc,
+      function(i)
+        c(pEst[i], muEst[i, , drop = TRUE], matrix(covEst[i, , ], Nd, Nd))
+    )
+  )
 
   ## give further details
   attr(mixEst, "df") <- df
@@ -190,7 +250,19 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
 
   attr(mixEst, "Nc") <- Nc
 
-  convert <- function(est) suppressWarnings(do.call(mixmvnorm, lapply(1:Nc, function(i) c(est$p[i], est$mean[i, , drop = FALSE], matrix(est$sigma[i, , ], Nd, Nd)))))
+  convert <- function(est)
+    suppressWarnings(do.call(
+      mixmvnorm,
+      lapply(
+        1:Nc,
+        function(i)
+          c(
+            est$p[i],
+            est$mean[i, , drop = FALSE],
+            matrix(est$sigma[i, , ], Nd, Nd)
+          )
+      )
+    ))
 
   attr(mixEst, "tol") <- tol
   attr(mixEst, "traceLli") <- traceLli
@@ -203,11 +275,29 @@ EM_mnmm <- function(X, Nc, mix_init, Ninit = 50, verbose = FALSE, Niter.max = 50
 }
 
 ## uni-variate case
-EM_nmm <- function(X, Nc, mix_init, verbose = FALSE, Niter.max = 500, tol, Neps, eps = c(w = 0.005, m = 0.005, s = 0.005)) {
+EM_nmm <- function(
+  X,
+  Nc,
+  mix_init,
+  verbose = FALSE,
+  Niter.max = 500,
+  tol,
+  Neps,
+  eps = c(w = 0.005, m = 0.005, s = 0.005)
+) {
   if (is.matrix(X)) {
     assert_matrix(X, any.missing = FALSE, ncols = 1)
   }
-  mixEst <- EM_mnmm(X = X, Nc = Nc, mix_init = mix_init, verbose = verbose, Niter.max = Niter.max, tol = tol, Neps = Neps, eps = eps)
+  mixEst <- EM_mnmm(
+    X = X,
+    Nc = Nc,
+    mix_init = mix_init,
+    verbose = verbose,
+    Niter.max = Niter.max,
+    tol = tol,
+    Neps = Neps,
+    eps = eps
+  )
   rownames(mixEst) <- c("w", "m", "s")
   class(mixEst) <- c("EM", "EMnmm", "normMix", "mix")
   attr(mixEst, "traceMix") <- lapply(
@@ -224,13 +314,23 @@ EM_nmm <- function(X, Nc, mix_init, verbose = FALSE, Niter.max = 500, tol, Neps,
 
 #' @export
 print.EMnmm <- function(x, ...) {
-  cat("EM for Normal Mixture Model\nLog-Likelihood = ", logLik(x), "\n\n", sep = "")
+  cat(
+    "EM for Normal Mixture Model\nLog-Likelihood = ",
+    logLik(x),
+    "\n\n",
+    sep = ""
+  )
   NextMethod()
 }
 
 #' @export
 print.EMmvnmm <- function(x, ...) {
-  cat("EM for Multivariate Normal Mixture Model\nLog-Likelihood = ", logLik(x), "\n\n", sep = "")
+  cat(
+    "EM for Multivariate Normal Mixture Model\nLog-Likelihood = ",
+    logLik(x),
+    "\n\n",
+    sep = ""
+  )
   NextMethod()
 }
 

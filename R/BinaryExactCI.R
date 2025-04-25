@@ -6,7 +6,7 @@
 #' @param r Number of success or responder
 #' @param n Sample size
 #' @param alpha  confidence level
-#' @param drop Determines if \code{\link{drop}} will be called on the result
+#' @param drop Determines if [drop()] will be called on the result
 #'
 #' @details
 #' Confidence intervals are obtained by a procedure first given in
@@ -33,7 +33,10 @@ BinaryExactCI <- function(r, n, alpha = 0.05, drop = TRUE) {
   pLow <- qbeta(Low, r, n - r + 1)
   pHigh <- qbeta(High, r + 1, n - r)
 
-  nms <- c(paste(round(100 * Low, 1), "%", sep = ""), paste(round(100 * High, 1), "%", sep = ""))
+  nms <- c(
+    paste(round(100 * Low, 1), "%", sep = ""),
+    paste(round(100 * High, 1), "%", sep = "")
+  )
 
   CI <- cbind(pLow, pHigh)
   colnames(CI) <- nms
