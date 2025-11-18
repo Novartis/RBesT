@@ -37,3 +37,4 @@ src/stan_files/.*\.hpp$
 ^vignettes/articles$
 ^\.vscode$
 ^[.]?air[.]toml$
+^\.lintr$
