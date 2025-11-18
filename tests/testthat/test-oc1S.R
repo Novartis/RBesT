@@ -166,3 +166,37 @@ test_that("Poisson critical value, lower.tail=TRUE", {
 test_that("Poisson critical value, lower.tail=FALSE", {
   test_critical_discrete(pcrit1B, dec_countB, posterior_poisson)
 })
+
+test_that("Mixed lower.tail usage works for normal decision boundary calculation", {
+  prior <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
+
+  dec_lower <- decision1S(pc = 0.5, qc = 1.5, lower.tail = TRUE)
+  result_lower <- oc1S(
+    prior,
+    n = 50,
+    decision = dec_lower
+  )
+
+  dec_upper <- decision1S(pc = 0.6, qc = 0.5, lower.tail = FALSE)
+  result_upper <- oc1S(
+    prior,
+    n = 50,
+    decision = dec_upper
+  )
+    
+  decMixed <- decision1S(
+    qc = c(1.5, 0.5),
+    pc = c(0.5, 0.6),
+    lower.tail = c(TRUE, FALSE)
+  )
+  result <- oc1S(prior, 50, decMixed)
+  
+  theta_grid <- seq(-5, 5, length.out = 50)
+  vals_lower <- result_lower(theta_grid)
+  vals_upper <- result_upper(theta_grid)
+  vals_mixed <- result(theta_grid)
+
+  expected_mixed <- vals_lower - (1 - vals_upper)
+  expect_equal(vals_mixed, expected_mixed)
+})
+

@@ -155,13 +155,39 @@ decision1S_boundary.normMix <- function(
   eps = 1e-6,
   ...
 ) {
-  ## distributions of the means of the data generating distributions
-  ## for now we assume that the underlying standard deviation
-  ## matches the respective reference scales
+  # Get the default sigma if not provided already here to only message once.
   if (missing(sigma)) {
     sigma <- RBesT::sigma(prior)
     message("Using default prior reference scale ", sigma)
   }
+
+  lower.tail <- attr(decision, "lower.tail")
+  if (length(lower.tail) > 1) {
+    use_lower <- which(lower.tail)
+    use_upper <- which(!lower.tail)
+    assert_true(length(use_lower) > 0 && length(use_upper) > 0)
+    dec_lower <- decision[use_lower]
+    crit_lower <- decision1S_boundary.normMix(
+      prior,
+      n,
+      dec_lower,
+      sigma,
+      eps
+    )
+    dec_upper <- decision[use_upper]
+    crit_upper <- decision1S_boundary.normMix(
+      prior,
+      n,
+      dec_upper,
+      sigma,
+      eps
+    )
+    return(c(lower_than = crit_lower, higher_than = crit_upper))
+  }
+
+  ## distributions of the means of the data generating distributions
+  ## for now we assume that the underlying standard deviation
+  ## matches the respective reference scales
   assert_number(sigma, lower = 0)
 
   sd_samp <- sigma / sqrt(n)

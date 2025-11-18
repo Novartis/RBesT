@@ -129,15 +129,33 @@ oc1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 
   crit <- decision1S_boundary(prior, n, decision, sigma, eps)
 
-  ## check where the decision is 1, i.e. left or right
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (length(crit) == 1) {
+    ## check where the decision is 1, i.e. left or right
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(theta) {
-    if (missing(theta)) {
-      deprecated("Use of no argument", "decision1S_boundary")
-      return(crit)
+    function(theta) {
+      if (missing(theta)) {
+        deprecated("Use of no argument", "decision1S_boundary")
+        return(crit)
+      }
+      pnorm(crit, theta, sd_samp, lower.tail = lower.tail)
     }
-    pnorm(crit, theta, sd_samp, lower.tail = lower.tail)
+  } else {
+    crit_lower <- crit["lower_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower <= crit_upper) {
+      function(theta) rep(0, length(theta))
+    } else {
+      function(theta) {
+        if (missing(theta)) {
+          deprecated("Use of no argument", "decision1S_boundary")
+          return(crit)
+        }
+        # Calculate probability between the two bounds.
+        pnorm(crit_lower, theta, sd_samp, lower.tail = TRUE) -
+          pnorm(crit_upper, theta, sd_samp, lower.tail = TRUE)
+      }
+    }
   }
   design_fun
 }

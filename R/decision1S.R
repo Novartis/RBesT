@@ -114,9 +114,18 @@ decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
   }
   attr(fun, "pc") <- pc
   attr(fun, "qc") <- qc
-  attr(fun, "lower.tail") <- lower.tail
+  attr(fun, "lower.tail") <- scalar_if_same(lower.tail)
+
   class(fun) <- c("decision1S", "function")
   fun
+}
+
+#' @keywords internal
+scalar_if_same <- function(x) {
+  if (length(x) > 1 && all(x == x[1])) {
+    return(x[1])
+  }
+  x
 }
 
 #' @export
@@ -138,18 +147,23 @@ length.decision1S <- function(x) {
 
 #' @export 
 `[.decision1S` <- function(x, i, ...) {
-  if (length(i) != 1L) {
-    stop("Subsetting of decision1S objects only allowed for single index")
-  }
-  if (i > length(x) || i < 1L) {
+  assert_that(is.numeric(i))
+  if (any(i > length(x) | i < 1L)) {
     stop("Index out of bounds")
   }
   result <- x
-  attr(result, "pc") <- attr(x, "pc")[i]
-  attr(result, "qc") <- attr(x, "qc")[i]
-  lt <- attr(x, "lower.tail")
-  attr(result, "lower.tail") <- if (length(lt) > 1) attr(x, "lower.tail")[i] else lt
-  result
+  new_pc <- attr(x, "pc")[i]
+  new_qc <- attr(x, "qc")[i]
+  new_lt <- attr(x, "lower.tail")
+  new_lt <- 
+    if (length(new_lt) > 1) {
+      new_lt[i]
+    } else {
+      lt
+    }
+  # Note that we need to create a new closure, otherwise the attributes
+  # would still point to the original ones.
+  decision1S(pc = new_pc, qc = new_qc, lower.tail = new_lt)
 }
 
 #' @describeIn decision1S Deprecated old function name. Please use
