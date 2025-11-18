@@ -6,7 +6,8 @@
 #' @param pc Vector of critical cumulative probabilities.
 #' @param qc Vector of respective critical values. Must match the length of `pc`.
 #' @param lower.tail Logical; if `TRUE` (default), probabilities
-#' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}.
+#' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
+#' length as `pc`.
 #'
 #' @details The function creates a one-sided decision function which
 #' takes two arguments. The first argument is expected to be a mixture
@@ -102,6 +103,7 @@
 #' @export
 decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
   assert_that(length(pc) == length(qc))
+  assert_that(length(lower.tail) == 1L || length(lower.tail) == length(pc))
   lpc <- log(pc)
   fun <- function(mix, dist = FALSE) {
     test <- pmix(mix, qc, lower.tail = lower.tail, log.p = TRUE) - lpc
@@ -125,9 +127,7 @@ print.decision1S <- function(x, ...) {
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
   cmp <- ifelse(low, "<=", ">")
-  for (i in seq_along(qc)) {
-    cat(paste0("P(theta ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
-  }
+  cat(paste0("P(theta ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
   invisible(x)
 }
 
