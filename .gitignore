@@ -9,3 +9,4 @@ src/stan_files/*.hpp
 src/stan_files/*.o
 *.*~
 inst/sbc/sbc*html
+.vscode/

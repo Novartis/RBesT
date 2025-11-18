@@ -35,3 +35,5 @@ src/stan_files/.*\.hpp$
 ^Makefile$
 ^LICENSE$
 ^vignettes/articles$
+^\.vscode$
+^[.]?air[.]toml$
