@@ -131,6 +131,27 @@ print.decision1S <- function(x, ...) {
   invisible(x)
 }
 
+#' @export
+length.decision1S <- function(x) {
+  length(attr(x, "pc"))
+}
+
+#' @export 
+`[.decision1S` <- function(x, i, ...) {
+  if (length(i) != 1L) {
+    stop("Subsetting of decision1S objects only allowed for single index")
+  }
+  if (i > length(x) || i < 1L) {
+    stop("Index out of bounds")
+  }
+  result <- x
+  attr(result, "pc") <- attr(x, "pc")[i]
+  attr(result, "qc") <- attr(x, "qc")[i]
+  lt <- attr(x, "lower.tail")
+  attr(result, "lower.tail") <- if (length(lt) > 1) attr(x, "lower.tail")[i] else lt
+  result
+}
+
 #' @describeIn decision1S Deprecated old function name. Please use
 #' `decision1S` instead.
 #' @export

@@ -14,3 +14,17 @@ decMixed <- decision1S(
 test_that("print method works for mixed lower.tail", {
   expect_snapshot(print(decMixed))
 })
+
+test_that("length method works", {
+  expect_equal(length(decMixed), 2L)
+})
+
+test_that("subsetting works", {
+  dec1 <- decMixed[1]
+  expect_equal(length(dec1), 1L)
+  expect_identical(attr(dec1, "lower.tail"), TRUE)
+  
+  dec2 <- decMixed[2]
+  expect_equal(length(dec2), 1L)
+  expect_identical(attr(dec2, "lower.tail"), FALSE)
+})

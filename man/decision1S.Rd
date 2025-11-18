@@ -15,7 +15,8 @@ oc1Sdecision(pc = 0.975, qc = 0, lower.tail = TRUE)
 \item{qc}{Vector of respective critical values. Must match the length of \code{pc}.}
 
 \item{lower.tail}{Logical; if \code{TRUE} (default), probabilities
-are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}.}
+are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
+length as \code{pc}.}
 }
 \value{
 The function returns a decision function which takes two
