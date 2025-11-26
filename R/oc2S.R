@@ -255,11 +255,6 @@ oc2S.normMix <- function(
       qnorm(p = 1 - eps / 2, mean = max(theta2), sd = sem2)
     )
 
-    if (!missing(y2)) {
-      deprecated("Use of y2 argument", "decision2S_boundary")
-      return(crit_y1(y2))
-    }
-
     ## ensure that boundary is calculated for the full range
     ## needed
     lim1 <- c(
@@ -275,12 +270,12 @@ oc2S.normMix <- function(
     ## requested computations
     crit_y1(lim2, lim1 = lim1)
 
-    T <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
-    if (inherits(T, "try-error")) {
+    theta_df <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
+    if (inherits(theta_df, "try-error")) {
       stop("theta1 and theta2 need to be of same size")
     }
 
-    do.call(Vfreq, T)
+    do.call(Vfreq, theta_df)
   }
 
   design_fun
