@@ -319,6 +319,40 @@ decision2S_boundary.normMix <- function(
   assert_number(sigma1, lower = 0)
   assert_number(sigma2, lower = 0)
 
+  lower.tail <- attr(decision, "lower.tail")
+  if (length(lower.tail) > 1) {
+    use_lower <- which(lower.tail)
+    use_upper <- which(!lower.tail)
+    assert_true(length(use_lower) > 0 && length(use_upper) > 0)
+    dec_lower <- decision[use_lower]
+    crit_lower <- decision2S_boundary.normMix(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      dec_lower,
+      sigma1,
+      sigma2,
+      eps,
+      Ngrid,
+      ...
+    )
+    dec_upper <- decision[use_upper]
+    crit_upper <- decision2S_boundary.normMix(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      dec_upper,
+      sigma1,
+      sigma2,
+      eps,
+      Ngrid,
+      ...
+    )
+    return(c(lower_than = crit_lower, higher_than = crit_upper))
+  }
+
   sem1 <- sigma1 / sqrt(n1)
   sem2 <- sigma2 / sqrt(n2)
 
