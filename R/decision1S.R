@@ -151,7 +151,6 @@ length.decision1S <- function(x) {
   if (any(i > length(x) | i < 1L)) {
     stop("Index out of bounds")
   }
-  result <- x
   new_pc <- attr(x, "pc")[i]
   new_qc <- attr(x, "qc")[i]
   new_lt <- attr(x, "lower.tail")
@@ -159,7 +158,7 @@ length.decision1S <- function(x) {
     if (length(new_lt) > 1) {
       new_lt[i]
     } else {
-      lt
+      new_lt
     }
   # Note that we need to create a new closure, otherwise the attributes
   # would still point to the original ones.
