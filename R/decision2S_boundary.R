@@ -363,9 +363,6 @@ decision2S_boundary.normMix <- function(
   boundary <- NA
   boundary_discrete <- matrix(NA, nrow = 0, ncol = 2)
 
-  ## check where the decision is 1, i.e. left or right
-  lower.tail <- attr(decision, "lower.tail")
-
   decision_boundary <- function(y2, lim1) {
     lim2 <- range(y2)
 
@@ -407,7 +404,7 @@ decision2S_boundary.normMix <- function(
           boundary_discrete <<- rbind(boundary_extra, boundary_discrete)
         }
         if (lim2[2] > clim2[2]) {
-          ## the upper bound is not large enough.. again only add whats missing
+          ## the upper bound is not large enough.. again only add what's missing
           new_right_lim2 <- max(lim2[2], clim2[2] + 2 * delta2)
           boundary_extra <- solve_boundary2S_normMix(
             decision,

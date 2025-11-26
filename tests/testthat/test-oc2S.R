@@ -370,16 +370,16 @@ if (!run_on_cran()) {
   )
 } else {
   design_binary <- function(...) {
-    return(0.1)
+    return(alpha)
   }
   design_binaryB <- function(...) {
-    return(0.1)
+    return(alpha)
   }
   boundary_design_binary <- function(...) {
-    return(0.1)
+    return(alpha)
   }
   boundary_design_binaryB <- function(...) {
-    return(0.1)
+    return(alpha)
   }
 }
 posterior_binary <- function(r) postmix(beta_prior, r = r, n = 100)
@@ -388,11 +388,11 @@ test_that("Binary type I error rate", {
   skip_on_cran()
   test_scenario(design_binary(p_test, p_test), alpha)
 })
-test_that("Binary crticial value, lower.tail=TRUE", {
+test_that("Binary critical value, lower.tail=TRUE", {
   skip_on_cran()
   test_critical_discrete(boundary_design_binary, dec, posterior_binary, 30)
 })
-test_that("Binary crticial value, lower.tail=FALSE", {
+test_that("Binary critical value, lower.tail=FALSE", {
   skip_on_cran()
   test_critical_discrete(boundary_design_binaryB, decB, posterior_binary, 30)
 })

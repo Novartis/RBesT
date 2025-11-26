@@ -8,3 +8,4 @@ src/
 inst/sbc/sbc*html
 .vscode/
 *.dll
+.Renviron
