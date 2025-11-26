@@ -12,7 +12,7 @@
 #' returns a function which calculates its probability of success.
 #' The probability of success is the frequency with which the decision
 #' function is evaluated to 1 under the assumption of a given true
-#' distribution of the data implied by a distirbution of the parameter
+#' distribution of the data implied by a distribution of the parameter
 #' \eqn{\theta}.
 #'
 #' Calling the `pos1S` function calculates the critical value
@@ -102,12 +102,26 @@ pos1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 
   crit <- decision1S_boundary(prior, n, decision, sigma, eps)
 
-  ## check where the decision is 1, i.e. left or right
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (length(crit) == 1) {
+    ## check where the decision is 1, i.e. left or right
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix) {
-    pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
-    pmix(pred_dtheta_mean, crit, lower.tail = lower.tail)
+    function(mix) {
+      pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
+      pmix(pred_dtheta_mean, crit, lower.tail = lower.tail)
+    }
+  } else {
+    crit_lower <- crit["lower_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower <= crit_upper) {
+      function(mix) 0
+    } else {
+      function(mix) {
+        pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
+        pmix(pred_dtheta_mean, crit_lower, lower.tail = TRUE) -
+          pmix(pred_dtheta_mean, crit_upper, lower.tail = TRUE)
+      }
+    }
   }
   design_fun
 }

@@ -167,7 +167,7 @@ test_that("Poisson critical value, lower.tail=FALSE", {
   test_critical_discrete(pcrit1B, dec_countB, posterior_poisson)
 })
 
-test_that("Mixed lower.tail usage works for normal decision boundary calculation", {
+test_that("Mixed lower.tail usage works for normal OC calculation", {
   prior <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
 
   dec_lower <- decision1S(pc = 0.5, qc = 1.5, lower.tail = TRUE)

@@ -71,3 +71,35 @@ post_ia_unit_inf <- postmix(prior_unit_inf, m = -1, n = 162)
 test_that("Normal PoS 1 sample function matches MC integration of CPO (more extreme case)", {
   test_pos1S(prior_unit_inf, post_ia_unit_inf, 459 - 162, decA, decAU)
 })
+
+test_that("Mixed lower.tail usage works for normal PoS calculation", {
+  prior <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
+  post_ia <- postmix(prior, m = -1, n = 15)
+
+  dec_lower <- decision1S(pc = 0.5, qc = 1.5, lower.tail = TRUE)
+  pos_lower <- pos1S(
+    prior,
+    n = 50,
+    decision = dec_lower
+  )
+  result_lower <- pos_lower(post_ia)
+
+  dec_upper <- decision1S(pc = 0.6, qc = 0.5, lower.tail = FALSE)
+  pos_upper <- pos1S(
+    prior,
+    n = 50,
+    decision = dec_upper
+  )
+  result_upper <- pos_upper(post_ia)
+    
+  dec_mixed <- decision1S(
+    qc = c(1.5, 0.5),
+    pc = c(0.5, 0.6),
+    lower.tail = c(TRUE, FALSE)
+  )
+  pos_mixed <- pos1S(prior, 50, dec_mixed)
+  result_mixed <- pos_mixed(post_ia)
+  
+  expected_mixed <- result_lower - (1 - result_upper)
+  expect_equal(result_mixed, expected_mixed)
+})
