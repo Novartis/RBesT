@@ -101,10 +101,6 @@ oc1S.betaMix <- function(prior, n, decision, ...) {
   lower.tail <- attr(decision, "lower.tail")
 
   design_fun <- function(theta) {
-    if (missing(theta)) {
-      deprecated("Use of no argument", "decision1S_boundary")
-      return(crit)
-    }
     pbinom(crit, n, theta, lower.tail = lower.tail)
   }
   design_fun
@@ -134,10 +130,6 @@ oc1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
     lower.tail <- attr(decision, "lower.tail")
 
     function(theta) {
-      if (missing(theta)) {
-        deprecated("Use of no argument", "decision1S_boundary")
-        return(crit)
-      }
       pnorm(crit, theta, sd_samp, lower.tail = lower.tail)
     }
   } else {
@@ -147,10 +139,6 @@ oc1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
       function(theta) rep(0, length(theta))
     } else {
       function(theta) {
-        if (missing(theta)) {
-          deprecated("Use of no argument", "decision1S_boundary")
-          return(crit)
-        }
         # Calculate probability between the two bounds.
         pnorm(crit_lower, theta, sd_samp, lower.tail = TRUE) -
           pnorm(crit_upper, theta, sd_samp, lower.tail = TRUE)
@@ -168,10 +156,6 @@ oc1S.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
   lower.tail <- attr(decision, "lower.tail")
 
   design_fun <- function(theta) {
-    if (missing(theta)) {
-      deprecated("Use of no argument", "decision1S_boundary")
-      return(crit)
-    }
     ppois(crit, n * theta, lower.tail = lower.tail)
   }
   design_fun
