@@ -105,6 +105,7 @@ decision2S <- function(
   link = c("identity", "logit", "log")
 ) {
   assert_that(length(pc) == length(qc))
+  assert_that(length(lower.tail) == 1L || length(lower.tail) == length(pc))
   lpc <- log(pc)
   link <- match.arg(link)
   dlink_obj <- link_map[[link]]
@@ -132,7 +133,8 @@ decision2S <- function(
   attr(fun, "pc") <- pc
   attr(fun, "qc") <- qc
   attr(fun, "link") <- link
-  attr(fun, "lower.tail") <- lower.tail
+  attr(fun, "lower.tail") <- scalar_if_same(lower.tail)
+
   class(fun) <- c("decision2S", "function")
   fun
 }
@@ -146,11 +148,34 @@ print.decision2S <- function(x, ...) {
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
   cmp <- ifelse(low, "<=", ">")
-  for (i in seq_along(qc)) {
-    cat(paste0("P(theta1 - theta2 ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
-  }
+  cat(paste0("P(theta1 - theta2 ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
   cat("Link:", link, "\n")
   invisible(x)
+}
+
+#' @export
+length.decision2S <- function(x) {
+  length(attr(x, "pc"))
+}
+
+#' @export 
+`[.decision2S` <- function(x, i, ...) {
+  assert_that(is.numeric(i))
+  if (any(i > length(x) | i < 1L)) {
+    stop("Index out of bounds")
+  }
+  new_pc <- attr(x, "pc")[i]
+  new_qc <- attr(x, "qc")[i]
+  new_lt <- attr(x, "lower.tail")
+  new_lt <- 
+    if (length(new_lt) > 1) {
+      new_lt[i]
+    } else {
+      new_lt
+    }
+  # Note that we need to create a new closure, otherwise the attributes
+  # would still point to the original ones.
+  decision2S(pc = new_pc, qc = new_qc, lower.tail = new_lt)
 }
 
 #' @describeIn decision2S Deprecated old function name. Please use
