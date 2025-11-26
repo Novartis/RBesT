@@ -202,8 +202,6 @@ oc2S.normMix <- function(
     Ngrid
   )
 
-  lower.tail <- attr(decision, "lower.tail")
-
   sem1 <- sigma1 / sqrt(n1)
   sem2 <- sigma2 / sqrt(n2)
 
@@ -216,25 +214,67 @@ oc2S.normMix <- function(
   ## mean_prior2 <- prior2
   ## sigma(mean_prior2) <- sem2
 
-  freq <- function(theta1, theta2) {
-    lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1)
-    lim2 <- qnorm(c(eps / 2, 1 - eps / 2), theta2, sem2)
-    if (n2 == 0) {
-      return(pnorm(crit_y1(theta2), theta1, sem1, lower.tail = lower.tail))
-    } else {
-      return(integrate_density_log(
-        function(x)
-          pnorm(
-            crit_y1(x, lim1 = lim1),
-            theta1,
-            sem1,
-            lower.tail = lower.tail,
-            log.p = TRUE
-          ),
-        mixnorm(c(1, theta2, sem2), sigma = sem2),
-        logit(eps / 2),
-        logit(1 - eps / 2)
-      ))
+  freq <- if (is.function(crit_y1)) {
+    # Simple case of one-sided boundary.
+    lower.tail <- attr(decision, "lower.tail")
+    function(theta1, theta2) {
+      lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1)
+      if (n2 == 0) {
+        pnorm(crit_y1(theta2), theta1, sem1, lower.tail = lower.tail)
+      } else {
+        integrate_density_log(
+          function(x) {
+            pnorm(
+              crit_y1(x, lim1 = lim1),
+              theta1,
+              sem1,
+              lower.tail = lower.tail,
+              log.p = TRUE
+            )
+          },
+          mixnorm(c(1, theta2, sem2), sigma = sem2),
+          logit(eps / 2),
+          logit(1 - eps / 2)
+        )
+      }
+    }
+  } else {
+    # Mixed boundary case.
+    assert_list(crit_y1, len = 2)
+    crit_y1_lower_than <- crit_y1$lower_than
+    crit_y1_higher_than <- crit_y1$higher_than
+    function(theta1, theta2) {
+      assert_scalar(theta1)
+      assert_scalar(theta2)
+      lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1)
+      if (n2 == 0) {
+        bound_lower_than <- crit_y1_lower_than(theta2)
+        bound_higher_than <- crit_y1_higher_than(theta2)
+        if (bound_lower_than <= bound_higher_than) {
+          0
+        } else {
+          pnorm(bound_lower_than, theta1, sem1, lower.tail = TRUE) -
+            pnorm(bound_higher_than, theta1, sem1, lower.tail = TRUE)
+        }
+      } else {
+        integrand <- function(x) {
+          bound_lower_than <- crit_y1_lower_than(x, lim1 = lim1)
+          bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
+          # We need to expect here a vector x.
+          ifelse(
+            bound_lower_than <= bound_higher_than,
+            rep(-Inf, length(x)),
+            log(pnorm(bound_lower_than, theta1, sem1, lower.tail = TRUE) -
+                  pnorm(bound_higher_than, theta1, sem1, lower.tail = TRUE))
+          )
+        }
+        integrate_density_log(
+          integrand,
+          mixnorm(c(1, theta2, sem2), sigma = sem2),
+          logit(eps / 2),
+          logit(1 - eps / 2)
+        )
+      }
     }
   }
 
@@ -246,7 +286,7 @@ oc2S.normMix <- function(
     }
 
     ## in case n2==0, then theta2 is irrelevant
-    if (n2 == 0 & missing(theta2)) {
+    if (n2 == 0 && missing(theta2)) {
       theta2 <- theta1
     }
 
@@ -266,9 +306,16 @@ oc2S.normMix <- function(
       qnorm(1 - eps / 2, max(theta2), sem2)
     )
 
-    ## call boundary function to cache all results for all
-    ## requested computations
-    crit_y1(lim2, lim1 = lim1)
+    ## Call boundary function(s) to cache all results for all
+    ## requested computations.
+    if (is.function(crit_y1)) {
+      crit_y1(lim2, lim1 = lim1)
+    } else {
+      ## The caching is in the closures, therefore we don't need to 
+      ## worry about conflicts between the caches.
+      crit_y1$lower_than(lim2, lim1 = lim1)
+      crit_y1$higher_than(lim2, lim1 = lim1)
+    }
 
     theta_df <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
     if (inherits(theta_df, "try-error")) {

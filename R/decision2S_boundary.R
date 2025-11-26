@@ -350,7 +350,7 @@ decision2S_boundary.normMix <- function(
       Ngrid,
       ...
     )
-    return(c(lower_than = crit_lower, higher_than = crit_upper))
+    return(list(lower_than = crit_lower, higher_than = crit_upper))
   }
 
   sem1 <- sigma1 / sqrt(n1)

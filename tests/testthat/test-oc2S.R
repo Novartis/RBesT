@@ -568,20 +568,6 @@ test_that("Binary type I error rate", {
   test_scenario(design_binary_eps(p_test, p_test), alpha)
 })
 
-## 22 Nov 2017: disabled test as we trigger always calculation of the
-## boundaries as of now.
-## test_that("Binary results cache expands", {
-##               design_binary_eps <- oc2S(beta_prior, beta_prior, 100, 100, dec, eps=1E-3)
-##               design_binary_eps(theta1=0.99, theta2=0.8)
-##               ## in this case the cache boundaries do not cover the
-##               ## critical value
-##               expect_true(is.na(design_binary_eps(theta1=0.99, y2=80)))
-##               ## while now they do as theta1 is set to 0.1 and 0.9
-##               ## internally which triggers recalculation of the
-##               ## internal boundaries
-##               expect_true(!is.na(design_binary_eps(y2=80)))
-##           })
-
 ## test poisson case
 
 gamma_prior <- mixgamma(c(1, 2, 2))
@@ -616,14 +602,6 @@ test_that("Poisson crticial value, lower.tail=FALSE", {
   skip_on_cran()
   test_critical_discrete(boundary_design_poissonB, decB, posterior_poisson, 90)
 })
-## 22 Nov 2017: disabled test as we trigger always calculation of the
-## boundaries as of now.
-## test_that("Poisson results cache expands", {
-##              design_poisson  <- oc2S(gamma_prior, gamma_prior, 100, 100, dec)
-##              design_poisson(theta1=1, theta2=c(0.7,1))
-##              expect_true(sum(is.na(design_poisson(y2=70:90)) ) == 4)
-##              expect_true(sum(is.na(design_poisson(theta1=c(0.01, 1), y2=70:90)) ) == 0)
-##          })
 
 test_that("Normal OC 2-sample case works for n2=0, crohn-1", {
   crohn_sigma <- 88
@@ -751,4 +729,64 @@ test_that("Normal OC 2-sample avoids undefined behavior, example 1", {
     any.missing = FALSE
   )
   expect_numeric(design_map_2(x, x), lower = 0, upper = 1, any.missing = FALSE)
+})
+
+test_that("Normal OC 2-sample works with mixed lower.tail decision criterion", {
+  skip_on_cran()
+
+  sigma_ref <- 3.2
+  map_ref <- mixnorm(
+    c(0.52, -2.1, 0.39),
+    c(0.42, -2.1, 0.995),
+    c(0.06, -1.99, 2.32),
+    sigma = sigma_ref
+  )
+  prior_flat <- mixnorm(c(1, 0, 100), sigma = sigma_ref)
+  alpha <- 0.05
+
+  # Here we use a mixed decision criterion.
+  dec <- decision2S(
+    qc = c(1.5, 0.5),
+    pc = c(0.5, 0.6),
+    lower.tail = c(TRUE, FALSE)
+  )
+  n <- 58
+  k <- 2
+
+  # n2 > 0
+  design_map <- oc2S(
+    prior_flat,
+    map_ref,
+    n,
+    n / k,
+    dec,
+    sigma1 = sigma_ref,
+    sigma2 = sigma_ref
+  )
+
+  x <- seq(-3, 3, by = 0.1)
+  expect_numeric(design_map(x, x), lower = 0, upper = 1, any.missing = FALSE)
+  expect_silent(design_map(-3, -4))
+  expect_numeric(design_map(-3, -4), lower = 0, upper = 1, any.missing = FALSE)
+  expect_numeric(design_map(-3, 4), lower = 0, upper = 1, any.missing = FALSE)
+  expect_numeric(
+    design_map(-1.6, -1.6),
+    lower = 0,
+    upper = 1,
+    any.missing = FALSE
+  )
+
+  # n2 = 0
+  design_map_n2_0 <- oc2S(
+    prior_flat,
+    map_ref,
+    n,
+    0,
+    dec,
+    sigma1 = sigma_ref,
+    sigma2 = sigma_ref
+  )
+
+  expect_numeric(design_map_n2_0(x, x), lower = 0, upper = 1, any.missing = FALSE)
+  expect_silent(design_map_n2_0(-3, -4))
 })
