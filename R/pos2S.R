@@ -190,50 +190,105 @@ pos2S.normMix <- function(
     Ngrid
   )
 
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (is.function(crit_y1)) {
+    # Simple case of one-sided boundary.
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix1, mix2) {
-    ## get the predictive of the mean
-    pred_mix1_mean <- preddist(mix1, n = n1, sigma = sigma1)
-    if (n2 == 0) {
-      ## gets ignored anyway
-      pred_mix2_mean <- preddist(mix2, n = 1, sigma = sigma2)
-    } else {
-      pred_mix2_mean <- preddist(mix2, n = n2, sigma = sigma2)
+    function(mix1, mix2) {
+      ## get the predictive of the mean
+      pred_mix1_mean <- preddist(mix1, n = n1, sigma = sigma1)
+      if (n2 == 0) {
+        ## gets ignored anyway
+        pred_mix2_mean <- preddist(mix2, n = 1, sigma = sigma2)
+      } else {
+        pred_mix2_mean <- preddist(mix2, n = n2, sigma = sigma2)
+      }
+
+      assert_that(inherits(pred_mix1_mean, "normMix"))
+      assert_that(inherits(pred_mix2_mean, "normMix"))
+
+      lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
+      crit_y1(lim2, lim1)
+
+      if (n2 == 0) {
+        mean_prior2 <- summary(prior2, probs = c())["mean"]
+        pmix(
+          pred_mix1_mean,
+          crit_y1(mean_prior2),
+          lower.tail = lower.tail
+        )
+      } else {
+        integrate_density_log(
+          function(x)
+            pmix(
+              pred_mix1_mean,
+              crit_y1(x, lim1 = lim1),
+              lower.tail = lower.tail,
+              log.p = TRUE
+            ),
+          pred_mix2_mean,
+          logit(eps / 2),
+          logit(1 - eps / 2)
+        )
+      }
     }
+  } else {
+    # Mixed boundary case.
+    assert_list(crit_y1, len = 2)
+    crit_y1_lower_than <- crit_y1$lower_than
+    crit_y1_higher_than <- crit_y1$higher_than
 
-    assert_that(inherits(pred_mix1_mean, "normMix"))
-    assert_that(inherits(pred_mix2_mean, "normMix"))
+    function(mix1, mix2) {
+      ## get the predictive of the mean
+      pred_mix1_mean <- preddist(mix1, n = n1, sigma = sigma1)
+      if (n2 == 0) {
+        ## gets ignored anyway
+        pred_mix2_mean <- preddist(mix2, n = 1, sigma = sigma2)
+      } else {
+        pred_mix2_mean <- preddist(mix2, n = n2, sigma = sigma2)
+      }
 
-    lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
-    lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
-    crit_y1(lim2, lim1)
+      assert_that(inherits(pred_mix1_mean, "normMix"))
+      assert_that(inherits(pred_mix2_mean, "normMix"))
 
-    ## return(list(crit=crit_y1, m1=pred_dtheta1_mean, m2=pred_dtheta2_mean))
+      lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
 
-    if (n2 == 0) {
-      mean_prior2 <- summary(prior2, probs = c())["mean"]
-      return(pmix(
-        pred_mix1_mean,
-        crit_y1(mean_prior2),
-        lower.tail = lower.tail
-      ))
-    } else {
-      return(integrate_density_log(
-        function(x)
-          pmix(
-            pred_mix1_mean,
-            crit_y1(x, lim1 = lim1),
-            lower.tail = lower.tail,
-            log.p = TRUE
-          ),
-        pred_mix2_mean,
-        logit(eps / 2),
-        logit(1 - eps / 2)
-      ))
+      crit_y1_lower_than(lim2, lim1)
+      crit_y1_higher_than(lim2, lim1)
+
+      if (n2 == 0) {
+        mean_prior2 <- summary(prior2, probs = c())["mean"]
+        bound_lower_than <- crit_y1_lower_than(mean_prior2)
+        bound_higher_than <- crit_y1_higher_than(mean_prior2)
+        if (bound_lower_than <= bound_higher_than) {
+          0
+        } else {
+          pmix(pred_mix1_mean, bound_lower_than, lower.tail = TRUE) -
+            pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE)
+        }
+      } else {
+        integrand <- function(x) {
+          bound_lower_than <- crit_y1_lower_than(x, lim1 = lim1)
+          bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
+          # We need to expect here a vector x.
+          ifelse (
+            bound_lower_than <= bound_higher_than,
+            -Inf,
+            log(pmix(pred_mix1_mean, bound_lower_than, lower.tail = TRUE) -
+                  pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE))
+          )
+        }
+        integrate_density_log(
+          integrand,
+          pred_mix2_mean,
+          logit(eps / 2),
+          logit(1 - eps / 2)
+        )
+      }
     }
   }
-
   design_fun
 }
 
