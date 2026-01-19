@@ -185,14 +185,14 @@ create_decision1S_2sided <- function(pc, qc, lower.tail) {
 #' @rdname decision1S
 #' @export
 lower <- function(x) {
-  assert_class(x, "decision1S_2sided")
+  assert_multi_class(x, c("decision1S_2sided", "decision2S_2sided"))
   attr(x, "lower")
 }
 
 #' @rdname decision1S
 #' @export
 upper <- function(x) {
-  assert_class(x, "decision1S_2sided")
+  assert_multi_class(x, c("decision1S_2sided", "decision2S_2sided"))
   attr(x, "upper")
 }
 
@@ -218,9 +218,9 @@ print.decision1S_2sided <- function(x, ...) {
   cat("1 sample decision function (two-sided)\n")
   cat("Conditions for acceptance:\n")
   cat("Lower tail conditions:\n")
-  print_decision1S_1sided(attr(x, "lower"))
+  print_decision1S_1sided(lower(x))
   cat("Upper tail conditions:\n")
-  print_decision1S_1sided(attr(x, "upper"))
+  print_decision1S_1sided(upper(x))
   invisible(x)
 }
 

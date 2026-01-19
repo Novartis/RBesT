@@ -13,8 +13,9 @@
 #' evaluating the difference distribution. Can take one of the values
 #' `identity` (default), `logit` or `log`.
 #'
-#' @details This function creates a one-sided decision function on the
-#' basis of the difference distribution in a 2 sample situation. To
+#' @details This function creates a decision function (of class `decision2S`
+#' for one-sided, and of class `decision2S_2sided` for two-sided decisions)
+#' on the basis of the difference distribution in a 2 sample situation. To
 #' support double criterion designs, see *Neuenschwander et al.,
 #' 2010*, an arbitrary number of criterions can be given. The decision
 #' function demands that the probability mass below the critical value
@@ -34,6 +35,10 @@
 #' which is \eqn{1} if all conditions are met and \eqn{0}
 #' otherwise. For `lower.tail=FALSE` differences must be greater
 #' than the given quantiles `qc`.
+#'
+#' For the case of a boolen vector given to `lower.tail` the
+#' direction of each decision aligns respectively, and a two-sided
+#' decision function is created.
 #'
 #' Note that whenever a `link` other than `identity` is
 #' requested, then the underlying densities are first transformed
@@ -55,6 +60,11 @@
 #' returns the distance from the decision boundary for each condition
 #' in log-space. That is, the distance is 0 at the decision boundary,
 #' negative for a 0 decision and positive for a 1 decision.
+#'
+#' For two-sided decision functions, the two components can be
+#' extracted with functions [lower()] and [upper()]. The distance
+#' as calculated by the decision function is returned as a list with
+#' components `lower` and `upper`.
 #'
 #' @references Gsponer T, Gerber F, Bornkamp B, Ohlssen D,
 #' Vandemeulebroecke M, Schmidli H.A practical guide to Bayesian group
@@ -104,8 +114,24 @@ decision2S <- function(
   lower.tail = TRUE,
   link = c("identity", "logit", "log")
 ) {
-  assert_that(length(pc) == length(qc))
-  assert_that(length(lower.tail) == 1L || length(lower.tail) == length(pc))
+  assert_numeric(pc)
+  assert_numeric(qc, len = length(pc))
+  assert_logical(lower.tail)
+  assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
+  lower.tail <- scalar_if_same(lower.tail)
+
+  is_two_sided <- length(lower.tail) > 1
+
+  if (is_two_sided) {
+    create_decision2S_2sided(pc, qc, lower.tail, link)
+  } else {
+    create_decision2S_1sided(pc, qc, lower.tail, link)
+  }
+}
+
+#' Internal Constructor for 2 Sample One-sided Decision Function
+#' @keywords internal
+create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
   lpc <- log(pc)
   link <- match.arg(link)
   dlink_obj <- link_map[[link]]
@@ -139,10 +165,43 @@ decision2S <- function(
   fun
 }
 
-#' @export
-print.decision2S <- function(x, ...) {
-  cat("2 sample decision function\n")
-  cat("Conditions for acceptance:\n")
+#' Internal Constructor for 2 Sample Two-sided Decision Function
+#' @keywords internal
+create_decision2S_2sided <- function(pc, qc, lower.tail, link) {
+  use_lower <- which(lower.tail)
+  use_upper <- which(!lower.tail)
+  assert_true(length(use_lower) > 0 && length(use_upper) > 0)
+
+  lower_part <- create_decision2S_1sided(
+    pc[use_lower],
+    qc[use_lower],
+    TRUE,
+    link
+  )
+  upper_part <- create_decision2S_1sided(
+    pc[use_upper],
+    qc[use_upper],
+    FALSE,
+    link
+  )
+
+  fun <- function(mix1, mix2, dist = FALSE) {
+    dl <- lower_part(mix1, mix2, dist)
+    du <- upper_part(mix1, mix2, dist)
+    if (dist) {
+      return(list(lower = dl, upper = du))
+    }
+    as.numeric(all(dl > 0) && all(du > 0))
+  }
+  attr(fun, "lower") <- lower_part
+  attr(fun, "upper") <- upper_part
+
+  class(fun) <- c("decision2S_2sided", "function")
+  fun
+}
+
+#' @keywords internal
+print_decision2S_1sided <- function(x) {
   link <- attr(x, "link")
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
@@ -150,32 +209,24 @@ print.decision2S <- function(x, ...) {
   cmp <- ifelse(low, "<=", ">")
   cat(paste0("P(theta1 - theta2 ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
   cat("Link:", link, "\n")
+}
+
+#' @export
+print.decision2S <- function(x, ...) {
+  cat("2 sample decision function\n")
+  cat("Conditions for acceptance:\n")
+  print_decision2S_1sided(x)
   invisible(x)
 }
 
 #' @export
-length.decision2S <- function(x) {
-  length(attr(x, "pc"))
-}
-
-#' @export
-`[.decision2S` <- function(x, i, ...) {
-  assert_that(is.numeric(i))
-  if (any(i > length(x) | i < 1L)) {
-    stop("Index out of bounds")
-  }
-  new_pc <- attr(x, "pc")[i]
-  new_qc <- attr(x, "qc")[i]
-  new_lt <- attr(x, "lower.tail")
-  new_lt <-
-    if (length(new_lt) > 1) {
-      new_lt[i]
-    } else {
-      new_lt
-    }
-  # Note that we need to create a new closure, otherwise the attributes
-  # would still point to the original ones.
-  decision2S(pc = new_pc, qc = new_qc, lower.tail = new_lt)
+print.decision2S_2sided <- function(x, ...) {
+  cat("2 sample two-sided decision function\n")
+  cat("Lower side conditions for acceptance:\n")
+  print_decision2S_1sided(lower(x))
+  cat("Upper side conditions for acceptance:\n")
+  print_decision2S_1sided(upper(x))
+  invisible(x)
 }
 
 #' @describeIn decision2S Deprecated old function name. Please use
