@@ -42,14 +42,20 @@ if the function acts as an indicator function or if the function
 returns the distance from the decision boundary for each condition
 in log-space. That is, the distance is 0 at the decision boundary,
 negative for a 0 decision and positive for a 1 decision.
+
+For two-sided decision functions, the two components can be
+extracted with functions \code{\link[=lower]{lower()}} and \code{\link[=upper]{upper()}}. The distance
+as calculated by the decision function is returned as a list with
+components \code{lower} and \code{upper}.
 }
 \description{
 The function sets up a 2 sample one-sided decision function with an
 arbitrary number of conditions on the difference distribution.
 }
 \details{
-This function creates a one-sided decision function on the
-basis of the difference distribution in a 2 sample situation. To
+This function creates a decision function (of class \code{decision2S}
+for one-sided, and of class \code{decision2S_2sided} for two-sided decisions)
+on the basis of the difference distribution in a 2 sample situation. To
 support double criterion designs, see \emph{Neuenschwander et al.,
 2010}, an arbitrary number of criterions can be given. The decision
 function demands that the probability mass below the critical value
@@ -69,6 +75,10 @@ be met, the final indicator function returns
 which is \eqn{1} if all conditions are met and \eqn{0}
 otherwise. For \code{lower.tail=FALSE} differences must be greater
 than the given quantiles \code{qc}.
+
+For the case of a boolen vector given to \code{lower.tail} the
+direction of each decision aligns respectively, and a two-sided
+decision function is created.
 
 Note that whenever a \code{link} other than \code{identity} is
 requested, then the underlying densities are first transformed

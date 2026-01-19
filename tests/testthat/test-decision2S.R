@@ -14,26 +14,16 @@ test_that("print method works for mixed lower.tail", {
   expect_snapshot(print(decMixed))
 })
 
-test_that("length method works", {
-  expect_equal(length(decMixed), 3L)
-})
+test_that("two-sided decision function works", {
+  flat_prior1 <- mixnorm(c(1, 0, 100), sigma = 10)
+  flat_prior2 <- mixnorm(c(1, 1, 20), sigma = 5)
+  expect_equal(decMixed(flat_prior1, flat_prior2), 0)
 
-test_that("subsetting works", {
-  dec1 <- decMixed[1]
-  expect_equal(length(dec1), 1L)
-  expect_identical(attr(dec1, "lower.tail"), TRUE)
+  lower_part <- lower(decMixed)
+  upper_part <- upper(decMixed)
+  expect_equal(lower_part(flat_prior1, flat_prior2), 1)
+  expect_equal(upper_part(flat_prior1, flat_prior2), 0)
 
-  dec2 <- decMixed[2]
-  expect_equal(length(dec2), 1L)
-  expect_identical(attr(dec2, "lower.tail"), FALSE)
-
-  dec12 <- decMixed[1:2]
-  expect_equal(length(dec12), 2L)
-  expect_identical(attr(dec12, "lower.tail"), c(TRUE, FALSE))
-
-  # This case is important: both criterions have same lower.tail,
-  # therefore it should be simplified to a single logical.
-  dec13 <- decMixed[c(1, 3)]
-  expect_equal(length(dec13), 2L)
-  expect_identical(attr(dec13, "lower.tail"), TRUE)
+  dist <- decMixed(flat_prior1, flat_prior2, dist = TRUE)
+  expect_snapshot_value(dist, style = "deparse")
 })

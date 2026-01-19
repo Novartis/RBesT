@@ -119,6 +119,7 @@ decision2S <- function(
   assert_logical(lower.tail)
   assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
   lower.tail <- scalar_if_same(lower.tail)
+  link <- match.arg(link)
 
   is_two_sided <- length(lower.tail) > 1
 
@@ -133,7 +134,6 @@ decision2S <- function(
 #' @keywords internal
 create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
   lpc <- log(pc)
-  link <- match.arg(link)
   dlink_obj <- link_map[[link]]
   fun <- function(mix1, mix2, dist = FALSE) {
     dlink(mix1) <- dlink_obj
@@ -195,6 +195,7 @@ create_decision2S_2sided <- function(pc, qc, lower.tail, link) {
   }
   attr(fun, "lower") <- lower_part
   attr(fun, "upper") <- upper_part
+  attr(fun, "link") <- link
 
   class(fun) <- c("decision2S_2sided", "function")
   fun
@@ -202,30 +203,37 @@ create_decision2S_2sided <- function(pc, qc, lower.tail, link) {
 
 #' @keywords internal
 print_decision2S_1sided <- function(x) {
-  link <- attr(x, "link")
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
   cmp <- ifelse(low, "<=", ">")
   cat(paste0("P(theta1 - theta2 ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
-  cat("Link:", link, "\n")
 }
 
 #' @export
 print.decision2S <- function(x, ...) {
   cat("2 sample decision function\n")
+
   cat("Conditions for acceptance:\n")
   print_decision2S_1sided(x)
+
+  link <- attr(x, "link")
+  cat("Link:", link, "\n")
+
   invisible(x)
 }
 
 #' @export
 print.decision2S_2sided <- function(x, ...) {
   cat("2 sample two-sided decision function\n")
+
   cat("Lower side conditions for acceptance:\n")
   print_decision2S_1sided(lower(x))
   cat("Upper side conditions for acceptance:\n")
   print_decision2S_1sided(upper(x))
+
+  link <- attr(x, "link")
+  cat("Link:", link, "\n")
   invisible(x)
 }
 
