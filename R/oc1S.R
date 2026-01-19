@@ -133,15 +133,29 @@ oc1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
       pnorm(crit, theta, sd_samp, lower.tail = lower.tail)
     }
   } else {
-    crit_lower <- crit["lower_than"]
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
     crit_upper <- crit["higher_than"]
-    if (crit_lower <= crit_upper) {
+    if (crit_lower_or_equal <= crit_upper) {
       function(theta) rep(0, length(theta))
     } else {
       function(theta) {
         # Calculate probability between the two bounds.
-        pnorm(crit_lower, theta, sd_samp, lower.tail = TRUE) -
-          pnorm(crit_upper, theta, sd_samp, lower.tail = TRUE)
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pnorm(
+          crit_lower_or_equal,
+          theta,
+          sd_samp,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pnorm(
+          crit_upper,
+          theta,
+          sd_samp,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
       }
     }
   }

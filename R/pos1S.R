@@ -111,15 +111,27 @@ pos1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
       pmix(pred_dtheta_mean, crit, lower.tail = lower.tail)
     }
   } else {
-    crit_lower <- crit["lower_than"]
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
     crit_upper <- crit["higher_than"]
-    if (crit_lower <= crit_upper) {
+    if (crit_lower_or_equal <= crit_upper) {
       function(mix) 0
     } else {
       function(mix) {
         pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
-        pmix(pred_dtheta_mean, crit_lower, lower.tail = TRUE) -
-          pmix(pred_dtheta_mean, crit_upper, lower.tail = TRUE)
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pmix(
+          pred_dtheta_mean,
+          crit_lower_or_equal,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pmix(
+          pred_dtheta_mean,
+          crit_upper,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
       }
     }
   }
