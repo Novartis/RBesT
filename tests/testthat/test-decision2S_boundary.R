@@ -22,7 +22,7 @@ test_that("decision2S_boundary works for normal outcome", {
     c(TRUE, TRUE, FALSE)
   )
   grayzoneBoundary <- decision2S_boundary(priorP, priorT, 10, 20, grayzoneCrit)
-  grayzoneBoundsLower <- grayzoneBoundary$lower_than(gridVals)
+  grayzoneBoundsLower <- grayzoneBoundary$lower_or_equal_than(gridVals)
   grayzoneBoundsHigher <- grayzoneBoundary$higher_than(gridVals)
 
   expect_snapshot_value(grayzoneBoundsLower, style = "deparse")
@@ -67,7 +67,7 @@ test_that("Mixed lower.tail usage works for decision boundary calculation", {
   )
   boundary_fn_mixed <- decision2S_boundary(prior1, prior2, 50, 50, decMixed)
 
-  result_mixed_lower <- boundary_fn_mixed$lower_than(gridVals)
+  result_mixed_lower <- boundary_fn_mixed$lower_or_equal_than(gridVals)
   result_mixed_upper <- boundary_fn_mixed$higher_than(gridVals)
 
   # For 2-sample, mixed lower.tail returns a list

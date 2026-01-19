@@ -28,11 +28,15 @@
 #' y_{2,i}} and for the normal case as the mean \eqn{\bar{y}_2 = 1/n_2
 #' \sum_{i=1}^{n_2} y_{2,i}}.
 #'
-#' @return Returns a function with a single argument. This function
-#' calculates in dependence of the outcome \eqn{y_2} in sample 2 the
-#' critical value \eqn{y_{1,c}} for which the defined design will
-#' change the decision from 0 to 1 (or vice versa, depending on the
-#' decision function).
+#' @return For one-sided decision functions, returns a function with a
+#' single argument. This function calculates in dependence of the
+#' outcome \eqn{y_2} in sample 2 the critical value \eqn{y_{1,c}} for
+#' which the defined design will change the decision from 0 to 1 (or
+#' vice versa, depending on the decision function).
+#' For two-sided decision functions, returns a list with components
+#' `lower_or_equal_than` and `higher_than`, containing the critical
+#' value functions for the lower and upper one-sided decision
+#' boundary components.
 #'
 #' @family design2S
 #'
@@ -318,42 +322,89 @@ decision2S_boundary.normMix <- function(
     sigma2 <- RBesT::sigma(prior2)
     message("Using default prior 2 reference scale ", sigma2)
   }
+
+  if (is(decision, "decision2S_2sided")) {
+    decision2S_boundary_normMix_2sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      sigma1,
+      sigma2,
+      eps,
+      Ngrid,
+      ...
+    )
+  } else {
+    decision2S_boundary_normMix_1sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      sigma1,
+      sigma2,
+      eps,
+      Ngrid,
+      ...
+    )
+  }
+}
+
+decision2S_boundary_normMix_2sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps,
+  Ngrid,
+  ...
+) {
+  crit_lower <- decision2S_boundary_normMix_1sided(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    lower(decision),
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid,
+    ...
+  )
+  crit_upper <- decision2S_boundary_normMix_1sided(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    upper(decision),
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid,
+    ...
+  )
+  list(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+decision2S_boundary_normMix_1sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps,
+  Ngrid,
+  ...
+) {
   assert_number(sigma1, lower = 0)
   assert_number(sigma2, lower = 0)
-
-  lower.tail <- attr(decision, "lower.tail")
-  if (length(lower.tail) > 1) {
-    use_lower <- which(lower.tail)
-    use_upper <- which(!lower.tail)
-    assert_true(length(use_lower) > 0 && length(use_upper) > 0)
-    dec_lower <- decision[use_lower]
-    crit_lower <- decision2S_boundary.normMix(
-      prior1,
-      prior2,
-      n1,
-      n2,
-      dec_lower,
-      sigma1,
-      sigma2,
-      eps,
-      Ngrid,
-      ...
-    )
-    dec_upper <- decision[use_upper]
-    crit_upper <- decision2S_boundary.normMix(
-      prior1,
-      prior2,
-      n1,
-      n2,
-      dec_upper,
-      sigma1,
-      sigma2,
-      eps,
-      Ngrid,
-      ...
-    )
-    return(list(lower_than = crit_lower, higher_than = crit_upper))
-  }
 
   sem1 <- sigma1 / sqrt(n1)
   sem2 <- sigma2 / sqrt(n2)
@@ -477,7 +528,6 @@ decision2S_boundary.normMix <- function(
 
   decision_boundary
 }
-
 
 #' @templateVar fun decision2S_boundary
 #' @template design2S-poisson
