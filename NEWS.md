@@ -1,3 +1,9 @@
+# RBesT 1.8-2.9000 - development version
+
+## Enhancements
+
+* Reformat R sources using `Air`.
+
 # RBesT 1.8-2 - April 25th, 2025
 
 ## Enhancements
