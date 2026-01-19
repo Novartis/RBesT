@@ -85,19 +85,10 @@ RBesT_covr_report <- function(
       offset = 2,
       size = "md",
       htmltools::HTML(
+        # fmt: skip
         paste0(
-          "<h2>",
-          package_name,
-          " ",
-          package_version,
-          " coverage - ",
-          percentage,
-          "</h2>",
-          "<h3>",
-          pkg_tar,
-          " MD5: ",
-          md5_pkg,
-          "</h3>"
+          "<h2>", package_name, " ", package_version, " coverage - ", percentage, "</h2>",
+          "<h3>", pkg_tar, " MD5: ", md5_pkg, "</h3>"
         )
       ),
       covr:::tabset_panel(
