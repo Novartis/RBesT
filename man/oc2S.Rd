@@ -31,7 +31,8 @@ oc2S(prior1, prior2, n1, n2, decision, ...)
 
 \item{prior2}{Prior for sample 2.}
 
-\item{n1, n2}{Sample size of the respective samples. Sample size \code{n1} must be greater than 0 while sample size \code{n2} must be greater or equal to 0.}
+\item{n1, n2}{Sample size of the respective samples. Sample size \code{n1} must be
+greater than 0 while sample size \code{n2} must be greater or equal to 0.}
 
 \item{decision}{Two-sample decision function to use; see \code{\link{decision2S}}.}
 

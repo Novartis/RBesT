@@ -78,6 +78,7 @@ Other contributors:
   \item Yue Li \email{yue-1.li@novartis.com} [contributor]
   \item Satrajit Roychoudhury \email{satrajit.roychoudhury@novartis.com} [contributor]
   \item Lukas A. Widmer \email{lukas_andreas.widmer@novartis.com} (\href{https://orcid.org/0000-0003-1471-3493}{ORCID}) [contributor]
+  \item Daniel Sabanés Bové \email{daniel.sabanes_bove@rconis.com} (\href{https://orcid.org/0000-0002-0176-9239}{ORCID}) [contributor]
   \item Trustees of Columbia University (R/stanmodels.R, configure, configure.win) [copyright holder]
 }
 
