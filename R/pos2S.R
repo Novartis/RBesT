@@ -191,8 +191,9 @@ pos2S.normMix <- function(
     Ngrid
   )
 
-  design_fun <- if (is.function(crit_y1)) {
+  design_fun <- if (is(decision, "decision2S")) {
     # Simple case of one-sided boundary.
+    assert_function(crit_y1)
     lower.tail <- attr(decision, "lower.tail")
 
     function(mix1, mix2) {
@@ -237,8 +238,8 @@ pos2S.normMix <- function(
     }
   } else {
     # Mixed boundary case.
-    assert_list(crit_y1, len = 2)
-    crit_y1_lower_than <- crit_y1$lower_than
+    assert_list(crit_y1, len = 2, types = "function")
+    crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
     crit_y1_higher_than <- crit_y1$higher_than
 
     function(mix1, mix2) {
@@ -257,29 +258,36 @@ pos2S.normMix <- function(
       lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
       lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
 
-      crit_y1_lower_than(lim2, lim1)
+      crit_y1_lower_or_equal_than(lim2, lim1)
       crit_y1_higher_than(lim2, lim1)
 
       if (n2 == 0) {
         mean_prior2 <- summary(prior2, probs = c())["mean"]
-        bound_lower_than <- crit_y1_lower_than(mean_prior2)
+        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(mean_prior2)
         bound_higher_than <- crit_y1_higher_than(mean_prior2)
-        if (bound_lower_than <= bound_higher_than) {
+        if (bound_lower_or_equal_than <= bound_higher_than) {
           0
         } else {
-          pmix(pred_mix1_mean, bound_lower_than, lower.tail = TRUE) -
+          pmix(pred_mix1_mean, bound_lower_or_equal_than, lower.tail = TRUE) -
             pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE)
         }
       } else {
         integrand <- function(x) {
-          bound_lower_than <- crit_y1_lower_than(x, lim1 = lim1)
+          bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+            x,
+            lim1 = lim1
+          )
           bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
           # We need to expect here a vector x.
           ifelse(
-            bound_lower_than <= bound_higher_than,
+            bound_lower_or_equal_than <= bound_higher_than,
             -Inf,
             log(
-              pmix(pred_mix1_mean, bound_lower_than, lower.tail = TRUE) -
+              pmix(
+                pred_mix1_mean,
+                bound_lower_or_equal_than,
+                lower.tail = TRUE
+              ) -
                 pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE)
             )
           )
