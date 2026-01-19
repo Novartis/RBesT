@@ -29,7 +29,10 @@ ess(bmix, method = "morita")
 prior_logit <- mixnorm(c(1, log(5 / 15), sqrt(1 / 5 + 1 / 15)))
 ess(prior_logit, family = binomial)
 
-bmix_logit <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, log(10 / 2), sqrt(1 / 10 + 1 / 2)))
+bmix_logit <- mixnorm(
+  rob = c(0.2, 0, 2),
+  inf = c(0.8, log(10 / 2), sqrt(1 / 10 + 1 / 2))
+)
 ess(bmix_logit, family = binomial)
 
 # Predictive consistency of elir
@@ -38,7 +41,9 @@ bmixPred <- preddist(bmix, n = n_forward)
 pred_samp <- rmix(bmixPred, 1E2)
 # use more samples here for greater accuracy, e.g.
 # pred_samp <- rmix(bmixPred, 1E3)
-pred_ess <- sapply(pred_samp, function(r) ess(postmix(bmix, r = r, n = n_forward), "elir"))
+pred_ess <- sapply(pred_samp, function(r) {
+  ess(postmix(bmix, r = r, n = n_forward), "elir")
+})
 ess(bmix, "elir")
 mean(pred_ess) - n_forward
 

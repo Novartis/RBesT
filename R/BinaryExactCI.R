@@ -41,7 +41,9 @@ BinaryExactCI <- function(r, n, alpha = 0.05, drop = TRUE) {
   CI <- cbind(pLow, pHigh)
   colnames(CI) <- nms
 
-  if (drop) CI <- drop(CI)
+  if (drop) {
+    CI <- drop(CI)
+  }
 
   return(CI)
 }

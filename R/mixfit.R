@@ -86,7 +86,9 @@ mixfit <- function(
   type = c("norm", "beta", "gamma", "mvnorm"),
   thin,
   ...
-) UseMethod("mixfit")
+) {
+  UseMethod("mixfit")
+}
 
 #' @describeIn mixfit Performs an EM fit for the given
 #' sample. Thinning is applied only if thin is specified.

@@ -40,8 +40,12 @@ preddist_cmp <- function(
   ## sampling distribution
   stat <- match.arg(stat)
   test <- replicate(N, n_rng(rmix(mix, 1)))
-  if (stat == "sum") test_stat <- colSums(test)
-  if (stat == "mean") test_stat <- colMeans(test)
+  if (stat == "sum") {
+    test_stat <- colSums(test)
+  }
+  if (stat == "mean") {
+    test_stat <- colMeans(test)
+  }
 
   quants_stest <- quantile(test_stat, qntls)
   ## note: in particular for the discrete/counting distributions,
@@ -50,8 +54,12 @@ preddist_cmp <- function(
   res_sum <- abs(quants_sref - quants_stest)
   ## note: errors are accumulating with n, hence to check the mean,
   ## we scale eps with n
-  if (stat == "sum") expect_true(all(res_sum < n * Teps))
-  if (stat == "mean") expect_true(all(res_sum < Teps))
+  if (stat == "sum") {
+    expect_true(all(res_sum < n * Teps))
+  }
+  if (stat == "mean") {
+    expect_true(all(res_sum < Teps))
+  }
 
   quants_test <- quantile(test[1, ], qntls)
   quants_ref <- qmix(preddist(mix, n = 1), qntls)

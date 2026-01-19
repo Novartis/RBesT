@@ -80,8 +80,12 @@ forest_plot <- function(
   model <- match.arg(model)
   point_est <- match.arg(point_est)
 
-  if (est == "both") est <- c("MAP", "Mean")
-  if (model == "both") model <- c("stratified", "meta")
+  if (est == "both") {
+    est <- c("MAP", "Mean")
+  }
+  if (model == "both") {
+    model <- c("stratified", "meta")
+  }
 
   pred_est <- as.data.frame(do.call(
     rbind,
@@ -101,10 +105,12 @@ forest_plot <- function(
     "up"
   )
   comb <- rbind(
-    if ("stratified" %in% model)
-      transform(strat, study = rownames(strat), model = "stratified"),
-    if ("meta" %in% model)
-      transform(fit, study = rownames(strat), model = "meta"),
+    if ("stratified" %in% model) {
+      transform(strat, study = rownames(strat), model = "stratified")
+    },
+    if ("meta" %in% model) {
+      transform(fit, study = rownames(strat), model = "meta")
+    },
     pred_est
   )
   comb <- within(comb, {

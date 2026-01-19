@@ -70,8 +70,9 @@
 #' @export
 oc2S <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("oc2S")
 #' @export
-oc2S.default <- function(prior1, prior2, n1, n2, decision, ...)
+oc2S.default <- function(prior1, prior2, n1, n2, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun oc2S
 #' @template design2S-binomial
@@ -207,7 +208,9 @@ oc2S.normMix <- function(
   sem1 <- sigma1 / sqrt(n1)
   sem2 <- sigma2 / sqrt(n2)
 
-  if (n2 == 0) sem2 <- sigma(prior2) / sqrt(1E-1)
+  if (n2 == 0) {
+    sem2 <- sigma(prior2) / sqrt(1E-1)
+  }
 
   ## change the reference scale of the prior such that the prior
   ## represents the distribution of the respective means
@@ -223,14 +226,15 @@ oc2S.normMix <- function(
       return(pnorm(crit_y1(theta2), theta1, sem1, lower.tail = lower.tail))
     } else {
       return(integrate_density_log(
-        function(x)
+        function(x) {
           pnorm(
             crit_y1(x, lim1 = lim1),
             theta1,
             sem1,
             lower.tail = lower.tail,
             log.p = TRUE
-          ),
+          )
+        },
         mixnorm(c(1, theta2, sem2), sigma = sem2),
         logit(eps / 2),
         logit(1 - eps / 2)

@@ -62,8 +62,9 @@
 robustify <- function(priormix, weight, mean, n = 1, ...) UseMethod("robustify")
 
 #' @export
-robustify.default <- function(priormix, weight, mean, n = 1, ...)
+robustify.default <- function(priormix, weight, mean, n = 1, ...) {
   "Unknown density"
+}
 
 #' @describeIn robustify The default `mean` is set to 1/2 which
 #' represents no difference between the occurrence rates for one of the
