@@ -31,7 +31,10 @@
 #' aligned with the cumulative density function definition within R
 #' (see for example [pbinom()]).
 #'
-#' @return Returns the critical value \eqn{y_c}.
+#' @return Returns the critical value \eqn{y_c}. For two-sided
+#'   decision functions a named vector with components
+#'   `lower_or_equal_than` and `higher_than` is returned, containing
+#'   the critical values for the lower and upper decision boundaries.
 #'
 #' @family design1S
 #'
@@ -163,30 +166,58 @@ decision1S_boundary.normMix <- function(
     message("Using default prior reference scale ", sigma)
   }
 
-  lower.tail <- attr(decision, "lower.tail")
-  if (length(lower.tail) > 1) {
-    use_lower <- which(lower.tail)
-    use_upper <- which(!lower.tail)
-    assert_true(length(use_lower) > 0 && length(use_upper) > 0)
-    dec_lower <- decision[use_lower]
-    crit_lower <- decision1S_boundary.normMix(
+  if (is(decision, "decision1S_2sided")) {
+    decision1S_boundary_normMix_2sided(
       prior,
       n,
-      dec_lower,
+      decision,
       sigma,
       eps
     )
-    dec_upper <- decision[use_upper]
-    crit_upper <- decision1S_boundary.normMix(
+  } else {
+    decision1S_boundary_normMix_1sided(
       prior,
       n,
-      dec_upper,
+      decision,
       sigma,
       eps
     )
-    return(c(lower_than = crit_lower, higher_than = crit_upper))
   }
+}
 
+#' @keywords internal
+decision1S_boundary_normMix_2sided <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps
+) {
+  crit_lower <- decision1S_boundary_normMix_1sided(
+    prior,
+    n,
+    lower(decision),
+    sigma,
+    eps
+  )
+  crit_upper <- decision1S_boundary_normMix_1sided(
+    prior,
+    n,
+    upper(decision),
+    sigma,
+    eps
+  )
+  c(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision1S_boundary_normMix_1sided <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps
+) {
   ## distributions of the means of the data generating distributions
   ## for now we assume that the underlying standard deviation
   ## matches the respective reference scales
@@ -198,9 +229,6 @@ decision1S_boundary.normMix <- function(
 
   ## change the reference scale of the prior such that the prior
   ## represents the distribution of the respective means
-  ## mean_prior <- prior
-  ## sigma(mean_prior) <- sd_samp
-
   m <- summary(prior, probs = c())["mean"]
 
   lim <- qnorm(p = c(eps / 2, 1 - eps / 2), mean = m, sd = sd_samp)
@@ -210,7 +238,6 @@ decision1S_boundary.normMix <- function(
 
   crit
 }
-
 
 #' @templateVar fun decision1S_boundary
 #' @template design1S-poisson

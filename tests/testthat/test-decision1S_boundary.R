@@ -34,6 +34,6 @@ test_that("Mixed lower.tail usage works for decision boundary calculation", {
     lower.tail = c(TRUE, FALSE)
   )
   result <- decision1S_boundary(prior, 50, decMixed)
-  expected <- c(lower_than = result_lower, higher_than = result_upper)
+  expected <- c(lower_or_equal_than = result_lower, higher_than = result_upper)
   expect_equal(result, expected)
 })
