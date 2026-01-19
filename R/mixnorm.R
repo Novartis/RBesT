@@ -98,7 +98,9 @@ mn2norm <- function(m, n, sigma, drop = TRUE) {
   assert_number(sigma, lower = 0)
   sigma_n <- sigma / sqrt(n)
   ms <- cbind(m = m, s = sigma_n)
-  if (drop) ms <- drop(ms)
+  if (drop) {
+    ms <- drop(ms)
+  }
   ms
 }
 

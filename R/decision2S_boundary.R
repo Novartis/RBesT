@@ -64,11 +64,13 @@
 #' futilityCrit(postmix(priorP, m = y1c - 1E-3, n = 10), postmix(priorT, m = -10, n = 20))
 #'
 #' @export
-decision2S_boundary <- function(prior1, prior2, n1, n2, decision, ...)
+decision2S_boundary <- function(prior1, prior2, n1, n2, decision, ...) {
   UseMethod("decision2S_boundary")
+}
 #' @export
-decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...)
+decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun decision2S_boundary
 #' @template design2S-binomial
@@ -363,7 +365,9 @@ decision2S_boundary.normMix <- function(
   assert_that(n1 > 0)
   assert_that(n2 >= 0)
 
-  if (n2 == 0) sem2 <- sigma(prior2) / sqrt(1E-1)
+  if (n2 == 0) {
+    sem2 <- sigma(prior2) / sqrt(1E-1)
+  }
 
   ## change the reference scale of the prior such that the prior
   ## represents the distribution of the respective means

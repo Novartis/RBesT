@@ -98,7 +98,9 @@ mixgamma <- function(
 ms2gamma <- function(m, s, drop = TRUE) {
   b <- m / s^2
   ab <- cbind(a = m * b, b = b)
-  if (drop) ab <- drop(ab)
+  if (drop) {
+    ab <- drop(ab)
+  }
   ab
 }
 
@@ -112,7 +114,9 @@ mn2gamma <- function(m, n, likelihood = c("poisson", "exp"), drop = TRUE) {
     poisson = cbind(a = m * n, b = n),
     exp = cbind(a = n, b = n / m)
   )
-  if (drop) ab <- drop(ab)
+  if (drop) {
+    ab <- drop(ab)
+  }
   ab
 }
 

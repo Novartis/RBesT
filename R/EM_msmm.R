@@ -48,7 +48,9 @@ EM_msmm <- function(
     covEst <- array(0, dim = c(Nc, Nd, Nd))
     Xtau <- sqrt(colVars(X))
     for (i in seq(Nc)) {
-      if (i == cmin) next
+      if (i == cmin) {
+        next
+      }
       ind <- KNN$cluster == i
       if (sum(ind) > 10) {
         covKNN <- as.matrix(cov(X[ind, , drop = FALSE]))

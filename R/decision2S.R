@@ -158,7 +158,7 @@ length.decision2S <- function(x) {
   length(attr(x, "pc"))
 }
 
-#' @export 
+#' @export
 `[.decision2S` <- function(x, i, ...) {
   assert_that(is.numeric(i))
   if (any(i > length(x) | i < 1L)) {
@@ -167,7 +167,7 @@ length.decision2S <- function(x) {
   new_pc <- attr(x, "pc")[i]
   new_qc <- attr(x, "qc")[i]
   new_lt <- attr(x, "lower.tail")
-  new_lt <- 
+  new_lt <-
     if (length(new_lt) > 1) {
       new_lt[i]
     } else {

@@ -69,11 +69,13 @@
 #' decision1S_boundary(flat_prior, nL, dec2)
 #'
 #' @export
-decision1S_boundary <- function(prior, n, decision, ...)
+decision1S_boundary <- function(prior, n, decision, ...) {
   UseMethod("decision1S_boundary")
+}
 #' @export
-decision1S_boundary.default <- function(prior, n, decision, ...)
+decision1S_boundary.default <- function(prior, n, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun decision1S_boundary
 #' @template design1S-binomial

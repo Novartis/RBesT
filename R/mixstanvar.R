@@ -136,8 +136,9 @@ mixstanvar <- function(..., verbose = FALSE) {
     variable <- variable_names[[i + 1]]
     sv <- sv + mix2brms(mix, variable, verbose)
   }
-  includes_density <- function(density)
+  includes_density <- function(density) {
     any(sapply(mixpriors, inherits, density))
+  }
 
   if (includes_density("mvnormMix")) {
     sv <- sv +

@@ -462,7 +462,9 @@ gMAP <- function(
   } else {
     log_offset <- model.offset(mf)
   }
-  if (is.null(log_offset)) log_offset <- rep(0, H)
+  if (is.null(log_offset)) {
+    log_offset <- rep(0, H)
+  }
   log_offset <- array(log_offset)
 
   ## first define dummy data for all cases, which get overwritten for

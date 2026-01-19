@@ -126,7 +126,16 @@ plot_binned <- function(count, rank, group) {
   S <- sum(count[group == group[1]])
   num_ranks <- length(rank[group == group[1]])
   c95 <- qbinom(c(0.025, 0.5, 0.975), S, 1 / num_ranks)
-  dd <- arrange(data.frame(count = count, rank = rank, group = group, stringsAsFactors = FALSE), group, rank) %>%
+  dd <- arrange(
+    data.frame(
+      count = count,
+      rank = rank,
+      group = group,
+      stringsAsFactors = FALSE
+    ),
+    group,
+    rank
+  ) %>%
     group_by(group) %>%
     mutate(ecdf = cumsum(count) / S, ecdf_ref = (rank + 1) / (num_ranks)) %>%
     separate(group, into = c("g1", "g2"), sep = "/")
@@ -197,7 +206,12 @@ chisq <- calibration_binned %>%
   group_by(data_scenario, group, parameter) %>%
   group_map(~ cbind(case = .y, tidy(chisq.test(.$count))[, c(1, 3, 2)])) %>%
   bind_rows() %>%
-  rename(df = parameter, data_scenario = case.data_scenario, group = case.group, parameter = case.parameter) %>%
+  rename(
+    df = parameter,
+    data_scenario = case.data_scenario,
+    group = case.group,
+    parameter = case.parameter
+  ) %>%
   separate(group, into = c("likelihood", "sd_tau"), sep = "/")
 
 kable(subset(chisq, parameter == "mu"), digits = 3)

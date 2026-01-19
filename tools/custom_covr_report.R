@@ -10,13 +10,15 @@ RBesT_covr_report <- function(
   pkg_tar = Sys.getenv("PKG_FILE_NAME"),
   pkg_md5 = Sys.getenv("PKG_FILE_MD5"),
   browse = FALSE
-)
-{
+) {
   # Create any directories as needed
   dir.create(dirname(file), recursive = TRUE, showWarnings = FALSE)
 
   # Paths need to be absolute for save_html to work properly
-  file <- file.path(normalizePath(dirname(file), mustWork = TRUE), basename(file))
+  file <- file.path(
+    normalizePath(dirname(file), mustWork = TRUE),
+    basename(file)
+  )
 
   loadNamespace("htmltools")
   loadNamespace("DT")
@@ -36,7 +38,8 @@ RBesT_covr_report <- function(
   }
   $(td).css("background", grad);
 }
-')
+'
+  )
 
   # Open a new file in the source tab and switch to it
   file_choice_callback <- DT::JS(
@@ -46,7 +49,8 @@ RBesT_covr_report <- function(
   id = $(this).text();
   files.filter('div[id=\\'' + id + '\\']').removeClass('hidden');
   $('ul.nav a[data-value=Source]').text(id).tab('show');
-});")
+});"
+  )
 
   package_name <- attr(x, "package")$package
   package_version <- attr(x, "package")$version
@@ -61,7 +65,9 @@ RBesT_covr_report <- function(
       dom = "t",
       paging = FALSE,
       columnDefs = list(
-        list(targets = 6, createdCell = color_coverage_callback))),
+        list(targets = 6, createdCell = color_coverage_callback)
+      )
+    ),
     rownames = FALSE,
     class = "row-border",
     callback = file_choice_callback
@@ -74,19 +80,33 @@ RBesT_covr_report <- function(
 
   ui <- covr:::fluid_page(
     htmltools::includeCSS(system.file("www/report.css", package = "covr")),
-    covr:::column(8, offset = 2, size = "md",
-           htmltools::HTML(
-             paste0(
-               "<h2>", package_name, " ", package_version, " coverage - ", percentage, "</h2>",
-               "<h3>", pkg_tar, " MD5: ", md5_pkg, "</h3>"
-              )
-            ),
-           covr:::tabset_panel(
-             covr:::tab_panel("Files",
-                       table
-             ),
-             covr:::tab_panel("Source", covr:::addHighlight(covr:::renderSourceTable(data$full)))
-           )
+    covr:::column(
+      8,
+      offset = 2,
+      size = "md",
+      htmltools::HTML(
+        paste0(
+          "<h2>",
+          package_name,
+          " ",
+          package_version,
+          " coverage - ",
+          percentage,
+          "</h2>",
+          "<h3>",
+          pkg_tar,
+          " MD5: ",
+          md5_pkg,
+          "</h3>"
+        )
+      ),
+      covr:::tabset_panel(
+        covr:::tab_panel("Files", table),
+        covr:::tab_panel(
+          "Source",
+          covr:::addHighlight(covr:::renderSourceTable(data$full))
+        )
+      )
     )
   )
 

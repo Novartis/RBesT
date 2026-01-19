@@ -78,7 +78,9 @@ EM_mnmm <- function(
 
   ## eps can also be given as a single integer which is interpreted
   ## as number of digits
-  if (length(eps) == 1) eps <- rep(10^(-eps), 3)
+  if (length(eps) == 1) {
+    eps <- rep(10^(-eps), 3)
+  }
 
   ## degrees of freedom
   ## covariance matrix df per component
@@ -101,7 +103,11 @@ EM_mnmm <- function(
   Dlli <- Inf
   runMixPar <- array(-Inf, dim = c(Neps, df.comp, Nc))
   runOrder <- 0:(Neps - 1)
-  if (Nc == 1) Npar <- df else Npar <- df + 1
+  if (Nc == 1) {
+    Npar <- df
+  } else {
+    Npar <- df + 1
+  }
 
   ## initialize component and element wise log-likelihood matrix
   lli <- array(-20, dim = c(N, Nc))
@@ -155,7 +161,9 @@ EM_mnmm <- function(
       )
       eps.converged <- sum(sweep(smean, 1, eps[-1], "-") < 0)
     }
-    if (is.na(eps.converged)) eps.converged <- 0
+    if (is.na(eps.converged)) {
+      eps.converged <- 0
+    }
     if (verbose) {
       message(
         "Iteration ",
@@ -238,8 +246,9 @@ EM_mnmm <- function(
     mixmvnorm,
     lapply(
       1:Nc,
-      function(i)
+      function(i) {
         c(pEst[i], muEst[i, , drop = TRUE], matrix(covEst[i, , ], Nd, Nd))
+      }
     )
   )
 
@@ -250,19 +259,21 @@ EM_mnmm <- function(
 
   attr(mixEst, "Nc") <- Nc
 
-  convert <- function(est)
+  convert <- function(est) {
     suppressWarnings(do.call(
       mixmvnorm,
       lapply(
         1:Nc,
-        function(i)
+        function(i) {
           c(
             est$p[i],
             est$mean[i, , drop = FALSE],
             matrix(est$sigma[i, , ], Nd, Nd)
           )
+        }
       )
     ))
+  }
 
   attr(mixEst, "tol") <- tol
   attr(mixEst, "traceLli") <- traceLli
@@ -346,7 +357,9 @@ mv2vec <- function(mean, sigma, df, label = TRUE) {
     rho <- NULL
     tau <- sqrt(sigma)
   }
-  if (missing(df)) df <- NULL
+  if (missing(df)) {
+    df <- NULL
+  }
   res <- c(mean, tau, rho, df)
   if (label) {
     tauN <- paste("sd", 1:Nd, sep = "")

@@ -77,11 +77,13 @@
 #' @example inst/examples/ess.R
 #'
 #' @export
-ess <- function(mix, method = c("elir", "moment", "morita"), ...)
+ess <- function(mix, method = c("elir", "moment", "morita"), ...) {
   UseMethod("ess")
+}
 #' @export
-ess.default <- function(mix, method = c("elir", "moment", "morita"), ...)
+ess.default <- function(mix, method = c("elir", "moment", "morita"), ...) {
   stop("Unknown density")
+}
 
 
 calc_loc <- function(mix, loc = c("mode", "median", "mean")) {

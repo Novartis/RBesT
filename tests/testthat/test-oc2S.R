@@ -793,7 +793,7 @@ test_that("Normal OC 2-sample works with mixed lower.tail decision criterion", {
       prob_fun_stop <- get_design_map_n2_pos(dec_stop)
       prob_fun_inbetween_1 <- get_design_map_n2_pos(dec_inbetween_1)
       prob_fun_inbetween_2 <- get_design_map_n2_pos(dec_inbetween_2)
-      
+
       x <- seq(-3, 3, by = 0.1)
 
       prob_go <- prob_fun_go(x, x)
@@ -803,8 +803,18 @@ test_that("Normal OC 2-sample works with mixed lower.tail decision criterion", {
 
       expect_numeric(prob_go, lower = 0, upper = 1, any.missing = FALSE)
       expect_numeric(prob_stop, lower = 0, upper = 1, any.missing = FALSE)
-      expect_numeric(prob_inbetween_1, lower = 0, upper = 1, any.missing = FALSE)
-      expect_numeric(prob_inbetween_2, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(
+        prob_inbetween_1,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      expect_numeric(
+        prob_inbetween_2,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
 
       total_prob <- prob_go + prob_stop + prob_inbetween_1 + prob_inbetween_2
       expect_true(all(abs(total_prob - 1) < 1e-3))

@@ -70,8 +70,9 @@
 #' @export
 oc2S <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("oc2S")
 #' @export
-oc2S.default <- function(prior1, prior2, n1, n2, decision, ...)
+oc2S.default <- function(prior1, prior2, n1, n2, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun oc2S
 #' @template design2S-binomial
@@ -205,7 +206,9 @@ oc2S.normMix <- function(
   sem1 <- sigma1 / sqrt(n1)
   sem2 <- sigma2 / sqrt(n2)
 
-  if (n2 == 0) sem2 <- sigma(prior2) / sqrt(1E-1)
+  if (n2 == 0) {
+    sem2 <- sigma(prior2) / sqrt(1E-1)
+  }
 
   ## change the reference scale of the prior such that the prior
   ## represents the distribution of the respective means
@@ -264,8 +267,10 @@ oc2S.normMix <- function(
           ifelse(
             bound_lower_than <= bound_higher_than,
             rep(-Inf, length(x)),
-            log(pnorm(bound_lower_than, theta1, sem1, lower.tail = TRUE) -
-                  pnorm(bound_higher_than, theta1, sem1, lower.tail = TRUE))
+            log(
+              pnorm(bound_lower_than, theta1, sem1, lower.tail = TRUE) -
+                pnorm(bound_higher_than, theta1, sem1, lower.tail = TRUE)
+            )
           )
         }
         integrate_density_log(
@@ -311,13 +316,17 @@ oc2S.normMix <- function(
     if (is.function(crit_y1)) {
       crit_y1(lim2, lim1 = lim1)
     } else {
-      ## The caching is in the closures, therefore we don't need to 
+      ## The caching is in the closures, therefore we don't need to
       ## worry about conflicts between the caches.
       crit_y1$lower_than(lim2, lim1 = lim1)
       crit_y1$higher_than(lim2, lim1 = lim1)
     }
 
-    theta_df <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
+    theta_df <- try(data.frame(
+      theta1 = theta1,
+      theta2 = theta2,
+      row.names = NULL
+    ))
     if (inherits(theta_df, "try-error")) {
       stop("theta1 and theta2 need to be of same size")
     }

@@ -183,14 +183,14 @@ test_that("Mixed lower.tail usage works for normal OC calculation", {
     n = 50,
     decision = dec_upper
   )
-    
+
   decMixed <- decision1S(
     qc = c(1.5, 0.5),
     pc = c(0.5, 0.6),
     lower.tail = c(TRUE, FALSE)
   )
   result <- oc1S(prior, 50, decMixed)
-  
+
   theta_grid <- seq(-5, 5, length.out = 50)
   vals_lower <- result_lower(theta_grid)
   vals_upper <- result_upper(theta_grid)
@@ -199,4 +199,3 @@ test_that("Mixed lower.tail usage works for normal OC calculation", {
   expected_mixed <- vals_lower - (1 - vals_upper)
   expect_equal(vals_mixed, expected_mixed)
 })
-

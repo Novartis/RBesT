@@ -96,7 +96,7 @@ mixmvnorm <- function(..., sigma, param = c("ms", "mn", "msr")) {
       mixdist3,
       lapply(
         1:Nc,
-        function(co)
+        function(co) {
           c(
             mix[1, co],
             mvnorm(
@@ -104,6 +104,7 @@ mixmvnorm <- function(..., sigma, param = c("ms", "mn", "msr")) {
               matrix(mix[(1 + p + 1):(1 + p + p^2), co], p, p)
             )
           )
+        }
       )
     )
   }

@@ -91,7 +91,7 @@ test_that("Mixed lower.tail usage works for normal PoS calculation", {
     decision = dec_upper
   )
   result_upper <- pos_upper(post_ia)
-    
+
   dec_mixed <- decision1S(
     qc = c(1.5, 0.5),
     pc = c(0.5, 0.6),
@@ -99,7 +99,7 @@ test_that("Mixed lower.tail usage works for normal PoS calculation", {
   )
   pos_mixed <- pos1S(prior, 50, dec_mixed)
   result_mixed <- pos_mixed(post_ia)
-  
+
   expected_mixed <- result_lower - (1 - result_upper)
   expect_equal(result_mixed, expected_mixed)
 })

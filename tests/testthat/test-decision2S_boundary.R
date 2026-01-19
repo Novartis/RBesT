@@ -1,7 +1,7 @@
 test_that("decision2S_boundary works for normal outcome", {
   priorT <- mixnorm(c(1, 0, 0.001), sigma = 88, param = "mn")
   priorP <- mixnorm(c(1, -49, 20), sigma = 88, param = "mn")
- 
+
   successCrit <- decision2S(c(0.95, 0.5), c(0, 50), FALSE)
   futilityCrit <- decision2S(c(0.90), c(40), TRUE)
 
@@ -17,17 +17,17 @@ test_that("decision2S_boundary works for normal outcome", {
 
   # Now we define the criterion for the gray zone using mixed lower.tail.
   grayzoneCrit <- decision2S(
-    c(0.95, 0.5, 0.9), 
-    c(0, 50, 40), 
+    c(0.95, 0.5, 0.9),
+    c(0, 50, 40),
     c(TRUE, TRUE, FALSE)
-  ) 
+  )
   grayzoneBoundary <- decision2S_boundary(priorP, priorT, 10, 20, grayzoneCrit)
   grayzoneBoundsLower <- grayzoneBoundary$lower_than(gridVals)
   grayzoneBoundsHigher <- grayzoneBoundary$higher_than(gridVals)
 
   expect_snapshot_value(grayzoneBoundsLower, style = "deparse")
   expect_snapshot_value(grayzoneBoundsHigher, style = "deparse")
-  
+
   # In this case there is no gray zone:
   expect_false(any(grayzoneBoundsHigher < grayzoneBoundsLower))
 })
@@ -59,17 +59,17 @@ test_that("Mixed lower.tail usage works for decision boundary calculation", {
     decision = dec_upper
   )
   result_upper <- boundary_fn_upper(gridVals)
-  
+
   decMixed <- decision2S(
     qc = c(1.5, 0.5),
     pc = c(0.5, 0.6),
     lower.tail = c(TRUE, FALSE)
   )
   boundary_fn_mixed <- decision2S_boundary(prior1, prior2, 50, 50, decMixed)
-  
+
   result_mixed_lower <- boundary_fn_mixed$lower_than(gridVals)
   result_mixed_upper <- boundary_fn_mixed$higher_than(gridVals)
-  
+
   # For 2-sample, mixed lower.tail returns a list
   expect_equal(result_mixed_lower, result_lower)
   expect_equal(result_mixed_upper, result_upper)

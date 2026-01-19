@@ -78,7 +78,9 @@ ms2beta <- function(m, s, drop = TRUE) {
   n <- m * (1 - m) / s^2 - 1
   assert_that(all(n >= 0))
   ab <- cbind(a = n * m, b = n * (1 - m))
-  if (drop) ab <- drop(ab)
+  if (drop) {
+    ab <- drop(ab)
+  }
   ab
 }
 
@@ -87,7 +89,9 @@ ms2beta <- function(m, s, drop = TRUE) {
 mn2beta <- function(m, n, drop = TRUE) {
   assert_that(all(n >= 0))
   ab <- cbind(a = n * m, b = n * (1 - m))
-  if (drop) ab <- drop(ab)
+  if (drop) {
+    ab <- drop(ab)
+  }
   ab
 }
 
