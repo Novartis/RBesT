@@ -217,8 +217,9 @@ oc2S.normMix <- function(
   ## mean_prior2 <- prior2
   ## sigma(mean_prior2) <- sem2
 
-  freq <- if (is.function(crit_y1)) {
+  freq <- if (is(decision, "decision2S")) {
     # Simple case of one-sided boundary.
+    assert_function(crit_y1)
     lower.tail <- attr(decision, "lower.tail")
     function(theta1, theta2) {
       lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1)
@@ -243,32 +244,40 @@ oc2S.normMix <- function(
     }
   } else {
     # Mixed boundary case.
-    assert_list(crit_y1, len = 2)
-    crit_y1_lower_than <- crit_y1$lower_than
+    assert_list(crit_y1, len = 2, types = "function")
+    crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
     crit_y1_higher_than <- crit_y1$higher_than
     function(theta1, theta2) {
       assert_scalar(theta1)
       assert_scalar(theta2)
       lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1)
       if (n2 == 0) {
-        bound_lower_than <- crit_y1_lower_than(theta2)
+        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(theta2)
         bound_higher_than <- crit_y1_higher_than(theta2)
-        if (bound_lower_than <= bound_higher_than) {
+        if (bound_lower_or_equal_than <= bound_higher_than) {
           0
         } else {
-          pnorm(bound_lower_than, theta1, sem1, lower.tail = TRUE) -
+          pnorm(bound_lower_or_equal_than, theta1, sem1, lower.tail = TRUE) -
             pnorm(bound_higher_than, theta1, sem1, lower.tail = TRUE)
         }
       } else {
         integrand <- function(x) {
-          bound_lower_than <- crit_y1_lower_than(x, lim1 = lim1)
+          bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+            x,
+            lim1 = lim1
+          )
           bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
           # We need to expect here a vector x.
           ifelse(
-            bound_lower_than <= bound_higher_than,
-            rep(-Inf, length(x)),
+            bound_lower_or_equal_than <= bound_higher_than,
+            -Inf,
             log(
-              pnorm(bound_lower_than, theta1, sem1, lower.tail = TRUE) -
+              pnorm(
+                bound_lower_or_equal_than,
+                theta1,
+                sem1,
+                lower.tail = TRUE
+              ) -
                 pnorm(bound_higher_than, theta1, sem1, lower.tail = TRUE)
             )
           )
@@ -318,7 +327,7 @@ oc2S.normMix <- function(
     } else {
       ## The caching is in the closures, therefore we don't need to
       ## worry about conflicts between the caches.
-      crit_y1$lower_than(lim2, lim1 = lim1)
+      crit_y1$lower_or_equal_than(lim2, lim1 = lim1)
       crit_y1$higher_than(lim2, lim1 = lim1)
     }
 
