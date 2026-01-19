@@ -2,10 +2,16 @@
 % Please edit documentation in R/decision1S.R
 \name{decision1S}
 \alias{decision1S}
+\alias{lower}
+\alias{upper}
 \alias{oc1Sdecision}
 \title{Decision Function for 1 Sample Designs}
 \usage{
 decision1S(pc = 0.975, qc = 0, lower.tail = TRUE)
+
+lower(x)
+
+upper(x)
 
 oc1Sdecision(pc = 0.975, qc = 0, lower.tail = TRUE)
 }
@@ -17,9 +23,13 @@ oc1Sdecision(pc = 0.975, qc = 0, lower.tail = TRUE)
 \item{lower.tail}{Logical; if \code{TRUE} (default), probabilities
 are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
 length as \code{pc}.}
+
+\item{x}{object of class \code{decision1S_2sided}.}
 }
 \value{
-The function returns a decision function which takes two
+The function returns a decision function (of class
+\code{decision1S} for one-sided, and of class \code{decision1S_2sided}
+for two-sided decisions) which takes two
 arguments. The first argument is expected to be a mixture
 (posterior) distribution which is tested if the specified
 conditions are met. The logical second argument determines if the
@@ -27,13 +37,19 @@ function acts as an indicator function or if the function returns
 the distance from the decision boundary for each condition in
 log-space, i.e. the distance is 0 at the decision boundary,
 negative for a 0 decision and positive for a 1 decision.
+
+For two-sided decision functions, the two components can be
+extracted with functions \code{\link[=lower]{lower()}} and \code{\link[=upper]{upper()}}. The distance
+as calculated by the decision function is returned as a list with
+components \code{lower} and \code{upper}.
 }
 \description{
 The function sets up a 1 sample one-sided decision function with an
 arbitrary number of conditions.
 }
 \details{
-The function creates a one-sided decision function which
+For \code{lower.tail} being either \code{TRUE} or \code{FALSE},
+the function creates a one-sided decision function which
 takes two arguments. The first argument is expected to be a mixture
 (posterior) distribution. This distribution is tested whether it
 fulfills all the required threshold conditions specified with the
@@ -49,6 +65,10 @@ for \eqn{x \leq 0} and \eqn{1} for \eqn{x > 0}. As all conditions
 must be met, the final indicator function returns
 
 \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
+
+For the case of a boolen vector given to \code{lower.tail} the
+direction of each decision aligns respectively, and a two-sided
+decision function is created.
 
 When the second argument is set to \code{TRUE} a distance metric is
 returned component-wise per defined condition as

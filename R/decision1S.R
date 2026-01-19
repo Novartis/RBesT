@@ -8,8 +8,10 @@
 #' @param lower.tail Logical; if `TRUE` (default), probabilities
 #' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
 #' length as `pc`.
+#' @param x object of class `decision1S_2sided`.
 #'
-#' @details The function creates a one-sided decision function which
+#' @details For `lower.tail` being either `TRUE` or `FALSE`,
+#' the function creates a one-sided decision function which
 #' takes two arguments. The first argument is expected to be a mixture
 #' (posterior) distribution. This distribution is tested whether it
 #' fulfills all the required threshold conditions specified with the
@@ -26,6 +28,10 @@
 #'
 #' \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
 #'
+#' For the case of a boolen vector given to `lower.tail` the
+#' direction of each decision aligns respectively, and a two-sided
+#' decision function is created.
+#'
 #' When the second argument is set to `TRUE` a distance metric is
 #' returned component-wise per defined condition as
 #'
@@ -37,7 +43,9 @@
 #'
 #' @family design1S
 #'
-#' @return The function returns a decision function which takes two
+#' @return The function returns a decision function (of class
+#' `decision1S` for one-sided, and of class `decision1S_2sided`
+#' for two-sided decisions) which takes two
 #' arguments. The first argument is expected to be a mixture
 #' (posterior) distribution which is tested if the specified
 #' conditions are met. The logical second argument determines if the
@@ -45,6 +53,11 @@
 #' the distance from the decision boundary for each condition in
 #' log-space, i.e. the distance is 0 at the decision boundary,
 #' negative for a 0 decision and positive for a 1 decision.
+#'
+#' For two-sided decision functions, the two components can be
+#' extracted with functions [lower()] and [upper()]. The distance
+#' as calculated by the decision function is returned as a list with
+#' components `lower` and `upper`.
 #'
 #' @references Neuenschwander B, Rouyrre N, Hollaender H, Zuber E,
 #' Branson M. A proof of concept phase II non-inferiority
@@ -102,22 +115,19 @@
 #'
 #' @export
 decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
-  assert_that(length(pc) == length(qc))
-  assert_that(length(lower.tail) == 1L || length(lower.tail) == length(pc))
-  lpc <- log(pc)
-  fun <- function(mix, dist = FALSE) {
-    test <- pmix(mix, qc, lower.tail = lower.tail, log.p = TRUE) - lpc
-    if (dist) {
-      return(test)
-    }
-    as.numeric(all(test > 0))
-  }
-  attr(fun, "pc") <- pc
-  attr(fun, "qc") <- qc
-  attr(fun, "lower.tail") <- scalar_if_same(lower.tail)
+  assert_numeric(pc)
+  assert_numeric(qc, len = length(pc))
+  assert_logical(lower.tail)
+  assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
+  lower.tail <- scalar_if_same(lower.tail)
 
-  class(fun) <- c("decision1S", "function")
-  fun
+  is_two_sided <- length(lower.tail) > 1
+
+  if (is_two_sided) {
+    create_decision1S_2sided(pc, qc, lower.tail)
+  } else {
+    create_decision1S_1sided(pc, qc, lower.tail)
+  }
 }
 
 #' @keywords internal
@@ -128,41 +138,90 @@ scalar_if_same <- function(x) {
   x
 }
 
+#' Internal Constructor for 1 Sample One-sided Decision Function
+#' @keywords internal
+create_decision1S_1sided <- function(pc, qc, lower.tail) {
+  lpc <- log(pc)
+  fun <- function(mix, dist = FALSE) {
+    test <- pmix(mix, qc, lower.tail = lower.tail, log.p = TRUE) - lpc
+    if (dist) {
+      return(test)
+    }
+    as.numeric(all(test > 0))
+  }
+  attr(fun, "pc") <- pc
+  attr(fun, "qc") <- qc
+  attr(fun, "lower.tail") <- lower.tail
+
+  class(fun) <- c("decision1S", "function")
+  fun
+}
+
+#' Internal Constructor for 1 Sample Two-sided Decision Function
+#' @keywords internal
+create_decision1S_2sided <- function(pc, qc, lower.tail) {
+  use_lower <- which(lower.tail)
+  use_upper <- which(!lower.tail)
+  assert_true(length(use_lower) > 0 && length(use_upper) > 0)
+
+  lower_part <- create_decision1S_1sided(pc[use_lower], qc[use_lower], TRUE)
+  upper_part <- create_decision1S_1sided(pc[use_upper], qc[use_upper], FALSE)
+
+  fun <- function(mix, dist = FALSE) {
+    dl <- lower_part(mix, dist)
+    du <- upper_part(mix, dist)
+    if (dist) {
+      return(list(lower = dl, upper = du))
+    }
+    as.numeric(all(dl > 0) && all(du > 0))
+  }
+  attr(fun, "lower") <- lower_part
+  attr(fun, "upper") <- upper_part
+
+  class(fun) <- c("decision1S_2sided", "function")
+  fun
+}
+
+#' @rdname decision1S
 #' @export
-print.decision1S <- function(x, ...) {
-  cat("1 sample decision function\n")
-  cat("Conditions for acceptance:\n")
+lower <- function(x) {
+  assert_class(x, "decision1S_2sided")
+  attr(x, "lower")
+}
+
+#' @rdname decision1S
+#' @export
+upper <- function(x) {
+  assert_class(x, "decision1S_2sided")
+  attr(x, "upper")
+}
+
+#' @keywords internal
+print_decision1S_1sided <- function(x) {
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
   cmp <- ifelse(low, "<=", ">")
   cat(paste0("P(theta ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
+}
+
+#' @export
+print.decision1S <- function(x, ...) {
+  cat("1 sample decision function\n")
+  cat("Conditions for acceptance:\n")
+  print_decision1S_1sided(x)
   invisible(x)
 }
 
 #' @export
-length.decision1S <- function(x) {
-  length(attr(x, "pc"))
-}
-
-#' @export
-`[.decision1S` <- function(x, i, ...) {
-  assert_that(is.numeric(i))
-  if (any(i > length(x) | i < 1L)) {
-    stop("Index out of bounds")
-  }
-  new_pc <- attr(x, "pc")[i]
-  new_qc <- attr(x, "qc")[i]
-  new_lt <- attr(x, "lower.tail")
-  new_lt <-
-    if (length(new_lt) > 1) {
-      new_lt[i]
-    } else {
-      new_lt
-    }
-  # Note that we need to create a new closure, otherwise the attributes
-  # would still point to the original ones.
-  decision1S(pc = new_pc, qc = new_qc, lower.tail = new_lt)
+print.decision1S_2sided <- function(x, ...) {
+  cat("1 sample decision function (two-sided)\n")
+  cat("Conditions for acceptance:\n")
+  cat("Lower tail conditions:\n")
+  print_decision1S_1sided(attr(x, "lower"))
+  cat("Upper tail conditions:\n")
+  print_decision1S_1sided(attr(x, "upper"))
+  invisible(x)
 }
 
 #' @describeIn decision1S Deprecated old function name. Please use
