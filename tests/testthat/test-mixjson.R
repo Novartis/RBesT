@@ -42,8 +42,8 @@ test_that("write_mix_json handles EM objects correctly", {
 test_that("read_mix_json rescaling works correctly", {
   # Create a mixture object
   nm <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
-  nm[1,1] <- 0.15
-  
+  nm[1, 1] <- 0.15
+
   # Use withr to create a temporary file
   tempfile <- withr::local_tempfile(fileext = ".json")
 

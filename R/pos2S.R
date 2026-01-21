@@ -75,8 +75,9 @@
 #' @export
 pos2S <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("pos2S")
 #' @export
-pos2S.default <- function(prior1, prior2, n1, n2, decision, ...)
+pos2S.default <- function(prior1, prior2, n1, n2, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun pos2S
 #' @template design2S-binomial
@@ -220,13 +221,14 @@ pos2S.normMix <- function(
       ))
     } else {
       return(integrate_density_log(
-        function(x)
+        function(x) {
           pmix(
             pred_mix1_mean,
             crit_y1(x, lim1 = lim1),
             lower.tail = lower.tail,
             log.p = TRUE
-          ),
+          )
+        },
         pred_mix2_mean,
         logit(eps / 2),
         logit(1 - eps / 2)

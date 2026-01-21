@@ -103,14 +103,24 @@ rmix <- function(mix, n) UseMethod("rmix")
   ## ensure that the resulting object is a mixture object only
   cl <- grep("mix$", class(mix), ignore.case = TRUE, value = TRUE)
   dl <- dlink(mix)
-  if (inherits(mix, "normMix")) s <- sigma(mix)
-  if (inherits(mix, "mvnormMix")) s <- sigma(mix)
+  if (inherits(mix, "normMix")) {
+    s <- sigma(mix)
+  }
+  if (inherits(mix, "mvnormMix")) {
+    s <- sigma(mix)
+  }
   mix <- mix[, ..., drop = FALSE]
-  if (rescale) mix[1, ] <- mix[1, ] / sum(mix[1, ])
+  if (rescale) {
+    mix[1, ] <- mix[1, ] / sum(mix[1, ])
+  }
   class(mix) <- cl
   dlink(mix) <- dl
-  if (inherits(mix, "normMix")) sigma(mix) <- s
-  if (inherits(mix, "mvnormMix")) sigma(mix) <- s
+  if (inherits(mix, "normMix")) {
+    sigma(mix) <- s
+  }
+  if (inherits(mix, "mvnormMix")) {
+    sigma(mix) <- s
+  }
   mix
 }
 #' @export
@@ -178,16 +188,19 @@ dmix.betaMix <- function(mix, x, log = FALSE) dmix_impl(dbeta, mix, x, log)
 dmix.normMix <- function(mix, x, log = FALSE) dmix_impl(dnorm, mix, x, log)
 
 #' @export
-dmix.betaBinomialMix <- function(mix, x, log = FALSE)
+dmix.betaBinomialMix <- function(mix, x, log = FALSE) {
   dmix_impl(Curry(dBetaBinomial, n = attr(mix, "n")), mix, x, log)
+}
 
 ## internal redefinition of negative binomial
 ## .dnbinomAB <- function(x, a, b, n=1, log=FALSE) dnbinom(x, size=a, prob=(b/n)/((b/n)+1), log=log)
-.dnbinomAB <- function(x, a, b, n = 1, log = FALSE)
+.dnbinomAB <- function(x, a, b, n = 1, log = FALSE) {
   dnbinom(x, size = a, prob = b / (b + n), log = log)
+}
 #' @export
-dmix.gammaPoissonMix <- function(mix, x, log = FALSE)
+dmix.gammaPoissonMix <- function(mix, x, log = FALSE) {
   dmix_impl(Curry(.dnbinomAB, n = attr(mix, "n")), mix, x, log)
+}
 
 #' @export
 dmix.mvnormMix <- function(mix, x, log = FALSE) {
@@ -224,8 +237,9 @@ dmix.mvnormMix <- function(mix, x, log = FALSE) {
 
 ## DISTRIBUTION FUNCTIONS
 #' @export
-pmix.default <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+pmix.default <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
   stop("Unknown mixture")
+}
 
 pmix_impl <- function(dist, mix, q, lower.tail = TRUE, log.p = FALSE) {
   Nc <- ncol(mix)
@@ -264,14 +278,17 @@ pmix_impl <- function(dist, mix, q, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @export
-pmix.gammaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+pmix.gammaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
   pmix_impl(pgamma, mix, q, lower.tail, log.p)
+}
 #' @export
-pmix.betaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+pmix.betaMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
   pmix_impl(pbeta, mix, q, lower.tail, log.p)
+}
 #' @export
-pmix.normMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+pmix.normMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
   pmix_impl(pnorm, mix, q, lower.tail, log.p)
+}
 
 #' @export
 ## pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p=FALSE) pmix_impl(Curry(pBetaBinomial, n=attr(mix, "n")), mix, q, lower.tail, log.p)
@@ -300,14 +317,18 @@ pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
   p <- dist[q + 1]
   p[out_low] <- 0
   p[out_high] <- 1
-  if (!lower.tail) p <- 1 - p
-  if (log.p) p <- log(p)
+  if (!lower.tail) {
+    p <- 1 - p
+  }
+  if (log.p) {
+    p <- log(p)
+  }
   return(p)
 }
 
 ## internal redefinition of negative binomial
 ## .pnbinomAB <- function(q, a, b, lower.tail = TRUE, log.p = FALSE ) pnbinom(q, size=a, prob=b/(b+1), lower.tail = lower.tail, log.p = log.p )
-.pnbinomAB <- function(q, a, b, n = 1, lower.tail = TRUE, log.p = FALSE)
+.pnbinomAB <- function(q, a, b, n = 1, lower.tail = TRUE, log.p = FALSE) {
   pnbinom(
     q,
     size = a,
@@ -315,20 +336,24 @@ pmix.betaBinomialMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
     lower.tail = lower.tail,
     log.p = log.p
   )
+}
 #' @export
-pmix.gammaPoissonMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE)
+pmix.gammaPoissonMix <- function(mix, q, lower.tail = TRUE, log.p = FALSE) {
   pmix_impl(Curry(.pnbinomAB, n = attr(mix, "n")), mix, q, lower.tail, log.p)
+}
 
 #' @export
-pmix.mvnormMix <- function(mix, q, ...)
+pmix.mvnormMix <- function(mix, q, ...) {
   stop("Multivariate normal mixture cumulative density not supported.")
+}
 
 
 ## QUANTILE FUNCTION
 
 #' @export
-qmix.default <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+qmix.default <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   stop("Unknown mixture")
+}
 
 qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
   Nc <- ncol(mix)
@@ -349,13 +374,20 @@ qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
   ## mixture or lower, if the requested quantile is more in the
   ## tails
   eps <- 1E-1
-  plow <- if (log.p) min(c(eps, exp(p), (1 - exp(p)))) / 2 else
+  plow <- if (log.p) {
+    min(c(eps, exp(p), (1 - exp(p)))) / 2
+  } else {
     min(c(eps, p, (1 - p))) / 2
+  }
   phigh <- 1 - plow
   qlow <- mixlink(mix, min(quant(rep.int(plow, Nc), mix[2, ], mix[3, ])))
   qhigh <- mixlink(mix, max(quant(rep.int(phigh, Nc), mix[2, ], mix[3, ])))
-  if (is.infinite(qlow)) qlow <- -sqrt(.Machine$double.xmax)
-  if (is.infinite(qhigh)) qhigh <- sqrt(.Machine$double.xmax)
+  if (is.infinite(qlow)) {
+    qlow <- -sqrt(.Machine$double.xmax)
+  }
+  if (is.infinite(qhigh)) {
+    qhigh <- sqrt(.Machine$double.xmax)
+  }
   res <- rep.int(NA, length(p))
   pboundary <- pmix(mix, c(qlow, qhigh), lower.tail = lower.tail, log.p = log.p)
   for (i in seq_along(p)) {
@@ -394,14 +426,17 @@ qmix_impl <- function(quant, mix, p, lower.tail = TRUE, log.p = FALSE) {
 }
 
 #' @export
-qmix.gammaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+qmix.gammaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   qmix_impl(qgamma, mix, p, lower.tail, log.p)
+}
 #' @export
-qmix.betaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+qmix.betaMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   qmix_impl(qbeta, mix, p, lower.tail, log.p)
+}
 #' @export
-qmix.normMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE)
+qmix.normMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   qmix_impl(qnorm, mix, p, lower.tail, log.p)
+}
 
 #' @export
 qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
@@ -409,15 +444,19 @@ qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   ## numerical evaluation
   n <- attr(mix, "n")
   dist <- pmix.betaBinomialMix(mix, seq(0, n - 1))
-  if (log.p) p <- exp(p)
+  if (log.p) {
+    p <- exp(p)
+  }
   ind <- findInterval(p, dist)
-  if (!lower.tail) ind <- n - ind
+  if (!lower.tail) {
+    ind <- n - ind
+  }
   ind
 }
 
 ## internal redefinition of negative binomial
 ## .qnbinomAB <- function(p, a, b, lower.tail = TRUE, log.p = FALSE ) qnbinom(p, size=a, prob=b/(b+1), lower.tail = lower.tail, log.p = log.p )
-.qnbinomAB <- function(p, a, b, n = 1, lower.tail = TRUE, log.p = FALSE)
+.qnbinomAB <- function(p, a, b, n = 1, lower.tail = TRUE, log.p = FALSE) {
   qnbinom(
     p,
     size = a,
@@ -425,6 +464,7 @@ qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
     lower.tail = lower.tail,
     log.p = log.p
   )
+}
 ## qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p=FALSE) qmix_impl(Curry(.qnbinomAB, n=attr(mix, "n")), mix, p, lower.tail, log.p, discrete=TRUE)
 
 ## switched to numeric implementation as discretization seems to cause
@@ -435,22 +475,30 @@ qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   ## numerical evaulation
   n <- attr(mix, "n")
   eps <- 1e-6
-  plow <- if (log.p) min(c(eps, exp(p), (1 - exp(p)))) / 2 else
+  plow <- if (log.p) {
+    min(c(eps, exp(p), (1 - exp(p)))) / 2
+  } else {
     min(c(eps, p, (1 - p))) / 2
+  }
   phigh <- 1 - plow
   Nc <- ncol(mix)
   qhigh <- max(.qnbinomAB(rep.int(phigh, Nc), mix[2, ], mix[3, ], n = n))
 
   dist <- pmix.gammaPoissonMix(mix, seq(0, qhigh - 1))
-  if (log.p) p <- exp(p)
+  if (log.p) {
+    p <- exp(p)
+  }
   ind <- findInterval(p, dist)
-  if (!lower.tail) ind <- qhigh - ind
+  if (!lower.tail) {
+    ind <- qhigh - ind
+  }
   ind
 }
 
 #' @export
-qmix.mvnormMix <- function(mix, p, ...)
+qmix.mvnormMix <- function(mix, p, ...) {
   stop("Multivariate normal mixture quantiles not supported.")
+}
 
 ### RANDOM NUMBER GENERATION
 
@@ -484,8 +532,9 @@ rmix.betaBinomialMix <- function(mix, n) {
 ## .rnbinomAB <- function(n, a, b) rnbinom(n, size=a, prob=b/(b+1))
 .rnbinomAB <- function(N, a, b, n = 1) rnbinom(N, size = a, prob = b / (b + n))
 #' @export
-rmix.gammaPoissonMix <- function(mix, n)
+rmix.gammaPoissonMix <- function(mix, n) {
   rmix_impl(Curry(.rnbinomAB, n = attr(mix, "n")), mix, n)
+}
 
 #' @export
 rmix.mvnormMix <- function(mix, n) {
@@ -521,9 +570,13 @@ rmix.mvnormMix <- function(mix, n) {
 #' @export
 print.mix <- function(x, digits, ...) {
   tr <- attr(x, "link")
-  if (tr$name != "identity") print(tr)
+  if (tr$name != "identity") {
+    print(tr)
+  }
   cat("Mixture Components:\n")
-  if (missing(digits)) digits <- NULL
+  if (missing(digits)) {
+    digits <- NULL
+  }
   print.default(format(x, digits = digits), quote = FALSE)
 }
 

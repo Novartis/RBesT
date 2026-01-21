@@ -132,5 +132,6 @@ preddist.gammaMix <- function(mix, n = 1, ...) {
 #' @describeIn preddist Multivariate normal mixtures predictive
 #'     densities are not (yet) supported.
 #' @export
-preddist.mvnormMix <- function(mix, ...)
+preddist.mvnormMix <- function(mix, ...) {
   stop("Multivariate normal mixture predictive density not supported.")
+}

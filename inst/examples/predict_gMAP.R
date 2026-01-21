@@ -1,7 +1,11 @@
 # create a fake data set with a covariate
-trans_cov <- transform(transplant, country = cut(1:11, c(0, 5, 8, Inf), c("CH", "US", "DE")))
+trans_cov <- transform(
+  transplant,
+  country = cut(1:11, c(0, 5, 8, Inf), c("CH", "US", "DE"))
+)
 set.seed(34246)
-map <- gMAP(cbind(r, n - r) ~ 1 + country | study,
+map <- gMAP(
+  cbind(r, n - r) ~ 1 + country | study,
   data = trans_cov,
   tau.dist = "HalfNormal",
   tau.prior = 1,
@@ -11,7 +15,8 @@ map <- gMAP(cbind(r, n - r) ~ 1 + country | study,
   beta.prior = rbind(c(0, 2), c(0, 1), c(0, 1)),
   family = binomial,
   ## ensure fast example runtime
-  thin = 1, chains = 1
+  thin = 1,
+  chains = 1
 )
 
 # posterior predictive distribution for each input data item (shrinkage estimates)
