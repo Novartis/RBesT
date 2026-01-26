@@ -102,7 +102,7 @@ pos1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 
   crit <- decision1S_boundary(prior, n, decision, sigma, eps)
 
-  design_fun <- if (length(crit) == 1) {
+  design_fun <- if (is(decision, "decision1S")) {
     ## check where the decision is 1, i.e. left or right
     lower.tail <- attr(decision, "lower.tail")
 

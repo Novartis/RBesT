@@ -8,7 +8,7 @@
 #' @param lower.tail Logical; if `TRUE` (default), probabilities
 #' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
 #' length as `pc`.
-#' @param x object of class `decision1S_2sided`.
+#' @param x two-sided decision function.
 #'
 #' @details For `lower.tail` being either `TRUE` or `FALSE`,
 #' the function creates a one-sided decision function which
@@ -124,9 +124,9 @@ decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
   is_two_sided <- length(lower.tail) > 1
 
   if (is_two_sided) {
-    create_decision1S_2sided(pc, qc, lower.tail)
+    return(create_decision1S_2sided(pc, qc, lower.tail))
   } else {
-    create_decision1S_1sided(pc, qc, lower.tail)
+    return(create_decision1S_1sided(pc, qc, lower.tail))
   }
 }
 

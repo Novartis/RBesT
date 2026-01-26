@@ -13,8 +13,7 @@
 #' evaluating the difference distribution. Can take one of the values
 #' `identity` (default), `logit` or `log`.
 #'
-#' @details This function creates a decision function (of class `decision2S`
-#' for one-sided, and of class `decision2S_2sided` for two-sided decisions)
+#' @details This function creates a one- or two-sided decision function
 #' on the basis of the difference distribution in a 2 sample situation. To
 #' support double criterion designs, see *Neuenschwander et al.,
 #' 2010*, an arbitrary number of criterions can be given. The decision
@@ -52,14 +51,16 @@
 #' binary endpoint or counting rates. The respective critical
 #' quantiles `qc` must be given on the transformed scale.
 #'
-#' @return The function returns a decision function which takes three
-#' arguments. The first and second argument are expected to be mixture
-#' (posterior) distributions from which the difference distribution is
-#' formed and all conditions are tested. The third argument determines
-#' if the function acts as an indicator function or if the function
-#' returns the distance from the decision boundary for each condition
-#' in log-space. That is, the distance is 0 at the decision boundary,
-#' negative for a 0 decision and positive for a 1 decision.
+#' @return The function returns a decision function, of class `decision2S`
+#' for one-sided, and of class `decision2S_2sided` for two-sided decisions.
+#'
+#' One-sided decision functions take three arguments. The first and
+#' second argument are expected to be mixture (posterior) distributions
+#' from which the difference distribution is formed and all conditions are
+#' tested. The third argument determines if the function acts as an indicator
+#' function or if the function returns the distance from the decision boundary
+#' for each condition in log-space. That is, the distance is 0 at the decision
+#' boundary, negative for a 0 decision and positive for a 1 decision.
 #'
 #' For two-sided decision functions, the two components can be
 #' extracted with functions [lower()] and [upper()]. The distance

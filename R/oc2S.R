@@ -322,7 +322,7 @@ oc2S.normMix <- function(
 
     ## Call boundary function(s) to cache all results for all
     ## requested computations.
-    if (is.function(crit_y1)) {
+    if (is(decision, "decision2S")) {
       crit_y1(lim2, lim1 = lim1)
     } else {
       ## The caching is in the closures, therefore we don't need to
