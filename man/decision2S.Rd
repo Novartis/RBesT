@@ -34,14 +34,16 @@ evaluating the difference distribution. Can take one of the values
 \code{identity} (default), \code{logit} or \code{log}.}
 }
 \value{
-The function returns a decision function which takes three
-arguments. The first and second argument are expected to be mixture
-(posterior) distributions from which the difference distribution is
-formed and all conditions are tested. The third argument determines
-if the function acts as an indicator function or if the function
-returns the distance from the decision boundary for each condition
-in log-space. That is, the distance is 0 at the decision boundary,
-negative for a 0 decision and positive for a 1 decision.
+The function returns a decision function, of class \code{decision2S}
+for one-sided, and of class \code{decision2S_2sided} for two-sided decisions.
+
+One-sided decision functions take three arguments. The first and
+second argument are expected to be mixture (posterior) distributions
+from which the difference distribution is formed and all conditions are
+tested. The third argument determines if the function acts as an indicator
+function or if the function returns the distance from the decision boundary
+for each condition in log-space. That is, the distance is 0 at the decision
+boundary, negative for a 0 decision and positive for a 1 decision.
 
 For two-sided decision functions, the two components can be
 extracted with functions \code{\link[=lower]{lower()}} and \code{\link[=upper]{upper()}}. The distance
@@ -53,8 +55,7 @@ The function sets up a 2 sample one-sided decision function with an
 arbitrary number of conditions on the difference distribution.
 }
 \details{
-This function creates a decision function (of class \code{decision2S}
-for one-sided, and of class \code{decision2S_2sided} for two-sided decisions)
+This function creates a one- or two-sided decision function
 on the basis of the difference distribution in a 2 sample situation. To
 support double criterion designs, see \emph{Neuenschwander et al.,
 2010}, an arbitrary number of criterions can be given. The decision
@@ -108,15 +109,40 @@ priorP <- mixnorm(c(1, -49, 20), sigma = 88, param = "mn")
 successCrit <- decision2S(c(0.95, 0.5), c(0, 50), FALSE)
 # the futility criterion acts in the opposite direction
 futilityCrit <- decision2S(c(0.90), c(40), TRUE)
+# intermediate criteria can also be defined: no futility and no success.
+# version 1: not significant, but good effect size.
+intermediateCrit1 <- decision2S(
+  c(1 - 0.95, 0.5, 1 - 0.90),
+  c(0, 50, 40),
+  c(TRUE, FALSE, TRUE)
+)
+# version 2: significant, but too small effect size.
+intermediateCrit2 <- decision2S(
+  c(0.95, 1 - 0.5, 1 - 0.90),
+  c(0, 50, 40),
+  c(FALSE, TRUE, TRUE)
+)
+# version 3: not significant and small effect size.
+intermediateCrit3 <- decision2S(
+  c(1 - 0.95, 1 - 0.5, 1 - 0.90),
+  c(0, 50, 40),
+  c(TRUE, TRUE, TRUE)
+)
 
 print(successCrit)
 print(futilityCrit)
+print(intermediateCrit1)
+print(intermediateCrit2)
+print(intermediateCrit3)
 
 # consider decision for specific outcomes
 postP_interim <- postmix(priorP, n = 10, m = -50)
 postT_interim <- postmix(priorT, n = 20, m = -80)
 futilityCrit(postP_interim, postT_interim)
 successCrit(postP_interim, postT_interim)
+intermediateCrit1(postP_interim, postT_interim)
+intermediateCrit2(postP_interim, postT_interim)
+intermediateCrit3(postP_interim, postT_interim)
 
 # Binary endpoint with double criterion decision on log-odds scale
 # 95\% certain positive difference and an odds ratio of 2 at least
