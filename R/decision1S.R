@@ -8,7 +8,7 @@
 #' @param lower.tail Logical; if `TRUE` (default), probabilities
 #' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
 #' length as `pc`.
-#' @param x two-sided decision function.
+#' @param x Two-sided decision function.
 #'
 #' @details For `lower.tail` being either `TRUE` or `FALSE`,
 #' the function creates a one-sided decision function which
@@ -67,7 +67,7 @@
 #'
 #' # see Neuenschwander et al., 2011
 #'
-#' # example is for a time-to-event trial evaluating non-inferiority
+#' # example is for a time-to-event trial evaluating non-inferiority (NI)
 #' # using a normal approximation for the log-hazard ratio
 #'
 #' # reference scale
@@ -112,6 +112,24 @@
 #' # or for a possible outcome of the trial
 #' # here with HR of 0.8 for 40 events
 #' decComb(postmix(flat_prior, m = log(0.8), n = 40))
+#'
+#' # A two-sided decision function can be useful to determine if
+#' # certain intermediate (i.e. neither "go" nor "stop") decisions
+#' # are to be made based on the posterior distribution.
+#' # For example, in the above situation we might have an intermediate
+#' # scenario where the trial is significant for non-inferiority but
+#' # the mean estimate is in an intermediate range, say between theta_c
+#' # theta_f:
+#' theta_f <- 0.3
+#' decCombIntermediate <- decision1S(
+#'   c(1 - alpha, 0.5, 0.8),
+#'   c(theta_ni, theta_c, theta_f),
+#'   lower.tail = c(TRUE, FALSE, TRUE)
+#' )
+#' # Not fulfilled for the prior:
+#' decCombIntermediate(flat_prior)
+#' # But for a hypothetical trial outcome with HR 1.2 and 300 events:
+#' decCombIntermediate(postmix(flat_prior, m = log(1.2), n = 300))
 #'
 #' @export
 decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
