@@ -1,6 +1,6 @@
 #! /usr/bin/env Rscript
 
-rm(list = ls())
+## rm(list=ls())
 
 ## generate example data sets
 make_ds <- function() {
@@ -62,7 +62,7 @@ make_internal_ds <- function() {
   calibration_meta["MD5"] <- vals["MD5"]
 
   pkg_create_date <- Sys.time()
-  pkg_sha <- "b9dab00"
+  pkg_sha <- "e1ed608"
 
   if (gsub("\\$", "", pkg_sha) == "Format:%h") {
     pkg_sha <- system("git rev-parse --short HEAD", intern = TRUE)

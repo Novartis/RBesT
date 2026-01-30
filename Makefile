@@ -169,7 +169,7 @@ build/installed/$(RPKG)/DESCRIPTION : build/r-source-fast
 	install -d build/installed
 	cd build; $(RCMD) CMD INSTALL --library=./installed --no-docs --no-multiarch --no-test-load --no-clean-on-error $(RPKG)-source.tar.gz
 
-docs/index.html : $(SRCS)
+docs/index.html : doc $(SRCS)
 	NOT_CRAN=true $(RCMD) -e 'pkgdown::build_site()'
 
 PHONY += pkgdown
