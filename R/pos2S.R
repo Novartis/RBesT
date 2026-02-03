@@ -191,7 +191,7 @@ pos2S.normMix <- function(
     Ngrid
   )
 
-  design_fun <- if (is(decision, "decision2S")) {
+  design_fun <- if (is(decision, "decision2S_1sided")) {
     # Simple case of one-sided boundary.
     assert_function(crit_y1)
     lower.tail <- attr(decision, "lower.tail")
