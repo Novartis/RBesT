@@ -34,7 +34,7 @@ length as \code{pc}.}
 }
 \value{
 The function returns a decision function (of class
-\code{decision1S} for one-sided, and of class \code{decision1S_2sided}
+\code{decision1S_1sided} for one-sided, and of class \code{decision1S_2sided}
 for two-sided decisions) which takes two
 arguments. The first argument is expected to be a mixture
 (posterior) distribution which is tested if the specified

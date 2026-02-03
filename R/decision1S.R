@@ -44,7 +44,7 @@
 #' @family design1S
 #'
 #' @return The function returns a decision function (of class
-#' `decision1S` for one-sided, and of class `decision1S_2sided`
+#' `decision1S_1sided` for one-sided, and of class `decision1S_2sided`
 #' for two-sided decisions) which takes two
 #' arguments. The first argument is expected to be a mixture
 #' (posterior) distribution which is tested if the specified
@@ -226,15 +226,17 @@ create_decision1S_2sided <- function(pc, qc, lower.tail) {
 #' @rdname decision1S
 #' @export
 has_lower <- function(x) {
-  inherits(x, "decision1S_2sided") ||
-    (inherits(x, "decision1S_1sided") && attr(x, "lower.tail"))
+  test_multi_class(x, c("decision1S_2sided", "decision2S_2sided")) ||
+    test_multi_class(x, c("decision1S_1sided", "decision2S_1sided")) &&
+      attr(x, "lower.tail")
 }
 
 #' @rdname decision1S
 #' @export
 has_upper <- function(x) {
-  inherits(x, "decision1S_2sided") ||
-    (inherits(x, "decision1S_1sided") && !attr(x, "lower.tail"))
+  test_multi_class(x, c("decision1S_2sided", "decision2S_2sided")) ||
+    test_multi_class(x, c("decision1S_1sided", "decision2S_1sided")) &&
+      !attr(x, "lower.tail")
 }
 
 #' @rdname decision1S
