@@ -2,8 +2,8 @@
 % Please edit documentation in R/decision1S.R
 \name{decision1S}
 \alias{decision1S}
-\alias{is_lower}
-\alias{is_upper}
+\alias{has_lower}
+\alias{has_upper}
 \alias{lower}
 \alias{upper}
 \alias{oc1Sdecision}
@@ -11,9 +11,9 @@
 \usage{
 decision1S(pc = 0.975, qc = 0, lower.tail = TRUE)
 
-is_lower(x)
+has_lower(x)
 
-is_upper(x)
+has_upper(x)
 
 lower(x)
 

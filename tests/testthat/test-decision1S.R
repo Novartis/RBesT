@@ -5,13 +5,19 @@ test_that("decision1S works for lower sided", {
     lower.tail = TRUE
   )
 
-  expect_true(is_lower(dec))
-  expect_false(is_upper(dec))
+  expect_true(has_lower(dec))
+  expect_false(has_upper(dec))
 
   expect_class(dec, c("decision1S", "decision1S_1sided", "function"))
   expect_class(lower(dec), c("decision1S_atomic", "function"))
 
   expect_snapshot(print(dec))
+
+  flat_prior <- mixnorm(c(1, 0, 100), sigma = 10)
+  expect_equal(dec(flat_prior), 1)
+
+  dist <- dec(flat_prior, dist = TRUE)
+  expect_snapshot_value(dist, style = "deparse")
 })
 
 test_that("decision1S works for upper sided", {
@@ -21,32 +27,33 @@ test_that("decision1S works for upper sided", {
     lower.tail = FALSE
   )
 
-  expect_false(is_lower(dec))
-  expect_true(is_upper(dec))
+  expect_false(has_lower(dec))
+  expect_true(has_upper(dec))
 
   expect_class(dec, c("decision1S", "decision1S_1sided", "function"))
   expect_class(upper(dec), c("decision1S_atomic", "function"))
 
   expect_snapshot(print(dec))
+
+  dist <- dec(flat_prior, dist = TRUE)
+  expect_snapshot_value(dist, style = "deparse")
 })
 
-## Mixed lower.tail usage also works
-## This is relevant to calculate the probability of "interim" outcomes.
-## Example:
-## P(theta <= 0) > 0.05
-## P(theta > theta_target) > 0.5
+test_that("decision1S works for two sided", {
+  decMixed <- decision1S(
+    qc = c(0, 0.8, 1.2),
+    pc = c(0.05, 0.5, 0.05),
+    lower.tail = c(TRUE, FALSE, TRUE)
+  )
 
-decMixed <- decision1S(
-  qc = c(0, 0.8, 1.2),
-  pc = c(0.05, 0.5, 0.05),
-  lower.tail = c(TRUE, FALSE, TRUE)
-)
+  expect_true(has_lower(decMixed))
+  expect_true(has_upper(decMixed))
+  expect_class(decMixed, c("decision1S", "decision1S_2sided", "function"))
+  expect_class(lower(decMixed), c("decision1S_atomic", "function"))
+  expect_class(upper(decMixed), c("decision1S_atomic", "function"))
 
-test_that("print method works for mixed lower.tail", {
   expect_snapshot(print(decMixed))
-})
 
-test_that("two-sided decision function works", {
   flat_prior <- mixnorm(c(1, 0, 100), sigma = 10)
   expect_equal(decMixed(flat_prior), 0)
 

@@ -181,26 +181,17 @@ create_decision1S_1sided <- function(pc, qc, lower.tail) {
   assert_flag(lower.tail)
 
   atomic_fun <- create_decision1S_atomic(pc, qc, lower.tail)
+  attr_name <- if (lower.tail) "lower" else "upper"
 
   fun <- function(mix, dist = FALSE) {
-    if (lower.tail) {
-      dl <- atomic_fun(mix, dist)
-      du <- rep(1, length(dl))
-    } else {
-      du <- atomic_fun(mix, dist)
-      dl <- rep(1, length(du))
-    }
+    test <- atomic_fun(mix, dist)
     if (dist) {
-      return(list(lower = dl, upper = du))
+      ret <- stats::setNames(list(test), attr_name)
+      return(ret)
     }
-    as.numeric(all(dl > 0) && all(du > 0))
+    test
   }
-
-  if (lower.tail) {
-    attr(fun, "lower") <- atomic_fun
-  } else {
-    attr(fun, "upper") <- atomic_fun
-  }
+  attr(fun, attr_name) <- atomic_fun
   attr(fun, "lower.tail") <- lower.tail
 
   class(fun) <- c("decision1S", "decision1S_1sided", "function")
@@ -223,7 +214,7 @@ create_decision1S_2sided <- function(pc, qc, lower.tail) {
     if (dist) {
       return(list(lower = dl, upper = du))
     }
-    as.numeric(all(dl > 0) && all(du > 0))
+    as.numeric(dl && du)
   }
   attr(fun, "lower") <- lower_part
   attr(fun, "upper") <- upper_part
@@ -234,14 +225,16 @@ create_decision1S_2sided <- function(pc, qc, lower.tail) {
 
 #' @rdname decision1S
 #' @export
-is_lower <- function(x) {
-  inherits(x, "decision1S_1sided") && attr(x, "lower.tail")
+has_lower <- function(x) {
+  inherits(x, "decision1S_2sided") ||
+    (inherits(x, "decision1S_1sided") && attr(x, "lower.tail"))
 }
 
 #' @rdname decision1S
 #' @export
-is_upper <- function(x) {
-  inherits(x, "decision1S_1sided") && !attr(x, "lower.tail")
+has_upper <- function(x) {
+  inherits(x, "decision1S_2sided") ||
+    (inherits(x, "decision1S_1sided") && !attr(x, "lower.tail"))
 }
 
 #' @rdname decision1S
@@ -271,7 +264,7 @@ print_decision1S_atomic <- function(x) {
 print.decision1S_1sided <- function(x, ...) {
   cat("1 sample decision function\n")
   cat("Conditions for acceptance:\n")
-  atomic_fun <- if (is_lower(x)) {
+  atomic_fun <- if (has_lower(x)) {
     lower(x)
   } else {
     upper(x)
