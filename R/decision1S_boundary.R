@@ -122,6 +122,8 @@ decision1S_boundary.betaMix <- function(prior, n, decision, ...) {
 ## roots of the decision function and returns an interpolation
 ## function object
 solve_boundary1S_normMix <- function(decision, mix, n, lim) {
+  assert_class(decision, "decision1S_atomic")
+
   sigma <- sigma(mix)
 
   cond_decisionStep <- function() {
@@ -193,14 +195,15 @@ decision1S_boundary_normMix_2sided <- function(
   sigma,
   eps
 ) {
-  crit_lower <- decision1S_boundary_normMix_1sided(
+  assert_class(decision, "decision1S_2sided")
+  crit_lower <- decision1S_boundary_normMix_atomic(
     prior,
     n,
     lower(decision),
     sigma,
     eps
   )
-  crit_upper <- decision1S_boundary_normMix_1sided(
+  crit_upper <- decision1S_boundary_normMix_atomic(
     prior,
     n,
     upper(decision),
@@ -218,6 +221,31 @@ decision1S_boundary_normMix_1sided <- function(
   sigma,
   eps
 ) {
+  assert_class(decision, "decision1S_1sided")
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision1S_boundary_normMix_atomic(
+    prior,
+    n,
+    decision,
+    sigma,
+    eps
+  )
+}
+
+#' @keywords internal
+decision1S_boundary_normMix_atomic <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps
+) {
+  assert_class(decision, "decision1S_atomic")
+
   ## distributions of the means of the data generating distributions
   ## for now we assume that the underlying standard deviation
   ## matches the respective reference scales
