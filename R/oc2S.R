@@ -217,7 +217,7 @@ oc2S.normMix <- function(
   ## mean_prior2 <- prior2
   ## sigma(mean_prior2) <- sem2
 
-  freq <- if (is(decision, "decision2S")) {
+  freq <- if (is(decision, "decision2S_1sided")) {
     # Simple case of one-sided boundary.
     assert_function(crit_y1)
     lower.tail <- attr(decision, "lower.tail")
@@ -322,7 +322,7 @@ oc2S.normMix <- function(
 
     ## Call boundary function(s) to cache all results for all
     ## requested computations.
-    if (is(decision, "decision2S")) {
+    if (is(decision, "decision2S_1sided")) {
       crit_y1(lim2, lim1 = lim1)
     } else {
       ## The caching is in the closures, therefore we don't need to
