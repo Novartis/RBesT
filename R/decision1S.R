@@ -156,9 +156,9 @@ scalar_if_same <- function(x) {
   x
 }
 
-#' Internal Constructor for 1 Sample One-sided Decision Function
+#' Internal Constructor for Atomic 1 Sample One-sided Decision Function
 #' @keywords internal
-create_decision1S_1sided <- function(pc, qc, lower.tail) {
+create_decision1S_atomic <- function(pc, qc, lower.tail) {
   lpc <- log(pc)
   fun <- function(mix, dist = FALSE) {
     test <- pmix(mix, qc, lower.tail = lower.tail, log.p = TRUE) - lpc
@@ -171,7 +171,39 @@ create_decision1S_1sided <- function(pc, qc, lower.tail) {
   attr(fun, "qc") <- qc
   attr(fun, "lower.tail") <- lower.tail
 
-  class(fun) <- c("decision1S", "function")
+  class(fun) <- c("decision1S_atomic", "function")
+  fun
+}
+
+#' Internal Constructor for 1 Sample One-sided Decision Function
+#' @keywords internal
+create_decision1S_1sided <- function(pc, qc, lower.tail) {
+  assert_flag(lower.tail)
+
+  atomic_fun <- create_decision1S_atomic(pc, qc, lower.tail)
+
+  fun <- function(mix, dist = FALSE) {
+    if (lower.tail) {
+      dl <- atomic_fun(mix, dist)
+      du <- rep(1, length(dl))
+    } else {
+      du <- atomic_fun(mix, dist)
+      dl <- rep(1, length(du))
+    }
+    if (dist) {
+      return(list(lower = dl, upper = du))
+    }
+    as.numeric(all(dl > 0) && all(du > 0))
+  }
+
+  if (lower.tail) {
+    attr(fun, "lower") <- atomic_fun
+  } else {
+    attr(fun, "upper") <- atomic_fun
+  }
+  attr(fun, "lower.tail") <- lower.tail
+
+  class(fun) <- c("decision1S", "decision1S_1sided", "function")
   fun
 }
 
@@ -182,8 +214,8 @@ create_decision1S_2sided <- function(pc, qc, lower.tail) {
   use_upper <- which(!lower.tail)
   assert_true(length(use_lower) > 0 && length(use_upper) > 0)
 
-  lower_part <- create_decision1S_1sided(pc[use_lower], qc[use_lower], TRUE)
-  upper_part <- create_decision1S_1sided(pc[use_upper], qc[use_upper], FALSE)
+  lower_part <- create_decision1S_atomic(pc[use_lower], qc[use_lower], TRUE)
+  upper_part <- create_decision1S_atomic(pc[use_upper], qc[use_upper], FALSE)
 
   fun <- function(mix, dist = FALSE) {
     dl <- lower_part(mix, dist)
@@ -196,26 +228,38 @@ create_decision1S_2sided <- function(pc, qc, lower.tail) {
   attr(fun, "lower") <- lower_part
   attr(fun, "upper") <- upper_part
 
-  class(fun) <- c("decision1S_2sided", "function")
+  class(fun) <- c("decision1S", "decision1S_2sided", "function")
   fun
 }
 
 #' @rdname decision1S
 #' @export
+is_lower <- function(x) {
+  inherits(x, "decision1S_1sided") && attr(x, "lower.tail")
+}
+
+#' @rdname decision1S
+#' @export
+is_upper <- function(x) {
+  inherits(x, "decision1S_1sided") && !attr(x, "lower.tail")
+}
+
+#' @rdname decision1S
+#' @export
 lower <- function(x) {
-  assert_multi_class(x, c("decision1S_2sided", "decision2S_2sided"))
+  assert_multi_class(x, c("decision1S", "decision2S"))
   attr(x, "lower")
 }
 
 #' @rdname decision1S
 #' @export
 upper <- function(x) {
-  assert_multi_class(x, c("decision1S_2sided", "decision2S_2sided"))
+  assert_multi_class(x, c("decision1S", "decision2S"))
   attr(x, "upper")
 }
 
 #' @keywords internal
-print_decision1S_1sided <- function(x) {
+print_decision1S_atomic <- function(x) {
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
@@ -224,10 +268,15 @@ print_decision1S_1sided <- function(x) {
 }
 
 #' @export
-print.decision1S <- function(x, ...) {
+print.decision1S_1sided <- function(x, ...) {
   cat("1 sample decision function\n")
   cat("Conditions for acceptance:\n")
-  print_decision1S_1sided(x)
+  atomic_fun <- if (is_lower(x)) {
+    lower(x)
+  } else {
+    upper(x)
+  }
+  print_decision1S_atomic(atomic_fun)
   invisible(x)
 }
 
@@ -236,9 +285,9 @@ print.decision1S_2sided <- function(x, ...) {
   cat("1 sample decision function (two-sided)\n")
   cat("Conditions for acceptance:\n")
   cat("Lower tail conditions:\n")
-  print_decision1S_1sided(lower(x))
+  print_decision1S_atomic(lower(x))
   cat("Upper tail conditions:\n")
-  print_decision1S_1sided(upper(x))
+  print_decision1S_atomic(upper(x))
   invisible(x)
 }
 
