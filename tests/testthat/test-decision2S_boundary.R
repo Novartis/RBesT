@@ -70,7 +70,6 @@ test_that("Mixed lower.tail usage works for decision boundary calculation", {
   result_mixed_lower <- boundary_fn_mixed$lower_or_equal_than(gridVals)
   result_mixed_upper <- boundary_fn_mixed$higher_than(gridVals)
 
-  # For 2-sample, mixed lower.tail returns a list
   expect_equal(result_mixed_lower, result_lower)
   expect_equal(result_mixed_upper, result_upper)
 })
