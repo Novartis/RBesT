@@ -35,6 +35,9 @@ test_that("decision1S works for upper sided", {
 
   expect_snapshot(print(dec))
 
+  flat_prior <- mixnorm(c(1, 0, 100), sigma = 10)
+  expect_equal(dec(flat_prior), 0)
+
   dist <- dec(flat_prior, dist = TRUE)
   expect_snapshot_value(dist, style = "deparse")
 })
