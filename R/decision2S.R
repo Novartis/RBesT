@@ -51,7 +51,7 @@
 #' binary endpoint or counting rates. The respective critical
 #' quantiles `qc` must be given on the transformed scale.
 #'
-#' @return The function returns a decision function, of class `decision2S`
+#' @return The function returns a decision function, of class `decision2S_1sided`
 #' for one-sided, and of class `decision2S_2sided` for two-sided decisions.
 #'
 #' One-sided decision functions take three arguments. The first and
@@ -156,9 +156,9 @@ decision2S <- function(
   }
 }
 
-#' Internal Constructor for 2 Sample One-sided Decision Function
+#' Internal Constructor for Atomic 2 Sample One-sided Decision Function
 #' @keywords internal
-create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
+create_decision2S_atomic <- function(pc, qc, lower.tail, link) {
   lpc <- log(pc)
   dlink_obj <- link_map[[link]]
   fun <- function(mix1, mix2, dist = FALSE) {
@@ -187,7 +187,30 @@ create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
   attr(fun, "link") <- link
   attr(fun, "lower.tail") <- scalar_if_same(lower.tail)
 
-  class(fun) <- c("decision2S", "function")
+  class(fun) <- c("decision2S_atomic", "function")
+  fun
+}
+
+#' Internal Constructor for 2 Sample One-sided Decision Function
+#' @keywords internal
+create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
+  assert_flag(lower.tail)
+
+  atomic_fun <- create_decision2S_atomic(pc, qc, lower.tail, link)
+  attr_name <- if (lower.tail) "lower" else "upper"
+
+  fun <- function(mix1, mix2, dist = FALSE) {
+    test <- atomic_fun(mix1, mix2, dist)
+    if (dist) {
+      ret <- stats::setNames(list(test), attr_name)
+      return(ret)
+    }
+    test
+  }
+  attr(fun, attr_name) <- atomic_fun
+  attr(fun, "link") <- link
+  attr(fun, "lower.tail") <- lower.tail
+  class(fun) <- c("decision2S", "decision2S_1sided", "function")
   fun
 }
 
@@ -198,13 +221,13 @@ create_decision2S_2sided <- function(pc, qc, lower.tail, link) {
   use_upper <- which(!lower.tail)
   assert_true(length(use_lower) > 0 && length(use_upper) > 0)
 
-  lower_part <- create_decision2S_1sided(
+  lower_part <- create_decision2S_atomic(
     pc[use_lower],
     qc[use_lower],
     TRUE,
     link
   )
-  upper_part <- create_decision2S_1sided(
+  upper_part <- create_decision2S_atomic(
     pc[use_upper],
     qc[use_upper],
     FALSE,
@@ -217,18 +240,18 @@ create_decision2S_2sided <- function(pc, qc, lower.tail, link) {
     if (dist) {
       return(list(lower = dl, upper = du))
     }
-    as.numeric(all(dl > 0) && all(du > 0))
+    as.numeric(dl && du)
   }
   attr(fun, "lower") <- lower_part
   attr(fun, "upper") <- upper_part
   attr(fun, "link") <- link
 
-  class(fun) <- c("decision2S_2sided", "function")
+  class(fun) <- c("decision2S", "decision2S_2sided", "function")
   fun
 }
 
 #' @keywords internal
-print_decision2S_1sided <- function(x) {
+print_decision2S_atomic <- function(x) {
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
@@ -237,11 +260,16 @@ print_decision2S_1sided <- function(x) {
 }
 
 #' @export
-print.decision2S <- function(x, ...) {
+print.decision2S_1sided <- function(x, ...) {
   cat("2 sample decision function\n")
-
   cat("Conditions for acceptance:\n")
-  print_decision2S_1sided(x)
+
+  atomic_fun <- if (has_lower(x)) {
+    lower(x)
+  } else {
+    upper(x)
+  }
+  print_decision2S_atomic(atomic_fun)
 
   link <- attr(x, "link")
   cat("Link:", link, "\n")
@@ -254,9 +282,9 @@ print.decision2S_2sided <- function(x, ...) {
   cat("2 sample two-sided decision function\n")
 
   cat("Lower side conditions for acceptance:\n")
-  print_decision2S_1sided(lower(x))
+  print_decision2S_atomic(lower(x))
   cat("Upper side conditions for acceptance:\n")
-  print_decision2S_1sided(upper(x))
+  print_decision2S_atomic(upper(x))
 
   link <- attr(x, "link")
   cat("Link:", link, "\n")

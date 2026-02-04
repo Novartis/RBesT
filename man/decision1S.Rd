@@ -2,12 +2,18 @@
 % Please edit documentation in R/decision1S.R
 \name{decision1S}
 \alias{decision1S}
+\alias{has_lower}
+\alias{has_upper}
 \alias{lower}
 \alias{upper}
 \alias{oc1Sdecision}
 \title{Decision Function for 1 Sample Designs}
 \usage{
 decision1S(pc = 0.975, qc = 0, lower.tail = TRUE)
+
+has_lower(x)
+
+has_upper(x)
 
 lower(x)
 
@@ -28,7 +34,7 @@ length as \code{pc}.}
 }
 \value{
 The function returns a decision function (of class
-\code{decision1S} for one-sided, and of class \code{decision1S_2sided}
+\code{decision1S_1sided} for one-sided, and of class \code{decision1S_2sided}
 for two-sided decisions) which takes two
 arguments. The first argument is expected to be a mixture
 (posterior) distribution which is tested if the specified

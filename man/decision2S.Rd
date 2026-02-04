@@ -34,7 +34,7 @@ evaluating the difference distribution. Can take one of the values
 \code{identity} (default), \code{logit} or \code{log}.}
 }
 \value{
-The function returns a decision function, of class \code{decision2S}
+The function returns a decision function, of class \code{decision2S_1sided}
 for one-sided, and of class \code{decision2S_2sided} for two-sided decisions.
 
 One-sided decision functions take three arguments. The first and

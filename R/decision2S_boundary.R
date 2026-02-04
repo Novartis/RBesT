@@ -245,6 +245,8 @@ solve_boundary2S_normMix <- function(
   lim2,
   delta2
 ) {
+  assert_class(decision, "decision2S_atomic")
+
   grid <- seq(lim2[1], lim2[2], length = diff(lim2) / delta2)
 
   sigma1 <- sigma(mix1)
@@ -364,7 +366,7 @@ decision2S_boundary_normMix_2sided <- function(
   Ngrid,
   ...
 ) {
-  crit_lower <- decision2S_boundary_normMix_1sided(
+  crit_lower <- decision2S_boundary_normMix_atomic(
     prior1,
     prior2,
     n1,
@@ -376,7 +378,7 @@ decision2S_boundary_normMix_2sided <- function(
     Ngrid,
     ...
   )
-  crit_upper <- decision2S_boundary_normMix_1sided(
+  crit_upper <- decision2S_boundary_normMix_atomic(
     prior1,
     prior2,
     n1,
@@ -403,6 +405,39 @@ decision2S_boundary_normMix_1sided <- function(
   Ngrid,
   ...
 ) {
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision2S_boundary_normMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid,
+    ...
+  )
+}
+
+decision2S_boundary_normMix_atomic <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps,
+  Ngrid,
+  ...
+) {
+  assert_class(decision, "decision2S_atomic")
+
   assert_number(sigma1, lower = 0)
   assert_number(sigma2, lower = 0)
 
