@@ -25,6 +25,11 @@
       P(theta > 0.8) > 0.5
       P(theta > 1.2) > 0.05
 
+---
+
+    list(upper = c(2.30258509299405, -0.00640346690337834, 2.29296457895205
+    ))
+
 # decision1S works for two sided
 
     Code
