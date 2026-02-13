@@ -127,7 +127,7 @@ designC_n1(theta_eval)
 designC_nL(theta_eval)
 
 # to understand further the dual criterion design it is useful to
-# evaluate the criterions separatley:
+# evaluate the criterions separately:
 # statistical significance criterion to warrant NI...
 designC1_nL <- oc1S(flat_prior, nL, dec1)
 # ... or the clinically determined indifference point
@@ -138,6 +138,24 @@ designC2_nL(theta_eval)
 
 # see also ?decision1S_boundary to see which of the two criterions
 # will drive the decision
+
+# it can also be of interest to evaluate intermediate decisions
+# where the trial is significant for non-inferiority but
+# the mean estimate is in an intermediate range, say between theta_c
+# and theta_f:
+theta_f <- 0.3
+decCombIntermediate <- decision1S(
+  c(1 - alpha, 0.5, 0.8),
+  c(theta_ni, theta_c, theta_f),
+  lower.tail = c(TRUE, FALSE, TRUE)
+)
+
+# evaluate at two sample sizes again:
+designIntermediate_n1 <- oc1S(flat_prior, n1, decCombIntermediate)
+designIntermediate_nL <- oc1S(flat_prior, nL, decCombIntermediate)
+
+designIntermediate_n1(theta_eval)
+designIntermediate_nL(theta_eval)
 
 }
 \seealso{

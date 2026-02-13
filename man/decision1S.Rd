@@ -2,10 +2,22 @@
 % Please edit documentation in R/decision1S.R
 \name{decision1S}
 \alias{decision1S}
+\alias{has_lower}
+\alias{has_upper}
+\alias{lower}
+\alias{upper}
 \alias{oc1Sdecision}
 \title{Decision Function for 1 Sample Designs}
 \usage{
 decision1S(pc = 0.975, qc = 0, lower.tail = TRUE)
+
+has_lower(x)
+
+has_upper(x)
+
+lower(x)
+
+upper(x)
 
 oc1Sdecision(pc = 0.975, qc = 0, lower.tail = TRUE)
 }
@@ -15,10 +27,15 @@ oc1Sdecision(pc = 0.975, qc = 0, lower.tail = TRUE)
 \item{qc}{Vector of respective critical values. Must match the length of \code{pc}.}
 
 \item{lower.tail}{Logical; if \code{TRUE} (default), probabilities
-are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}.}
+are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
+length as \code{pc}.}
+
+\item{x}{Two-sided decision function.}
 }
 \value{
-The function returns a decision function which takes two
+The function returns a decision function (of class
+\code{decision1S_1sided} for one-sided, and of class \code{decision1S_2sided}
+for two-sided decisions) which takes two
 arguments. The first argument is expected to be a mixture
 (posterior) distribution which is tested if the specified
 conditions are met. The logical second argument determines if the
@@ -26,13 +43,19 @@ function acts as an indicator function or if the function returns
 the distance from the decision boundary for each condition in
 log-space, i.e. the distance is 0 at the decision boundary,
 negative for a 0 decision and positive for a 1 decision.
+
+For two-sided decision functions, the two components can be
+extracted with functions \code{\link[=lower]{lower()}} and \code{\link[=upper]{upper()}}. The distance
+as calculated by the decision function is returned as a list with
+components \code{lower} and \code{upper}.
 }
 \description{
 The function sets up a 1 sample one-sided decision function with an
 arbitrary number of conditions.
 }
 \details{
-The function creates a one-sided decision function which
+For \code{lower.tail} being either \code{TRUE} or \code{FALSE},
+the function creates a one-sided decision function which
 takes two arguments. The first argument is expected to be a mixture
 (posterior) distribution. This distribution is tested whether it
 fulfills all the required threshold conditions specified with the
@@ -48,6 +71,10 @@ for \eqn{x \leq 0} and \eqn{1} for \eqn{x > 0}. As all conditions
 must be met, the final indicator function returns
 
 \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
+
+For the case of a boolen vector given to \code{lower.tail} the
+direction of each decision aligns respectively, and a two-sided
+decision function is created.
 
 When the second argument is set to \code{TRUE} a distance metric is
 returned component-wise per defined condition as
@@ -68,7 +95,7 @@ boundary, OC or PoS calculations using \code{\link[=oc1S]{oc1S()}} or
 
 # see Neuenschwander et al., 2011
 
-# example is for a time-to-event trial evaluating non-inferiority
+# example is for a time-to-event trial evaluating non-inferiority (NI)
 # using a normal approximation for the log-hazard ratio
 
 # reference scale
@@ -113,6 +140,24 @@ decComb(flat_prior)
 # or for a possible outcome of the trial
 # here with HR of 0.8 for 40 events
 decComb(postmix(flat_prior, m = log(0.8), n = 40))
+
+# A two-sided decision function can be useful to determine if
+# certain intermediate (i.e. neither "go" nor "stop") decisions
+# are to be made based on the posterior distribution.
+# For example, in the above situation we might have an intermediate
+# scenario where the trial is significant for non-inferiority but
+# the mean estimate is in an intermediate range, say between theta_c
+# theta_f:
+theta_f <- 0.3
+decCombIntermediate <- decision1S(
+  c(1 - alpha, 0.5, 0.8),
+  c(theta_ni, theta_c, theta_f),
+  lower.tail = c(TRUE, FALSE, TRUE)
+)
+# Not fulfilled for the prior:
+decCombIntermediate(flat_prior)
+# But for a hypothetical trial outcome with HR 1.2 and 300 events:
+decCombIntermediate(postmix(flat_prior, m = log(1.2), n = 300))
 
 }
 \references{

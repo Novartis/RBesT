@@ -3,6 +3,7 @@
 ## Enhancements
 
 * Reformat R sources using `Air`.
+* Extend normal outcome functions to two-sided decisions: `decision1S` and `decision2S` now allow `lower.tail` to have as many elements as `pc` to allow the specification of two-sided decision boundaries (mixed `lower.tail` elements, i.e. some specifying "lower" and some "upper") to capture intermediate result scenarios. This is currently only respected by the normal outcome functions (methods for `normMix`), because it is work in progress.
 
 # RBesT 1.8-2 - April 25th, 2025
 

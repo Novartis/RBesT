@@ -6,9 +6,12 @@
 #' @param pc Vector of critical cumulative probabilities.
 #' @param qc Vector of respective critical values. Must match the length of `pc`.
 #' @param lower.tail Logical; if `TRUE` (default), probabilities
-#' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}.
+#' are \eqn{P(X \leq x)}, otherwise, \eqn{P(X > x)}. Either length 1 or same
+#' length as `pc`.
+#' @param x Two-sided decision function.
 #'
-#' @details The function creates a one-sided decision function which
+#' @details For `lower.tail` being either `TRUE` or `FALSE`,
+#' the function creates a one-sided decision function which
 #' takes two arguments. The first argument is expected to be a mixture
 #' (posterior) distribution. This distribution is tested whether it
 #' fulfills all the required threshold conditions specified with the
@@ -25,6 +28,10 @@
 #'
 #' \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
 #'
+#' For the case of a boolen vector given to `lower.tail` the
+#' direction of each decision aligns respectively, and a two-sided
+#' decision function is created.
+#'
 #' When the second argument is set to `TRUE` a distance metric is
 #' returned component-wise per defined condition as
 #'
@@ -36,7 +43,9 @@
 #'
 #' @family design1S
 #'
-#' @return The function returns a decision function which takes two
+#' @return The function returns a decision function (of class
+#' `decision1S_1sided` for one-sided, and of class `decision1S_2sided`
+#' for two-sided decisions) which takes two
 #' arguments. The first argument is expected to be a mixture
 #' (posterior) distribution which is tested if the specified
 #' conditions are met. The logical second argument determines if the
@@ -44,6 +53,11 @@
 #' the distance from the decision boundary for each condition in
 #' log-space, i.e. the distance is 0 at the decision boundary,
 #' negative for a 0 decision and positive for a 1 decision.
+#'
+#' For two-sided decision functions, the two components can be
+#' extracted with functions [lower()] and [upper()]. The distance
+#' as calculated by the decision function is returned as a list with
+#' components `lower` and `upper`.
 #'
 #' @references Neuenschwander B, Rouyrre N, Hollaender H, Zuber E,
 #' Branson M. A proof of concept phase II non-inferiority
@@ -53,7 +67,7 @@
 #'
 #' # see Neuenschwander et al., 2011
 #'
-#' # example is for a time-to-event trial evaluating non-inferiority
+#' # example is for a time-to-event trial evaluating non-inferiority (NI)
 #' # using a normal approximation for the log-hazard ratio
 #'
 #' # reference scale
@@ -99,9 +113,52 @@
 #' # here with HR of 0.8 for 40 events
 #' decComb(postmix(flat_prior, m = log(0.8), n = 40))
 #'
+#' # A two-sided decision function can be useful to determine if
+#' # certain intermediate (i.e. neither "go" nor "stop") decisions
+#' # are to be made based on the posterior distribution.
+#' # For example, in the above situation we might have an intermediate
+#' # scenario where the trial is significant for non-inferiority but
+#' # the mean estimate is in an intermediate range, say between theta_c
+#' # theta_f:
+#' theta_f <- 0.3
+#' decCombIntermediate <- decision1S(
+#'   c(1 - alpha, 0.5, 0.8),
+#'   c(theta_ni, theta_c, theta_f),
+#'   lower.tail = c(TRUE, FALSE, TRUE)
+#' )
+#' # Not fulfilled for the prior:
+#' decCombIntermediate(flat_prior)
+#' # But for a hypothetical trial outcome with HR 1.2 and 300 events:
+#' decCombIntermediate(postmix(flat_prior, m = log(1.2), n = 300))
+#'
 #' @export
 decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
-  assert_that(length(pc) == length(qc))
+  assert_numeric(pc)
+  assert_numeric(qc, len = length(pc))
+  assert_logical(lower.tail)
+  assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
+  lower.tail <- scalar_if_same(lower.tail)
+
+  is_two_sided <- length(lower.tail) > 1
+
+  if (is_two_sided) {
+    return(create_decision1S_2sided(pc, qc, lower.tail))
+  } else {
+    return(create_decision1S_1sided(pc, qc, lower.tail))
+  }
+}
+
+#' @keywords internal
+scalar_if_same <- function(x) {
+  if (length(x) > 1 && all(x == x[1])) {
+    return(x[1])
+  }
+  x
+}
+
+#' Internal Constructor for Atomic 1 Sample One-sided Decision Function
+#' @keywords internal
+create_decision1S_atomic <- function(pc, qc, lower.tail) {
   lpc <- log(pc)
   fun <- function(mix, dist = FALSE) {
     test <- pmix(mix, qc, lower.tail = lower.tail, log.p = TRUE) - lpc
@@ -113,21 +170,119 @@ decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
   attr(fun, "pc") <- pc
   attr(fun, "qc") <- qc
   attr(fun, "lower.tail") <- lower.tail
-  class(fun) <- c("decision1S", "function")
+
+  class(fun) <- c("decision1S_atomic", "function")
   fun
 }
 
+#' Internal Constructor for 1 Sample One-sided Decision Function
+#' @keywords internal
+create_decision1S_1sided <- function(pc, qc, lower.tail) {
+  assert_flag(lower.tail)
+
+  atomic_fun <- create_decision1S_atomic(pc, qc, lower.tail)
+  attr_name <- if (lower.tail) "lower" else "upper"
+
+  fun <- function(mix, dist = FALSE) {
+    test <- atomic_fun(mix, dist)
+    if (dist) {
+      ret <- stats::setNames(list(test), attr_name)
+      return(ret)
+    }
+    test
+  }
+  attr(fun, attr_name) <- atomic_fun
+  attr(fun, "lower.tail") <- lower.tail
+
+  class(fun) <- c("decision1S", "decision1S_1sided", "function")
+  fun
+}
+
+#' Internal Constructor for 1 Sample Two-sided Decision Function
+#' @keywords internal
+create_decision1S_2sided <- function(pc, qc, lower.tail) {
+  use_lower <- which(lower.tail)
+  use_upper <- which(!lower.tail)
+  assert_true(length(use_lower) > 0 && length(use_upper) > 0)
+
+  lower_part <- create_decision1S_atomic(pc[use_lower], qc[use_lower], TRUE)
+  upper_part <- create_decision1S_atomic(pc[use_upper], qc[use_upper], FALSE)
+
+  fun <- function(mix, dist = FALSE) {
+    dl <- lower_part(mix, dist)
+    du <- upper_part(mix, dist)
+    if (dist) {
+      return(list(lower = dl, upper = du))
+    }
+    as.numeric(dl && du)
+  }
+  attr(fun, "lower") <- lower_part
+  attr(fun, "upper") <- upper_part
+
+  class(fun) <- c("decision1S", "decision1S_2sided", "function")
+  fun
+}
+
+#' @rdname decision1S
 #' @export
-print.decision1S <- function(x, ...) {
-  cat("1 sample decision function\n")
-  cat("Conditions for acceptance:\n")
+has_lower <- function(x) {
+  test_multi_class(x, c("decision1S_2sided", "decision2S_2sided")) ||
+    test_multi_class(x, c("decision1S_1sided", "decision2S_1sided")) &&
+      attr(x, "lower.tail")
+}
+
+#' @rdname decision1S
+#' @export
+has_upper <- function(x) {
+  test_multi_class(x, c("decision1S_2sided", "decision2S_2sided")) ||
+    test_multi_class(x, c("decision1S_1sided", "decision2S_1sided")) &&
+      !attr(x, "lower.tail")
+}
+
+#' @rdname decision1S
+#' @export
+lower <- function(x) {
+  assert_multi_class(x, c("decision1S", "decision2S"))
+  attr(x, "lower")
+}
+
+#' @rdname decision1S
+#' @export
+upper <- function(x) {
+  assert_multi_class(x, c("decision1S", "decision2S"))
+  attr(x, "upper")
+}
+
+#' @keywords internal
+print_decision1S_atomic <- function(x) {
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
   cmp <- ifelse(low, "<=", ">")
-  for (i in seq_along(qc)) {
-    cat(paste0("P(theta ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
+  cat(paste0("P(theta ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
+}
+
+#' @export
+print.decision1S_1sided <- function(x, ...) {
+  cat("1 sample decision function\n")
+  cat("Conditions for acceptance:\n")
+  atomic_fun <- if (has_lower(x)) {
+    lower(x)
+  } else {
+    upper(x)
   }
+  print_decision1S_atomic(atomic_fun)
+  invisible(x)
+}
+
+#' @export
+print.decision1S_2sided <- function(x, ...) {
+  cat("1 sample decision function (two-sided)\n")
+  cat("Conditions for acceptance:\n")
+  cat("Lower tail conditions:\n")
+  print_decision1S_atomic(lower(x))
+  cat("Upper tail conditions:\n")
+  print_decision1S_atomic(upper(x))
   invisible(x)
 }
 

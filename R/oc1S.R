@@ -76,7 +76,7 @@
 #' designC_nL(theta_eval)
 #'
 #' # to understand further the dual criterion design it is useful to
-#' # evaluate the criterions separatley:
+#' # evaluate the criterions separately:
 #' # statistical significance criterion to warrant NI...
 #' designC1_nL <- oc1S(flat_prior, nL, dec1)
 #' # ... or the clinically determined indifference point
@@ -87,6 +87,24 @@
 #'
 #' # see also ?decision1S_boundary to see which of the two criterions
 #' # will drive the decision
+#'
+#' # it can also be of interest to evaluate intermediate decisions
+#' # where the trial is significant for non-inferiority but
+#' # the mean estimate is in an intermediate range, say between theta_c
+#' # and theta_f:
+#' theta_f <- 0.3
+#' decCombIntermediate <- decision1S(
+#'   c(1 - alpha, 0.5, 0.8),
+#'   c(theta_ni, theta_c, theta_f),
+#'   lower.tail = c(TRUE, FALSE, TRUE)
+#' )
+#'
+#' # evaluate at two sample sizes again:
+#' designIntermediate_n1 <- oc1S(flat_prior, n1, decCombIntermediate)
+#' designIntermediate_nL <- oc1S(flat_prior, nL, decCombIntermediate)
+#'
+#' designIntermediate_n1(theta_eval)
+#' designIntermediate_nL(theta_eval)
 #'
 #' @export
 oc1S <- function(prior, n, decision, ...) UseMethod("oc1S")
@@ -101,10 +119,6 @@ oc1S.betaMix <- function(prior, n, decision, ...) {
   lower.tail <- attr(decision, "lower.tail")
 
   design_fun <- function(theta) {
-    if (missing(theta)) {
-      deprecated("Use of no argument", "decision1S_boundary")
-      return(crit)
-    }
     pbinom(crit, n, theta, lower.tail = lower.tail)
   }
   design_fun
@@ -129,15 +143,39 @@ oc1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 
   crit <- decision1S_boundary(prior, n, decision, sigma, eps)
 
-  ## check where the decision is 1, i.e. left or right
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (is(decision, "decision1S_1sided")) {
+    ## check where the decision is 1, i.e. left or right
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(theta) {
-    if (missing(theta)) {
-      deprecated("Use of no argument", "decision1S_boundary")
-      return(crit)
+    function(theta) {
+      pnorm(crit, theta, sd_samp, lower.tail = lower.tail)
     }
-    pnorm(crit, theta, sd_samp, lower.tail = lower.tail)
+  } else {
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower_or_equal <= crit_upper) {
+      function(theta) rep(0, length(theta))
+    } else {
+      function(theta) {
+        # Calculate probability between the two bounds.
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pnorm(
+          crit_lower_or_equal,
+          theta,
+          sd_samp,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pnorm(
+          crit_upper,
+          theta,
+          sd_samp,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
+      }
+    }
   }
   design_fun
 }
@@ -150,10 +188,6 @@ oc1S.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
   lower.tail <- attr(decision, "lower.tail")
 
   design_fun <- function(theta) {
-    if (missing(theta)) {
-      deprecated("Use of no argument", "decision1S_boundary")
-      return(crit)
-    }
     ppois(crit, n * theta, lower.tail = lower.tail)
   }
   design_fun
