@@ -8,6 +8,9 @@ test_that("decision1S works for lower sided", {
   expect_true(has_lower(dec))
   expect_false(has_upper(dec))
 
+  # Complementary attribute is still present for consistency:
+  expect_function(attr(dec, "upper"))
+
   expect_class(dec, c("decision1S", "decision1S_1sided", "function"))
   expect_class(lower(dec), c("decision1S_atomic", "function"))
 
@@ -29,6 +32,9 @@ test_that("decision1S works for upper sided", {
 
   expect_false(has_lower(dec))
   expect_true(has_upper(dec))
+
+  # Complementary attribute is still present for consistency:
+  expect_function(attr(dec, "lower"))
 
   expect_class(dec, c("decision1S", "decision1S_1sided", "function"))
   expect_class(upper(dec), c("decision1S_atomic", "function"))

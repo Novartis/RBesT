@@ -198,6 +198,7 @@ create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
 
   atomic_fun <- create_decision2S_atomic(pc, qc, lower.tail, link)
   attr_name <- if (lower.tail) "lower" else "upper"
+  attr_compl_name <- if (lower.tail) "upper" else "lower"
 
   fun <- function(mix1, mix2, dist = FALSE) {
     test <- atomic_fun(mix1, mix2, dist)
@@ -208,6 +209,9 @@ create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
     test
   }
   attr(fun, attr_name) <- atomic_fun
+  attr(fun, attr_compl_name) <- function(mix1, mix2, ...) {
+    return(TRUE)
+  }
   attr(fun, "link") <- link
   attr(fun, "lower.tail") <- lower.tail
   class(fun) <- c("decision2S", "decision2S_1sided", "function")
