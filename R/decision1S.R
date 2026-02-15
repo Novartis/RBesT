@@ -133,9 +133,9 @@
 #'
 #' @export
 decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
-  assert_numeric(pc)
-  assert_numeric(qc, len = length(pc))
-  assert_logical(lower.tail)
+  assert_numeric(pc, lower = 0, upper = 1, any.missing = FALSE, finite = TRUE)
+  assert_numeric(qc, len = length(pc), any.missing = FALSE)
+  assert_logical(lower.tail, any.missing = FALSE)
   assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
   lower.tail <- scalar_if_same(lower.tail)
 
