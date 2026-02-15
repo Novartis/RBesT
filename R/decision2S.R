@@ -1,6 +1,6 @@
 #' Decision Function for 2 Sample Designs
 #'
-#' The function sets up a 2 sample one-sided decision function with an
+#' The function sets up a 2 sample decision function with an
 #' arbitrary number of conditions on the difference distribution.
 #'
 #' @param pc Vector of critical cumulative probabilities of the
@@ -35,7 +35,7 @@
 #' otherwise. For `lower.tail=FALSE` differences must be greater
 #' than the given quantiles `qc`.
 #'
-#' For the case of a boolen vector given to `lower.tail` the
+#' For the case of a boolean vector given to `lower.tail` the
 #' direction of each decision aligns respectively, and a two-sided
 #' decision function is created.
 #'

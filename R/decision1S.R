@@ -1,6 +1,6 @@
 #' Decision Function for 1 Sample Designs
 #'
-#' The function sets up a 1 sample one-sided decision function with an
+#' The function sets up a 1 sample decision function with an
 #' arbitrary number of conditions.
 #'
 #' @param pc Vector of critical cumulative probabilities.
@@ -28,7 +28,7 @@
 #'
 #' \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
 #'
-#' For the case of a boolen vector given to `lower.tail` the
+#' For the case of a boolean vector given to `lower.tail` the
 #' direction of each decision aligns respectively, and a two-sided
 #' decision function is created.
 #'
