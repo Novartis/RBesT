@@ -32,7 +32,7 @@ test_that("decision2S_boundary works for normal outcome", {
   expect_false(any(grayzoneBoundsHigher < grayzoneBoundsLower))
 })
 
-test_that("Mixed lower.tail usage works for decision boundary calculation", {
+test_that("Mixed lower.tail usage works for normal decision boundary calculation", {
   skip_on_cran()
 
   prior1 <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
@@ -66,6 +66,66 @@ test_that("Mixed lower.tail usage works for decision boundary calculation", {
     lower.tail = c(TRUE, FALSE)
   )
   boundary_fn_mixed <- decision2S_boundary(prior1, prior2, 50, 50, decMixed)
+
+  result_mixed_lower <- boundary_fn_mixed$lower_or_equal_than(gridVals)
+  result_mixed_upper <- boundary_fn_mixed$higher_than(gridVals)
+
+  expect_equal(result_mixed_lower, result_lower)
+  expect_equal(result_mixed_upper, result_upper)
+})
+
+test_that("decision2S_boundary works for binomial outcome", {
+  priorT <- mixbeta(c(1, 1, 2))
+  priorP <- mixbeta(c(1, 10, 40))
+
+  successCrit <- decision2S(c(0.95, 0.5), c(0, 0.2), FALSE)
+  futilityCrit <- decision2S(0.90, 0.2, TRUE)
+
+  successBoundary <- decision2S_boundary(priorP, priorT, 20, 20, successCrit)
+  futilityBoundary <- decision2S_boundary(priorP, priorT, 20, 20, futilityCrit)
+
+  gridVals <- seq(0, 20)
+
+  successBounds <- successBoundary(gridVals)
+  futilityBounds <- futilityBoundary(gridVals)
+  expect_snapshot_value(successBounds, style = "deparse")
+  expect_snapshot_value(futilityBounds, style = "deparse")
+})
+
+test_that("Mixed lower.tail usage works for binomial decision boundary calculation", {
+  skip_on_cran()
+
+  priorT <- mixbeta(c(1, 1, 2))
+  priorP <- mixbeta(c(1, 10, 40))
+
+  dec_lower <- decision2S(pc = 0.5, qc = 0.7, lower.tail = TRUE)
+  boundary_fn_lower <- decision2S_boundary(
+    priorP,
+    priorT,
+    n1 = 20,
+    n2 = 20,
+    decision = dec_lower
+  )
+
+  gridVals <- seq(0, 20)
+  result_lower <- boundary_fn_lower(gridVals)
+
+  dec_upper <- decision2S(pc = 0.6, qc = 0.5, lower.tail = FALSE)
+  boundary_fn_upper <- decision2S_boundary(
+    priorP,
+    priorT,
+    n1 = 20,
+    n2 = 20,
+    decision = dec_upper
+  )
+  result_upper <- boundary_fn_upper(gridVals)
+
+  decMixed <- decision2S(
+    qc = c(0.7, 0.5),
+    pc = c(0.5, 0.6),
+    lower.tail = c(TRUE, FALSE)
+  )
+  boundary_fn_mixed <- decision2S_boundary(priorP, priorT, 20, 20, decMixed)
 
   result_mixed_lower <- boundary_fn_mixed$lower_or_equal_than(gridVals)
   result_mixed_upper <- boundary_fn_mixed$higher_than(gridVals)

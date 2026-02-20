@@ -95,6 +95,93 @@ decision2S_boundary.betaMix <- function(
   assert_number(n1, lower = 1, finite = TRUE)
   assert_number(n2, lower = 0, finite = TRUE)
 
+  if (is(decision, "decision2S_2sided")) {
+    decision2S_boundary_betaMix_2sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  } else {
+    decision2S_boundary_betaMix_1sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  }
+}
+
+decision2S_boundary_betaMix_2sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
+  crit_lower <- decision2S_boundary_betaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    lower(decision),
+    eps,
+    ...
+  )
+  crit_upper <- decision2S_boundary_betaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    upper(decision),
+    eps,
+    ...
+  )
+  list(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+decision2S_boundary_betaMix_1sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision2S_boundary_betaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    eps,
+    ...
+  )
+}
+
+decision2S_boundary_betaMix_atomic <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
   if (!missing(eps)) {
     assert_number(eps, lower = 0, upper = 0.1, finite = TRUE)
   }
