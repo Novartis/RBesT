@@ -84,6 +84,48 @@ decision1S_boundary.default <- function(prior, n, decision, ...) {
 #' @template design1S-binomial
 #' @export
 decision1S_boundary.betaMix <- function(prior, n, decision, ...) {
+  if (is(decision, "decision1S_2sided")) {
+    decision1S_boundary_betaMix_2sided(prior, n, decision)
+  } else {
+    decision1S_boundary_betaMix_1sided(prior, n, decision)
+  }
+}
+
+#' @keywords internal
+decision1S_boundary_betaMix_2sided <- function(prior, n, decision) {
+  assert_class(decision, "decision1S_2sided")
+  crit_lower <- decision1S_boundary_betaMix_atomic(
+    prior,
+    n,
+    lower(decision)
+  )
+  crit_upper <- decision1S_boundary_betaMix_atomic(
+    prior,
+    n,
+    upper(decision)
+  )
+  c(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision1S_boundary_betaMix_1sided <- function(prior, n, decision) {
+  assert_class(decision, "decision1S_1sided")
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision1S_boundary_betaMix_atomic(
+    prior,
+    n,
+    decision
+  )
+}
+
+#' @keywords internal
+decision1S_boundary_betaMix_atomic <- function(prior, n, decision) {
+  assert_class(decision, "decision1S_atomic")
+
   VdecisionLazy <- Vectorize(function(r) {
     decision(postmix(prior, r = r, n = n)) - 0.25
   })
@@ -115,7 +157,6 @@ decision1S_boundary.betaMix <- function(prior, n, decision, ...) {
 
   crit
 }
-
 
 ## returns a function object which is the decision boundary. That is
 ## the function finds at a regular grid between llim1 and ulim1 the
