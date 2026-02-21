@@ -174,10 +174,9 @@ pos2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
           )
         } else if (lower_or_equal == n1 + 1) {
           ## lower-tail criterion is always 1, hence only upper-tail criterion matters
-          res[y2ind] <- pbinom(
+          res[y2ind] <- pmix(
+            pred_mix1,
             higher,
-            n1,
-            theta_df$theta1,
             lower.tail = FALSE,
             log.p = TRUE
           )
