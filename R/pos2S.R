@@ -115,29 +115,96 @@ pos2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
       lim2 <- qmix(pred_mix2, c(eps / 2, 1 - eps / 2))
     }
 
-    boundary <- crit_y1(lim2[1]:lim2[2], lim1 = lim1)
-    res <- rep(-Inf, times = length(boundary))
+    res <- rep(-Inf, times = length(lim2[1]:lim2[2]))
+
+    if (is(decision, "decision2S_1sided")) {
+      boundary <- crit_y1(lim2[1]:lim2[2], lim1 = lim1)
+
+      for (i in lim2[1]:lim2[2]) {
+        y2ind <- i - lim2[1] + 1
+        if (boundary[y2ind] == -1) {
+          ## decision was always 0
+          res[y2ind] <- -Inf
+        } else if (boundary[y2ind] == n1 + 1) {
+          ## decision was always 1
+          res[y2ind] <- 0
+        } else {
+          ## calculate for the predictive for dtheta1 the
+          ## probability mass past (or before) the boundary
+          res[y2ind] <- pmix(
+            pred_mix1,
+            boundary[y2ind],
+            lower.tail = lower.tail,
+            log.p = TRUE
+          )
+        }
+      }
+    } else {
+      boundary_lower_or_equal_than <- crit_y1$lower_or_equal_than(
+        lim2[1]:lim2[2],
+        lim1 = lim1
+      )
+      boundary_higher_than <- crit_y1$higher_than(
+        lim2[1]:lim2[2],
+        lim1 = lim1
+      )
+
+      for (i in lim2[1]:lim2[2]) {
+        y2ind <- i - lim2[1] + 1
+        lower_or_equal <- boundary_lower_or_equal_than[y2ind]
+        higher <- boundary_higher_than[y2ind]
+
+        if (
+          lower_or_equal <= higher ||
+            lower_or_equal == -1 ||
+            higher == -1
+        ) {
+          ## decision was always 0
+          res[y2ind] <- -Inf
+        } else if (higher == n1 + 1 && lower_or_equal == n1 + 1) {
+          ## both criteria are always 1
+          res[y2ind] <- 0
+        } else if (higher == n1 + 1) {
+          ## upper-tail criterion is always 1, hence only lower-tail criterion matters
+          res[y2ind] <- pmix(
+            pred_mix1,
+            lower_or_equal,
+            lower.tail = TRUE,
+            log.p = TRUE
+          )
+        } else if (lower_or_equal == n1 + 1) {
+          ## lower-tail criterion is always 1, hence only upper-tail criterion matters
+          res[y2ind] <- pbinom(
+            higher,
+            n1,
+            theta_df$theta1,
+            lower.tail = FALSE,
+            log.p = TRUE
+          )
+        } else {
+          ## calculate for all requested theta1 the probability mass
+          ## <= lower_or_equal boundary and > higher_than boundary
+          res[y2ind] <- log(
+            pmix(
+              pred_mix1,
+              lower_or_equal,
+              lower.tail = TRUE
+            ) -
+              pmix(
+                pred_mix1,
+                higher,
+                lower.tail = TRUE
+              )
+          )
+        }
+      }
+    }
 
     for (i in lim2[1]:lim2[2]) {
       y2ind <- i - lim2[1] + 1
-      if (boundary[y2ind] == -1) {
-        ## decision was always 0
-        res[y2ind] <- -Inf
-      } else if (boundary[y2ind] == n1 + 1) {
-        ## decision was always 1
-        res[y2ind] <- 0
-      } else {
-        ## calculate for the predictive for dtheta1 the
-        ## probability mass past (or before) the boundary
-        res[y2ind] <- pmix(
-          pred_mix1,
-          boundary[y2ind],
-          lower.tail = lower.tail,
-          log.p = TRUE
-        )
-      }
+
       ## finally weight with the density according to the occurence
-      ## of i due to theta2; the pmax avoids -Inf in a case of Prob==0
+      ## of i due to theta2;
       res[y2ind] <- res[y2ind] + dmix(pred_mix2, i, log = TRUE)
     }
     exp(matrixStats::logSumExp(res))

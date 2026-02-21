@@ -169,6 +169,7 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
         y2ind <- i - lim2[1] + 1
         lower_or_equal <- boundary_lower_or_equal_than[y2ind]
         higher <- boundary_higher_than[y2ind]
+
         if (
           lower_or_equal <= higher ||
             lower_or_equal == -1 ||
@@ -226,8 +227,6 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
       ## res[y2ind,] <- res[y2ind,] + pmax(dbinom(i, n2, T$theta2, log=TRUE), -700)
       res[y2ind, ] <- res[y2ind, ] + dbinom(i, n2, theta_df$theta2, log = TRUE)
     }
-
-    ## exp(log_colSum_exp(res))
     exp(matrixStats::colLogSumExps(res))
   }
   design_fun
