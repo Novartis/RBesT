@@ -167,31 +167,48 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
 
       for (i in lim2[1]:lim2[2]) {
         y2ind <- i - lim2[1] + 1
+        lower_or_equal <- boundary_lower_or_equal_than[y2ind]
+        higher <- boundary_higher_than[y2ind]
         if (
-          boundary_lower_or_equal_than[y2ind] <= boundary_higher_than[y2ind] ||
-            boundary_lower_or_equal_than[y2ind] == -1 ||
-            boundary_higher_than[y2ind] == n1
+          lower_or_equal <= higher ||
+            lower_or_equal == -1 ||
+            higher == -1
         ) {
           ## decision was always 0
           res[y2ind, ] <- -Inf
-        } else if (
-          boundary_lower_or_equal_than[y2ind] == n1 + 1 &&
-            boundary_higher_than[y2ind] == -1
-        ) {
-          ## decision was always 1
+        } else if (higher == n1 + 1 && lower_or_equal == n1 + 1) {
+          ## both criteria are always 1
           res[y2ind, ] <- 0
+        } else if (higher == n1 + 1) {
+          ## upper-tail criterion is always 1, hence only lower-tail criterion matters
+          res[y2ind, ] <- pbinom(
+            lower_or_equal,
+            n1,
+            theta_df$theta1,
+            lower.tail = TRUE,
+            log.p = TRUE
+          )
+        } else if (lower_or_equal == n1 + 1) {
+          ## lower-tail criterion is always 1, hence only upper-tail criterion matters
+          res[y2ind, ] <- pbinom(
+            higher,
+            n1,
+            theta_df$theta1,
+            lower.tail = FALSE,
+            log.p = TRUE
+          )
         } else {
           ## calculate for all requested theta1 the probability mass
           ## <= lower_or_equal boundary and > higher_than boundary
           res[y2ind, ] <- log(
             pbinom(
-              boundary_lower_or_equal_than[y2ind],
+              lower_or_equal,
               n1,
               theta_df$theta1,
               lower.tail = TRUE
             ) -
               pbinom(
-                boundary_higher_than[y2ind],
+                higher,
                 n1,
                 theta_df$theta1,
                 lower.tail = TRUE
