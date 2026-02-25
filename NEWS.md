@@ -3,7 +3,7 @@
 ## Enhancements
 
 * Reformat R sources using `Air`.
-* Extend normal outcome functions to two-sided decisions: `decision1S` and `decision2S` now allow `lower.tail` to have as many elements as `pc` to allow the specification of two-sided decision boundaries (mixed `lower.tail` elements, i.e. some specifying "lower" and some "upper") to capture intermediate result scenarios. This is currently only respected by the normal outcome functions (methods for `normMix`), because it is work in progress.
+* Extend normal outcome functions to two-sided decisions: `decision1S` and `decision2S` now allow `lower.tail` to have as many elements as `pc` to allow the specification of two-sided decision boundaries (mixed `lower.tail` elements, i.e. some specifying "lower" and some "upper") to capture intermediate result scenarios.
 
 # RBesT 1.8-2 - April 25th, 2025
 
@@ -308,16 +308,12 @@
 # RBesT 1.3-0 - December 21st, 2017
 
 * Added probability of success calculation for 1+2 sample case.
-
 * Added decision1+2S_boundary functions (and deprecated use of y2
   argument of oc functions)
-
 * Added RBesT.integrate_args option for greater control over density
   integrations.
-
 * Correct cumulative predictive of beta mixtures to return 0/1 for
   out-of-range values (instead of leaving those out).
-
 * Deprecated functions oc1+2Sdecision which are replaced by
   decision1+2S.
 
