@@ -670,6 +670,100 @@ decision2S_boundary.gammaMix <- function(
   assert_that(n1 > 0)
   assert_that(n2 >= 0)
 
+  if (is(decision, "decision2S_2sided")) {
+    decision2S_boundary_gammaMix_2sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  } else {
+    decision2S_boundary_gammaMix_1sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  }
+}
+
+#' @keywords internal
+decision2S_boundary_gammaMix_2sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  crit_lower <- decision2S_boundary_gammaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    lower(decision),
+    eps,
+    ...
+  )
+  crit_upper <- decision2S_boundary_gammaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    upper(decision),
+    eps,
+    ...
+  )
+  list(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision2S_boundary_gammaMix_1sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision2S_boundary_gammaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    eps,
+    ...
+  )
+}
+
+#' @keywords internal
+decision2S_boundary_gammaMix_atomic <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  if (!missing(eps)) {
+    assert_number(eps, lower = 0, upper = 0.1, finite = TRUE)
+  }
+
   cond_decisionStep <- function(post2) {
     fn <- function(m1) {
       decision(postmix(prior1, n = n1, m = m1 / n1), post2) - 0.25
