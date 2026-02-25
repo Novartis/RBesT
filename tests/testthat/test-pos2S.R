@@ -265,3 +265,41 @@ test_that("Mixed lower.tail usage works for binomial PoS calculation", {
   expected_mixed <- result_lower - (1 - result_upper)
   expect_equal(result_mixed, expected_mixed, tolerance = 1e-5)
 })
+
+test_that("Mixed lower.tail usage works for Poisson PoS calculation", {
+  prior1 <- mixgamma(c(0.3, 0.2, 0.5), c(0.7, 2, 10), param = "mn")
+  prior2 <- mixgamma(c(0.3, 0.2, 0.5), c(0.7, 2, 10), param = "mn")
+  post_ia1 <- postmix(prior1, m = 1.0, n = 15)
+  post_ia2 <- postmix(prior2, m = 1.2, n = 15)
+
+  dec_lower <- decision2S(pc = 0.5, qc = 0.5, lower.tail = TRUE)
+  pos_lower <- pos2S(
+    prior1,
+    prior2,
+    n1 = 50,
+    n2 = 50,
+    decision = dec_lower
+  )
+  result_lower <- pos_lower(post_ia1, post_ia2)
+
+  dec_upper <- decision2S(pc = 0.6, qc = 0.4, lower.tail = FALSE)
+  pos_upper <- pos2S(
+    prior1,
+    prior2,
+    n1 = 50,
+    n2 = 50,
+    decision = dec_upper
+  )
+  result_upper <- pos_upper(post_ia1, post_ia2)
+
+  dec_mixed <- decision2S(
+    qc = c(0.5, 0.4),
+    pc = c(0.5, 0.6),
+    lower.tail = c(TRUE, FALSE)
+  )
+  pos_mixed <- pos2S(prior1, prior2, 50, 50, dec_mixed)
+  result_mixed <- pos_mixed(post_ia1, post_ia2)
+
+  expected_mixed <- result_lower - (1 - result_upper)
+  expect_equal(result_mixed, expected_mixed, tolerance = 1e-4)
+})

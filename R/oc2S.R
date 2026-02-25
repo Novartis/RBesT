@@ -468,15 +468,21 @@ oc2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
       log_prob_in_bounds <- numeric(length(grid))
       has_zero_prob <- bound_lower_or_equal_than <= bound_higher_than
       log_prob_in_bounds[has_zero_prob] <- -Inf
-      log_prob_in_bounds[!has_zero_prob] <-
-        log(
-          ppois(
-            bound_lower_or_equal_than[!has_zero_prob],
-            lambda1,
-            lower.tail = TRUE
-          ) -
-            ppois(bound_higher_than[!has_zero_prob], lambda1, lower.tail = TRUE)
-        )
+      if (!all(has_zero_prob)) {
+        log_prob_in_bounds[!has_zero_prob] <-
+          log(
+            ppois(
+              bound_lower_or_equal_than[!has_zero_prob],
+              lambda1,
+              lower.tail = TRUE
+            ) -
+              ppois(
+                bound_higher_than[!has_zero_prob],
+                lambda1,
+                lower.tail = TRUE
+              )
+          )
+      }
       exp(matrixStats::logSumExp(
         dpois(grid, lambda2, log = TRUE) + log_prob_in_bounds
       ))

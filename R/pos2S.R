@@ -379,39 +379,101 @@ pos2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
 
   crit_y1 <- decision2S_boundary(prior1, prior2, n1, n2, decision, eps)
 
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (is(decision, "decision2S_1sided")) {
+    # Simple case of one-sided boundary.
+    assert_function(crit_y1)
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix1, mix2) {
-    assert_that(likelihood(mix1) == "poisson")
-    assert_that(likelihood(mix2) == "poisson")
+    function(mix1, mix2) {
+      assert_that(likelihood(mix1) == "poisson")
+      assert_that(likelihood(mix2) == "poisson")
 
-    ## get the predictive of the sum
-    pred_mix1_sum <- preddist(mix1, n = n1)
-    pred_mix2_sum <- preddist(mix2, n = n2)
+      ## get the predictive of the sum
+      pred_mix1_sum <- preddist(mix1, n = n1)
+      pred_mix2_sum <- preddist(mix2, n = n2)
 
-    assert_that(inherits(pred_mix1_sum, "gammaPoissonMix"))
-    assert_that(inherits(pred_mix2_sum, "gammaPoissonMix"))
+      assert_that(inherits(pred_mix1_sum, "gammaPoissonMix"))
+      assert_that(inherits(pred_mix2_sum, "gammaPoissonMix"))
 
-    lim1 <- qmix(pred_mix1_sum, c(eps / 2, 1 - eps / 2))
-    lim2 <- qmix(pred_mix2_sum, c(eps / 2, 1 - eps / 2))
+      lim1 <- qmix(pred_mix1_sum, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_sum, c(eps / 2, 1 - eps / 2))
 
-    ## force lower limit of lim1 to be 0 such that we will get and
-    ## answer in most cases; performance wise it should be ok as
-    ## we run a O(log(N)) search
-    lim1[1] <- 0
+      ## force lower limit of lim1 to be 0 such that we will get and
+      ## answer in most cases; performance wise it should be ok as
+      ## we run a O(log(N)) search
+      lim1[1] <- 0
 
-    ## ensure that the boundaries are cached
-    crit_y1(lim2, lim1 = lim1)
-    grid <- seq(lim2[1], lim2[2])
-    exp(matrixStats::logSumExp(
-      dmix(pred_mix2_sum, grid, log = TRUE) +
-        pmix(
-          pred_mix1_sum,
-          crit_y1(grid, lim1 = lim1),
-          lower.tail = lower.tail,
-          log.p = TRUE
-        )
-    ))
+      ## ensure that the boundaries are cached
+      crit_y1(lim2, lim1 = lim1)
+      grid <- seq(lim2[1], lim2[2])
+      exp(matrixStats::logSumExp(
+        dmix(pred_mix2_sum, grid, log = TRUE) +
+          pmix(
+            pred_mix1_sum,
+            crit_y1(grid, lim1 = lim1),
+            lower.tail = lower.tail,
+            log.p = TRUE
+          )
+      ))
+    }
+  } else {
+    # Mixed boundary case.
+    assert_list(crit_y1, len = 2, types = "function")
+    crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
+    crit_y1_higher_than <- crit_y1$higher_than
+
+    function(mix1, mix2) {
+      assert_that(likelihood(mix1) == "poisson")
+      assert_that(likelihood(mix2) == "poisson")
+
+      ## get the predictive of the sum
+      pred_mix1_sum <- preddist(mix1, n = n1)
+      pred_mix2_sum <- preddist(mix2, n = n2)
+
+      assert_that(inherits(pred_mix1_sum, "gammaPoissonMix"))
+      assert_that(inherits(pred_mix2_sum, "gammaPoissonMix"))
+
+      lim1 <- qmix(pred_mix1_sum, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_sum, c(eps / 2, 1 - eps / 2))
+
+      ## force lower limit of lim1 to be 0 such that we will get and
+      ## answer in most cases; performance wise it should be ok as
+      ## we run a O(log(N)) search
+      lim1[1] <- 0
+
+      ## ensure that the boundaries are cached
+      crit_y1_lower_or_equal_than(lim2, lim1)
+      crit_y1_higher_than(lim2, lim1)
+
+      grid <- seq(lim2[1], lim2[2])
+      bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+        grid,
+        lim1 = lim1
+      )
+      bound_higher_than <- crit_y1_higher_than(grid, lim1 = lim1)
+      log_prob_in_bounds <- numeric(length(grid))
+      has_zero_prob <- bound_lower_or_equal_than <= bound_higher_than
+      log_prob_in_bounds[has_zero_prob] <- -Inf
+      if (!all(has_zero_prob)) {
+        log_prob_in_bounds[!has_zero_prob] <-
+          log(
+            pmix(
+              pred_mix1_sum,
+              bound_lower_or_equal_than[!has_zero_prob],
+              lower.tail = TRUE
+            ) -
+              pmix(
+                pred_mix1_sum,
+                bound_higher_than[!has_zero_prob],
+                lower.tail = TRUE
+              )
+          )
+      }
+      exp(matrixStats::logSumExp(
+        dmix(pred_mix2_sum, grid, log = TRUE) +
+          log_prob_in_bounds
+      ))
+    }
   }
   design_fun
 }
