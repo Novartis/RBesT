@@ -1,6 +1,6 @@
 #' Decision Function for 2 Sample Designs
 #'
-#' The function sets up a 2 sample one-sided decision function with an
+#' The function sets up a 2 sample decision function with an
 #' arbitrary number of conditions on the difference distribution.
 #'
 #' @param pc Vector of critical cumulative probabilities of the
@@ -35,7 +35,7 @@
 #' otherwise. For `lower.tail=FALSE` differences must be greater
 #' than the given quantiles `qc`.
 #'
-#' For the case of a boolen vector given to `lower.tail` the
+#' For the case of a boolean vector given to `lower.tail` the
 #' direction of each decision aligns respectively, and a two-sided
 #' decision function is created.
 #'
@@ -140,9 +140,9 @@ decision2S <- function(
   lower.tail = TRUE,
   link = c("identity", "logit", "log")
 ) {
-  assert_numeric(pc)
-  assert_numeric(qc, len = length(pc))
-  assert_logical(lower.tail)
+  assert_numeric(pc, lower = 0, upper = 1, any.missing = FALSE, finite = TRUE)
+  assert_numeric(qc, len = length(pc), any.missing = FALSE)
+  assert_logical(lower.tail, any.missing = FALSE)
   assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
   lower.tail <- scalar_if_same(lower.tail)
   link <- match.arg(link)
@@ -198,6 +198,7 @@ create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
 
   atomic_fun <- create_decision2S_atomic(pc, qc, lower.tail, link)
   attr_name <- if (lower.tail) "lower" else "upper"
+  attr_compl_name <- if (lower.tail) "upper" else "lower"
 
   fun <- function(mix1, mix2, dist = FALSE) {
     test <- atomic_fun(mix1, mix2, dist)
@@ -208,6 +209,9 @@ create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
     test
   }
   attr(fun, attr_name) <- atomic_fun
+  attr(fun, attr_compl_name) <- function(mix1, mix2, ...) {
+    return(1)
+  }
   attr(fun, "link") <- link
   attr(fun, "lower.tail") <- lower.tail
   class(fun) <- c("decision2S", "decision2S_1sided", "function")

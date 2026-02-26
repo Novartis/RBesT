@@ -51,7 +51,7 @@ as calculated by the decision function is returned as a list with
 components \code{lower} and \code{upper}.
 }
 \description{
-The function sets up a 2 sample one-sided decision function with an
+The function sets up a 2 sample decision function with an
 arbitrary number of conditions on the difference distribution.
 }
 \details{
@@ -77,7 +77,7 @@ which is \eqn{1} if all conditions are met and \eqn{0}
 otherwise. For \code{lower.tail=FALSE} differences must be greater
 than the given quantiles \code{qc}.
 
-For the case of a boolen vector given to \code{lower.tail} the
+For the case of a boolean vector given to \code{lower.tail} the
 direction of each decision aligns respectively, and a two-sided
 decision function is created.
 

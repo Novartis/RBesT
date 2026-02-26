@@ -1,6 +1,6 @@
 #' Decision Function for 1 Sample Designs
 #'
-#' The function sets up a 1 sample one-sided decision function with an
+#' The function sets up a 1 sample decision function with an
 #' arbitrary number of conditions.
 #'
 #' @param pc Vector of critical cumulative probabilities.
@@ -28,7 +28,7 @@
 #'
 #' \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
 #'
-#' For the case of a boolen vector given to `lower.tail` the
+#' For the case of a boolean vector given to `lower.tail` the
 #' direction of each decision aligns respectively, and a two-sided
 #' decision function is created.
 #'
@@ -133,9 +133,9 @@
 #'
 #' @export
 decision1S <- function(pc = 0.975, qc = 0, lower.tail = TRUE) {
-  assert_numeric(pc)
-  assert_numeric(qc, len = length(pc))
-  assert_logical(lower.tail)
+  assert_numeric(pc, lower = 0, upper = 1, any.missing = FALSE, finite = TRUE)
+  assert_numeric(qc, len = length(pc), any.missing = FALSE)
+  assert_logical(lower.tail, any.missing = FALSE)
   assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
   lower.tail <- scalar_if_same(lower.tail)
 
@@ -182,6 +182,7 @@ create_decision1S_1sided <- function(pc, qc, lower.tail) {
 
   atomic_fun <- create_decision1S_atomic(pc, qc, lower.tail)
   attr_name <- if (lower.tail) "lower" else "upper"
+  attr_compl_name <- if (lower.tail) "upper" else "lower"
 
   fun <- function(mix, dist = FALSE) {
     test <- atomic_fun(mix, dist)
@@ -192,6 +193,9 @@ create_decision1S_1sided <- function(pc, qc, lower.tail) {
     test
   }
   attr(fun, attr_name) <- atomic_fun
+  attr(fun, attr_compl_name) <- function(mix, ...) {
+    return(1)
+  }
   attr(fun, "lower.tail") <- lower.tail
 
   class(fun) <- c("decision1S", "decision1S_1sided", "function")

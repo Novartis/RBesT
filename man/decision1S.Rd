@@ -50,7 +50,7 @@ as calculated by the decision function is returned as a list with
 components \code{lower} and \code{upper}.
 }
 \description{
-The function sets up a 1 sample one-sided decision function with an
+The function sets up a 1 sample decision function with an
 arbitrary number of conditions.
 }
 \details{
@@ -72,7 +72,7 @@ must be met, the final indicator function returns
 
 \deqn{\Pi_i H_i(P(\theta \leq q_{c,i}) - p_{c,i} ).}
 
-For the case of a boolen vector given to \code{lower.tail} the
+For the case of a boolean vector given to \code{lower.tail} the
 direction of each decision aligns respectively, and a two-sided
 decision function is created.
 

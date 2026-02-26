@@ -8,6 +8,9 @@ test_that("decision2S works for lower sided", {
   expect_true(has_lower(decLower))
   expect_false(has_upper(decLower))
 
+  # Complementary attribute is still present for consistency:
+  expect_function(attr(decLower, "upper"))
+
   expect_class(decLower, c("decision2S", "decision2S_1sided", "function"))
   expect_class(lower(decLower), c("decision2S_atomic", "function"))
 
@@ -22,6 +25,14 @@ test_that("decision2S works for lower sided", {
 
   dist <- decLower(flat_prior1, flat_prior2, dist = TRUE)
   expect_snapshot_value(dist, style = "deparse")
+
+  priorT <- mixnorm(c(1, Inf, 10), sigma = 88, param = "mn")
+  priorP <- mixnorm(c(1, -Inf, 10), sigma = 88, param = "mn")
+  successCrit <- decision2S(c(0.95, 0.5), c(0, 50), FALSE)
+  expect_equal(lower(successCrit)(priorT, priorP), 1)
+  expect_equal(upper(successCrit)(priorT, priorP), 1)
+  expect_equal(lower(successCrit)(priorP, priorT), 1)
+  expect_equal(upper(successCrit)(priorP, priorT), 0)
 })
 
 test_that("decision2S works for upper sided", {
@@ -33,6 +44,9 @@ test_that("decision2S works for upper sided", {
 
   expect_false(has_lower(decUpper))
   expect_true(has_upper(decUpper))
+
+  # Complementary attribute is still present for consistency:
+  expect_function(attr(decUpper, "lower"))
 
   expect_class(decUpper, c("decision2S", "decision2S_1sided", "function"))
   expect_class(upper(decUpper), c("decision2S_atomic", "function"))
@@ -48,6 +62,14 @@ test_that("decision2S works for upper sided", {
 
   dist <- decUpper(flat_prior1, flat_prior2, dist = TRUE)
   expect_snapshot_value(dist, style = "deparse")
+
+  priorT <- mixnorm(c(1, Inf, 10), sigma = 88, param = "mn")
+  priorP <- mixnorm(c(1, -Inf, 10), sigma = 88, param = "mn")
+  successCrit <- decision2S(c(0.95, 0.5), c(0, 50), TRUE)
+  expect_equal(lower(successCrit)(priorT, priorP), 0)
+  expect_equal(upper(successCrit)(priorT, priorP), 1)
+  expect_equal(lower(successCrit)(priorP, priorT), 1)
+  expect_equal(upper(successCrit)(priorP, priorT), 1)
 })
 
 test_that("decision2S works for two sided", {
