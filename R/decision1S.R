@@ -194,7 +194,7 @@ create_decision1S_1sided <- function(pc, qc, lower.tail) {
   }
   attr(fun, attr_name) <- atomic_fun
   attr(fun, attr_compl_name) <- function(mix, ...) {
-    return(TRUE)
+    return(1)
   }
   attr(fun, "lower.tail") <- lower.tail
 
