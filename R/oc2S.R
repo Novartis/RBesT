@@ -105,8 +105,12 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
     assert_numeric(theta1, lower = 0, upper = 1, finite = TRUE)
     assert_numeric(theta2, lower = 0, upper = 1, finite = TRUE)
 
-    T <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
-    if (inherits(T, "try-error")) {
+    theta_df <- try(data.frame(
+      theta1 = theta1,
+      theta2 = theta2,
+      row.names = NULL
+    ))
+    if (inherits(theta_df, "try-error")) {
       stop("theta1 and theta2 need to be of same size")
     }
 
@@ -126,34 +130,103 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
     ## for each 0:n1 of the possible outcomes, calculate the
     ## probability mass past the boundary (log space) weighted with
     ## the density as the value for 1 occures (due to theta1)
-    boundary <- crit_y1(lim2[1]:lim2[2], lim1 = c(0, n1))
-    res <- matrix(-Inf, nrow = diff(lim2) + 1, ncol = nrow(T))
+    res <- matrix(-Inf, nrow = diff(lim2) + 1, ncol = nrow(theta_df))
+
+    if (is(decision, "decision2S_1sided")) {
+      boundary <- crit_y1(lim2[1]:lim2[2], lim1 = c(0, n1))
+
+      for (i in lim2[1]:lim2[2]) {
+        y2ind <- i - lim2[1] + 1
+        if (boundary[y2ind] == -1) {
+          ## decision was always 0
+          res[y2ind, ] <- -Inf
+        } else if (boundary[y2ind] == n1 + 1) {
+          ## decision was always 1
+          res[y2ind, ] <- 0
+        } else {
+          ## calculate for all requested theta1 the probability mass
+          ## past (or before) the boundary
+          res[y2ind, ] <- pbinom(
+            boundary[y2ind],
+            n1,
+            theta_df$theta1,
+            lower.tail = lower.tail,
+            log.p = TRUE
+          )
+        }
+      }
+    } else {
+      boundary_lower_or_equal_than <- crit_y1$lower_or_equal_than(
+        lim2[1]:lim2[2],
+        lim1 = c(0, n1)
+      )
+      boundary_higher_than <- crit_y1$higher_than(
+        lim2[1]:lim2[2],
+        lim1 = c(0, n1)
+      )
+
+      for (i in lim2[1]:lim2[2]) {
+        y2ind <- i - lim2[1] + 1
+        lower_or_equal <- boundary_lower_or_equal_than[y2ind]
+        higher <- boundary_higher_than[y2ind]
+
+        if (
+          lower_or_equal <= higher ||
+            lower_or_equal == -1 ||
+            higher == -1
+        ) {
+          ## decision was always 0
+          res[y2ind, ] <- -Inf
+        } else if (higher == n1 + 1 && lower_or_equal == n1 + 1) {
+          ## both criteria are always 1
+          res[y2ind, ] <- 0
+        } else if (higher == n1 + 1) {
+          ## upper-tail criterion is always 1, hence only lower-tail criterion matters
+          res[y2ind, ] <- pbinom(
+            lower_or_equal,
+            n1,
+            theta_df$theta1,
+            lower.tail = TRUE,
+            log.p = TRUE
+          )
+        } else if (lower_or_equal == n1 + 1) {
+          ## lower-tail criterion is always 1, hence only upper-tail criterion matters
+          res[y2ind, ] <- pbinom(
+            higher,
+            n1,
+            theta_df$theta1,
+            lower.tail = FALSE,
+            log.p = TRUE
+          )
+        } else {
+          ## calculate for all requested theta1 the probability mass
+          ## <= lower_or_equal boundary and > higher_than boundary
+          res[y2ind, ] <- log(
+            pbinom(
+              lower_or_equal,
+              n1,
+              theta_df$theta1,
+              lower.tail = TRUE
+            ) -
+              pbinom(
+                higher,
+                n1,
+                theta_df$theta1,
+                lower.tail = TRUE
+              )
+          )
+        }
+      }
+    }
 
     for (i in lim2[1]:lim2[2]) {
       y2ind <- i - lim2[1] + 1
-      if (boundary[y2ind] == -1) {
-        ## decision was always 0
-        res[y2ind, ] <- -Inf
-      } else if (boundary[y2ind] == n1 + 1) {
-        ## decision was always 1
-        res[y2ind, ] <- 0
-      } else {
-        ## calculate for all requested theta1 the probability mass
-        ## past (or before) the boundary
-        res[y2ind, ] <- pbinom(
-          boundary[y2ind],
-          n1,
-          T$theta1,
-          lower.tail = lower.tail,
-          log.p = TRUE
-        )
-      }
+
       ## finally weight with the density according to the occurence
       ## of i due to theta2; the pmax avoids -Inf in a case of Prob==0
       ## res[y2ind,] <- res[y2ind,] + pmax(dbinom(i, n2, T$theta2, log=TRUE), -700)
-      res[y2ind, ] <- res[y2ind, ] + dbinom(i, n2, T$theta2, log = TRUE)
+      res[y2ind, ] <- res[y2ind, ] + dbinom(i, n2, theta_df$theta2, log = TRUE)
     }
-    ## exp(log_colSum_exp(res))
     exp(matrixStats::colLogSumExps(res))
   }
   design_fun

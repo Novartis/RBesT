@@ -199,3 +199,36 @@ test_that("Mixed lower.tail usage works for normal OC calculation", {
   expected_mixed <- vals_lower - (1 - vals_upper)
   expect_equal(vals_mixed, expected_mixed)
 })
+
+test_that("Mixed lower.tail usage works for binomial OC calculation", {
+  prior <- mixbeta(rob = c(0.2, 2, 2), inf = c(0.8, 5, 5))
+
+  dec_lower <- decision1S(pc = 0.5, qc = 0.7, lower.tail = TRUE)
+  result_lower <- oc1S(
+    prior,
+    n = 50,
+    decision = dec_lower
+  )
+
+  dec_upper <- decision1S(pc = 0.6, qc = 0.5, lower.tail = FALSE)
+  result_upper <- oc1S(
+    prior,
+    n = 50,
+    decision = dec_upper
+  )
+
+  decMixed <- decision1S(
+    qc = c(0.7, 0.5),
+    pc = c(0.5, 0.6),
+    lower.tail = c(TRUE, FALSE)
+  )
+  result <- oc1S(prior, 50, decMixed)
+
+  theta_grid <- seq(0, 1, length.out = 50)
+  vals_lower <- result_lower(theta_grid)
+  vals_upper <- result_upper(theta_grid)
+  vals_mixed <- result(theta_grid)
+
+  expected_mixed <- vals_lower - (1 - vals_upper)
+  expect_equal(vals_mixed, expected_mixed)
+})

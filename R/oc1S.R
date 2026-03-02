@@ -116,10 +116,39 @@ oc1S.default <- function(prior, n, decision, ...) "Unknown density"
 #' @export
 oc1S.betaMix <- function(prior, n, decision, ...) {
   crit <- decision1S_boundary(prior, n, decision)
-  lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(theta) {
-    pbinom(crit, n, theta, lower.tail = lower.tail)
+  design_fun <- if (is(decision, "decision1S_1sided")) {
+    lower.tail <- attr(decision, "lower.tail")
+
+    function(theta) {
+      pbinom(crit, n, theta, lower.tail = lower.tail)
+    }
+  } else {
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower_or_equal <= crit_upper) {
+      function(theta) rep(0, length(theta))
+    } else {
+      function(theta) {
+        # Calculate probability between the two bounds.
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pbinom(
+          crit_lower_or_equal,
+          n,
+          theta,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pbinom(
+          crit_upper,
+          n,
+          theta,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
+      }
+    }
   }
   design_fun
 }
