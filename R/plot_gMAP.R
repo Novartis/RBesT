@@ -1,7 +1,8 @@
 #' Diagnostic plots for gMAP analyses
 #'
 #' @param x [gMAP()] object
-#' @param size Controls line sizes of traceplots and forest plot.
+#' @param size Controls size of forest plot.
+#' @param linewidth Controls line sizes of traceplots.
 #' @param ... Ignored.
 #'
 #' @details Creates MCMC diagnostics and a forest plot (including
@@ -16,7 +17,7 @@
 #'
 #' @method plot gMAP
 #' @export
-plot.gMAP <- function(x, size = NULL, ...) {
+plot.gMAP <- function(x, size = NULL, linewidth = NULL, ...) {
   pl <- list()
 
   draws_all <- rstan::extract(x$fit, permuted = FALSE, inc_warmup = TRUE)

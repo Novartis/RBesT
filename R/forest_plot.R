@@ -7,7 +7,8 @@
 #' @param est can be set to one of `both` (default), `MAP`, `Mean` or `none`. Controls which model estimates are to be included.
 #' @param model controls which estimates are displayed per study. Either `stratified` (default), `both` or `meta`.
 #' @param point_est shown point estimate. Either `median` (default) or `mean`.
-#' @param size controls point and linesize.
+#' @param size controls point `size`.
+#' @param linewidth controls `linewidth`; set by default to same value as `size`.
 #' @param alpha transparency of reference line. Setting `alpha=0`
 #' suppresses the reference line.
 #'
@@ -63,11 +64,13 @@ forest_plot <- function(
   model = c("stratified", "both", "meta"),
   point_est = c("median", "mean"),
   size = 1.25,
+  linewidth = size,
   alpha = 0.5
 ) {
   assert_number(prob, lower = 0, upper = 1)
   assert_that(inherits(x, "gMAP"))
   assert_that(x$has_intercept)
+
   est <- match.arg(est)
   low <- (1 - prob) / 2
   up <- 1 - low
@@ -118,7 +121,11 @@ forest_plot <- function(
     study <- factor(study, levels = rev(c(rownames(strat), "Mean", "MAP")))
   })
 
-  opts <- list(position = position_dodge(width = 0.3), size = size)
+  opts <- list(
+    position = position_dodge(width = 0.3),
+    size = size,
+    linewidth = linewidth
+  )
 
   xlab_str <- switch(
     x$family$family,
@@ -157,7 +164,7 @@ forest_plot <- function(
         yintercept = ref_data[1, point_est],
         color = get_color("mh"),
         alpha = alpha,
-        size = size
+        linewidth = linewidth
       )
   }
 
