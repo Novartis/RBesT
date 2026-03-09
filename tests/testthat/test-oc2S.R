@@ -904,3 +904,84 @@ test_that("Binomial OC 2-sample works with mixed lower.tail decision criterion",
     }
   }
 })
+
+test_that("Poisson OC 2-sample works with mixed lower.tail decision criterion", {
+  skip_on_cran()
+
+  map_ref <- mixgamma(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixgamma(c(1, 1, 1))
+  alpha <- 0.05
+
+  # Again we have 4 decision scenarios: Go, Stop, In-between 1, In-between 2.
+  n <- 20
+  for (n2 in c(0, 5)) {
+    for (qc2 in c(0.5, 0.8)) {
+      qc1 <- 0.5
+      pc1 <- 0.5
+      pc2 <- 0.6
+
+      dec_go <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, pc2),
+        lower.tail = c(FALSE, FALSE)
+      )
+      dec_stop <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, 1 - pc2),
+        lower.tail = c(TRUE, TRUE)
+      )
+      dec_inbetween_1 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, 1 - pc2),
+        lower.tail = c(FALSE, TRUE)
+      )
+      dec_inbetween_2 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, pc2),
+        lower.tail = c(TRUE, FALSE)
+      )
+
+      get_design_map_n2_pos <- function(dec) {
+        oc2S(
+          prior_flat,
+          map_ref,
+          n,
+          n2,
+          dec
+        )
+      }
+
+      prob_fun_go <- get_design_map_n2_pos(dec_go)
+      prob_fun_stop <- get_design_map_n2_pos(dec_stop)
+      prob_fun_inbetween_1 <- get_design_map_n2_pos(dec_inbetween_1)
+      prob_fun_inbetween_2 <- get_design_map_n2_pos(dec_inbetween_2)
+
+      x <- seq(0.5, 1.5, by = 0.1)
+
+      prob_go <- prob_fun_go(x, x)
+      prob_stop <- prob_fun_stop(x, x)
+      prob_inbetween_1 <- prob_fun_inbetween_1(x, x)
+      prob_inbetween_2 <- prob_fun_inbetween_2(x, x)
+      expect_numeric(prob_go, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(prob_stop, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(
+        prob_inbetween_1,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      expect_numeric(
+        prob_inbetween_2,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      total_prob <- prob_go + prob_stop + prob_inbetween_1 + prob_inbetween_2
+      expect_true(all(abs(total_prob - 1) < 1e-3))
+    }
+  }
+})

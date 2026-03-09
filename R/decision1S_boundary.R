@@ -312,6 +312,57 @@ decision1S_boundary_normMix_atomic <- function(
 #' @template design1S-poisson
 #' @export
 decision1S_boundary.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
+  if (is(decision, "decision1S_2sided")) {
+    decision1S_boundary_gammaMix_2sided(prior, n, decision, eps)
+  } else {
+    decision1S_boundary_gammaMix_1sided(prior, n, decision, eps)
+  }
+}
+
+#' @keywords internal
+decision1S_boundary_gammaMix_2sided <- function(prior, n, decision, eps) {
+  assert_class(decision, "decision1S_2sided")
+  crit_lower <- decision1S_boundary_gammaMix_atomic(
+    prior,
+    n,
+    lower(decision),
+    eps
+  )
+  crit_upper <- decision1S_boundary_gammaMix_atomic(
+    prior,
+    n,
+    upper(decision),
+    eps
+  )
+  c(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision1S_boundary_gammaMix_1sided <- function(prior, n, decision, eps) {
+  assert_class(decision, "decision1S_1sided")
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision1S_boundary_gammaMix_atomic(
+    prior,
+    n,
+    decision,
+    eps
+  )
+}
+
+#' @keywords internal
+decision1S_boundary_gammaMix_atomic <- function(
+  prior,
+  n,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  assert_class(decision, "decision1S_atomic")
+
   assert_that(likelihood(prior) == "poisson")
 
   cond_decisionStep <- function() {

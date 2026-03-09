@@ -430,21 +430,63 @@ oc2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
 
   lower.tail <- attr(decision, "lower.tail")
 
-  freq <- function(theta1, theta2) {
-    lambda1 <- theta1 * n1
-    lambda2 <- theta2 * n2
-    lim1 <- qpois(c(eps / 2, 1 - eps / 2), lambda1)
-    grid <- seq(qpois(eps / 2, lambda2), qpois(1 - eps / 2, lambda2))
+  freq <- if (is(decision, "decision2S_1sided")) {
+    # Simple case of one-sided boundary.
+    assert_function(crit_y1)
+    function(theta1, theta2) {
+      lambda1 <- theta1 * n1
+      lambda2 <- theta2 * n2
+      lim1 <- qpois(c(eps / 2, 1 - eps / 2), lambda1)
+      grid <- seq(qpois(eps / 2, lambda2), qpois(1 - eps / 2, lambda2))
 
-    exp(matrixStats::logSumExp(
-      dpois(grid, lambda2, log = TRUE) +
-        ppois(
-          crit_y1(grid, lim1 = lim1),
-          lambda1,
-          lower.tail = lower.tail,
-          log.p = TRUE
-        )
-    ))
+      exp(matrixStats::logSumExp(
+        dpois(grid, lambda2, log = TRUE) +
+          ppois(
+            crit_y1(grid, lim1 = lim1),
+            lambda1,
+            lower.tail = lower.tail,
+            log.p = TRUE
+          )
+      ))
+    }
+  } else {
+    # Mixed boundary case.
+    assert_list(crit_y1, len = 2, types = "function")
+    crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
+    crit_y1_higher_than <- crit_y1$higher_than
+    function(theta1, theta2) {
+      lambda1 <- theta1 * n1
+      lambda2 <- theta2 * n2
+      lim1 <- qpois(c(eps / 2, 1 - eps / 2), lambda1)
+      grid <- seq(qpois(eps / 2, lambda2), qpois(1 - eps / 2, lambda2))
+
+      bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+        grid,
+        lim1 = lim1
+      )
+      bound_higher_than <- crit_y1_higher_than(grid, lim1 = lim1)
+      log_prob_in_bounds <- numeric(length(grid))
+      has_zero_prob <- bound_lower_or_equal_than <= bound_higher_than
+      log_prob_in_bounds[has_zero_prob] <- -Inf
+      if (!all(has_zero_prob)) {
+        log_prob_in_bounds[!has_zero_prob] <-
+          log(
+            ppois(
+              bound_lower_or_equal_than[!has_zero_prob],
+              lambda1,
+              lower.tail = TRUE
+            ) -
+              ppois(
+                bound_higher_than[!has_zero_prob],
+                lambda1,
+                lower.tail = TRUE
+              )
+          )
+      }
+      exp(matrixStats::logSumExp(
+        dpois(grid, lambda2, log = TRUE) + log_prob_in_bounds
+      ))
+    }
   }
 
   Vfreq <- Vectorize(freq)
@@ -483,19 +525,32 @@ oc2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
     ## we run a O(log(N)) search
     lim1[1] <- 0
 
-    ## ensure that the boundaries are cached
-    crit_y1(lim2, lim1 = lim1)
+    ## Call boundary function(s) to cache all results for all
+    ## requested computations.
+    if (is(decision, "decision2S_1sided")) {
+      crit_y1(lim2, lim1 = lim1)
+    } else {
+      ## The caching is in the closures, therefore we don't need to
+      ## worry about conflicts between the caches.
+      crit_y1$lower_or_equal_than(lim2, lim1 = lim1)
+      crit_y1$higher_than(lim2, lim1 = lim1)
+    }
 
     if (!missing(y2)) {
       deprecated("Use of y2 argument", "decision2S_boundary")
       return(crit_y1(y2, lim1 = lim1))
     }
 
-    T <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
-    if (inherits(T, "try-error")) {
+    theta_df <- try(data.frame(
+      theta1 = theta1,
+      theta2 = theta2,
+      row.names = NULL
+    ))
+    if (inherits(theta_df, "try-error")) {
       stop("theta1 and theta2 need to be of same size")
     }
-    do.call(Vfreq, T)
+
+    do.call(Vfreq, theta_df)
   }
   design_fun
 }

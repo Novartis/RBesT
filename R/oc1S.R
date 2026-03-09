@@ -214,10 +214,37 @@ oc1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 #' @export
 oc1S.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
   crit <- decision1S_boundary(prior, n, decision, eps)
-  lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(theta) {
-    ppois(crit, n * theta, lower.tail = lower.tail)
+  design_fun <- if (is(decision, "decision1S_1sided")) {
+    lower.tail <- attr(decision, "lower.tail")
+
+    function(theta) {
+      ppois(crit, n * theta, lower.tail = lower.tail)
+    }
+  } else {
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower_or_equal <= crit_upper) {
+      function(theta) rep(0, length(theta))
+    } else {
+      function(theta) {
+        # Calculate probability between the two bounds.
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- ppois(
+          crit_lower_or_equal,
+          n * theta,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- ppois(
+          crit_upper,
+          n * theta,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
+      }
+    }
   }
   design_fun
 }
