@@ -4,6 +4,11 @@
 
 * Reformat R sources using `Air`.
 * Extend normal outcome functions to two-sided decisions: `decision1S` and `decision2S` now allow `lower.tail` to have as many elements as `pc` to allow the specification of two-sided decision boundaries (mixed `lower.tail` elements, i.e. some specifying "lower" and some "upper") to capture intermediate result scenarios.
+* Introduce global option `RBesT.MC.save_warmup`, which is set to
+  `FALSE` causing to drop warmup samples from the `gMAP` fit
+  object. Note that the pre-1.9.0 behavior was to store the warmup
+  samples (but these were not used). To restore the original behavior
+  set `options(RBesT.MC.save_warmup=TRUE)` once globally.
 
 # RBesT 1.8-2 - April 25th, 2025
 
