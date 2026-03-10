@@ -357,7 +357,7 @@ test_that("gMAP labels data rows correctly when using covariates", {
 })
 
 
-test_that("plot.gMAP $ forest_plot does not use deprecated ggplot2 size aesthetic", {
+test_that("plot.gMAP and forest_plot does not use deprecated ggplot2 size aesthetic", {
   # minimal gMAP fit needed to trigger the plot
   suppressMessages(suppressWarnings({
     set.seed(42)

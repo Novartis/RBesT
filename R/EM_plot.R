@@ -3,10 +3,11 @@
 #' Produce diagnostic plots of EM fits returned from [mixfit()].
 #'
 #' @param x EM fit
-#' @param size Optional argument passed to `ggplot2` routines
-#' which control line thickness.
+#' @param size controls point `size`.
+#' @param linewidth controls `linewidth`; set by default to same value
+#'   as `size`.
 #' @param link Choice of an applied link function. Can take one of the
-#' values `identity` (default), `logit` or `log`.
+#'   values `identity` (default), `logit` or `log`.
 #' @param ... Ignored.
 #'
 #' Overlays the fitted mixture density with a histogram and a density
@@ -50,10 +51,16 @@
 #'
 #' @method plot EM
 #' @export
-plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
+plot.EM <- function(
+  x,
+  size = 1.25,
+  linewidth = size,
+  link = c("identity", "logit", "log"),
+  ...
+) {
   pl <- list()
   if (!is_mixmv(x)) {
-    pl$mixdist <- plot.mix(x, size = size, ...)
+    pl$mixdist <- plot.mix(x, size = size, linewidth = linewidth, ...)
   }
   ## in verbose mode we output EM fit diagnostics
   if (getOption("RBesT.verbose", FALSE)) {
@@ -113,15 +120,15 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
     })
     LL <- data.frame(iteration = 0:max(Mw$iteration), lli = attr(x, "traceLli"))
     basePl <- ggplot(Mw, aes(x = .data$iteration, colour = .data$Comp)) +
-      geom_line(size = size)
+      geom_line(linewidth = linewidth)
     for (p in pars) {
-      pl[[p]] <- basePl + aes(y = .data$p)
+      pl[[p]] <- basePl + aes(y = .data[[p]])
     }
     pl$lli <- ggplot(
       subset(LL, iteration > 0),
       aes(x = .data$iteration, y = .data$lli)
     ) +
-      geom_line(size = size) +
+      geom_line(linewidth = linewidth) +
       ylab("log-likelihood")
   }
   ## pl$mix <- plot.mix(x, comp=TRUE, samp=attr(x, "x"), ...)
@@ -152,7 +159,7 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
         inherit.aes = FALSE,
         fun = dmix,
         args = list(mix = x),
-        size = size,
+        linewidth = linewidth,
         n = n_fun
       ) +
       ggtitle(
@@ -162,9 +169,14 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
       bayesplot::xaxis_title(FALSE)
 
     pl$mixecdf <- ggplot(samp, aes(x = .data$Sample)) +
-      stat_ecdf(geom = "area", size = 0, fill = cols$light) +
-      stat_ecdf(geom = "step", size = size, colour = cols$mid) +
-      stat_function(fun = pmix, args = list(mix = x), size = size, n = n_fun) +
+      stat_ecdf(geom = "area", linewidth = 0, fill = cols$light) +
+      stat_ecdf(geom = "step", linewidth = linewidth, colour = cols$mid) +
+      stat_function(
+        fun = pmix,
+        args = list(mix = x),
+        linewidth = linewidth,
+        n = n_fun
+      ) +
       ggtitle(
         "Estimated Cumulative Density from Parametric Mixture (black line) and Sample",
         subtitle = subtitle
@@ -184,7 +196,7 @@ plot.EM <- function(x, size = 1.25, link = c("identity", "logit", "log"), ...) {
         inherit.aes = FALSE,
         fun = dmix,
         args = list(mix = x),
-        size = size,
+        linewidth = linewidth,
         n = n_fun
       ) +
       ggtitle(
