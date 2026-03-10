@@ -95,8 +95,8 @@ quantiles \code{qc} must be given on the transformed scale.
 }
 \section{Functions}{
 \itemize{
-\item \code{oc2Sdecision()}: Deprecated old function name. Please use
-\code{decision2S} instead.
+\item \code{oc2Sdecision()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Deprecated old function name. Please use \code{decision2S} instead.
 
 }}
 \examples{

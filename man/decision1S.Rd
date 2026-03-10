@@ -87,8 +87,8 @@ boundary, OC or PoS calculations using \code{\link[=oc1S]{oc1S()}} or
 }
 \section{Functions}{
 \itemize{
-\item \code{oc1Sdecision()}: Deprecated old function name. Please use
-\code{decision1S} instead.
+\item \code{oc1Sdecision()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Deprecated old function name. Please use \code{decision1S} instead.
 
 }}
 \examples{

@@ -651,3 +651,11 @@ test_that("mixmvnorm works for 2D mixtures with one zero standard deviation (msr
   expect_equal(mvnm["s[2]", 2], 0.5)
   expect_equal(mvnm["rho[2,1]", 2], -0.3)
 })
+
+test_that("plot.mix deprecates size argument", {
+  mix <- mixnorm(c(1, 0, 1))
+  withr::with_options(
+    list(lifecycle_verbosity = "error"),
+    expect_error(plot(mix, size = 1.5), class = "lifecycle_error_deprecated")
+  )
+})

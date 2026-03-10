@@ -5,13 +5,18 @@
 #' @description Plotting for mixture distributions
 #'
 #' @param x mixture distribution
-#' @param prob  defining lower and upper percentile of x-axis. Defaults to the 99\\% central probability mass.
-#' @param fun function to plot which can be any of `dmix`, `qmix` or `pmix`.
+#' @param prob defining lower and upper percentile of x-axis. Defaults
+#'   to the 99\\% central probability mass.
+#' @param fun function to plot which can be any of `dmix`, `qmix` or
+#'   `pmix`.
 #' @param log log argument passed to the function specified in `fun`.
 #' @param comp for the density function this can be set to `TRUE`
-#' which will display colour-coded each mixture component of the
-#' density in addition to the density.
-#' @param size controls the linesize in plots.
+#'   which will display colour-coded each mixture component of the
+#'   density in addition to the density.
+#' @param size `r lifecycle::badge("deprecated")` `size` has been
+#'   deprecated by `ggplot2` for line sizes and has been renamed to
+#'   `linewidth`.
+#' @param linewidth controls line sizes of the plotted function.
 #' @param ... extra arguments passed on to the plotted function.
 #'
 #' @details Plot function for mixture distribution objects. It shows
@@ -71,10 +76,17 @@ plot.mix <- function(
   fun = dmix,
   log = FALSE,
   comp = TRUE,
-  size = 1.25,
+  linewidth = 1.25,
+  size = deprecated(),
   ...
 ) {
   funStr <- deparse(substitute(fun))
+  if (lifecycle::is_present(size)) {
+    lifecycle::deprecate_warn("1.9.0", "plot.mix(size)", "plot.mix(linewidth)")
+    if (missing(linewidth)) {
+      linewidth <- size
+    }
+  }
   if (length(prob) == 1) {
     plow <- (1 - prob) / 2
     pup <- 1 - plow
@@ -108,7 +120,7 @@ plot.mix <- function(
       fun = plot_fun,
       args = list(mix = x, log = log),
       n = n_fun,
-      linewidth = size
+      linewidth = linewidth
     ) +
     bayesplot::bayesplot_theme_get()
 
@@ -131,7 +143,7 @@ plot.mix <- function(
           args = list(mix = x[[i]], log = log),
           n = n_fun,
           linetype = I(2),
-          linewidth = size,
+          linewidth = linewidth,
           inherit.aes = FALSE
         )
     }
