@@ -6,16 +6,27 @@
 \alias{plot.mvnormMix}
 \title{Plot mixture distributions}
 \usage{
-\method{plot}{mix}(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size = 1.25, ...)
+\method{plot}{mix}(
+  x,
+  prob = 0.99,
+  fun = dmix,
+  log = FALSE,
+  comp = TRUE,
+  linewidth = 1.25,
+  size = lifecycle::deprecated(),
+  ...
+)
 
 \method{plot}{mvnormMix}(x, prob = 0.99, fun = dmix, log = FALSE, comp = TRUE, size = 1.25, ...)
 }
 \arguments{
 \item{x}{mixture distribution}
 
-\item{prob}{defining lower and upper percentile of x-axis. Defaults to the 99\\\% central probability mass.}
+\item{prob}{defining lower and upper percentile of x-axis. Defaults
+to the 99\\\% central probability mass.}
 
-\item{fun}{function to plot which can be any of \code{dmix}, \code{qmix} or \code{pmix}.}
+\item{fun}{function to plot which can be any of \code{dmix}, \code{qmix} or
+\code{pmix}.}
 
 \item{log}{log argument passed to the function specified in \code{fun}.}
 
@@ -23,7 +34,11 @@
 which will display colour-coded each mixture component of the
 density in addition to the density.}
 
-\item{size}{controls the linesize in plots.}
+\item{linewidth}{controls line sizes of the plotted function.}
+
+\item{size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} \code{size} has been
+deprecated by \code{ggplot2} for line sizes and has been renamed to
+\code{linewidth}.}
 
 \item{...}{extra arguments passed on to the plotted function.}
 }
