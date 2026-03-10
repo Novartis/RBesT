@@ -13,7 +13,7 @@
   log = FALSE,
   comp = TRUE,
   linewidth = 1.25,
-  size = lifecycle::deprecated(),
+  size = deprecated(),
   ...
 )
 
