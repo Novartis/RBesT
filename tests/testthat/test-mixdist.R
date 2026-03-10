@@ -656,6 +656,6 @@ test_that("plot.mix deprecates size argument", {
   mix <- mixnorm(c(1, 0, 1))
   withr::with_options(
     list(lifecycle_verbosity = "error"),
-    expect_error(plot(mix, size = 1.5), class = "defunctError")
+    expect_error(plot(mix, size = 1.5), class = "lifecycle_error_deprecated")
   )
 })
