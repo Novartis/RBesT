@@ -905,6 +905,46 @@ test_that("Binomial OC 2-sample works with mixed lower.tail decision criterion",
   }
 })
 
+test_that("Binomial deprecated y2 argument of oc2S function", {
+  skip_on_cran()
+
+  withr::local_options(lifecycle_verbosity = "warning")
+
+  map_ref <- mixbeta(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixbeta(c(1, 1, 1))
+
+  qc1 <- 0.5
+  pc1 <- 0.5
+  pc2 <- 0.6
+  qc2 <- 0.5
+
+  dec_go <- decision2S(
+    qc = c(qc1, qc2),
+    pc = c(pc1, pc2),
+    lower.tail = c(FALSE, FALSE)
+  )
+
+  n <- 20
+  n2 <- 4
+  design <- oc2S(
+    prior_flat,
+    map_ref,
+    n,
+    n2,
+    dec_go
+  )
+
+  expect_warning(
+    design(y2 = 2),
+    class = "lifecycle_warning_deprecated"
+  )
+})
+
+
 test_that("Poisson OC 2-sample works with mixed lower.tail decision criterion", {
   skip_on_cran()
 
@@ -984,4 +1024,44 @@ test_that("Poisson OC 2-sample works with mixed lower.tail decision criterion", 
       expect_true(all(abs(total_prob - 1) < 1e-3))
     }
   }
+})
+
+test_that("Poisson deprecated y2 argument of oc2S function", {
+  skip_on_cran()
+
+  withr::local_options(lifecycle_verbosity = "warning")
+
+  map_ref <- mixgamma(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixgamma(c(1, 1, 1))
+  alpha <- 0.05
+
+  qc1 <- 0.5
+  pc1 <- 0.5
+  pc2 <- 0.6
+  qc2 <- 0.5
+
+  dec_go <- decision2S(
+    qc = c(qc1, qc2),
+    pc = c(pc1, pc2),
+    lower.tail = c(FALSE, FALSE)
+  )
+
+  n <- 20
+  n2 <- 4
+  design <- oc2S(
+    prior_flat,
+    map_ref,
+    n,
+    n2,
+    dec_go
+  )
+
+  expect_warning(
+    design(y2 = 3),
+    class = "lifecycle_warning_deprecated"
+  )
 })
