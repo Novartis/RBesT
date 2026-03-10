@@ -98,7 +98,12 @@ oc2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
     }
 
     if (!missing(y2)) {
-      deprecated("Use of y2 argument", "decision2S_boundary")
+      lifecycle::deprecate_warn(
+        "1.3.0",
+        "design_fun()",
+        "design_fun(y2)",
+        "Use of y2 argument of decision2S_boundary() instead."
+      )
       return(crit_y1(y2, lim1 = c(0, n1)))
     }
 
@@ -537,7 +542,12 @@ oc2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
     }
 
     if (!missing(y2)) {
-      deprecated("Use of y2 argument", "decision2S_boundary")
+      lifecycle::deprecate_warn(
+        "1.3.0",
+        "design_fun()",
+        "design_fun(y2)",
+        "Use of y2 argument of decision2S_boundary() instead."
+      )
       return(crit_y1(y2, lim1 = lim1))
     }
 

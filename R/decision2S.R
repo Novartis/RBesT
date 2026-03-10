@@ -295,8 +295,8 @@ print.decision2S_2sided <- function(x, ...) {
   invisible(x)
 }
 
-#' @describeIn decision2S Deprecated old function name. Please use
-#' `decision2S` instead.
+#' @describeIn decision2S `r lifecycle::badge("deprecated")`
+#'   Deprecated old function name. Please use `decision2S` instead.
 #' @export
 oc2Sdecision <- function(
   pc = 0.975,
@@ -304,6 +304,6 @@ oc2Sdecision <- function(
   lower.tail = TRUE,
   link = c("identity", "logit", "log")
 ) {
-  deprecated("oc2Sdecision", "decision2S")
+  lifecycle::deprecate_warn("1.3.0", "oc2Sdecision()", "decision2S()")
   return(decision2S(pc, qc, lower.tail, link))
 }
