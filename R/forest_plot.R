@@ -123,8 +123,8 @@ forest_plot <- function(
 
   opts <- list(
     position = position_dodge(width = 0.3),
-    size = size,
-    linewidth = linewidth
+    size = size, # point size
+    linewidth = linewidth # line width (replaces deprecated size for lines)
   )
 
   xlab_str <- switch(

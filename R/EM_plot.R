@@ -60,7 +60,7 @@ plot.EM <- function(
 ) {
   pl <- list()
   if (!is_mixmv(x)) {
-    pl$mixdist <- plot.mix(x, size = size, linewidth = linewidth, ...)
+    pl$mixdist <- plot.mix(x, linewidth = linewidth, ...)
   }
   ## in verbose mode we output EM fit diagnostics
   if (getOption("RBesT.verbose", FALSE)) {

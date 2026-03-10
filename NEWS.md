@@ -9,7 +9,7 @@
   (mixed `lower.tail` elements, i.e. some specifying "lower" and some
   "upper") to capture intermediate result scenarios.
 * Avoid use of `size` argument to `ggplot2` routines, which have been
-  depreceated.
+  deprecated.
 
 # RBesT 1.8-2 - April 25th, 2025
 

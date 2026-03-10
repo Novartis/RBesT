@@ -156,7 +156,8 @@ plot.gMAP <- function(x, size = NULL, linewidth = NULL, ...) {
     pl$forest_model <- forest_plot(
       x,
       model = "both",
-      size = if (is.null(size)) 1.25 else size
+      size = if (is.null(size)) 1.25 else size,
+      linewidth = if (is.null(linewidth)) 1.25 else linewidth
     )
   } else {
     message("No intercept defined.")
