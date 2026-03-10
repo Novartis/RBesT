@@ -9,6 +9,8 @@
   object. Note that the pre-1.9.0 behavior was to store the warmup
   samples (but these were not used). To restore the original behavior
   set `options(RBesT.MC.save_warmup=TRUE)` once globally.
+* Add experimental `as_draws*` functions allowing to extract samples
+  in the posterior draws format from `gMAP` objects.
 
 # RBesT 1.8-2 - April 25th, 2025
 
