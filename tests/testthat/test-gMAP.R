@@ -355,3 +355,31 @@ test_that("gMAP labels data rows correctly when using covariates", {
     rownames(fitted(map_tau_strata)) == as.character(data_covs$id)
   ))
 })
+
+
+test_that("plot.gMAP and forest_plot does not use deprecated ggplot2 size aesthetic", {
+  # minimal gMAP fit needed to trigger the plot
+  suppressMessages(suppressWarnings({
+    set.seed(42)
+    map1 <- gMAP(
+      cbind(r, n - r) ~ 1 | study,
+      family = binomial,
+      data = AS,
+      tau.dist = "Fixed",
+      tau.prior = 0.5,
+      beta.prior = 2,
+      warmup = 100,
+      iter = 200,
+      chains = 2,
+      thin = 1
+    )
+  }))
+
+  withr::with_options(
+    list(lifecycle_verbosity = "error", RBesT.verbose = TRUE),
+    {
+      expect_no_error(plot(map1))
+      expect_no_error(forest_plot(map1))
+    }
+  )
+})

@@ -4,13 +4,21 @@
 \alias{plot.EM}
 \title{Diagnostic plots for EM fits}
 \usage{
-\method{plot}{EM}(x, size = 1.25, link = c("identity", "logit", "log"), ...)
+\method{plot}{EM}(
+  x,
+  size = 1.25,
+  linewidth = size,
+  link = c("identity", "logit", "log"),
+  ...
+)
 }
 \arguments{
 \item{x}{EM fit}
 
-\item{size}{Optional argument passed to \code{ggplot2} routines
-which control line thickness.}
+\item{size}{controls point \code{size}.}
+
+\item{linewidth}{controls \code{linewidth}; set by default to same value
+as \code{size}.}
 
 \item{link}{Choice of an applied link function. Can take one of the
 values \code{identity} (default), \code{logit} or \code{log}.}

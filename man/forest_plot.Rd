@@ -11,6 +11,7 @@ forest_plot(
   model = c("stratified", "both", "meta"),
   point_est = c("median", "mean"),
   size = 1.25,
+  linewidth = size,
   alpha = 0.5
 )
 }
@@ -25,7 +26,9 @@ forest_plot(
 
 \item{point_est}{shown point estimate. Either \code{median} (default) or \code{mean}.}
 
-\item{size}{controls point and linesize.}
+\item{size}{controls point \code{size}.}
+
+\item{linewidth}{controls \code{linewidth}; set by default to same value as \code{size}.}
 
 \item{alpha}{transparency of reference line. Setting \code{alpha=0}
 suppresses the reference line.}
