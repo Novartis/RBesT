@@ -77,7 +77,7 @@ plot.mix <- function(
   log = FALSE,
   comp = TRUE,
   linewidth = 1.25,
-  size = deprecated(),
+  size = lifecycle::deprecated(),
   ...
 ) {
   funStr <- deparse(substitute(fun))
