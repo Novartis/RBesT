@@ -15,7 +15,7 @@
 #'   beta.prior = 2
 #' )
 #'
-#' nsamples(map_mcmc)
+#' nsamples(map_AS)
 #'
 #' @template example-stop
 #'
