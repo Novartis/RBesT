@@ -30,7 +30,7 @@ map_AS <- gMAP(cbind(r, n - r) ~ 1 | study,
   beta.prior = 2
 )
 
-nsamples(map_mcmc)
+nsamples(map_AS)
 
 ## Recover user set sampling defaults
 options(.user_mc_options)
