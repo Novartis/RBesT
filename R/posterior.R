@@ -235,6 +235,11 @@ as_draws_rvars.gMAP <- function(
   stop(..., call. = FALSE)
 }
 
+#' @keywords internal
+collapse <- function(..., sep = "") {
+  paste(..., sep = sep, collapse = "")
+}
+
 # combine deparse lines into one string
 # since R 4.0 we also have base::deparse1 for this purpose
 #' @keywords internal
