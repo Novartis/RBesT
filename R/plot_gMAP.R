@@ -22,7 +22,7 @@ plot.gMAP <- function(x, size = NULL, linewidth = NULL, ...) {
 
   draws_all <- rstan::extract(x$fit, permuted = FALSE, inc_warmup = TRUE)
   thin <- attr(x$fit, "sim")$thin
-  n_warmup <- floor(attr(x$fit, "sim")$warmup / thin)
+  n_warmup <- attr(x$fit, "sim")$warmup2[1]
   draws <- draws_all[-(1:n_warmup), , ]
   nuts_diag <- bayesplot::nuts_params(x$fit, inc_warmup = FALSE)
 
