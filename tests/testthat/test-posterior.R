@@ -1,5 +1,3 @@
-context("posterior evaluations")
-
 # test S3 methods in alphabetical order
 test_that("as_draws and friends have resonable outputs", {
   skip_on_cran()
@@ -41,7 +39,7 @@ test_that("as_draws and friends have resonable outputs", {
       })
     }
   ))
-  
+
   draws <- as_draws(
     map,
     variable = "theta_resp_pred"
@@ -95,7 +93,7 @@ test_that("as_draws and friends have resonable outputs", {
     variables(draws),
     "theta_resp_pred"
   )
-  expect_equal(ndraws(draws), nsamples(map)
+  expect_equal(ndraws(draws), nsamples(map))
 
   draws <- as_draws_rvars(map)
   expect_s3_class(draws, "draws_rvars")

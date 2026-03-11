@@ -15,6 +15,9 @@
   set `options(RBesT.MC.save_warmup=TRUE)` once globally.
 * Add experimental `as_draws*` functions allowing to extract samples
   in the posterior draws format from `gMAP` objects.
+  
+## Bugfixes
+
 * Avoid use of `size` argument to `ggplot2` routines, which have been
   deprecated.
 

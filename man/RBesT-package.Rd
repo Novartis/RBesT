@@ -33,6 +33,7 @@ Option \tab Default \tab Description \cr
 \code{RBesT.MC.iter} \tab 6000 \tab total MCMC iterations \cr
 \code{RBesT.MC.chains} \tab 4 \tab MCMC chains\cr
 \code{RBesT.MC.thin} \tab 4 \tab MCMC thinning \cr
+\code{RBesT.MC.save_warmup} \tab \code{FALSE} \tab MCMC warmup samples saving \cr
 \code{RBesT.MC.control} \tab \verb{list(adapt_delta=0.99,} \tab sets \code{control} argument for Stan call\cr
 \tab \verb{stepsize=0.01,} \tab \cr
 \tab \verb{max_treedepth=20)} \tab \cr
