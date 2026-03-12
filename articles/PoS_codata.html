@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,9 +69,9 @@ Clinical Trails with RBesT</h3>
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2025-05-13</h4>
+            <h4 data-toc-skip class="date">2026-03-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/PoS_codata.Rmd" class="external-link"><code>vignettes/articles/PoS_codata.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/vignettes/articles/PoS_codata.Rmd" class="external-link"><code>vignettes/articles/PoS_codata.Rmd</code></a></small>
       <div class="d-none name"><code>PoS_codata.Rmd</code></div>
     </div>
 
@@ -353,7 +353,7 @@ alternatives:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="va">theta</span><span class="op">[</span><span class="va">a</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Power for N ="</span>, <span class="va">Nev</span>, <span class="st">"events"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PoS_codata_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="PoS_codata_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="critical-value">Critical value<a class="anchor" aria-label="anchor" href="#critical-value"></a>
@@ -465,24 +465,24 @@ prior is the prediction of the log-hazard ratio of a future trial:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/forest_plot.html">forest_plot</a></span><span class="op">(</span><span class="va">base_map_mc</span>, est <span class="op">=</span> <span class="st">"MAP"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PoS_codata_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="PoS_codata_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">base_map_mc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">base_map</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PoS_codata_files/figure-html/unnamed-chunk-21-2.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="PoS_codata_files/figure-html/unnamed-chunk-21-2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">base_map</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -3110.728</span></span>
+<span><span class="co">## Log-Likelihood = -3045.725</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 2</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1      comp2      comp3     </span></span>
-<span><span class="co">## w  0.6094510  0.2591800  0.1313691</span></span>
-<span><span class="co">## m -0.2943573 -0.2783962 -0.3331379</span></span>
-<span><span class="co">## s  0.2990546  0.6500315  1.1889177</span></span></code></pre>
+<span><span class="co">## w  0.5120402  0.3842310  0.1037289</span></span>
+<span><span class="co">## m -0.3102860 -0.2863639 -0.3285249</span></span>
+<span><span class="co">## s  0.2706592  0.6293296  1.1087960</span></span></code></pre>
 <p>At the interim we have even more knowledge available on the treatment
 effect through the interim data itself which we can include into the MAP
 prior:</p>
@@ -492,7 +492,7 @@ prior:</p>
 <em>and</em> interim data collected) is:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4850564</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4937129</span></span></code></pre>
 <p>Note that we have not redefined <code>interim_pos_A</code>, such that
 this calculates the PoS for the phase III A trial taking into account
 that the final analysis will use a non-informative prior.</p>
@@ -500,7 +500,7 @@ that the final analysis will use a non-informative prior.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_B_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">base_map</span>, m <span class="op">=</span> <span class="va">trials</span><span class="op">$</span><span class="va">logHR</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, se <span class="op">=</span> <span class="va">trials</span><span class="op">$</span><span class="va">sem</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6686476</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6762344</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="use-of-historical-information---mac-approach">Use of historical information - MAC approach<a class="anchor" aria-label="anchor" href="#use-of-historical-information---mac-approach"></a>
@@ -524,35 +524,35 @@ the phase III result of trial B is also available:</p>
 <tbody>
 <tr class="odd">
 <td align="left">PoC</td>
-<td align="right">-0.244</td>
-<td align="right">0.238</td>
-<td align="right">-0.795</td>
-<td align="right">-0.238</td>
-<td align="right">0.234</td>
+<td align="right">-0.253</td>
+<td align="right">0.243</td>
+<td align="right">-0.772</td>
+<td align="right">-0.245</td>
+<td align="right">0.233</td>
 </tr>
 <tr class="even">
 <td align="left">PhII</td>
-<td align="right">-0.252</td>
-<td align="right">0.149</td>
-<td align="right">-0.556</td>
+<td align="right">-0.254</td>
+<td align="right">0.150</td>
+<td align="right">-0.561</td>
 <td align="right">-0.251</td>
-<td align="right">0.042</td>
+<td align="right">0.031</td>
 </tr>
 <tr class="odd">
 <td align="left">PhIII_A</td>
 <td align="right">-0.214</td>
 <td align="right">0.126</td>
-<td align="right">-0.462</td>
+<td align="right">-0.456</td>
 <td align="right">-0.216</td>
-<td align="right">0.035</td>
+<td align="right">0.040</td>
 </tr>
 <tr class="even">
 <td align="left">PhIII_B</td>
-<td align="right">-0.237</td>
-<td align="right">0.126</td>
-<td align="right">-0.489</td>
-<td align="right">-0.237</td>
-<td align="right">0.011</td>
+<td align="right">-0.239</td>
+<td align="right">0.128</td>
+<td align="right">-0.492</td>
+<td align="right">-0.239</td>
+<td align="right">0.009</td>
 </tr>
 </tbody>
 </table>
@@ -569,9 +569,9 @@ the phase III result of trial B is also available:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">interim_map_post</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           parameters</span></span>
 <span><span class="co">## iterations   theta[1]   theta[2]   theta[3]    theta[4]</span></span>
-<span><span class="co">##       [1,]  0.5793535 -0.4054789  0.1303989 -0.30952085</span></span>
-<span><span class="co">##       [2,] -0.3457577 -0.3818282 -0.3105840 -0.32644175</span></span>
-<span><span class="co">##       [3,] -0.1232030 -0.1211176 -0.1414171 -0.08166256</span></span></code></pre>
+<span><span class="co">##       [1,] -0.4277097 -0.1835350 -0.1678440 -0.07992145</span></span>
+<span><span class="co">##       [2,] -0.3229801 -0.3425734 -0.2638770 -0.35817687</span></span>
+<span><span class="co">##       [3,] -0.3251523 -0.2242466 -0.1748201 -0.25177923</span></span></code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>turn MCMC posterior sample into parametric mixture</li>
 </ol>
@@ -582,14 +582,14 @@ the phase III result of trial B is also available:</p>
 </ol>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5030811</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5010266</span></span></code></pre>
 <p>which aligns with the published result under the assumption of full
 exchangeability.</p>
 <p>For trial B computations are:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_B_allcombined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>, <span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6415822</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6431324</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -664,10 +664,10 @@ historical data in comparison to the twin phase III trials.</p>
 <span><span class="va">interim_B_diff_allcombined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>, <span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_diff_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.493427</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.498148</span></span></code></pre>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_diff_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6394128</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6459292</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="pos-for-both-phase-iii-trials-being-successful">PoS for both phase III trials being successful<a class="anchor" aria-label="anchor" href="#pos-for-both-phase-iii-trials-being-successful"></a>
@@ -722,7 +722,7 @@ interim…</p>
 case)</p>
 <div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>, <span class="st">"theta[3]"</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_oc_B</span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>, <span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.3452887</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.3472287</span></span></code></pre>
 <p>which is slightly larger than assuming independence:</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B</span><span class="op">)</span></span></code></pre></div>
@@ -731,12 +731,12 @@ case)</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="va">interim_diff_map_post</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"theta[3]"</span>, <span class="st">"theta[4]"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##           theta[3]  theta[4]</span></span>
-<span><span class="co">## theta[3] 1.0000000 0.3187079</span></span>
-<span><span class="co">## theta[4] 0.3187079 1.0000000</span></span></code></pre>
+<span><span class="co">## theta[3] 1.0000000 0.2844492</span></span>
+<span><span class="co">## theta[4] 0.2844492 1.0000000</span></span></code></pre>
 <p>For the full exchangeability case we have</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu">interim_oc_A</span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>, <span class="st">"theta[3]"</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="fu">interim_oc_B</span><span class="op">(</span><span class="va">interim_map_post</span><span class="op">[</span>, <span class="st">"theta[4]"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.3521087</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.351044</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
@@ -756,11 +756,11 @@ calculations.</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## in addition with prior historical data PoC &amp; phase II data</span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4850564</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4937129</span></span></code></pre>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## finally with the interim data of the phase III B</span></span>
 <span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.5030811</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.5010266</span></span></code></pre>
 <p>Phase III trial B:</p>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## only interim data of trial B</span></span>
@@ -769,11 +769,11 @@ calculations.</p>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## in addition with prior historical data PoC &amp; phase II data</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_combined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6686476</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6762344</span></span></code></pre>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## finally with the interim data of the phase III A</span></span>
 <span><span class="fu">interim_pos_B</span><span class="op">(</span><span class="va">interim_B_allcombined</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.6415822</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.6431324</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="appendix-map-and-mac-equivalence">Appendix: MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#appendix-map-and-mac-equivalence"></a>
@@ -810,15 +810,15 @@ equivalence we need to align this mismatch of used data.</p>
 <code class="sourceCode R"><span><span class="va">base_map_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">base_map_mc_2</span>, Nc <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">base_map_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = -15088.42</span></span>
+<span><span class="co">## Log-Likelihood = -15194.35</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Reference scale: 2</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1       comp2       comp3       comp4       comp5      </span></span>
-<span><span class="co">## w  0.40929935  0.20586574  0.18866513  0.12833707  0.06783271</span></span>
-<span><span class="co">## m -0.28173830 -0.64782890  0.06087094  0.16129924 -1.05921673</span></span>
-<span><span class="co">## s  0.22707579  0.32358363  0.33140706  0.86765455  0.73553054</span></span></code></pre>
+<span><span class="co">##   comp1        comp2        comp3        comp4        comp5       </span></span>
+<span><span class="co">## w  0.422805992  0.193045120  0.180150391  0.136953059  0.067045438</span></span>
+<span><span class="co">## m -0.294295380  0.030002665 -0.640006757 -0.005626679 -0.895903411</span></span>
+<span><span class="co">## s  0.239643807  0.363653776  0.363772982  0.921427263  0.873766906</span></span></code></pre>
 <p>Now, combine the MAP prior (representing historical knowledge) with
 the interim data of trial A:</p>
 <div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
@@ -829,11 +829,11 @@ phase III A trial, but excluding the phase III B data):</li>
 </ol>
 <div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interim_map_mc_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">base_map_mc_2</span>, data <span class="op">=</span> <span class="va">trials</span><span class="op">[</span><span class="op">-</span><span class="fl">4</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: There were 3 divergent transitions after warmup. See</span></span>
+<pre><code><span><span class="co">## Warning: There were 1 divergent transitions after warmup. See</span></span>
 <span><span class="co">## https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
 <span><span class="co">## to find out why this is a problem and how to eliminate them.</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: Examine the pairs() plot to diagnose sampling problems</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in gMAP(formula = cbind(logHR, sem) ~ 1 | study, family = gaussian, : In total 3 divergent transitions occured during the sampling phase.</span></span>
+<pre><code><span><span class="co">## Warning in gMAP(formula = cbind(logHR, sem) ~ 1 | study, family = gaussian, : In total 1 divergent transitions occured during the sampling phase.</span></span>
 <span><span class="co">## Please consider increasing adapt_delta closer to 1 with the following command prior to gMAP:</span></span>
 <span><span class="co">## options(RBesT.MC.control=list(adapt_delta=0.999))</span></span></code></pre>
 <div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
@@ -846,14 +846,14 @@ phase III A trial, but excluding the phase III B data):</li>
 <span></span>
 <span><span class="va">interim_A_allcombined_2</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Normal Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = 10763.73</span></span>
+<span><span class="co">## Log-Likelihood = 10809.89</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate normal mixture</span></span>
 <span><span class="co">## Mixture Components:</span></span>
 <span><span class="co">##   comp1       comp2       comp3       comp4       comp5      </span></span>
-<span><span class="co">## w  0.22608509  0.22287087  0.22104424  0.19134605  0.13865375</span></span>
-<span><span class="co">## m -0.22358073 -0.31478209 -0.11546035 -0.32415990 -0.01378153</span></span>
-<span><span class="co">## s  0.05767847  0.12976158  0.06117267  0.07871764  0.09025686</span></span></code></pre>
+<span><span class="co">## w  0.22013922  0.21952316  0.21758666  0.21256836  0.13018259</span></span>
+<span><span class="co">## m -0.20357325 -0.09400614 -0.30634332 -0.10229635 -0.40626966</span></span>
+<span><span class="co">## s  0.05801008  0.13048141  0.06090041  0.07378704  0.08626407</span></span></code></pre>
 <p>Now let’s overlay the two posterior’s</p>
 <div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logHR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">logHR</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -861,14 +861,14 @@ phase III A trial, but excluding the phase III B data):</li>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html" class="external-link">stat_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">dmix</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mix <span class="op">=</span> <span class="va">interim_A_allcombined_2</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>linetype <span class="op">=</span> <span class="st">"MAC"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_linetype.html" class="external-link">scale_linetype_discrete</a></span><span class="op">(</span><span class="st">"Analysis"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Posterior log hazard of phase III A trial at interim"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="PoS_codata_files/figure-html/unnamed-chunk-47-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="PoS_codata_files/figure-html/unnamed-chunk-47-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>The PoS is essentially the same</p>
 <div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_combined_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.489214</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.4900712</span></span></code></pre>
 <div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">interim_pos_A</span><span class="op">(</span><span class="va">interim_A_allcombined_2</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.4943454</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.487749</span></span></code></pre>
 <div class="section level3">
 <h3 id="formal-map-and-mac-equivalence">Formal MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#formal-map-and-mac-equivalence"></a>
 </h3>
@@ -914,9 +914,9 @@ Biometrics. 2014;70(4):1023-1032. </p>
 </h2>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.5.0 (2025-04-11)</span></span>
+<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.2 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -935,33 +935,33 @@ Biometrics. 2014;70(4):1023-1032. </p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] purrr_1.0.4      dplyr_1.1.4      bayesplot_1.12.0 ggplot2_3.5.2   </span></span>
-<span><span class="co">## [5] knitr_1.50       RBesT_1.8-2     </span></span>
+<span><span class="co">## [1] purrr_1.2.1      dplyr_1.2.0      bayesplot_1.15.0 ggplot2_4.0.2   </span></span>
+<span><span class="co">## [5] knitr_1.51       RBesT_1.9-0     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      </span></span>
-<span><span class="co">##  [4] stringi_1.8.7        digest_0.6.37        magrittr_2.0.3      </span></span>
-<span><span class="co">##  [7] evaluate_1.0.3       grid_4.5.0           RColorBrewer_1.1-3  </span></span>
-<span><span class="co">## [10] mvtnorm_1.3-3        fastmap_1.2.0        plyr_1.8.9          </span></span>
-<span><span class="co">## [13] jsonlite_2.0.0       pkgbuild_1.4.7       backports_1.5.0     </span></span>
-<span><span class="co">## [16] Formula_1.2-5        gridExtra_2.3        QuickJSR_1.7.0      </span></span>
-<span><span class="co">## [19] scales_1.4.0         codetools_0.2-20     textshaping_1.0.1   </span></span>
-<span><span class="co">## [22] jquerylib_0.1.4      abind_1.4-8          cli_3.6.5           </span></span>
-<span><span class="co">## [25] rlang_1.1.6          withr_3.0.2          cachem_1.1.0        </span></span>
-<span><span class="co">## [28] yaml_2.3.10          StanHeaders_2.32.10  parallel_4.5.0      </span></span>
-<span><span class="co">## [31] tools_4.5.0          rstan_2.32.7         inline_0.3.21       </span></span>
-<span><span class="co">## [34] reshape2_1.4.4       rstantools_2.4.0     checkmate_2.3.2     </span></span>
-<span><span class="co">## [37] assertthat_0.2.1     posterior_1.6.1      vctrs_0.6.5         </span></span>
-<span><span class="co">## [40] R6_2.6.1             matrixStats_1.5.0    stats4_4.5.0        </span></span>
-<span><span class="co">## [43] lifecycle_1.0.4      stringr_1.5.1        fs_1.6.6            </span></span>
-<span><span class="co">## [46] htmlwidgets_1.6.4    ragg_1.4.0           pkgconfig_2.0.3     </span></span>
-<span><span class="co">## [49] desc_1.4.3           pkgdown_2.1.2        RcppParallel_5.1.10 </span></span>
-<span><span class="co">## [52] pillar_1.10.2        bslib_0.9.0          gtable_0.3.6        </span></span>
-<span><span class="co">## [55] loo_2.8.0            glue_1.8.0           Rcpp_1.0.14         </span></span>
-<span><span class="co">## [58] systemfonts_1.2.3    xfun_0.52            tibble_3.2.1        </span></span>
-<span><span class="co">## [61] tidyselect_1.2.1     farver_2.1.2         htmltools_0.5.8.1   </span></span>
-<span><span class="co">## [64] labeling_0.4.3       rmarkdown_2.29       compiler_4.5.0      </span></span>
-<span><span class="co">## [67] distributional_0.5.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            </span></span>
+<span><span class="co">##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    </span></span>
+<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          </span></span>
+<span><span class="co">## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       </span></span>
+<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
+<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           </span></span>
+<span><span class="co">## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
+<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         </span></span>
+<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     </span></span>
+<span><span class="co">## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          </span></span>
+<span><span class="co">## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        </span></span>
+<span><span class="co">## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  </span></span>
+<span><span class="co">## [37] abind_1.4-8           posterior_1.6.1       rstan_2.32.7         </span></span>
+<span><span class="co">## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.3-5        </span></span>
+<span><span class="co">## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       </span></span>
+<span><span class="co">## [46] fastmap_1.2.0         grid_4.5.3            cli_3.6.5            </span></span>
+<span><span class="co">## [49] magrittr_2.0.4        loo_2.9.0             pkgbuild_1.4.8       </span></span>
+<span><span class="co">## [52] withr_3.0.2           scales_1.4.0          backports_1.5.0      </span></span>
+<span><span class="co">## [55] rmarkdown_2.30        matrixStats_1.5.0     otel_0.2.0           </span></span>
+<span><span class="co">## [58] gridExtra_2.3         ragg_1.5.1            evaluate_1.0.5       </span></span>
+<span><span class="co">## [61] rstantools_2.6.0      rlang_1.1.7           Rcpp_1.1.1           </span></span>
+<span><span class="co">## [64] glue_1.8.0            jsonlite_2.0.0        plyr_1.8.9           </span></span>
+<span><span class="co">## [67] R6_2.6.1              systemfonts_1.3.2     fs_1.6.7</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -974,7 +974,7 @@ Biometrics. 2014;70(4):1023-1032. </p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

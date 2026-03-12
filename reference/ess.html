@@ -11,7 +11,7 @@ equivalent to."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ equivalent to."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Effective Sample Size for a Conjugate Prior</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixess.R" class="external-link"><code>R/mixess.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/R/mixess.R" class="external-link"><code>R/mixess.R</code></a></small>
       <div class="d-none name"><code>ess.Rd</code></div>
     </div>
 
@@ -220,7 +220,10 @@ sizes. <em>Biometrics</em>, 76(2),
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">prior_logit</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21.78289</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">bmix_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">10</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bmix_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">10</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix_logit</span>, family <span class="op">=</span> <span class="va">binomial</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10.12276</span>
 <span class="r-in"><span></span></span>
@@ -230,11 +233,13 @@ sizes. <em>Biometrics</em>, 76(2),
 <span class="r-in"><span><span class="va">pred_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="mix.html">rmix</a></span><span class="op">(</span><span class="va">bmixPred</span>, <span class="fl">1E2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># use more samples here for greater accuracy, e.g.</span></span></span>
 <span class="r-in"><span><span class="co"># pred_samp &lt;- rmix(bmixPred, 1E3)</span></span></span>
-<span class="r-in"><span><span class="va">pred_ess</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">pred_samp</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="fu">ess</span><span class="op">(</span><span class="fu"><a href="postmix.html">postmix</a></span><span class="op">(</span><span class="va">bmix</span>, r <span class="op">=</span> <span class="va">r</span>, n <span class="op">=</span> <span class="va">n_forward</span><span class="op">)</span>, <span class="st">"elir"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pred_ess</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">pred_samp</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">ess</span><span class="op">(</span><span class="fu"><a href="postmix.html">postmix</a></span><span class="op">(</span><span class="va">bmix</span>, r <span class="op">=</span> <span class="va">r</span>, n <span class="op">=</span> <span class="va">n_forward</span><span class="op">)</span>, <span class="st">"elir"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix</span>, <span class="st">"elir"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.65152</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred_ess</span><span class="op">)</span> <span class="op">-</span> <span class="va">n_forward</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.071933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.54457</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Normal mixture example</span></span></span>
 <span class="r-in"><span><span class="va">nmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
@@ -279,7 +284,7 @@ sizes. <em>Biometrics</em>, 76(2),
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

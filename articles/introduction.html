@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +67,9 @@
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2025-05-13</h4>
+            <h4 data-toc-skip class="date">2026-03-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
     </div>
 
@@ -197,7 +197,7 @@ RBesT.</p>
 <code class="sourceCode R"><span><span class="co"># load R packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://opensource.nibr.com/RBesT/">RBesT</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># sets up plotting theme</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># sets up plotting theme</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">34563</span><span class="op">)</span></span>
 <span><span class="va">map_mcmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span>
@@ -221,11 +221,11 @@ RBesT.</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.3770 0.2170 0.0414 0.3460 0.8930 </span></span>
+<span><span class="co">## 0.3870 0.2150 0.0399 0.3590 0.8970 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.2580 0.0842 0.1120 0.2510 0.4590</span></span></code></pre>
+<span><span class="co">## 0.2550 0.0864 0.1060 0.2470 0.4610</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## a graphical representation of model checks is available</span></span>
 <span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
@@ -236,7 +236,7 @@ RBesT.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## forest plot with model estimates</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pl</span><span class="op">$</span><span class="va">forest_model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>An often raised concern with a Bayesian analysis is the choice of the
 prior. Hence sensitivity analyses may sometimes be necessary. They can
 be quickly performed with the <strong><code>update</code></strong>
@@ -263,11 +263,11 @@ Then we can rerun the original analysis, but with modified arguments of
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.3350 0.1750 0.0416 0.3140 0.7280 </span></span>
+<span><span class="co">## 0.3350 0.1720 0.0397 0.3200 0.7180 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.2560 0.0786 0.1200 0.2470 0.4390</span></span></code></pre>
+<span><span class="co">## 0.2590 0.0776 0.1290 0.2500 0.4420</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="parametric-approximation">Parametric Approximation<a class="anchor" aria-label="anchor" href="#parametric-approximation"></a>
@@ -285,17 +285,17 @@ histogram of the MAP MCMC sample.</p>
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## EM for Beta Mixture Model</span></span>
-<span><span class="co">## Log-Likelihood = 4523.865</span></span>
+<span><span class="co">## Log-Likelihood = 4462.286</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Univariate beta mixture</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1      comp2     </span></span>
-<span><span class="co">## w  0.6167463  0.3832537</span></span>
-<span><span class="co">## a 19.1916387  3.5278745</span></span>
-<span><span class="co">## b 57.7779318  9.3735980</span></span></code></pre>
+<span><span class="co">##   comp1       comp2       comp3       comp4      </span></span>
+<span><span class="co">## w   0.4612914   0.1917812   0.1893896   0.1575378</span></span>
+<span><span class="co">## a  33.9513487  19.4400089  12.2692310   2.2521243</span></span>
+<span><span class="co">## b 103.0146367  41.5205219  55.9202833   5.4812202</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="effective-sample-size">Effective Sample Size<a class="anchor" aria-label="anchor" href="#effective-sample-size"></a>
@@ -314,13 +314,13 @@ Morita [3] method tends to estimates liberal (large) ESS estimates when
 used with mixtures:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method <span class="op">=</span> <span class="st">"elir"</span><span class="op">)</span><span class="op">)</span> <span class="co">## default method</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 37</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 38</span></span></code></pre>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method <span class="op">=</span> <span class="st">"moment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 26</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 24</span></span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method <span class="op">=</span> <span class="st">"morita"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 63</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 95</span></span></code></pre>
 <p>The Morita approach uses the curvature of the prior at the mode and
 has been found to be sensitive to a large number of mixture components.
 From experience, a realistic ESS estimate can be obtained with the elir
@@ -340,13 +340,13 @@ the historical control information.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_robust</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Univariate beta mixture</span></span>
 <span><span class="co">## Mixture Components:</span></span>
-<span><span class="co">##   comp1     comp2     robust   </span></span>
-<span><span class="co">## w  0.493397  0.306603  0.200000</span></span>
-<span><span class="co">## a 19.191639  3.527875  1.000000</span></span>
-<span><span class="co">## b 57.777932  9.373598  1.000000</span></span></code></pre>
+<span><span class="co">##   comp1       comp2       comp3       comp4       robust     </span></span>
+<span><span class="co">## w   0.3690331   0.1534249   0.1515117   0.1260303   0.2000000</span></span>
+<span><span class="co">## a  33.9513487  19.4400089  12.2692310   2.2521243   1.0000000</span></span>
+<span><span class="co">## b 103.0146367  41.5205219  55.9202833   5.4812202   1.0000000</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map_robust</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 26</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 27</span></span></code></pre>
 <p>Adding a robust mixture component does reduce the ESS of the MAP
 prior to an extent which depends on the weight of the robust component.
 Selecting higher robust mixture weights leads to greater discounting of
@@ -374,7 +374,7 @@ mixture component weight:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"ESS of robust MAP for varying weight of robust component"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -454,13 +454,13 @@ that in this example the MAP prior has a 95% interval of about 0.1 to
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ocI</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">theta</span>, <span class="va">typeI</span>, colour <span class="op">=</span> <span class="va">prior</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Type I Error"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>Note that observing response rates greater that 50% is highly
 implausible based on the MAP analysis:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##       mean         sd       2.5%      50.0%      97.5% </span></span>
-<span><span class="co">## 0.25857963 0.08423297 0.10808237 0.25003652 0.47028444</span></span></code></pre>
+<span><span class="co">## 0.25545885 0.08662045 0.10730400 0.24758768 0.46276759</span></span></code></pre>
 <p>Hence, it is resonable to restrict the response rates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>θ</mi><annotation encoding="application/x-tex">\theta</annotation></semantics></math>
 for which we evaluate the type I error to a a range of plausible
@@ -470,7 +470,7 @@ values:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Type I Error - response rate restricted to plausible range"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="power">Power<a class="anchor" aria-label="anchor" href="#power"></a>
@@ -501,7 +501,7 @@ arms.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ocP</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">delta</span>, <span class="va">power</span>, colour <span class="op">=</span> <span class="va">prior</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Power"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>We see that with the MAP prior one reaches greater power at smaller
 differences
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
@@ -536,7 +536,7 @@ for which 80% power is reached can be found with:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.298</td>
+<td align="right">0.302</td>
 <td align="left">non-robust</td>
 </tr>
 <tr class="even">
@@ -583,7 +583,7 @@ information.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ocC</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">y2</span>, <span class="va">y1_crit</span>, colour <span class="op">=</span> <span class="va">prior</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_step</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Critical values y1(y2)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>The graph shows that the decision will always be negative if there
 are less than 10 events in the treatment group. On the other hand, under
 a non-robust prior and assuming 15 events in the treatment group, three
@@ -620,7 +620,7 @@ performed analytically as we are in the conjugate mixture setting.</p>
 <span><span class="va">prob_smaller</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">post_treat</span>, <span class="va">post_placebo</span>, <span class="fl">0</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">prob_smaller</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.9913233</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 0.9917197</span></span></code></pre>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prob_smaller</span> <span class="op">&gt;</span> <span class="fl">0.95</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
@@ -644,9 +644,9 @@ performed analytically as we are in the conjugate mixture setting.</p>
 </h4>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.5.0 (2025-04-11)</span></span>
+<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.2 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -665,32 +665,33 @@ performed analytically as we are in the conjugate mixture setting.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_3.5.2 knitr_1.50    RBesT_1.8-2  </span></span>
+<span><span class="co">## [1] ggplot2_4.0.2 knitr_1.51    RBesT_1.9-0  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      </span></span>
-<span><span class="co">##  [4] stringi_1.8.7        digest_0.6.37        magrittr_2.0.3      </span></span>
-<span><span class="co">##  [7] evaluate_1.0.3       grid_4.5.0           RColorBrewer_1.1-3  </span></span>
-<span><span class="co">## [10] mvtnorm_1.3-3        fastmap_1.2.0        plyr_1.8.9          </span></span>
-<span><span class="co">## [13] jsonlite_2.0.0       pkgbuild_1.4.7       backports_1.5.0     </span></span>
-<span><span class="co">## [16] Formula_1.2-5        gridExtra_2.3        QuickJSR_1.7.0      </span></span>
-<span><span class="co">## [19] scales_1.4.0         codetools_0.2-20     textshaping_1.0.1   </span></span>
-<span><span class="co">## [22] jquerylib_0.1.4      abind_1.4-8          cli_3.6.5           </span></span>
-<span><span class="co">## [25] rlang_1.1.6          withr_3.0.2          cachem_1.1.0        </span></span>
-<span><span class="co">## [28] yaml_2.3.10          StanHeaders_2.32.10  parallel_4.5.0      </span></span>
-<span><span class="co">## [31] tools_4.5.0          rstan_2.32.7         inline_0.3.21       </span></span>
-<span><span class="co">## [34] reshape2_1.4.4       rstantools_2.4.0     checkmate_2.3.2     </span></span>
-<span><span class="co">## [37] dplyr_1.1.4          assertthat_0.2.1     posterior_1.6.1     </span></span>
-<span><span class="co">## [40] vctrs_0.6.5          R6_2.6.1             matrixStats_1.5.0   </span></span>
-<span><span class="co">## [43] stats4_4.5.0         lifecycle_1.0.4      stringr_1.5.1       </span></span>
-<span><span class="co">## [46] fs_1.6.6             htmlwidgets_1.6.4    ragg_1.4.0          </span></span>
-<span><span class="co">## [49] pkgconfig_2.0.3      desc_1.4.3           pkgdown_2.1.2       </span></span>
-<span><span class="co">## [52] RcppParallel_5.1.10  pillar_1.10.2        bslib_0.9.0         </span></span>
-<span><span class="co">## [55] gtable_0.3.6         loo_2.8.0            glue_1.8.0          </span></span>
-<span><span class="co">## [58] Rcpp_1.0.14          systemfonts_1.2.3    xfun_0.52           </span></span>
-<span><span class="co">## [61] tibble_3.2.1         tidyselect_1.2.1     bayesplot_1.12.0    </span></span>
-<span><span class="co">## [64] farver_2.1.2         htmltools_0.5.8.1    labeling_0.4.3      </span></span>
-<span><span class="co">## [67] rmarkdown_2.29       compiler_4.5.0       distributional_0.5.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            </span></span>
+<span><span class="co">##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    </span></span>
+<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          </span></span>
+<span><span class="co">## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       </span></span>
+<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
+<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           </span></span>
+<span><span class="co">## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
+<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         </span></span>
+<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     </span></span>
+<span><span class="co">## [28] htmltools_0.5.9       sass_0.4.10           bayesplot_1.15.0     </span></span>
+<span><span class="co">## [31] yaml_2.3.12           Formula_1.2-5         pillar_1.11.1        </span></span>
+<span><span class="co">## [34] pkgdown_2.2.0         jquerylib_0.1.4       cachem_1.1.0         </span></span>
+<span><span class="co">## [37] StanHeaders_2.32.10   abind_1.4-8           posterior_1.6.1      </span></span>
+<span><span class="co">## [40] rstan_2.32.7          tidyselect_1.2.1      digest_0.6.39        </span></span>
+<span><span class="co">## [43] mvtnorm_1.3-5         stringi_1.8.7         dplyr_1.2.0          </span></span>
+<span><span class="co">## [46] reshape2_1.4.5        labeling_0.4.3        fastmap_1.2.0        </span></span>
+<span><span class="co">## [49] grid_4.5.3            cli_3.6.5             magrittr_2.0.4       </span></span>
+<span><span class="co">## [52] loo_2.9.0             pkgbuild_1.4.8        withr_3.0.2          </span></span>
+<span><span class="co">## [55] scales_1.4.0          backports_1.5.0       rmarkdown_2.30       </span></span>
+<span><span class="co">## [58] matrixStats_1.5.0     otel_0.2.0            gridExtra_2.3        </span></span>
+<span><span class="co">## [61] ragg_1.5.1            evaluate_1.0.5        rstantools_2.6.0     </span></span>
+<span><span class="co">## [64] rlang_1.1.7           Rcpp_1.1.1            glue_1.8.0           </span></span>
+<span><span class="co">## [67] jsonlite_2.0.0        R6_2.6.1              plyr_1.8.9           </span></span>
+<span><span class="co">## [70] systemfonts_1.3.2     fs_1.6.7</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -704,7 +705,7 @@ performed analytically as we are in the conjugate mixture setting.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Predictions from gMAP analyses</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/predict_gMAP.R" class="external-link"><code>R/predict_gMAP.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/R/predict_gMAP.R" class="external-link"><code>R/predict_gMAP.R</code></a></small>
       <div class="d-none name"><code>predict.gMAP.Rd</code></div>
     </div>
 
@@ -126,9 +126,13 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-in"><span>                            RBesT.MC.chains<span class="op">=</span><span class="fl">2</span>, RBesT.MC.thin<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create a fake data set with a covariate</span></span></span>
-<span class="r-in"><span><span class="va">trans_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">transplant</span>, country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">11</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="cn">Inf</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH"</span>, <span class="st">"US"</span>, <span class="st">"DE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">trans_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">transplant</span>,</span></span>
+<span class="r-in"><span>  country <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">11</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">8</span>, <span class="cn">Inf</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH"</span>, <span class="st">"US"</span>, <span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">34246</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">country</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
+<span class="r-in"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="gMAP.html">gMAP</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">country</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">trans_cov</span>,</span></span>
 <span class="r-in"><span>  tau.dist <span class="op">=</span> <span class="st">"HalfNormal"</span>,</span></span>
 <span class="r-in"><span>  tau.prior <span class="op">=</span> <span class="fl">1</span>,</span></span>
@@ -138,9 +142,10 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-in"><span>  beta.prior <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  family <span class="op">=</span> <span class="va">binomial</span>,</span></span>
 <span class="r-in"><span>  <span class="co">## ensure fast example runtime</span></span></span>
-<span class="r-in"><span>  thin <span class="op">=</span> <span class="fl">1</span>, chains <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>  thin <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  chains <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.07, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.2, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -149,6 +154,7 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Maximal Rhat &gt; 1.1. Consider increasing RBesT.MC.warmup MCMC parameter.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final MCMC sample equivalent to less than 1000 independent draws.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Please consider increasing the MCMC simulation size.</span>
 <span class="r-in"><span></span></span>
@@ -160,17 +166,17 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mean     sd  2.5%   50% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.205 0.0510 0.123 0.199 0.291</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.195 0.0406 0.120 0.195 0.263</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.216 0.0412 0.154 0.209 0.302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.253 0.0427 0.193 0.250 0.333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.197 0.0276 0.154 0.198 0.252</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.184 0.0458 0.103 0.181 0.273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.238 0.0516 0.149 0.233 0.344</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.168 0.0317 0.120 0.166 0.239</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.241 0.0521 0.154 0.239 0.345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.174 0.0313 0.121 0.171 0.246</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.243 0.0231 0.206 0.246 0.279</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.217 0.0429 0.166 0.206 0.308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.195 0.0490 0.134 0.186 0.271</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.222 0.0419 0.150 0.220 0.298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.254 0.0430 0.190 0.252 0.334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.203 0.0257 0.157 0.201 0.249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.174 0.0383 0.110 0.178 0.243</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.224 0.0439 0.140 0.225 0.306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.175 0.0394 0.101 0.170 0.245</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.230 0.0505 0.155 0.229 0.349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.178 0.0350 0.118 0.181 0.235</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.237 0.0319 0.167 0.239 0.288</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract sample as matrix</span></span></span>
 <span class="r-in"><span><span class="va">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">pred_cov</span><span class="op">)</span></span></span>
@@ -183,33 +189,33 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mean     sd   2.5%   50% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.210 0.0650 0.0979 0.198 0.323</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.221 0.0749 0.1210 0.220 0.379</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.220 0.0748 0.1130 0.212 0.418</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.214 0.0720 0.1110 0.206 0.377</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.203 0.0697 0.0791 0.196 0.348</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.198 0.0747 0.1030 0.180 0.360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.203 0.0638 0.1070 0.200 0.333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.191 0.0617 0.0827 0.188 0.299</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.237 0.0985 0.0998 0.217 0.446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.238 0.0885 0.1200 0.234 0.406</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.234 0.0792 0.0838 0.232 0.418</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.222 0.0618 0.1250 0.223 0.335</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.229 0.0567 0.1460 0.229 0.351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.223 0.0635 0.1260 0.214 0.350</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.215 0.0643 0.1180 0.203 0.359</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.220 0.0671 0.0907 0.219 0.373</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.191 0.0700 0.1100 0.182 0.302</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.199 0.0783 0.1160 0.180 0.402</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.188 0.0508 0.1130 0.184 0.325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.234 0.0878 0.1200 0.209 0.472</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.230 0.0707 0.1010 0.223 0.351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.220 0.0602 0.1260 0.225 0.329</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># a summary function returns the results as matrix</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pred_cov</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean         sd      2.5%       50%     97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.2046888 0.05103156 0.1233163 0.1989446 0.2908793</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.1950595 0.04060381 0.1204606 0.1949910 0.2630753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.2160028 0.04120147 0.1538030 0.2089321 0.3022593</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.2529856 0.04270467 0.1929258 0.2503303 0.3333643</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.1969653 0.02764795 0.1544012 0.1980138 0.2518814</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.1843000 0.04581607 0.1028620 0.1814753 0.2733072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.2383059 0.05162711 0.1487544 0.2326939 0.3438535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.1680299 0.03170941 0.1198606 0.1659361 0.2389757</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.2410675 0.05211712 0.1538566 0.2392947 0.3450478</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.1742228 0.03131481 0.1213062 0.1707167 0.2455262</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.2426294 0.02309088 0.2061749 0.2463644 0.2792656</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.2170247 0.04292502 0.1659672 0.2059520 0.3077934</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.1948558 0.04896236 0.1340393 0.1860567 0.2713109</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.2219566 0.04191868 0.1497590 0.2197390 0.2977980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.2535315 0.04295406 0.1898418 0.2518005 0.3337547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.2033785 0.02570938 0.1568488 0.2011043 0.2485448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.1739990 0.03833674 0.1097742 0.1781922 0.2429666</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.2239574 0.04388595 0.1395464 0.2245863 0.3058693</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.1746536 0.03936547 0.1007810 0.1701036 0.2447119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.2304102 0.05048495 0.1551377 0.2288809 0.3486094</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.1778153 0.03502150 0.1180302 0.1812999 0.2346684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.2368112 0.03194805 0.1666561 0.2390441 0.2876846</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># obtain a prediction for new data with specific covariates</span></span></span>
 <span class="r-in"><span><span class="va">pred_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">map</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"CH"</span>, study <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -218,8 +224,8 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scale: response </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    mean     sd   2.5%   50% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.217 0.0793 0.0926 0.209 0.404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mean     sd  2.5%   50% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.227 0.0656 0.111 0.218 0.348</span>
 <span class="r-in"><span><span class="co">## Recover user set sampling defaults</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">.user_mc_options</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -234,7 +240,7 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

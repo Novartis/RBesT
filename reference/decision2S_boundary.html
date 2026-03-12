@@ -19,7 +19,7 @@ boundary, the decision function will change between 0 (failure) and
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@ boundary, the decision function will change between 0 (failure) and
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Decision Boundary for 2 Sample Designs</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/decision2S_boundary.R" class="external-link"><code>R/decision2S_boundary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/R/decision2S_boundary.R" class="external-link"><code>R/decision2S_boundary.R</code></a></small>
       <div class="d-none name"><code>decision2S_boundary.Rd</code></div>
     </div>
 
@@ -102,7 +102,8 @@ boundary, the decision function will change between 0 (failure) and
 
 
 <dt id="arg-n-n-">n1, n2<a class="anchor" aria-label="anchor" href="#arg-n-n-"></a></dt>
-<dd><p>Sample size of the respective samples. Sample size <code>n1</code> must be greater than 0 while sample size <code>n2</code> must be greater or equal to 0.</p></dd>
+<dd><p>Sample size of the respective samples. Sample size <code>n1</code> must be
+greater than 0 while sample size <code>n2</code> must be greater or equal to 0.</p></dd>
 
 
 <dt id="arg-decision">decision<a class="anchor" aria-label="anchor" href="#arg-decision"></a></dt>
@@ -136,11 +137,15 @@ decision function is evaluated (see below for more details).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a function with a single argument. This function
-calculates in dependence of the outcome \(y_2\) in sample 2 the
-critical value \(y_{1,c}\) for which the defined design will
-change the decision from 0 to 1 (or vice versa, depending on the
-decision function).</p>
+    <p>For one-sided decision functions, returns a function with a
+single argument. This function calculates in dependence of the
+outcome \(y_2\) in sample 2 the critical value \(y_{1,c}\) for
+which the defined design will change the decision from 0 to 1 (or
+vice versa, depending on the decision function).
+For two-sided decision functions, returns a list with components
+<code>lower_or_equal_than</code> and <code>higher_than</code>, containing the critical
+value functions for the lower and upper one-sided decision
+boundary components.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -191,9 +196,9 @@ boundary is searched for \(y_1\) and \(y_2\), respectively.</p></li>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other design2S:
-<code><a href="decision2S.html">decision2S</a>()</code>,
-<code><a href="oc2S.html">oc2S</a>()</code>,
-<code><a href="pos2S.html">pos2S</a>()</code></p></div>
+<code><a href="decision2S.html">decision2S()</a></code>,
+<code><a href="oc2S.html">oc2S()</a></code>,
+<code><a href="pos2S.html">pos2S()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -246,7 +251,7 @@ boundary is searched for \(y_1\) and \(y_2\), respectively.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

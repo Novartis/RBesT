@@ -13,7 +13,7 @@ stats::glm() conventions."><link rel="stylesheet" href="https://cdn.jsdelivr.net
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ stats::glm() conventions."><link rel="stylesheet" href="https://cdn.jsdelivr.net
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Meta-Analytic-Predictive Analysis for Generalized Linear Models</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/gMAP.R" class="external-link"><code>R/gMAP.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/R/gMAP.R" class="external-link"><code>R/gMAP.R</code></a></small>
       <div class="d-none name"><code>gMAP.Rd</code></div>
     </div>
 
@@ -470,7 +470,7 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span>  beta.prior <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming default prior location   for beta: 0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.11, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.31, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -490,15 +490,15 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exchangeability tau strata: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction tau stratum    : 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Maximal Rhat              : 1.11 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Maximal Rhat              : 1.38 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Between-trial heterogeneity of tau prediction stratum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  mean    sd  2.5%   50% 97.5% </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.370 0.163 0.110 0.352 0.764 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mean     sd   2.5%    50%  97.5% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.3570 0.2790 0.0339 0.2540 1.1100 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MAP Prior MCMC sample</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mean     sd   2.5%    50%  97.5% </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2580 0.0817 0.1230 0.2510 0.4460 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2550 0.0703 0.1550 0.2480 0.3870 </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Parts of the model have not converged (some Rhats are &gt; 1.1).</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Be careful when analysing the results! It is recommend to run</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> more iterations and/or setting stronger priors.</span>
@@ -507,26 +507,26 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span><span class="va">map_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity parameter tau per stratum:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        mean    sd 2.5%   50% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.37 0.163 0.11 0.352 0.764</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mean    sd   2.5%   50% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.357 0.279 0.0339 0.254  1.11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Regression coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              mean    sd  2.5%   50%  97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.12 0.178 -1.47 -1.11 -0.767</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             mean    sd  2.5%  50%  97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.1 0.148 -1.37 -1.1 -0.802</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean estimate MCMC sample:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             mean    sd  2.5%   50% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp 0.248 0.033 0.187 0.247 0.317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             mean     sd  2.5%  50% 97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp 0.252 0.0278 0.202 0.25  0.31</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MAP Prior MCMC sample:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  mean     sd  2.5%   50% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.258 0.0817 0.123 0.251 0.446</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255 0.0703 0.155 0.248 0.387</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">map_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tau"        "beta"       "theta.pred" "theta"     </span>
 <span class="r-in"><span><span class="co"># [1] "tau"        "beta"       "theta.pred" "theta"</span></span></span>
 <span class="r-in"><span><span class="va">map_sum</span><span class="op">$</span><span class="va">theta.pred</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      mean         sd      2.5%       50%     97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.2576768 0.08166927 0.1232554 0.2508299 0.4464658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.2549457 0.07032729 0.1551565 0.2478659 0.3873613</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># graphical model checks (returns list of ggplot2 plots)</span></span></span>
@@ -545,19 +545,19 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span><span class="co"># obtain shrinkage estimates</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              mean         sd       2.5%       50%     97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 1 0.2245230 0.03009877 0.16467408 0.2255518 0.2698386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 2 0.2600974 0.05160094 0.17318985 0.2610201 0.3745415</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 3 0.3157218 0.06628311 0.21188389 0.3041774 0.4656744</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 4 0.2440305 0.04812868 0.15154707 0.2442546 0.3333963</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 5 0.2681039 0.03179363 0.21285005 0.2633981 0.3412085</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 6 0.2670423 0.05109495 0.19112391 0.2609730 0.3660353</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 7 0.1704818 0.04185255 0.08821842 0.1727647 0.2466163</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 8 0.2649455 0.04246509 0.20001270 0.2574109 0.3462487</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 1 0.2252533 0.02915686 0.17586555 0.2234652 0.2787151</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 2 0.2590342 0.04732878 0.18497373 0.2540597 0.3376507</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 3 0.3058962 0.06317604 0.21082514 0.2928621 0.4697599</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 4 0.2477289 0.04949967 0.13889275 0.2503697 0.3210718</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 5 0.2696371 0.03187143 0.21890677 0.2674901 0.3358586</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 6 0.2740316 0.05239060 0.19933868 0.2692248 0.3850659</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 7 0.1866212 0.05384795 0.08614304 0.1820334 0.2813637</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 8 0.2616912 0.05019108 0.18280811 0.2552497 0.3655984</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 mean        sd      2.5%       50%      97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.11748 0.1782488 -1.468582 -1.113787 -0.7667301</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean        sd      2.5%       50%      97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.095205 0.1476927 -1.371133 -1.099922 -0.8015874</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># finally fit MAP prior with parametric mixture</span></span></span>
 <span class="r-in"><span><span class="va">map_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">map_AS</span>, Nc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
@@ -621,7 +621,7 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

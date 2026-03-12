@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +67,9 @@
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2025-05-13</h4>
+            <h4 data-toc-skip class="date">2026-03-12</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
       <div class="d-none name"><code>variances_MAP.Rmd</code></div>
     </div>
 
@@ -299,31 +299,31 @@ which is in line with reference [1]:</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
 <span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.2050 0.1040 0.0781 0.1830 0.4720 </span></span>
+<span><span class="co">## 0.2020 0.1020 0.0758 0.1810 0.4710 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
 <span><span class="co">##  mean    sd  2.5%   50% 97.5% </span></span>
-<span><span class="co">## 4.780 0.256 4.240 4.780 5.270</span></span></code></pre>
+<span><span class="co">## 4.780 0.247 4.270 4.780 5.290</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Heterogeneity parameter tau per stratum:</span></span>
 <span><span class="co">##         mean    sd   2.5%   50% 97.5%</span></span>
-<span><span class="co">## tau[1] 0.205 0.104 0.0781 0.183 0.472</span></span>
+<span><span class="co">## tau[1] 0.202 0.102 0.0758 0.181 0.471</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Regression coefficients:</span></span>
-<span><span class="co">##             mean    sd 2.5%  50% 97.5%</span></span>
-<span><span class="co">## (Intercept) 4.78 0.101 4.57 4.78  4.97</span></span>
+<span><span class="co">##             mean  sd 2.5%  50% 97.5%</span></span>
+<span><span class="co">## (Intercept) 4.78 0.1 4.58 4.78  4.98</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Mean estimate MCMC sample:</span></span>
-<span><span class="co">##            mean    sd 2.5%  50% 97.5%</span></span>
-<span><span class="co">## theta_resp 4.78 0.101 4.57 4.78  4.97</span></span>
+<span><span class="co">##            mean  sd 2.5%  50% 97.5%</span></span>
+<span><span class="co">## theta_resp 4.78 0.1 4.58 4.78  4.98</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample:</span></span>
 <span><span class="co">##                 mean    sd 2.5%  50% 97.5%</span></span>
-<span><span class="co">## theta_resp_pred 4.78 0.256 4.24 4.78  5.27</span></span></code></pre>
+<span><span class="co">## theta_resp_pred 4.78 0.247 4.27 4.78  5.29</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span><span class="op">$</span><span class="va">forest_model</span></span></code></pre></div>
-<p><img src="variances_MAP_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="variances_MAP_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>In reference [1] the correct
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 likelihood is used in contrast to the approximate normal approach above.
@@ -343,18 +343,18 @@ variates, which can be done using <code>RBesT</code> as:</p>
 <code class="sourceCode R"><span><span class="va">map_mc_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span></span>
 <span><span class="va">sd_trans</span> <span class="op">&lt;-</span> <span class="fu">compose</span><span class="op">(</span><span class="va">sqrt</span>, <span class="va">exp</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-intervals.html" class="external-link">mcmc_intervals</a></span><span class="op">(</span><span class="va">map_mc_post</span>, regex_pars <span class="op">=</span> <span class="st">"theta"</span>, transformation <span class="op">=</span> <span class="va">sd_trans</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variances_MAP_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="variances_MAP_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_sigma_mc</span> <span class="op">&lt;-</span> <span class="fu">sd_trans</span><span class="op">(</span><span class="va">map_mc_post</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"theta_pred"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">map_sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">map_sigma_mc</span>, type <span class="op">=</span> <span class="st">"gamma"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_sigma</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></code></pre></div>
-<p><img src="variances_MAP_files/figure-html/unnamed-chunk-8-2.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="variances_MAP_files/figure-html/unnamed-chunk-8-2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## 95% interval MAP for the sampling standard deviation</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_sigma</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##      mean        sd      2.5%     50.0%     97.5% </span></span>
-<span><span class="co">## 10.980236  1.401089  8.283373 10.921528 14.063679</span></span></code></pre>
+<span><span class="co">## 10.981347  1.379548  8.426170 10.892624 14.262895</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="normal-approximation-of-a-loggamma-variate">Normal approximation of a
@@ -404,7 +404,7 @@ is then
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html" class="external-link">stat_function</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x</span>, linetype <span class="op">=</span> <span class="st">"NormalApprox"</span><span class="op">)</span>,</span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2.25</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                fun <span class="op">=</span> <span class="va">dnorm</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">m</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="variances_MAP_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="variances_MAP_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>We see that for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">\nu=9</annotation></semantics></math>
 only, the approximation with a normal density is reasonable. However, by
@@ -421,7 +421,7 @@ respective R code is accessible via the vignette overview page while
 here the graphical result is presented for two different
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
 values:</p>
-<p><img src="variances_MAP_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-2.png" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-3.png" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-4.png" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="variances_MAP_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-3.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"><img src="variances_MAP_files/figure-html/unnamed-chunk-10-4.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h3>
@@ -442,9 +442,9 @@ Chapter 4, p. 84</p>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.5.0 (2025-04-11)</span></span>
+<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.2 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -463,33 +463,33 @@ Chapter 4, p. 84</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] bayesplot_1.12.0 purrr_1.0.4      dplyr_1.1.4      ggplot2_3.5.2   </span></span>
-<span><span class="co">## [5] knitr_1.50       RBesT_1.8-2     </span></span>
+<span><span class="co">## [1] bayesplot_1.15.0 purrr_1.2.1      dplyr_1.2.0      ggplot2_4.0.2   </span></span>
+<span><span class="co">## [5] knitr_1.51       RBesT_1.9-0     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      </span></span>
-<span><span class="co">##  [4] stringi_1.8.7        digest_0.6.37        magrittr_2.0.3      </span></span>
-<span><span class="co">##  [7] evaluate_1.0.3       grid_4.5.0           RColorBrewer_1.1-3  </span></span>
-<span><span class="co">## [10] mvtnorm_1.3-3        fastmap_1.2.0        plyr_1.8.9          </span></span>
-<span><span class="co">## [13] jsonlite_2.0.0       pkgbuild_1.4.7       backports_1.5.0     </span></span>
-<span><span class="co">## [16] Formula_1.2-5        gridExtra_2.3        QuickJSR_1.7.0      </span></span>
-<span><span class="co">## [19] scales_1.4.0         codetools_0.2-20     textshaping_1.0.1   </span></span>
-<span><span class="co">## [22] jquerylib_0.1.4      abind_1.4-8          cli_3.6.5           </span></span>
-<span><span class="co">## [25] rlang_1.1.6          withr_3.0.2          cachem_1.1.0        </span></span>
-<span><span class="co">## [28] yaml_2.3.10          StanHeaders_2.32.10  parallel_4.5.0      </span></span>
-<span><span class="co">## [31] tools_4.5.0          rstan_2.32.7         inline_0.3.21       </span></span>
-<span><span class="co">## [34] reshape2_1.4.4       rstantools_2.4.0     checkmate_2.3.2     </span></span>
-<span><span class="co">## [37] assertthat_0.2.1     posterior_1.6.1      vctrs_0.6.5         </span></span>
-<span><span class="co">## [40] R6_2.6.1             matrixStats_1.5.0    stats4_4.5.0        </span></span>
-<span><span class="co">## [43] lifecycle_1.0.4      stringr_1.5.1        fs_1.6.6            </span></span>
-<span><span class="co">## [46] htmlwidgets_1.6.4    ragg_1.4.0           pkgconfig_2.0.3     </span></span>
-<span><span class="co">## [49] desc_1.4.3           pkgdown_2.1.2        RcppParallel_5.1.10 </span></span>
-<span><span class="co">## [52] pillar_1.10.2        bslib_0.9.0          gtable_0.3.6        </span></span>
-<span><span class="co">## [55] loo_2.8.0            glue_1.8.0           Rcpp_1.0.14         </span></span>
-<span><span class="co">## [58] systemfonts_1.2.3    xfun_0.52            tibble_3.2.1        </span></span>
-<span><span class="co">## [61] tidyselect_1.2.1     farver_2.1.2         htmltools_0.5.8.1   </span></span>
-<span><span class="co">## [64] labeling_0.4.3       rmarkdown_2.29       compiler_4.5.0      </span></span>
-<span><span class="co">## [67] distributional_0.5.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            </span></span>
+<span><span class="co">##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    </span></span>
+<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          </span></span>
+<span><span class="co">## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       </span></span>
+<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
+<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           </span></span>
+<span><span class="co">## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
+<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         </span></span>
+<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     </span></span>
+<span><span class="co">## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          </span></span>
+<span><span class="co">## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        </span></span>
+<span><span class="co">## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  </span></span>
+<span><span class="co">## [37] abind_1.4-8           posterior_1.6.1       rstan_2.32.7         </span></span>
+<span><span class="co">## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.3-5        </span></span>
+<span><span class="co">## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       </span></span>
+<span><span class="co">## [46] fastmap_1.2.0         grid_4.5.3            cli_3.6.5            </span></span>
+<span><span class="co">## [49] magrittr_2.0.4        loo_2.9.0             pkgbuild_1.4.8       </span></span>
+<span><span class="co">## [52] withr_3.0.2           scales_1.4.0          backports_1.5.0      </span></span>
+<span><span class="co">## [55] rmarkdown_2.30        matrixStats_1.5.0     otel_0.2.0           </span></span>
+<span><span class="co">## [58] gridExtra_2.3         ragg_1.5.1            evaluate_1.0.5       </span></span>
+<span><span class="co">## [61] rstantools_2.6.0      rlang_1.1.7           Rcpp_1.1.1           </span></span>
+<span><span class="co">## [64] glue_1.8.0            jsonlite_2.0.0        R6_2.6.1             </span></span>
+<span><span class="co">## [67] plyr_1.8.9            systemfonts_1.3.2     fs_1.6.7</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -503,7 +503,7 @@ Chapter 4, p. 84</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

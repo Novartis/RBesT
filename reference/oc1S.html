@@ -15,7 +15,7 @@ operating characteristics calculations."><link rel="stylesheet" href="https://cd
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ operating characteristics calculations."><link rel="stylesheet" href="https://cd
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Operating Characteristics for 1 Sample Design</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/oc1S.R" class="external-link"><code>R/oc1S.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/R/oc1S.R" class="external-link"><code>R/oc1S.R</code></a></small>
       <div class="d-none name"><code>oc1S.Rd</code></div>
     </div>
 
@@ -149,9 +149,9 @@ the boundary is searched for \(y\).</p></li>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other design1S:
-<code><a href="decision1S.html">decision1S</a>()</code>,
-<code><a href="decision1S_boundary.html">decision1S_boundary</a>()</code>,
-<code><a href="pos1S.html">pos1S</a>()</code></p></div>
+<code><a href="decision1S.html">decision1S()</a></code>,
+<code><a href="decision1S_boundary.html">decision1S_boundary()</a></code>,
+<code><a href="pos1S.html">pos1S()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -207,7 +207,7 @@ the boundary is searched for \(y\).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.84991646 0.49995959 0.02185859</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># to understand further the dual criterion design it is useful to</span></span></span>
-<span class="r-in"><span><span class="co"># evaluate the criterions separatley:</span></span></span>
+<span class="r-in"><span><span class="co"># evaluate the criterions separately:</span></span></span>
 <span class="r-in"><span><span class="co"># statistical significance criterion to warrant NI...</span></span></span>
 <span class="r-in"><span><span class="va">designC1_nL</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">nL</span>, <span class="va">dec1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
@@ -223,6 +223,28 @@ the boundary is searched for \(y\).</p></li>
 <span class="r-in"><span><span class="co"># see also ?decision1S_boundary to see which of the two criterions</span></span></span>
 <span class="r-in"><span><span class="co"># will drive the decision</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># it can also be of interest to evaluate intermediate decisions</span></span></span>
+<span class="r-in"><span><span class="co"># where the trial is significant for non-inferiority but</span></span></span>
+<span class="r-in"><span><span class="co"># the mean estimate is in an intermediate range, say between theta_c</span></span></span>
+<span class="r-in"><span><span class="co"># and theta_f:</span></span></span>
+<span class="r-in"><span><span class="va">theta_f</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span></span>
+<span class="r-in"><span><span class="va">decCombIntermediate</span> <span class="op">&lt;-</span> <span class="fu"><a href="decision1S.html">decision1S</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">alpha</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">theta_ni</span>, <span class="va">theta_c</span>, <span class="va">theta_f</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  lower.tail <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># evaluate at two sample sizes again:</span></span></span>
+<span class="r-in"><span><span class="va">designIntermediate_n1</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">n1</span>, <span class="va">decCombIntermediate</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
+<span class="r-in"><span><span class="va">designIntermediate_nL</span> <span class="op">&lt;-</span> <span class="fu">oc1S</span><span class="op">(</span><span class="va">flat_prior</span>, <span class="va">nL</span>, <span class="va">decCombIntermediate</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Using default prior reference scale 2</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">designIntermediate_n1</span><span class="op">(</span><span class="va">theta_eval</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0</span>
+<span class="r-in"><span><span class="fu">designIntermediate_nL</span><span class="op">(</span><span class="va">theta_eval</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.07043191 0.14485113 0.02810313</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -234,7 +256,7 @@ the boundary is searched for \(y\).</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

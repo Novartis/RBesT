@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.8-2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,9 +38,23 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.9-0.9000" id="rbest-19-09000---development-version">RBesT 1.9-0.9000 - development version<a class="anchor" aria-label="anchor" href="#rbest-19-09000---development-version"></a></h2>
+<div class="section level3">
+<h3 id="enhancements-1-9-0-9000">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-0-9000"></a></h3>
+<ul><li>Reformat R sources using <code>Air</code>.</li>
+<li>Extend normal outcome functions to two-sided decisions: <code>decision1S</code> and <code>decision2S</code> now allow <code>lower.tail</code> to have as many elements as <code>pc</code> to allow the specification of two-sided decision boundaries (mixed <code>lower.tail</code> elements, i.e. some specifying “lower” and some “upper”) to capture intermediate result scenarios.</li>
+<li>Introduce global option <code>RBesT.MC.save_warmup</code>, which is set to <code>FALSE</code> causing to drop warmup samples from the <code>gMAP</code> fit object. Note that the pre-1.9.0 behavior was to store the warmup samples (but these were not used). To restore the original behavior set <code>options(RBesT.MC.save_warmup=TRUE)</code> once globally.</li>
+<li>Add experimental <code>as_draws*</code> functions allowing to extract samples in the posterior draws format from <code>gMAP</code> objects.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-1-9-0-9000">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-9-0-9000"></a></h3>
+<ul><li>Avoid use of <code>size</code> argument to <code>ggplot2</code> routines, which have been deprecated.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.8-2" id="rbest-18-2---april-25th-2025">RBesT 1.8-2 - April 25th, 2025<a class="anchor" aria-label="anchor" href="#rbest-18-2---april-25th-2025"></a></h2><p class="text-muted">CRAN release: 2025-04-25</p>
 <div class="section level3">
@@ -286,11 +300,11 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3-0" id="rbest-13-0---december-21st-2017">RBesT 1.3-0 - December 21st, 2017<a class="anchor" aria-label="anchor" href="#rbest-13-0---december-21st-2017"></a></h2>
-<ul><li><p>Added probability of success calculation for 1+2 sample case.</p></li>
-<li><p>Added decision1+2S_boundary functions (and deprecated use of y2 argument of oc functions)</p></li>
-<li><p>Added RBesT.integrate_args option for greater control over density integrations.</p></li>
-<li><p>Correct cumulative predictive of beta mixtures to return 0/1 for out-of-range values (instead of leaving those out).</p></li>
-<li><p>Deprecated functions oc1+2Sdecision which are replaced by decision1+2S.</p></li>
+<ul><li>Added probability of success calculation for 1+2 sample case.</li>
+<li>Added decision1+2S_boundary functions (and deprecated use of y2 argument of oc functions)</li>
+<li>Added RBesT.integrate_args option for greater control over density integrations.</li>
+<li>Correct cumulative predictive of beta mixtures to return 0/1 for out-of-range values (instead of leaving those out).</li>
+<li>Deprecated functions oc1+2Sdecision which are replaced by decision1+2S.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2-3" id="rbest-12-3---august-21st-2017">RBesT 1.2-3 - August 21st, 2017<a class="anchor" aria-label="anchor" href="#rbest-12-3---august-21st-2017"></a></h2><p class="text-muted">CRAN release: 2017-08-21</p>
@@ -354,7 +368,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
