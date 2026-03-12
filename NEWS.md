@@ -1,4 +1,4 @@
-# RBesT 1.8-2.9000 - development version
+# RBesT 1.9-0.9000 - development version
 
 ## Enhancements
 
@@ -8,6 +8,16 @@
   `pc` to allow the specification of two-sided decision boundaries
   (mixed `lower.tail` elements, i.e. some specifying "lower" and some
   "upper") to capture intermediate result scenarios.
+* Introduce global option `RBesT.MC.save_warmup`, which is set to
+  `FALSE` causing to drop warmup samples from the `gMAP` fit
+  object. Note that the pre-1.9.0 behavior was to store the warmup
+  samples (but these were not used). To restore the original behavior
+  set `options(RBesT.MC.save_warmup=TRUE)` once globally.
+* Add experimental `as_draws*` functions allowing to extract samples
+  in the posterior draws format from `gMAP` objects.
+  
+## Bugfixes
+
 * Avoid use of `size` argument to `ggplot2` routines, which have been
   deprecated.
 

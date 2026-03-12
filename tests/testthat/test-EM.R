@@ -1,5 +1,3 @@
-# context("EM: Expectation-Maximization")
-
 ## test that the EM algorithms recover reliably test distributions;
 ## test criterium is a "sufficiently" small KL divergence
 

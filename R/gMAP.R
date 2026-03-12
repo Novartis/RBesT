@@ -941,7 +941,7 @@ gMAP <- function(
       open_progress = FALSE,
       pars = exclude_pars,
       include = FALSE,
-      save_warmup = TRUE
+      save_warmup = getOption("RBesT.MC.save_warmup", FALSE)
     )
   )
 
