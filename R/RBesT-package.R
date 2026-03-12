@@ -70,7 +70,7 @@
 #' @importFrom RcppParallel RcppParallelLibs CxxFlags
 #' @importFrom rlang .data
 #' @importFrom rstan sampling extract get_sampler_params summary
-#' @importFrom posterior as_draws_array as_draws_rvars as_draws_matrix as_draws_list summarise_draws subset_draws resample_draws default_convergence_measures rvar as_rvar ndraws variables draws_of variables<- %**% bind_draws mcse_mean ess_mean mcse_quantile ess_quantile rvar_ifelse rvar_rng nvariables
+#' @importFrom posterior as_draws_array as_draws_rvars as_draws_matrix as_draws_list as_draws_df subset_draws
 #' @importFrom utils capture.output modifyList
 #' @export nsamples
 ## usethis namespace: end
