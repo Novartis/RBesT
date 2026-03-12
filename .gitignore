@@ -9,3 +9,6 @@ inst/sbc/sbc*html
 .vscode/
 *.dll
 .Renviron
+*.Rtest
+*.Rtestfast
+build/

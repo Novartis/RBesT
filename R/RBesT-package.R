@@ -26,6 +26,7 @@
 #' `RBesT.MC.iter` \tab 6000 \tab total MCMC iterations \cr
 #' `RBesT.MC.chains` \tab 4 \tab MCMC chains\cr
 #' `RBesT.MC.thin` \tab 4 \tab MCMC thinning \cr
+#' `RBesT.MC.save_warmup` \tab `FALSE` \tab MCMC warmup samples saving \cr
 #' `RBesT.MC.control` \tab `list(adapt_delta=0.99,` \tab sets `control` argument for Stan call\cr
 #'  \tab `stepsize=0.01,` \tab \cr
 #'  \tab `max_treedepth=20)` \tab \cr
@@ -69,6 +70,8 @@
 #' @importFrom RcppParallel RcppParallelLibs CxxFlags
 #' @importFrom rlang .data
 #' @importFrom rstan sampling extract get_sampler_params summary
+#' @importFrom posterior as_draws_array as_draws_rvars as_draws_matrix as_draws_list as_draws_df subset_draws
 #' @importFrom utils capture.output modifyList
+#' @export nsamples
 ## usethis namespace: end
 "_PACKAGE"

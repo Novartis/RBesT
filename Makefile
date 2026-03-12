@@ -24,7 +24,8 @@ SRCS = $(R_PKG_SRCS) $(R_SRCS) $(RMD_SRCS) $(STAN_SRCS)
 NODIR_SRC = $(notdir $(SRCS))
 BIN_OBJS = src/package-binary R/sysdata.rda
 DOC_OBJS = man/package-doc inst/doc/$(RPKG).pdf
-RCMD ?= R_PROFILE_USER="$(PROJROOT_ABS)/.Rprofile" "${R_HOME}/bin/R" -q
+# RCMD ?= R_PROFILE_USER="$(PROJROOT_ABS)/.Rprofile" "${R_HOME}/bin/R" -q
+RCMD ?= "${R_HOME}/bin/R" -q
 
 R_HOME ?= $(shell R RHOME)
 PKG_VERSION ?= $(patsubst ‘%’, %, $(word 2, $(shell grep ^Version DESCRIPTION)))
