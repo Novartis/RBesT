@@ -134,7 +134,9 @@ EM_bmm_mun <- function(
 
   ## eps can also be given as a single integer which is interpreted
   ## as number of digits
-  if (length(eps) == 1) eps <- rep(10^(-eps), 3)
+  if (length(eps) == 1) {
+    eps <- rep(10^(-eps), 3)
+  }
 
   iter <- 0
   logN <- log(N)
@@ -148,7 +150,9 @@ EM_bmm_mun <- function(
   )
   runOrder <- 0:(Neps - 1)
   Npar <- Nc + 2 * Nc
-  if (Nc == 1) Npar <- Npar - 1
+  if (Nc == 1) {
+    Npar <- Npar - 1
+  }
 
   ## find alpha and beta for a given component in log-space
   bmm_mun_ml <- function(c1, c2) {
@@ -202,7 +206,9 @@ EM_bmm_mun <- function(
       )
       eps.converged <- sum(sweep(smean, 1, eps[-1], "-") < 0)
     }
-    if (is.na(eps.converged)) eps.converged <- 0
+    if (is.na(eps.converged)) {
+      eps.converged <- 0
+    }
     if (verbose) {
       message(
         "Iteration ",

@@ -31,7 +31,8 @@ decision2S_boundary(prior1, prior2, n1, n2, decision, ...)
 
 \item{prior2}{Prior for sample 2.}
 
-\item{n1, n2}{Sample size of the respective samples. Sample size \code{n1} must be greater than 0 while sample size \code{n2} must be greater or equal to 0.}
+\item{n1, n2}{Sample size of the respective samples. Sample size \code{n1} must be
+greater than 0 while sample size \code{n2} must be greater or equal to 0.}
 
 \item{decision}{Two-sample decision function to use; see \code{\link{decision2S}}.}
 
@@ -51,11 +52,15 @@ unspecified, the default reference scale of the prior 2 is assumed.}
 decision function is evaluated (see below for more details).}
 }
 \value{
-Returns a function with a single argument. This function
-calculates in dependence of the outcome \eqn{y_2} in sample 2 the
-critical value \eqn{y_{1,c}} for which the defined design will
-change the decision from 0 to 1 (or vice versa, depending on the
-decision function).
+For one-sided decision functions, returns a function with a
+single argument. This function calculates in dependence of the
+outcome \eqn{y_2} in sample 2 the critical value \eqn{y_{1,c}} for
+which the defined design will change the decision from 0 to 1 (or
+vice versa, depending on the decision function).
+For two-sided decision functions, returns a list with components
+\code{lower_or_equal_than} and \code{higher_than}, containing the critical
+value functions for the lower and upper one-sided decision
+boundary components.
 }
 \description{
 The \code{decision2S_boundary} function defines a 2 sample design

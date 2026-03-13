@@ -4,12 +4,14 @@
 \alias{plot.gMAP}
 \title{Diagnostic plots for gMAP analyses}
 \usage{
-\method{plot}{gMAP}(x, size = NULL, ...)
+\method{plot}{gMAP}(x, size = NULL, linewidth = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link[=gMAP]{gMAP()}} object}
 
-\item{size}{Controls line sizes of traceplots and forest plot.}
+\item{size}{Controls size of forest plot.}
+
+\item{linewidth}{Controls line sizes of traceplots.}
 
 \item{...}{Ignored.}
 }

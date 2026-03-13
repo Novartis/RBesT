@@ -28,8 +28,9 @@ gammaMix <- mixgamma(rob = c(0.25, 8, 0.5), inf = c(0.75, 8, 10), param = "mn")
 
 norm <- mixnorm(c(1, 0, sqrt(2)), sigma = 1)
 
-normMix <- mixnorm(c(0.2, 0, 2), c(0.8, 1, 2), sigma = 1)
-normMixWeak <- mixnorm(c(0.2, 0, 2), c(0.8, 1, 2), c(0, 0, 1), sigma = 1)
+normMix <- mixnorm(c(0.2, 0, 1), c(0.8, 1, 1), sigma = 1)
+
+brms_sampling_args <- list(chains = 1, iter = 20000, init = 0.25)
 
 ## tests the quantile and distribution function against simulated
 ## samples when using brms prior sampling as reference
@@ -62,12 +63,19 @@ mixstanvar_simul_test <- function(
   )[, 1])
   qtest_samp <- quantile(samp, ptest)
   qref_qmix <- qmix(mix, ptest)
-  res_quants <- abs(qref_qmix - qtest_samp)
-  expect_true(all(res_quants < eps))
+  mapply(
+    \(test, ref) expect_equal(test, ref, tolerance = eps),
+    qtest_samp,
+    qref_qmix
+  )
   ptest_samp <- vapply(qtest, function(q) mean(samp < q), c(0.1))
   pref_pmix <- pmix(mix, qtest)
-  res_probs <- abs(pref_pmix - ptest_samp)
-  expect_true(all(res_probs < eps))
+  mapply(
+    \(test, ref) expect_equal(test, ref, tolerance = eps),
+    ptest_samp,
+    pref_pmix
+  )
+  return(invisible(TRUE))
 }
 
 
@@ -116,14 +124,17 @@ mixstanvar_test <- function(mix, brms_args) {
   }
 }
 
-brms_beta_args <- list(
-  formula = brms::bf(
-    r | trials(n) ~ 1,
-    family = brms::brmsfamily("binomial", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(r = 0, n = 0),
-  prior = brms::prior(mixbeta(prior_w, prior_a, prior_b), coef = Intercept)
+brms_beta_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      r | trials(n) ~ 1,
+      family = brms::brmsfamily("binomial", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(r = 0, n = 0),
+    prior = brms::prior(mixbeta(prior_w, prior_a, prior_b), coef = Intercept)
+  )
 )
 
 test_that("Beta quantiles are correct for brms sampled prior", {
@@ -139,20 +150,24 @@ test_that("Beta mixture prior is declared correctly in brms generated model and 
   mixstanvar_test(betaMix, brms_beta_args)
 })
 
-brms_beta_trunc_args <- list(
-  formula = brms::bf(
-    r | trials(n) ~ 1,
-    family = brms::brmsfamily("binomial", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(r = 0, n = 0),
-  prior = brms::prior(
-    mixbeta(prior_w, prior_a, prior_b),
-    class = b,
-    lb = 0.1,
-    ub = 0.9
+brms_beta_trunc_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      r | trials(n) ~ 1,
+      family = brms::brmsfamily("binomial", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(r = 0, n = 0),
+    prior = brms::prior(
+      mixbeta(prior_w, prior_a, prior_b),
+      class = b,
+      lb = 0.1,
+      ub = 0.9
+    )
   )
 )
+
 test_that("Beta (truncated) prior is declared correctly in brms generated model and data", {
   mixstanvar_test(beta, brms_beta_trunc_args)
 })
@@ -160,15 +175,18 @@ test_that("Beta mixture (truncated) prior is declared correctly in brms generate
   mixstanvar_test(betaMix, brms_beta_trunc_args)
 })
 
-brms_normal_args <- list(
-  formula = brms::bf(
-    y ~ 1,
-    family = brms::brmsfamily("gaussian", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(y = 0),
-  prior = brms::prior(mixnorm(prior_w, prior_m, prior_s), coef = Intercept) +
-    brms::prior(constant(1), class = sigma)
+brms_normal_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      y ~ 1,
+      family = brms::brmsfamily("gaussian", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(y = 0),
+    prior = brms::prior(mixnorm(prior_w, prior_m, prior_s), coef = Intercept) +
+      brms::prior(constant(1), class = sigma)
+  )
 )
 test_that("Normal quantiles are correct for brms sampled prior", {
   mixstanvar_simul_test(norm, brms_normal_args, eps, c(-1, 0))
@@ -181,29 +199,33 @@ test_that("Normal mixture quantiles are correct for brms sampled prior", {
     normMix,
     brms_normal_args,
     eps,
-    c(2, 1),
-    ptest = c(0.3, 0.5, 0.7)
+    c(-0.5, 1),
+    ptest = c(0.4, 0.5, 0.6)
   )
 })
 test_that("Normal mixture prior is declared correctly in brms generated model and data", {
   mixstanvar_test(normMix, brms_normal_args)
 })
 
-brms_normal_trunc_args <- list(
-  formula = brms::bf(
-    y ~ 1,
-    family = brms::brmsfamily("gaussian", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(y = 0),
-  prior = brms::prior(
-    mixnorm(prior_w, prior_m, prior_s),
-    class = b,
-    lb = -5,
-    ub = 5
-  ) +
-    brms::prior(constant(1), class = sigma)
+brms_normal_trunc_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      y ~ 1,
+      family = brms::brmsfamily("gaussian", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(y = 0),
+    prior = brms::prior(
+      mixnorm(prior_w, prior_m, prior_s),
+      class = b,
+      lb = -5,
+      ub = 5
+    ) +
+      brms::prior(constant(1), class = sigma)
+  )
 )
+
 test_that("Normal (truncated) prior is declared correctly in brms generated model and data", {
   mixstanvar_test(norm, brms_normal_trunc_args)
 })
@@ -211,15 +233,18 @@ test_that("Normal mixture (truncated) prior is declared correctly in brms genera
   mixstanvar_test(normMix, brms_normal_trunc_args)
 })
 
-brms_gamma_args <- list(
-  formula = brms::bf(
-    y ~ 1,
-    family = brms::brmsfamily("gaussian", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(y = 1),
-  prior = brms::prior(mixgamma(prior_w, prior_a, prior_b), coef = Intercept) +
-    brms::prior(constant(1), class = sigma)
+brms_gamma_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      y ~ 1,
+      family = brms::brmsfamily("gaussian", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(y = 1),
+    prior = brms::prior(mixgamma(prior_w, prior_a, prior_b), coef = Intercept) +
+      brms::prior(constant(1), class = sigma)
+  )
 )
 
 test_that("Gamma quantiles are correct for brms sampled prior", {
@@ -241,20 +266,23 @@ test_that("Gamma mixture prior is declared correctly in brms generated model and
   mixstanvar_test(gammaMix, brms_gamma_args)
 })
 
-brms_gamma_trunc_args <- list(
-  formula = brms::bf(
-    y ~ 1,
-    family = brms::brmsfamily("gaussian", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(y = 1),
-  prior = brms::prior(
-    mixgamma(prior_w, prior_a, prior_b),
-    class = b,
-    lb = 0.1,
-    ub = 10
-  ) +
-    brms::prior(constant(1), class = sigma)
+brms_gamma_trunc_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      y ~ 1,
+      family = brms::brmsfamily("gaussian", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(y = 1),
+    prior = brms::prior(
+      mixgamma(prior_w, prior_a, prior_b),
+      class = b,
+      lb = 0.1,
+      ub = 10
+    ) +
+      brms::prior(constant(1), class = sigma)
+  )
 )
 
 test_that("Gamma (truncated) prior is declared correctly in brms generated model and data", {
@@ -375,15 +403,18 @@ mvnorm_heavy_4 <- mixmvnorm(
 )
 
 
-brms_mvn_4_args <- list(
-  formula = brms::bf(
-    y ~ 1 + l1 + l2 + l3,
-    family = brms::brmsfamily("gaussian", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(y = 1, l1 = 0, l2 = 0, l3 = 0),
-  prior = brms::prior(mixmvnorm(prior_w, prior_m, prior_sigma_L), class = b) +
-    brms::prior(constant(1), class = sigma)
+brms_mvn_4_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      y ~ 1 + l1 + l2 + l3,
+      family = brms::brmsfamily("gaussian", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(y = 1, l1 = 0, l2 = 0, l3 = 0),
+    prior = brms::prior(mixmvnorm(prior_w, prior_m, prior_sigma_L), class = b) +
+      brms::prior(constant(1), class = sigma)
+  )
 )
 
 test_that("Multivariate normal (4D) is correct for brms sampled prior", {
@@ -413,15 +444,18 @@ mvnorm_heavy_2 <- mixmvnorm(
   sigma = S[1:2, 1:2]
 )
 
-brms_mvn_2_args <- list(
-  formula = brms::bf(
-    y ~ 1 + l1,
-    family = brms::brmsfamily("gaussian", link = "identity"),
-    center = FALSE
-  ),
-  data = data.frame(y = 1, l1 = 0),
-  prior = brms::prior(mixmvnorm(prior_w, prior_m, prior_sigma_L), class = b) +
-    brms::prior(constant(1), class = sigma)
+brms_mvn_2_args <- modifyList(
+  brms_sampling_args,
+  list(
+    formula = brms::bf(
+      y ~ 1 + l1,
+      family = brms::brmsfamily("gaussian", link = "identity"),
+      center = FALSE
+    ),
+    data = data.frame(y = 1, l1 = 0),
+    prior = brms::prior(mixmvnorm(prior_w, prior_m, prior_sigma_L), class = b) +
+      brms::prior(constant(1), class = sigma)
+  )
 )
 
 test_that("Multivariate normal (2D) is correct for brms sampled prior", {

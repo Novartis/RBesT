@@ -12,7 +12,19 @@ Sys.setenv(NOT_CRAN = "true")
 cat("RUNNING PACKAGE TESTS:\n")
 ## run each section separatley to get subsequent numbering per section
 ## of the TAP reporter; execution order is in line with vignette steps
-for (test in c("gMAP", "EM", "oc1S", "oc2S", "mixdist", "mixdiff", "preddist", "postmix", "utils", "pos1S", "pos2S")) {
+for (test in c(
+  "gMAP",
+  "EM",
+  "oc1S",
+  "oc2S",
+  "mixdist",
+  "mixdiff",
+  "preddist",
+  "postmix",
+  "utils",
+  "pos1S",
+  "pos2S"
+)) {
   test_package("RBesT", filter = test, reporter = "tap")
 }
 

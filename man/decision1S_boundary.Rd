@@ -32,7 +32,10 @@ interval covering \code{1-eps} probability mass. Defaults to
 \eqn{10^{-6}}.}
 }
 \value{
-Returns the critical value \eqn{y_c}.
+Returns the critical value \eqn{y_c}. For two-sided
+decision functions a named vector with components
+\code{lower_or_equal_than} and \code{higher_than} is returned, containing
+the critical values for the lower and upper decision boundaries.
 }
 \description{
 Calculates the decision boundary for a 1 sample design. This is the

@@ -370,16 +370,16 @@ if (!run_on_cran()) {
   )
 } else {
   design_binary <- function(...) {
-    return(0.1)
+    return(alpha)
   }
   design_binaryB <- function(...) {
-    return(0.1)
+    return(alpha)
   }
   boundary_design_binary <- function(...) {
-    return(0.1)
+    return(alpha)
   }
   boundary_design_binaryB <- function(...) {
-    return(0.1)
+    return(alpha)
   }
 }
 posterior_binary <- function(r) postmix(beta_prior, r = r, n = 100)
@@ -388,11 +388,11 @@ test_that("Binary type I error rate", {
   skip_on_cran()
   test_scenario(design_binary(p_test, p_test), alpha)
 })
-test_that("Binary crticial value, lower.tail=TRUE", {
+test_that("Binary critical value, lower.tail=TRUE", {
   skip_on_cran()
   test_critical_discrete(boundary_design_binary, dec, posterior_binary, 30)
 })
-test_that("Binary crticial value, lower.tail=FALSE", {
+test_that("Binary critical value, lower.tail=FALSE", {
   skip_on_cran()
   test_critical_discrete(boundary_design_binaryB, decB, posterior_binary, 30)
 })
@@ -568,20 +568,6 @@ test_that("Binary type I error rate", {
   test_scenario(design_binary_eps(p_test, p_test), alpha)
 })
 
-## 22 Nov 2017: disabled test as we trigger always calculation of the
-## boundaries as of now.
-## test_that("Binary results cache expands", {
-##               design_binary_eps <- oc2S(beta_prior, beta_prior, 100, 100, dec, eps=1E-3)
-##               design_binary_eps(theta1=0.99, theta2=0.8)
-##               ## in this case the cache boundaries do not cover the
-##               ## critical value
-##               expect_true(is.na(design_binary_eps(theta1=0.99, y2=80)))
-##               ## while now they do as theta1 is set to 0.1 and 0.9
-##               ## internally which triggers recalculation of the
-##               ## internal boundaries
-##               expect_true(!is.na(design_binary_eps(y2=80)))
-##           })
-
 ## test poisson case
 
 gamma_prior <- mixgamma(c(1, 2, 2))
@@ -616,14 +602,6 @@ test_that("Poisson crticial value, lower.tail=FALSE", {
   skip_on_cran()
   test_critical_discrete(boundary_design_poissonB, decB, posterior_poisson, 90)
 })
-## 22 Nov 2017: disabled test as we trigger always calculation of the
-## boundaries as of now.
-## test_that("Poisson results cache expands", {
-##              design_poisson  <- oc2S(gamma_prior, gamma_prior, 100, 100, dec)
-##              design_poisson(theta1=1, theta2=c(0.7,1))
-##              expect_true(sum(is.na(design_poisson(y2=70:90)) ) == 4)
-##              expect_true(sum(is.na(design_poisson(theta1=c(0.01, 1), y2=70:90)) ) == 0)
-##          })
 
 test_that("Normal OC 2-sample case works for n2=0, crohn-1", {
   crohn_sigma <- 88
@@ -751,4 +729,339 @@ test_that("Normal OC 2-sample avoids undefined behavior, example 1", {
     any.missing = FALSE
   )
   expect_numeric(design_map_2(x, x), lower = 0, upper = 1, any.missing = FALSE)
+})
+
+test_that("Normal OC 2-sample works with mixed lower.tail decision criterion", {
+  skip_on_cran()
+
+  sigma_ref <- 3.2
+  map_ref <- mixnorm(
+    c(0.52, -2.1, 0.39),
+    c(0.42, -2.1, 0.995),
+    c(0.06, -1.99, 2.32),
+    sigma = sigma_ref
+  )
+  prior_flat <- mixnorm(c(1, 0, 100), sigma = sigma_ref)
+  alpha <- 0.05
+
+  # Here we have 4 decision scenarios: Go, Stop, In-between 1, In-between 2.
+  # For any theta combination, the probability sums to 1 across these 4 scenarios.
+  # We need to test the cases n2 == 0 and n2 > 0 because they are computed differently.
+  # We test two different qc2 value settings to see that both in-between 1 and in-between 2
+  # have a case with positive probabilities and everything works as expected.
+  n <- 14
+  for (n2 in c(0, 7)) {
+    for (qc2 in c(0.5, 0.8)) {
+      qc1 <- 1
+      pc1 <- 0.5
+      pc2 <- 0.6
+
+      dec_go <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, pc2),
+        lower.tail = c(FALSE, FALSE)
+      )
+      dec_stop <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, 1 - pc2),
+        lower.tail = c(TRUE, TRUE)
+      )
+      dec_inbetween_1 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, 1 - pc2),
+        lower.tail = c(FALSE, TRUE)
+      )
+      dec_inbetween_2 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, pc2),
+        lower.tail = c(TRUE, FALSE)
+      )
+
+      get_design_map_n2_pos <- function(dec) {
+        oc2S(
+          prior_flat,
+          map_ref,
+          n,
+          n2,
+          dec,
+          sigma1 = sigma_ref,
+          sigma2 = sigma_ref
+        )
+      }
+
+      prob_fun_go <- get_design_map_n2_pos(dec_go)
+      prob_fun_stop <- get_design_map_n2_pos(dec_stop)
+      prob_fun_inbetween_1 <- get_design_map_n2_pos(dec_inbetween_1)
+      prob_fun_inbetween_2 <- get_design_map_n2_pos(dec_inbetween_2)
+
+      x <- seq(-3, 3, by = 0.1)
+
+      prob_go <- prob_fun_go(x, x)
+      prob_stop <- prob_fun_stop(x, x)
+      prob_inbetween_1 <- prob_fun_inbetween_1(x, x)
+      prob_inbetween_2 <- prob_fun_inbetween_2(x, x)
+
+      expect_numeric(prob_go, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(prob_stop, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(
+        prob_inbetween_1,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      expect_numeric(
+        prob_inbetween_2,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+
+      total_prob <- prob_go + prob_stop + prob_inbetween_1 + prob_inbetween_2
+      expect_true(all(abs(total_prob - 1) < 1e-3))
+    }
+  }
+})
+
+test_that("Binomial OC 2-sample works with mixed lower.tail decision criterion", {
+  skip_on_cran()
+
+  map_ref <- mixbeta(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixbeta(c(1, 1, 1))
+  alpha <- 0.05
+
+  # Again we have 4 decision scenarios: Go, Stop, In-between 1, In-between 2.
+  n <- 20
+  for (n2 in c(0, 10)) {
+    for (qc2 in c(0.5, 0.8)) {
+      qc1 <- 0.5
+      pc1 <- 0.5
+      pc2 <- 0.6
+
+      dec_go <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, pc2),
+        lower.tail = c(FALSE, FALSE)
+      )
+      dec_stop <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, 1 - pc2),
+        lower.tail = c(TRUE, TRUE)
+      )
+      dec_inbetween_1 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, 1 - pc2),
+        lower.tail = c(FALSE, TRUE)
+      )
+      dec_inbetween_2 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, pc2),
+        lower.tail = c(TRUE, FALSE)
+      )
+
+      get_design_map_n2_pos <- function(dec) {
+        oc2S(
+          prior_flat,
+          map_ref,
+          n,
+          n2,
+          dec
+        )
+      }
+
+      prob_fun_go <- get_design_map_n2_pos(dec_go)
+      prob_fun_stop <- get_design_map_n2_pos(dec_stop)
+      prob_fun_inbetween_1 <- get_design_map_n2_pos(dec_inbetween_1)
+      prob_fun_inbetween_2 <- get_design_map_n2_pos(dec_inbetween_2)
+
+      x <- seq(0.1, 0.9, by = 0.1)
+
+      prob_go <- prob_fun_go(x, x)
+      prob_stop <- prob_fun_stop(x, x)
+      prob_inbetween_1 <- prob_fun_inbetween_1(x, x)
+      prob_inbetween_2 <- prob_fun_inbetween_2(x, x)
+
+      expect_numeric(prob_go, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(prob_stop, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(
+        prob_inbetween_1,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      expect_numeric(
+        prob_inbetween_2,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+
+      total_prob <- prob_go + prob_stop + prob_inbetween_1 + prob_inbetween_2
+      expect_true(all(abs(total_prob - 1) < 1e-3))
+    }
+  }
+})
+
+test_that("Binomial deprecated y2 argument of oc2S function", {
+  skip_on_cran()
+
+  withr::local_options(lifecycle_verbosity = "warning")
+
+  map_ref <- mixbeta(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixbeta(c(1, 1, 1))
+
+  qc1 <- 0.5
+  pc1 <- 0.5
+  pc2 <- 0.6
+  qc2 <- 0.5
+
+  dec_go <- decision2S(
+    qc = c(qc1, qc2),
+    pc = c(pc1, pc2),
+    lower.tail = c(FALSE, FALSE)
+  )
+
+  n <- 20
+  n2 <- 4
+  design <- oc2S(
+    prior_flat,
+    map_ref,
+    n,
+    n2,
+    dec_go
+  )
+
+  expect_warning(
+    design(y2 = 2),
+    class = "lifecycle_warning_deprecated"
+  )
+})
+
+
+test_that("Poisson OC 2-sample works with mixed lower.tail decision criterion", {
+  skip_on_cran()
+
+  map_ref <- mixgamma(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixgamma(c(1, 1, 1))
+  alpha <- 0.05
+
+  # Again we have 4 decision scenarios: Go, Stop, In-between 1, In-between 2.
+  n <- 20
+  for (n2 in c(0, 5)) {
+    for (qc2 in c(0.5, 0.8)) {
+      qc1 <- 0.5
+      pc1 <- 0.5
+      pc2 <- 0.6
+
+      dec_go <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, pc2),
+        lower.tail = c(FALSE, FALSE)
+      )
+      dec_stop <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, 1 - pc2),
+        lower.tail = c(TRUE, TRUE)
+      )
+      dec_inbetween_1 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(pc1, 1 - pc2),
+        lower.tail = c(FALSE, TRUE)
+      )
+      dec_inbetween_2 <- decision2S(
+        qc = c(qc1, qc2),
+        pc = c(1 - pc1, pc2),
+        lower.tail = c(TRUE, FALSE)
+      )
+
+      get_design_map_n2_pos <- function(dec) {
+        oc2S(
+          prior_flat,
+          map_ref,
+          n,
+          n2,
+          dec
+        )
+      }
+
+      prob_fun_go <- get_design_map_n2_pos(dec_go)
+      prob_fun_stop <- get_design_map_n2_pos(dec_stop)
+      prob_fun_inbetween_1 <- get_design_map_n2_pos(dec_inbetween_1)
+      prob_fun_inbetween_2 <- get_design_map_n2_pos(dec_inbetween_2)
+
+      x <- seq(0.5, 1.5, by = 0.1)
+
+      prob_go <- prob_fun_go(x, x)
+      prob_stop <- prob_fun_stop(x, x)
+      prob_inbetween_1 <- prob_fun_inbetween_1(x, x)
+      prob_inbetween_2 <- prob_fun_inbetween_2(x, x)
+      expect_numeric(prob_go, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(prob_stop, lower = 0, upper = 1, any.missing = FALSE)
+      expect_numeric(
+        prob_inbetween_1,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      expect_numeric(
+        prob_inbetween_2,
+        lower = 0,
+        upper = 1,
+        any.missing = FALSE
+      )
+      total_prob <- prob_go + prob_stop + prob_inbetween_1 + prob_inbetween_2
+      expect_true(all(abs(total_prob - 1) < 1e-3))
+    }
+  }
+})
+
+test_that("Poisson deprecated y2 argument of oc2S function", {
+  skip_on_cran()
+
+  withr::local_options(lifecycle_verbosity = "warning")
+
+  map_ref <- mixgamma(
+    c(0.6, 19, 29),
+    c(0.3, 4, 5),
+    c(0.1, 1, 1)
+  )
+  prior_flat <- mixgamma(c(1, 1, 1))
+  alpha <- 0.05
+
+  qc1 <- 0.5
+  pc1 <- 0.5
+  pc2 <- 0.6
+  qc2 <- 0.5
+
+  dec_go <- decision2S(
+    qc = c(qc1, qc2),
+    pc = c(pc1, pc2),
+    lower.tail = c(FALSE, FALSE)
+  )
+
+  n <- 20
+  n2 <- 4
+  design <- oc2S(
+    prior_flat,
+    map_ref,
+    n,
+    n2,
+    dec_go
+  )
+
+  expect_warning(
+    design(y2 = 3),
+    class = "lifecycle_warning_deprecated"
+  )
 })

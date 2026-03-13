@@ -75,8 +75,9 @@
 #' @export
 pos2S <- function(prior1, prior2, n1, n2, decision, ...) UseMethod("pos2S")
 #' @export
-pos2S.default <- function(prior1, prior2, n1, n2, decision, ...)
+pos2S.default <- function(prior1, prior2, n1, n2, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun pos2S
 #' @template design2S-binomial
@@ -114,29 +115,95 @@ pos2S.betaMix <- function(prior1, prior2, n1, n2, decision, eps, ...) {
       lim2 <- qmix(pred_mix2, c(eps / 2, 1 - eps / 2))
     }
 
-    boundary <- crit_y1(lim2[1]:lim2[2], lim1 = lim1)
-    res <- rep(-Inf, times = length(boundary))
+    res <- rep(-Inf, times = length(lim2[1]:lim2[2]))
+
+    if (is(decision, "decision2S_1sided")) {
+      boundary <- crit_y1(lim2[1]:lim2[2], lim1 = lim1)
+
+      for (i in lim2[1]:lim2[2]) {
+        y2ind <- i - lim2[1] + 1
+        if (boundary[y2ind] == -1) {
+          ## decision was always 0
+          res[y2ind] <- -Inf
+        } else if (boundary[y2ind] == n1 + 1) {
+          ## decision was always 1
+          res[y2ind] <- 0
+        } else {
+          ## calculate for the predictive for dtheta1 the
+          ## probability mass past (or before) the boundary
+          res[y2ind] <- pmix(
+            pred_mix1,
+            boundary[y2ind],
+            lower.tail = lower.tail,
+            log.p = TRUE
+          )
+        }
+      }
+    } else {
+      boundary_lower_or_equal_than <- crit_y1$lower_or_equal_than(
+        lim2[1]:lim2[2],
+        lim1 = lim1
+      )
+      boundary_higher_than <- crit_y1$higher_than(
+        lim2[1]:lim2[2],
+        lim1 = lim1
+      )
+
+      for (i in lim2[1]:lim2[2]) {
+        y2ind <- i - lim2[1] + 1
+        lower_or_equal <- boundary_lower_or_equal_than[y2ind]
+        higher <- boundary_higher_than[y2ind]
+
+        if (
+          lower_or_equal <= higher ||
+            lower_or_equal == -1 ||
+            higher == -1
+        ) {
+          ## decision was always 0
+          res[y2ind] <- -Inf
+        } else if (higher == n1 + 1 && lower_or_equal == n1 + 1) {
+          ## both criteria are always 1
+          res[y2ind] <- 0
+        } else if (higher == n1 + 1) {
+          ## upper-tail criterion is always 1, hence only lower-tail criterion matters
+          res[y2ind] <- pmix(
+            pred_mix1,
+            lower_or_equal,
+            lower.tail = TRUE,
+            log.p = TRUE
+          )
+        } else if (lower_or_equal == n1 + 1) {
+          ## lower-tail criterion is always 1, hence only upper-tail criterion matters
+          res[y2ind] <- pmix(
+            pred_mix1,
+            higher,
+            lower.tail = FALSE,
+            log.p = TRUE
+          )
+        } else {
+          ## calculate for all requested theta1 the probability mass
+          ## <= lower_or_equal boundary and > higher_than boundary
+          res[y2ind] <- log(
+            pmix(
+              pred_mix1,
+              lower_or_equal,
+              lower.tail = TRUE
+            ) -
+              pmix(
+                pred_mix1,
+                higher,
+                lower.tail = TRUE
+              )
+          )
+        }
+      }
+    }
 
     for (i in lim2[1]:lim2[2]) {
       y2ind <- i - lim2[1] + 1
-      if (boundary[y2ind] == -1) {
-        ## decision was always 0
-        res[y2ind] <- -Inf
-      } else if (boundary[y2ind] == n1 + 1) {
-        ## decision was always 1
-        res[y2ind] <- 0
-      } else {
-        ## calculate for the predictive for dtheta1 the
-        ## probability mass past (or before) the boundary
-        res[y2ind] <- pmix(
-          pred_mix1,
-          boundary[y2ind],
-          lower.tail = lower.tail,
-          log.p = TRUE
-        )
-      }
+
       ## finally weight with the density according to the occurence
-      ## of i due to theta2; the pmax avoids -Inf in a case of Prob==0
+      ## of i due to theta2;
       res[y2ind] <- res[y2ind] + dmix(pred_mix2, i, log = TRUE)
     }
     exp(matrixStats::logSumExp(res))
@@ -190,50 +257,116 @@ pos2S.normMix <- function(
     Ngrid
   )
 
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (is(decision, "decision2S_1sided")) {
+    # Simple case of one-sided boundary.
+    assert_function(crit_y1)
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix1, mix2) {
-    ## get the predictive of the mean
-    pred_mix1_mean <- preddist(mix1, n = n1, sigma = sigma1)
-    if (n2 == 0) {
-      ## gets ignored anyway
-      pred_mix2_mean <- preddist(mix2, n = 1, sigma = sigma2)
-    } else {
-      pred_mix2_mean <- preddist(mix2, n = n2, sigma = sigma2)
+    function(mix1, mix2) {
+      ## get the predictive of the mean
+      pred_mix1_mean <- preddist(mix1, n = n1, sigma = sigma1)
+      if (n2 == 0) {
+        ## gets ignored anyway
+        pred_mix2_mean <- preddist(mix2, n = 1, sigma = sigma2)
+      } else {
+        pred_mix2_mean <- preddist(mix2, n = n2, sigma = sigma2)
+      }
+
+      assert_that(inherits(pred_mix1_mean, "normMix"))
+      assert_that(inherits(pred_mix2_mean, "normMix"))
+
+      lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
+      crit_y1(lim2, lim1)
+
+      if (n2 == 0) {
+        mean_prior2 <- summary(prior2, probs = c())["mean"]
+        pmix(
+          pred_mix1_mean,
+          crit_y1(mean_prior2),
+          lower.tail = lower.tail
+        )
+      } else {
+        integrate_density_log(
+          function(x) {
+            pmix(
+              pred_mix1_mean,
+              crit_y1(x, lim1 = lim1),
+              lower.tail = lower.tail,
+              log.p = TRUE
+            )
+          },
+          pred_mix2_mean,
+          logit(eps / 2),
+          logit(1 - eps / 2)
+        )
+      }
     }
+  } else {
+    # Mixed boundary case.
+    assert_list(crit_y1, len = 2, types = "function")
+    crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
+    crit_y1_higher_than <- crit_y1$higher_than
 
-    assert_that(inherits(pred_mix1_mean, "normMix"))
-    assert_that(inherits(pred_mix2_mean, "normMix"))
+    function(mix1, mix2) {
+      ## get the predictive of the mean
+      pred_mix1_mean <- preddist(mix1, n = n1, sigma = sigma1)
+      if (n2 == 0) {
+        ## gets ignored anyway
+        pred_mix2_mean <- preddist(mix2, n = 1, sigma = sigma2)
+      } else {
+        pred_mix2_mean <- preddist(mix2, n = n2, sigma = sigma2)
+      }
 
-    lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
-    lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
-    crit_y1(lim2, lim1)
+      assert_that(inherits(pred_mix1_mean, "normMix"))
+      assert_that(inherits(pred_mix2_mean, "normMix"))
 
-    ## return(list(crit=crit_y1, m1=pred_dtheta1_mean, m2=pred_dtheta2_mean))
+      lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
 
-    if (n2 == 0) {
-      mean_prior2 <- summary(prior2, probs = c())["mean"]
-      return(pmix(
-        pred_mix1_mean,
-        crit_y1(mean_prior2),
-        lower.tail = lower.tail
-      ))
-    } else {
-      return(integrate_density_log(
-        function(x)
-          pmix(
-            pred_mix1_mean,
-            crit_y1(x, lim1 = lim1),
-            lower.tail = lower.tail,
-            log.p = TRUE
-          ),
-        pred_mix2_mean,
-        logit(eps / 2),
-        logit(1 - eps / 2)
-      ))
+      crit_y1_lower_or_equal_than(lim2, lim1)
+      crit_y1_higher_than(lim2, lim1)
+
+      if (n2 == 0) {
+        mean_prior2 <- summary(prior2, probs = c())["mean"]
+        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(mean_prior2)
+        bound_higher_than <- crit_y1_higher_than(mean_prior2)
+        if (bound_lower_or_equal_than <= bound_higher_than) {
+          0
+        } else {
+          pmix(pred_mix1_mean, bound_lower_or_equal_than, lower.tail = TRUE) -
+            pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE)
+        }
+      } else {
+        integrand <- function(x) {
+          bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+            x,
+            lim1 = lim1
+          )
+          bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
+          # We need to expect here a vector x.
+          ifelse(
+            bound_lower_or_equal_than <= bound_higher_than,
+            -Inf,
+            log(
+              pmix(
+                pred_mix1_mean,
+                bound_lower_or_equal_than,
+                lower.tail = TRUE
+              ) -
+                pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE)
+            )
+          )
+        }
+        integrate_density_log(
+          integrand,
+          pred_mix2_mean,
+          logit(eps / 2),
+          logit(1 - eps / 2)
+        )
+      }
     }
   }
-
   design_fun
 }
 
@@ -246,39 +379,101 @@ pos2S.gammaMix <- function(prior1, prior2, n1, n2, decision, eps = 1e-6, ...) {
 
   crit_y1 <- decision2S_boundary(prior1, prior2, n1, n2, decision, eps)
 
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (is(decision, "decision2S_1sided")) {
+    # Simple case of one-sided boundary.
+    assert_function(crit_y1)
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix1, mix2) {
-    assert_that(likelihood(mix1) == "poisson")
-    assert_that(likelihood(mix2) == "poisson")
+    function(mix1, mix2) {
+      assert_that(likelihood(mix1) == "poisson")
+      assert_that(likelihood(mix2) == "poisson")
 
-    ## get the predictive of the sum
-    pred_mix1_sum <- preddist(mix1, n = n1)
-    pred_mix2_sum <- preddist(mix2, n = n2)
+      ## get the predictive of the sum
+      pred_mix1_sum <- preddist(mix1, n = n1)
+      pred_mix2_sum <- preddist(mix2, n = n2)
 
-    assert_that(inherits(pred_mix1_sum, "gammaPoissonMix"))
-    assert_that(inherits(pred_mix2_sum, "gammaPoissonMix"))
+      assert_that(inherits(pred_mix1_sum, "gammaPoissonMix"))
+      assert_that(inherits(pred_mix2_sum, "gammaPoissonMix"))
 
-    lim1 <- qmix(pred_mix1_sum, c(eps / 2, 1 - eps / 2))
-    lim2 <- qmix(pred_mix2_sum, c(eps / 2, 1 - eps / 2))
+      lim1 <- qmix(pred_mix1_sum, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_sum, c(eps / 2, 1 - eps / 2))
 
-    ## force lower limit of lim1 to be 0 such that we will get and
-    ## answer in most cases; performance wise it should be ok as
-    ## we run a O(log(N)) search
-    lim1[1] <- 0
+      ## force lower limit of lim1 to be 0 such that we will get and
+      ## answer in most cases; performance wise it should be ok as
+      ## we run a O(log(N)) search
+      lim1[1] <- 0
 
-    ## ensure that the boundaries are cached
-    crit_y1(lim2, lim1 = lim1)
-    grid <- seq(lim2[1], lim2[2])
-    exp(matrixStats::logSumExp(
-      dmix(pred_mix2_sum, grid, log = TRUE) +
-        pmix(
-          pred_mix1_sum,
-          crit_y1(grid, lim1 = lim1),
-          lower.tail = lower.tail,
-          log.p = TRUE
-        )
-    ))
+      ## ensure that the boundaries are cached
+      crit_y1(lim2, lim1 = lim1)
+      grid <- seq(lim2[1], lim2[2])
+      exp(matrixStats::logSumExp(
+        dmix(pred_mix2_sum, grid, log = TRUE) +
+          pmix(
+            pred_mix1_sum,
+            crit_y1(grid, lim1 = lim1),
+            lower.tail = lower.tail,
+            log.p = TRUE
+          )
+      ))
+    }
+  } else {
+    # Mixed boundary case.
+    assert_list(crit_y1, len = 2, types = "function")
+    crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
+    crit_y1_higher_than <- crit_y1$higher_than
+
+    function(mix1, mix2) {
+      assert_that(likelihood(mix1) == "poisson")
+      assert_that(likelihood(mix2) == "poisson")
+
+      ## get the predictive of the sum
+      pred_mix1_sum <- preddist(mix1, n = n1)
+      pred_mix2_sum <- preddist(mix2, n = n2)
+
+      assert_that(inherits(pred_mix1_sum, "gammaPoissonMix"))
+      assert_that(inherits(pred_mix2_sum, "gammaPoissonMix"))
+
+      lim1 <- qmix(pred_mix1_sum, c(eps / 2, 1 - eps / 2))
+      lim2 <- qmix(pred_mix2_sum, c(eps / 2, 1 - eps / 2))
+
+      ## force lower limit of lim1 to be 0 such that we will get and
+      ## answer in most cases; performance wise it should be ok as
+      ## we run a O(log(N)) search
+      lim1[1] <- 0
+
+      ## ensure that the boundaries are cached
+      crit_y1_lower_or_equal_than(lim2, lim1)
+      crit_y1_higher_than(lim2, lim1)
+
+      grid <- seq(lim2[1], lim2[2])
+      bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+        grid,
+        lim1 = lim1
+      )
+      bound_higher_than <- crit_y1_higher_than(grid, lim1 = lim1)
+      log_prob_in_bounds <- numeric(length(grid))
+      has_zero_prob <- bound_lower_or_equal_than <= bound_higher_than
+      log_prob_in_bounds[has_zero_prob] <- -Inf
+      if (!all(has_zero_prob)) {
+        log_prob_in_bounds[!has_zero_prob] <-
+          log(
+            pmix(
+              pred_mix1_sum,
+              bound_lower_or_equal_than[!has_zero_prob],
+              lower.tail = TRUE
+            ) -
+              pmix(
+                pred_mix1_sum,
+                bound_higher_than[!has_zero_prob],
+                lower.tail = TRUE
+              )
+          )
+      }
+      exp(matrixStats::logSumExp(
+        dmix(pred_mix2_sum, grid, log = TRUE) +
+          log_prob_in_bounds
+      ))
+    }
   }
   design_fun
 }

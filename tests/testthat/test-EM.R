@@ -1,5 +1,3 @@
-# context("EM: Expectation-Maximization")
-
 ## test that the EM algorithms recover reliably test distributions;
 ## test criterium is a "sufficiently" small KL divergence
 
@@ -241,4 +239,17 @@ test_that("Constrained Beta EM respects a>1 & b>1", {
   constrained <- mixfit(samp, type = "beta", Nc = 3, constrain_gt1 = TRUE)
   expect_numeric(constrained[2, ], lower = 1, any.missing = FALSE, len = 3)
   expect_numeric(constrained[3, ], lower = 1, any.missing = FALSE, len = 3)
+})
+
+test_that("EM plotting functions do not use deprecated ggplot2 functionality", {
+  unconstrained <- mixbeta(c(0.6, 2.8, 64), c(0.25, 0.5, 0.92), c(0.15, 3, 15))
+  set.seed(45747)
+  samp <- rmix(unconstrained, Nsim)
+  constrained <- mixfit(samp, type = "beta", Nc = 3, constrain_gt1 = TRUE)
+  withr::with_options(
+    list(lifecycle_verbosity = "error", RBesT.verbose = TRUE),
+    {
+      expect_no_error(plot(constrained))
+    }
+  )
 })

@@ -15,7 +15,18 @@ setwd(here())
 system("make dev-install", ignore.stdout = TRUE, ignore.stderr = TRUE)
 setwd(here("inst", "sbc"))
 
-pkg <- c("assertthat", "rstan", "mvtnorm", "checkmate", "Formula", "abind", "dplyr", "tidyr", "here", "bayesplot")
+pkg <- c(
+  "assertthat",
+  "rstan",
+  "mvtnorm",
+  "checkmate",
+  "Formula",
+  "abind",
+  "dplyr",
+  "tidyr",
+  "here",
+  "bayesplot"
+)
 sapply(pkg, require, character.only = TRUE)
 
 library(clustermq)
@@ -73,7 +84,15 @@ cases <- data.frame(
 ## replications to use
 S <- 1E4
 
-scenarios <- merge(expand.grid(repl = 1:S, data_scenario = c("dense", "sparse"), stringsAsFactors = FALSE), cases, by = NULL)
+scenarios <- merge(
+  expand.grid(
+    repl = 1:S,
+    data_scenario = c("dense", "sparse"),
+    stringsAsFactors = FALSE
+  ),
+  cases,
+  by = NULL
+)
 ## scenarios <- merge(expand.grid(repl=1:S, data_scenario=c("sparse"), stringsAsFactors=FALSE), cases, by=NULL)
 
 scenarios <- cbind(job.id = 1:nrow(scenarios), scenarios)
@@ -86,9 +105,19 @@ RNGkind("L'Ecuyer-CMRG")
 set.seed(269698974)
 rng_seeds <- sbc_tools$setup_lecuyer_seeds(.Random.seed, num_simulations)
 
-sim_result <- Q_rows(scenarios, sbc_tools$run_sbc_case, const = list(base_scenarios = base_scenarios, seeds = rng_seeds), export = as.list(sbc_tools), n_jobs = n_jobs, pkgs = pkg)
+sim_result <- Q_rows(
+  scenarios,
+  sbc_tools$run_sbc_case,
+  const = list(base_scenarios = base_scenarios, seeds = rng_seeds),
+  export = as.list(sbc_tools),
+  n_jobs = n_jobs,
+  pkgs = pkg
+)
 
-assert_that(num_simulations == length(sim_result), msg = "Check if all simulations were processed.")
+assert_that(
+  num_simulations == length(sim_result),
+  msg = "Check if all simulations were processed."
+)
 
 calibration_data <- merge(scenarios, bind_rows(sim_result), by = "job.id")
 
@@ -124,7 +153,10 @@ if (any(sampler_diagnostics$max_Rhat > 1.2)) {
 #' Bin raw data as used in the analysis.
 scale64 <- sbc_tools$scale_ranks(1024, 2^4)
 B <- 1024L / 2^4
-calibration_data_binned <- calibration_data[, scale64(.SD), by = c("data_scenario", "family", "sd_tau")]
+calibration_data_binned <- calibration_data[,
+  scale64(.SD),
+  by = c("data_scenario", "family", "sd_tau")
+]
 
 #' Save as data.frame to avoid data.table dependency.
 calibration_data <- as.data.frame(calibration_data)
@@ -135,7 +167,8 @@ git_hash <- system2("git", c("rev-parse", "HEAD"), stdout = TRUE)
 created <- Sys.time()
 created_str <- format(created, "%F %T %Z", tz = "UTC")
 
-calibration <- list( ## raw=calibration_data, ## stop storing raw results, which are not needed for SBC reports
+calibration <- list(
+  ## raw=calibration_data, ## stop storing raw results, which are not needed for SBC reports
   data = calibration_data_binned,
   sampler_diagnostics = sampler_diagnostics,
   S = S,
@@ -149,7 +182,18 @@ saveRDS(calibration_data, file = "calibration_data.rds")
 
 library(tools)
 md5 <- md5sum("calibration.rds")
-cat(paste0("Created:  ", created_str, "\ngit hash: ", git_hash, "\nMD5:      ", md5, "\n"), file = "calibration.md5")
+cat(
+  paste0(
+    "Created:  ",
+    created_str,
+    "\ngit hash: ",
+    git_hash,
+    "\nMD5:      ",
+    md5,
+    "\n"
+  ),
+  file = "calibration.md5"
+)
 
 #'
 #' Summarize execution time
@@ -160,15 +204,27 @@ job_report$time.running <- job_report$time.running / 60 ## convert to minutes
 
 runtime_by_problem_family <- job_report %>%
   group_by(family, data_scenario) %>%
-  summarize(total = sum(time.running), mean = mean(time.running), max = max(time.running))
+  summarize(
+    total = sum(time.running),
+    mean = mean(time.running),
+    max = max(time.running)
+  )
 
 runtime_by_problem <- job_report %>%
   group_by(data_scenario) %>%
-  summarize(total = sum(time.running), mean = mean(time.running), max = max(time.running))
+  summarize(
+    total = sum(time.running),
+    mean = mean(time.running),
+    max = max(time.running)
+  )
 
 runtime <- job_report %>%
   group_by(family) %>%
-  summarize(total = sum(time.running), mean = mean(time.running), max = max(time.running))
+  summarize(
+    total = sum(time.running),
+    mean = mean(time.running),
+    max = max(time.running)
+  )
 
 cat("Summary on job runtime on cluster:\n\n")
 

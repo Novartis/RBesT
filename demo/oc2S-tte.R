@@ -25,7 +25,14 @@ options(mc.cores = detectCores(logical = FALSE))
 ## simulate the follow-up time for a given sample size when censoring
 ## with event_crit events. Positive time-points correspond to events,
 ## negative ones are censored cases.
-sim_trial <- function(n_1, n_2, event_rate_1, event_rate_2, events_crit, accrual_rate) {
+sim_trial <- function(
+  n_1,
+  n_2,
+  event_rate_1,
+  event_rate_2,
+  events_crit,
+  accrual_rate
+) {
   n <- n_1 + n_2
   assert_that(events_crit <= n)
   accrual <- cumsum(c(0, rexp(n - 1, accrual_rate)))
@@ -43,7 +50,11 @@ sim_trial <- function(n_1, n_2, event_rate_1, event_rate_2, events_crit, accrual
   cens_calendar <- event_calendar[o[events_crit]]
   is_event <- event_calendar <= cens_calendar
   is_enrolled <- cens_calendar >= accrual
-  follow_up <- ifelse(is_event, event_calendar - accrual, -1 * (cens_calendar - accrual))
+  follow_up <- ifelse(
+    is_event,
+    event_calendar - accrual,
+    -1 * (cens_calendar - accrual)
+  )
   follow_up[!is_enrolled] <- 0
   cbind(follow_up = follow_up, group = group)
 }
@@ -74,18 +85,31 @@ analyze_trial <- function(trial, prior_1, prior_2, decision) {
 #' @param accrual_rate accrual rate of subjects
 #' @param decision 2-sample decision function
 #' @param num_sim number of replicates for each scenario
-oc2S_tte <- function(prior_1, prior_2,
-                     n_1, n_2,
-                     events_crit,
-                     accrual_rate,
-                     decision,
-                     num_sim = 1E3) {
+oc2S_tte <- function(
+  prior_1,
+  prior_2,
+  n_1,
+  n_2,
+  events_crit,
+  accrual_rate,
+  decision,
+  num_sim = 1E3
+) {
   fn <- function(event_rate_1, event_rate_2) {
-    sim <- replicate(num_sim, sim_trial(n_1, n_2, event_rate_1, event_rate_2, events_crit, accrual_rate))
-    mean(apply(sim, 3, partial(analyze_trial,
-      prior_1 = prior_1, prior_2 = prior_2,
-      decision = decision
-    )))
+    sim <- replicate(
+      num_sim,
+      sim_trial(n_1, n_2, event_rate_1, event_rate_2, events_crit, accrual_rate)
+    )
+    mean(apply(
+      sim,
+      3,
+      partial(
+        analyze_trial,
+        prior_1 = prior_1,
+        prior_2 = prior_2,
+        decision = decision
+      )
+    ))
   }
   function(theta1, theta2) {
     T <- try(data.frame(theta1 = theta1, theta2 = theta2, row.names = NULL))
@@ -113,7 +137,8 @@ hist_data <- hist_data %>%
   mutate(exposure_y = exposure_m / months_in_year)
 
 set.seed(456747)
-mc_map <- gMAP(events ~ 1 + offset(log(exposure_y)) | study,
+mc_map <- gMAP(
+  events ~ 1 + offset(log(exposure_y)) | study,
   data = hist_data,
   tau.dist = "LogNormal",
   tau.prior = c(log(0.125), log(2) / 1.96), ## assuming moderate heterogeniety
@@ -143,7 +168,11 @@ success <- decision2S(0.975, 0, lower.tail = TRUE, link = "log")
 
 ## weakly-informative prior for treatment (encoding that the events
 ## are on year scale when using days as basic unit)
-prior_noninf <- mixgamma(c(1, 1 / days_in_year, 1), param = "mn", likelihood = "exp")
+prior_noninf <- mixgamma(
+  c(1, 1 / days_in_year, 1),
+  param = "mn",
+  likelihood = "exp"
+)
 prior_noninf
 
 ## change to poisson likelihood
@@ -165,8 +194,10 @@ lambda_trt <- 0.04 / days_in_month
 
 ## not using a prior
 design_noninf <- oc2S_tte(
-  prior_noninf, prior_noninf,
-  100, 50, ## sample size per arm
+  prior_noninf,
+  prior_noninf,
+  100,
+  50, ## sample size per arm
   100, ## critical number of events when trial is censored
   15 / days_in_month, ## accrual in # of pts per day
   success
@@ -184,8 +215,10 @@ summary(map_d)
 lambda_ctl
 
 design_map <- oc2S_tte(
-  prior_noninf, map_d,
-  100, 50, ## sample size per arm
+  prior_noninf,
+  map_d,
+  100,
+  50, ## sample size per arm
   100, ## critical number of events when trial is censored
   15 / days_in_month, ## accrual in # of pts per day
   success

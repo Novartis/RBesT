@@ -28,11 +28,15 @@
 #' y_{2,i}} and for the normal case as the mean \eqn{\bar{y}_2 = 1/n_2
 #' \sum_{i=1}^{n_2} y_{2,i}}.
 #'
-#' @return Returns a function with a single argument. This function
-#' calculates in dependence of the outcome \eqn{y_2} in sample 2 the
-#' critical value \eqn{y_{1,c}} for which the defined design will
-#' change the decision from 0 to 1 (or vice versa, depending on the
-#' decision function).
+#' @return For one-sided decision functions, returns a function with a
+#' single argument. This function calculates in dependence of the
+#' outcome \eqn{y_2} in sample 2 the critical value \eqn{y_{1,c}} for
+#' which the defined design will change the decision from 0 to 1 (or
+#' vice versa, depending on the decision function).
+#' For two-sided decision functions, returns a list with components
+#' `lower_or_equal_than` and `higher_than`, containing the critical
+#' value functions for the lower and upper one-sided decision
+#' boundary components.
 #'
 #' @family design2S
 #'
@@ -64,11 +68,13 @@
 #' futilityCrit(postmix(priorP, m = y1c - 1E-3, n = 10), postmix(priorT, m = -10, n = 20))
 #'
 #' @export
-decision2S_boundary <- function(prior1, prior2, n1, n2, decision, ...)
+decision2S_boundary <- function(prior1, prior2, n1, n2, decision, ...) {
   UseMethod("decision2S_boundary")
+}
 #' @export
-decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...)
+decision2S_boundary.default <- function(prior1, prior2, n1, n2, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun decision2S_boundary
 #' @template design2S-binomial
@@ -89,6 +95,93 @@ decision2S_boundary.betaMix <- function(
   assert_number(n1, lower = 1, finite = TRUE)
   assert_number(n2, lower = 0, finite = TRUE)
 
+  if (is(decision, "decision2S_2sided")) {
+    decision2S_boundary_betaMix_2sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  } else {
+    decision2S_boundary_betaMix_1sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  }
+}
+
+decision2S_boundary_betaMix_2sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
+  crit_lower <- decision2S_boundary_betaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    lower(decision),
+    eps,
+    ...
+  )
+  crit_upper <- decision2S_boundary_betaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    upper(decision),
+    eps,
+    ...
+  )
+  list(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+decision2S_boundary_betaMix_1sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision2S_boundary_betaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    eps,
+    ...
+  )
+}
+
+decision2S_boundary_betaMix_atomic <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps,
+  ...
+) {
   if (!missing(eps)) {
     assert_number(eps, lower = 0, upper = 0.1, finite = TRUE)
   }
@@ -239,6 +332,8 @@ solve_boundary2S_normMix <- function(
   lim2,
   delta2
 ) {
+  assert_class(decision, "decision2S_atomic")
+
   grid <- seq(lim2[1], lim2[2], length = diff(lim2) / delta2)
 
   sigma1 <- sigma(mix1)
@@ -316,6 +411,120 @@ decision2S_boundary.normMix <- function(
     sigma2 <- RBesT::sigma(prior2)
     message("Using default prior 2 reference scale ", sigma2)
   }
+
+  if (is(decision, "decision2S_2sided")) {
+    decision2S_boundary_normMix_2sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      sigma1,
+      sigma2,
+      eps,
+      Ngrid,
+      ...
+    )
+  } else {
+    decision2S_boundary_normMix_1sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      sigma1,
+      sigma2,
+      eps,
+      Ngrid,
+      ...
+    )
+  }
+}
+
+decision2S_boundary_normMix_2sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps,
+  Ngrid,
+  ...
+) {
+  crit_lower <- decision2S_boundary_normMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    lower(decision),
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid,
+    ...
+  )
+  crit_upper <- decision2S_boundary_normMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    upper(decision),
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid,
+    ...
+  )
+  list(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+decision2S_boundary_normMix_1sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps,
+  Ngrid,
+  ...
+) {
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision2S_boundary_normMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    sigma1,
+    sigma2,
+    eps,
+    Ngrid,
+    ...
+  )
+}
+
+decision2S_boundary_normMix_atomic <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  sigma1,
+  sigma2,
+  eps,
+  Ngrid,
+  ...
+) {
+  assert_class(decision, "decision2S_atomic")
+
   assert_number(sigma1, lower = 0)
   assert_number(sigma2, lower = 0)
 
@@ -329,7 +538,9 @@ decision2S_boundary.normMix <- function(
   assert_that(n1 > 0)
   assert_that(n2 >= 0)
 
-  if (n2 == 0) sem2 <- sigma(prior2) / sqrt(1E-1)
+  if (n2 == 0) {
+    sem2 <- sigma(prior2) / sqrt(1E-1)
+  }
 
   ## change the reference scale of the prior such that the prior
   ## represents the distribution of the respective means
@@ -362,9 +573,6 @@ decision2S_boundary.normMix <- function(
   ## variable the critical value where the decision changes
   boundary <- NA
   boundary_discrete <- matrix(NA, nrow = 0, ncol = 2)
-
-  ## check where the decision is 1, i.e. left or right
-  lower.tail <- attr(decision, "lower.tail")
 
   decision_boundary <- function(y2, lim1) {
     lim2 <- range(y2)
@@ -407,7 +615,7 @@ decision2S_boundary.normMix <- function(
           boundary_discrete <<- rbind(boundary_extra, boundary_discrete)
         }
         if (lim2[2] > clim2[2]) {
-          ## the upper bound is not large enough.. again only add whats missing
+          ## the upper bound is not large enough.. again only add what's missing
           new_right_lim2 <- max(lim2[2], clim2[2] + 2 * delta2)
           boundary_extra <- solve_boundary2S_normMix(
             decision,
@@ -443,7 +651,6 @@ decision2S_boundary.normMix <- function(
   decision_boundary
 }
 
-
 #' @templateVar fun decision2S_boundary
 #' @template design2S-poisson
 #' @export
@@ -462,6 +669,100 @@ decision2S_boundary.gammaMix <- function(
   # only the second n2 argument may be 0
   assert_that(n1 > 0)
   assert_that(n2 >= 0)
+
+  if (is(decision, "decision2S_2sided")) {
+    decision2S_boundary_gammaMix_2sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  } else {
+    decision2S_boundary_gammaMix_1sided(
+      prior1,
+      prior2,
+      n1,
+      n2,
+      decision,
+      eps,
+      ...
+    )
+  }
+}
+
+#' @keywords internal
+decision2S_boundary_gammaMix_2sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  crit_lower <- decision2S_boundary_gammaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    lower(decision),
+    eps,
+    ...
+  )
+  crit_upper <- decision2S_boundary_gammaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    upper(decision),
+    eps,
+    ...
+  )
+  list(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision2S_boundary_gammaMix_1sided <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision2S_boundary_gammaMix_atomic(
+    prior1,
+    prior2,
+    n1,
+    n2,
+    decision,
+    eps,
+    ...
+  )
+}
+
+#' @keywords internal
+decision2S_boundary_gammaMix_atomic <- function(
+  prior1,
+  prior2,
+  n1,
+  n2,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  if (!missing(eps)) {
+    assert_number(eps, lower = 0, upper = 0.1, finite = TRUE)
+  }
 
   cond_decisionStep <- function(post2) {
     fn <- function(m1) {

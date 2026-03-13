@@ -49,7 +49,7 @@ The \code{pos1S} function defines a 1 sample design and
 returns a function which calculates its probability of success.
 The probability of success is the frequency with which the decision
 function is evaluated to 1 under the assumption of a given true
-distribution of the data implied by a distirbution of the parameter
+distribution of the data implied by a distribution of the parameter
 \eqn{\theta}.
 
 Calling the \code{pos1S} function calculates the critical value

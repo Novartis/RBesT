@@ -24,7 +24,8 @@ SRCS = $(R_PKG_SRCS) $(R_SRCS) $(RMD_SRCS) $(STAN_SRCS)
 NODIR_SRC = $(notdir $(SRCS))
 BIN_OBJS = src/package-binary R/sysdata.rda
 DOC_OBJS = man/package-doc inst/doc/$(RPKG).pdf
-RCMD ?= R_PROFILE_USER="$(PROJROOT_ABS)/.Rprofile" "${R_HOME}/bin/R" -q
+# RCMD ?= R_PROFILE_USER="$(PROJROOT_ABS)/.Rprofile" "${R_HOME}/bin/R" -q
+RCMD ?= "${R_HOME}/bin/R" -q
 
 R_HOME ?= $(shell R RHOME)
 PKG_VERSION ?= $(patsubst ‘%’, %, $(word 2, $(shell grep ^Version DESCRIPTION)))
@@ -169,7 +170,7 @@ build/installed/$(RPKG)/DESCRIPTION : build/r-source-fast
 	install -d build/installed
 	cd build; $(RCMD) CMD INSTALL --library=./installed --no-docs --no-multiarch --no-test-load --no-clean-on-error $(RPKG)-source.tar.gz
 
-docs/index.html : $(SRCS)
+docs/index.html : doc $(SRCS)
 	NOT_CRAN=true $(RCMD) -e 'pkgdown::build_site()'
 
 PHONY += pkgdown

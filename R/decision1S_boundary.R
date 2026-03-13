@@ -31,7 +31,10 @@
 #' aligned with the cumulative density function definition within R
 #' (see for example [pbinom()]).
 #'
-#' @return Returns the critical value \eqn{y_c}.
+#' @return Returns the critical value \eqn{y_c}. For two-sided
+#'   decision functions a named vector with components
+#'   `lower_or_equal_than` and `higher_than` is returned, containing
+#'   the critical values for the lower and upper decision boundaries.
 #'
 #' @family design1S
 #'
@@ -69,16 +72,60 @@
 #' decision1S_boundary(flat_prior, nL, dec2)
 #'
 #' @export
-decision1S_boundary <- function(prior, n, decision, ...)
+decision1S_boundary <- function(prior, n, decision, ...) {
   UseMethod("decision1S_boundary")
+}
 #' @export
-decision1S_boundary.default <- function(prior, n, decision, ...)
+decision1S_boundary.default <- function(prior, n, decision, ...) {
   "Unknown density"
+}
 
 #' @templateVar fun decision1S_boundary
 #' @template design1S-binomial
 #' @export
 decision1S_boundary.betaMix <- function(prior, n, decision, ...) {
+  if (is(decision, "decision1S_2sided")) {
+    decision1S_boundary_betaMix_2sided(prior, n, decision)
+  } else {
+    decision1S_boundary_betaMix_1sided(prior, n, decision)
+  }
+}
+
+#' @keywords internal
+decision1S_boundary_betaMix_2sided <- function(prior, n, decision) {
+  assert_class(decision, "decision1S_2sided")
+  crit_lower <- decision1S_boundary_betaMix_atomic(
+    prior,
+    n,
+    lower(decision)
+  )
+  crit_upper <- decision1S_boundary_betaMix_atomic(
+    prior,
+    n,
+    upper(decision)
+  )
+  c(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision1S_boundary_betaMix_1sided <- function(prior, n, decision) {
+  assert_class(decision, "decision1S_1sided")
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision1S_boundary_betaMix_atomic(
+    prior,
+    n,
+    decision
+  )
+}
+
+#' @keywords internal
+decision1S_boundary_betaMix_atomic <- function(prior, n, decision) {
+  assert_class(decision, "decision1S_atomic")
+
   VdecisionLazy <- Vectorize(function(r) {
     decision(postmix(prior, r = r, n = n)) - 0.25
   })
@@ -111,12 +158,13 @@ decision1S_boundary.betaMix <- function(prior, n, decision, ...) {
   crit
 }
 
-
 ## returns a function object which is the decision boundary. That is
 ## the function finds at a regular grid between llim1 and ulim1 the
 ## roots of the decision function and returns an interpolation
 ## function object
 solve_boundary1S_normMix <- function(decision, mix, n, lim) {
+  assert_class(decision, "decision1S_atomic")
+
   sigma <- sigma(mix)
 
   cond_decisionStep <- function() {
@@ -155,13 +203,93 @@ decision1S_boundary.normMix <- function(
   eps = 1e-6,
   ...
 ) {
-  ## distributions of the means of the data generating distributions
-  ## for now we assume that the underlying standard deviation
-  ## matches the respective reference scales
+  # Get the default sigma if not provided already here to only message once.
   if (missing(sigma)) {
     sigma <- RBesT::sigma(prior)
     message("Using default prior reference scale ", sigma)
   }
+
+  if (is(decision, "decision1S_2sided")) {
+    decision1S_boundary_normMix_2sided(
+      prior,
+      n,
+      decision,
+      sigma,
+      eps
+    )
+  } else {
+    decision1S_boundary_normMix_1sided(
+      prior,
+      n,
+      decision,
+      sigma,
+      eps
+    )
+  }
+}
+
+#' @keywords internal
+decision1S_boundary_normMix_2sided <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps
+) {
+  assert_class(decision, "decision1S_2sided")
+  crit_lower <- decision1S_boundary_normMix_atomic(
+    prior,
+    n,
+    lower(decision),
+    sigma,
+    eps
+  )
+  crit_upper <- decision1S_boundary_normMix_atomic(
+    prior,
+    n,
+    upper(decision),
+    sigma,
+    eps
+  )
+  c(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision1S_boundary_normMix_1sided <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps
+) {
+  assert_class(decision, "decision1S_1sided")
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision1S_boundary_normMix_atomic(
+    prior,
+    n,
+    decision,
+    sigma,
+    eps
+  )
+}
+
+#' @keywords internal
+decision1S_boundary_normMix_atomic <- function(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps
+) {
+  assert_class(decision, "decision1S_atomic")
+
+  ## distributions of the means of the data generating distributions
+  ## for now we assume that the underlying standard deviation
+  ## matches the respective reference scales
   assert_number(sigma, lower = 0)
 
   sd_samp <- sigma / sqrt(n)
@@ -170,9 +298,6 @@ decision1S_boundary.normMix <- function(
 
   ## change the reference scale of the prior such that the prior
   ## represents the distribution of the respective means
-  ## mean_prior <- prior
-  ## sigma(mean_prior) <- sd_samp
-
   m <- summary(prior, probs = c())["mean"]
 
   lim <- qnorm(p = c(eps / 2, 1 - eps / 2), mean = m, sd = sd_samp)
@@ -183,11 +308,61 @@ decision1S_boundary.normMix <- function(
   crit
 }
 
-
 #' @templateVar fun decision1S_boundary
 #' @template design1S-poisson
 #' @export
 decision1S_boundary.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
+  if (is(decision, "decision1S_2sided")) {
+    decision1S_boundary_gammaMix_2sided(prior, n, decision, eps)
+  } else {
+    decision1S_boundary_gammaMix_1sided(prior, n, decision, eps)
+  }
+}
+
+#' @keywords internal
+decision1S_boundary_gammaMix_2sided <- function(prior, n, decision, eps) {
+  assert_class(decision, "decision1S_2sided")
+  crit_lower <- decision1S_boundary_gammaMix_atomic(
+    prior,
+    n,
+    lower(decision),
+    eps
+  )
+  crit_upper <- decision1S_boundary_gammaMix_atomic(
+    prior,
+    n,
+    upper(decision),
+    eps
+  )
+  c(lower_or_equal_than = crit_lower, higher_than = crit_upper)
+}
+
+#' @keywords internal
+decision1S_boundary_gammaMix_1sided <- function(prior, n, decision, eps) {
+  assert_class(decision, "decision1S_1sided")
+  decision <- if (has_lower(decision)) {
+    lower(decision)
+  } else {
+    upper(decision)
+  }
+  decision1S_boundary_gammaMix_atomic(
+    prior,
+    n,
+    decision,
+    eps
+  )
+}
+
+#' @keywords internal
+decision1S_boundary_gammaMix_atomic <- function(
+  prior,
+  n,
+  decision,
+  eps = 1e-6,
+  ...
+) {
+  assert_class(decision, "decision1S_atomic")
+
   assert_that(likelihood(prior) == "poisson")
 
   cond_decisionStep <- function() {

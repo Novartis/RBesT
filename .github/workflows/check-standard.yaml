@@ -2,27 +2,33 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, develop]
+    tags:
+      - "v*.*-*"
   pull_request:
-    branches: [main, master]
+    branches: [main, master, develop]
 
 name: R-CMD-check
 
+permissions:
+  contents: write
+
 jobs:
   R-CMD-check:
+    if: startsWith(github.ref, 'refs/heads/') || github.event_name == 'pull_request'
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: macos-latest, r: "release"}
+          - {os: windows-latest, r: "release"}
+          - {os: ubuntu-latest, r: "devel", http-user-agent: "release"}
+          - {os: ubuntu-latest, r: "release"}
+          - {os: ubuntu-latest, r: "oldrel-1"}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -47,3 +53,58 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "release"
+          use-public-rspm: true
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            make \
+            pandoc \
+            pngquant \
+            qpdf \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-fonts-recommended \
+            texlive-extra-utils \
+            texlive-fonts-extra \
+            texlive-plain-generic \
+            latexmk \
+            texinfo
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck any::devtools any::roxygen2 any::rmarkdown any::knitr any::here
+          needs: check
+
+      - name: Build release artifacts
+        run: make r-source-release
+
+      - name: Create GitHub Release and upload artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            build/RBesT_*md5
+            build/RBesT_*tar.gz
+            build/RBesT-v*md5
+            build/RBesT-v*tar.gz

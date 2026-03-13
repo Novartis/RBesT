@@ -1,7 +1,8 @@
 #' Diagnostic plots for gMAP analyses
 #'
 #' @param x [gMAP()] object
-#' @param size Controls line sizes of traceplots and forest plot.
+#' @param size Controls size of forest plot.
+#' @param linewidth Controls line sizes of traceplots.
 #' @param ... Ignored.
 #'
 #' @details Creates MCMC diagnostics and a forest plot (including
@@ -16,13 +17,10 @@
 #'
 #' @method plot gMAP
 #' @export
-plot.gMAP <- function(x, size = NULL, ...) {
+plot.gMAP <- function(x, size = NULL, linewidth = NULL, ...) {
   pl <- list()
 
-  draws_all <- rstan::extract(x$fit, permuted = FALSE, inc_warmup = TRUE)
-  thin <- attr(x$fit, "sim")$thin
-  n_warmup <- floor(attr(x$fit, "sim")$warmup / thin)
-  draws <- draws_all[-(1:n_warmup), , ]
+  draws <- rstan::extract(x$fit, permuted = FALSE, inc_warmup = FALSE)
   nuts_diag <- bayesplot::nuts_params(x$fit, inc_warmup = FALSE)
 
   ## by default we return a small set of plots only
@@ -43,6 +41,8 @@ plot.gMAP <- function(x, size = NULL, ...) {
 
   if (plot_verbose) {
     ## traces are only shown if in verbose mode...
+    draws_all <- rstan::extract(x$fit, permuted = FALSE, inc_warmup = TRUE)
+    n_warmup <- dim(draws_all)[1] - dim(draws)[1]
     pl$traceBeta <- do.call(
       bayesplot::mcmc_trace,
       c(
@@ -155,7 +155,8 @@ plot.gMAP <- function(x, size = NULL, ...) {
     pl$forest_model <- forest_plot(
       x,
       model = "both",
-      size = if (is.null(size)) 1.25 else size
+      size = if (is.null(size)) 1.25 else size,
+      linewidth = if (is.null(linewidth)) 1.25 else linewidth
     )
   } else {
     message("No intercept defined.")

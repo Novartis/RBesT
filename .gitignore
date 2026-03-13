@@ -3,9 +3,12 @@
 .RData
 .Ruserdata
 docs
-src/*.so
-src/*.o
-src/stan_files/*.hpp
-src/stan_files/*.o
+src/
 *.*~
 inst/sbc/sbc*html
+.vscode/
+*.dll
+.Renviron
+*.Rtest
+*.Rtestfast
+build/

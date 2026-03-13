@@ -12,7 +12,7 @@
 #' returns a function which calculates its probability of success.
 #' The probability of success is the frequency with which the decision
 #' function is evaluated to 1 under the assumption of a given true
-#' distribution of the data implied by a distirbution of the parameter
+#' distribution of the data implied by a distribution of the parameter
 #' \eqn{\theta}.
 #'
 #' Calling the `pos1S` function calculates the critical value
@@ -76,11 +76,38 @@ pos1S.default <- function(prior, n, decision, ...) "Unknown density"
 #' @export
 pos1S.betaMix <- function(prior, n, decision, ...) {
   crit <- decision1S_boundary(prior, n, decision)
-  lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix) {
-    pred_dtheta <- preddist(mix, n = n)
-    pmix(pred_dtheta, crit, lower.tail = lower.tail)
+  design_fun <- if (is(decision, "decision1S_1sided")) {
+    lower.tail <- attr(decision, "lower.tail")
+
+    function(mix) {
+      pred_dtheta <- preddist(mix, n = n)
+      pmix(pred_dtheta, crit, lower.tail = lower.tail)
+    }
+  } else {
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower_or_equal <= crit_upper) {
+      function(mix) 0
+    } else {
+      function(mix) {
+        pred_dtheta <- preddist(mix, n = n)
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pmix(
+          pred_dtheta,
+          crit_lower_or_equal,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pmix(
+          pred_dtheta,
+          crit_upper,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
+      }
+    }
   }
   design_fun
 }
@@ -102,12 +129,38 @@ pos1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 
   crit <- decision1S_boundary(prior, n, decision, sigma, eps)
 
-  ## check where the decision is 1, i.e. left or right
-  lower.tail <- attr(decision, "lower.tail")
+  design_fun <- if (is(decision, "decision1S_1sided")) {
+    ## check where the decision is 1, i.e. left or right
+    lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix) {
-    pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
-    pmix(pred_dtheta_mean, crit, lower.tail = lower.tail)
+    function(mix) {
+      pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
+      pmix(pred_dtheta_mean, crit, lower.tail = lower.tail)
+    }
+  } else {
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower_or_equal <= crit_upper) {
+      function(mix) 0
+    } else {
+      function(mix) {
+        pred_dtheta_mean <- preddist(mix, n = n, sigma = sigma)
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pmix(
+          pred_dtheta_mean,
+          crit_lower_or_equal,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pmix(
+          pred_dtheta_mean,
+          crit_upper,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
+      }
+    }
   }
   design_fun
 }
@@ -117,12 +170,39 @@ pos1S.normMix <- function(prior, n, decision, sigma, eps = 1e-6, ...) {
 #' @export
 pos1S.gammaMix <- function(prior, n, decision, eps = 1e-6, ...) {
   crit <- decision1S_boundary(prior, n, decision, eps)
-  lower.tail <- attr(decision, "lower.tail")
 
-  design_fun <- function(mix) {
-    assert_that(likelihood(prior) == "poisson")
-    pred_dtheta_sum <- preddist(mix, n = n)
-    pmix(pred_dtheta_sum, crit, lower.tail = lower.tail)
+  design_fun <- if (is(decision, "decision1S_1sided")) {
+    lower.tail <- attr(decision, "lower.tail")
+
+    function(mix) {
+      assert_that(likelihood(prior) == "poisson")
+      pred_dtheta_sum <- preddist(mix, n = n)
+      pmix(pred_dtheta_sum, crit, lower.tail = lower.tail)
+    }
+  } else {
+    crit_lower_or_equal <- crit["lower_or_equal_than"]
+    crit_upper <- crit["higher_than"]
+    if (crit_lower_or_equal <= crit_upper) {
+      function(mix) 0
+    } else {
+      function(mix) {
+        pred_dtheta_sum <- preddist(mix, n = n)
+        # P(X <= crit_lower_or_equal):
+        prob_lower_or_equal <- pmix(
+          pred_dtheta_sum,
+          crit_lower_or_equal,
+          lower.tail = TRUE
+        )
+        # P(X <= crit_upper):
+        prob_upper <- pmix(
+          pred_dtheta_sum,
+          crit_upper,
+          lower.tail = TRUE
+        )
+        # P(crit_upper < X <= crit_lower_or_equal):
+        prob_lower_or_equal - prob_upper
+      }
+    }
   }
   design_fun
 }

@@ -33,6 +33,7 @@ Option \tab Default \tab Description \cr
 \code{RBesT.MC.iter} \tab 6000 \tab total MCMC iterations \cr
 \code{RBesT.MC.chains} \tab 4 \tab MCMC chains\cr
 \code{RBesT.MC.thin} \tab 4 \tab MCMC thinning \cr
+\code{RBesT.MC.save_warmup} \tab \code{FALSE} \tab MCMC warmup samples saving \cr
 \code{RBesT.MC.control} \tab \verb{list(adapt_delta=0.99,} \tab sets \code{control} argument for Stan call\cr
 \tab \verb{stepsize=0.01,} \tab \cr
 \tab \verb{max_treedepth=20)} \tab \cr
@@ -78,6 +79,7 @@ Other contributors:
   \item Yue Li \email{yue-1.li@novartis.com} [contributor]
   \item Satrajit Roychoudhury \email{satrajit.roychoudhury@novartis.com} [contributor]
   \item Lukas A. Widmer \email{lukas_andreas.widmer@novartis.com} (\href{https://orcid.org/0000-0003-1471-3493}{ORCID}) [contributor]
+  \item Daniel Sabanés Bové \email{daniel.sabanes_bove@rconis.com} (\href{https://orcid.org/0000-0002-0176-9239}{ORCID}) [contributor]
   \item Trustees of Columbia University (R/stanmodels.R, configure, configure.win) [copyright holder]
 }
 

@@ -1,6 +1,6 @@
 #' Decision Function for 2 Sample Designs
 #'
-#' The function sets up a 2 sample one-sided decision function with an
+#' The function sets up a 2 sample decision function with an
 #' arbitrary number of conditions on the difference distribution.
 #'
 #' @param pc Vector of critical cumulative probabilities of the
@@ -13,8 +13,8 @@
 #' evaluating the difference distribution. Can take one of the values
 #' `identity` (default), `logit` or `log`.
 #'
-#' @details This function creates a one-sided decision function on the
-#' basis of the difference distribution in a 2 sample situation. To
+#' @details This function creates a one- or two-sided decision function
+#' on the basis of the difference distribution in a 2 sample situation. To
 #' support double criterion designs, see *Neuenschwander et al.,
 #' 2010*, an arbitrary number of criterions can be given. The decision
 #' function demands that the probability mass below the critical value
@@ -35,6 +35,10 @@
 #' otherwise. For `lower.tail=FALSE` differences must be greater
 #' than the given quantiles `qc`.
 #'
+#' For the case of a boolean vector given to `lower.tail` the
+#' direction of each decision aligns respectively, and a two-sided
+#' decision function is created.
+#'
 #' Note that whenever a `link` other than `identity` is
 #' requested, then the underlying densities are first transformed
 #' using the link function and then the probabilties for the
@@ -47,14 +51,21 @@
 #' binary endpoint or counting rates. The respective critical
 #' quantiles `qc` must be given on the transformed scale.
 #'
-#' @return The function returns a decision function which takes three
-#' arguments. The first and second argument are expected to be mixture
-#' (posterior) distributions from which the difference distribution is
-#' formed and all conditions are tested. The third argument determines
-#' if the function acts as an indicator function or if the function
-#' returns the distance from the decision boundary for each condition
-#' in log-space. That is, the distance is 0 at the decision boundary,
-#' negative for a 0 decision and positive for a 1 decision.
+#' @return The function returns a decision function, of class `decision2S_1sided`
+#' for one-sided, and of class `decision2S_2sided` for two-sided decisions.
+#'
+#' One-sided decision functions take three arguments. The first and
+#' second argument are expected to be mixture (posterior) distributions
+#' from which the difference distribution is formed and all conditions are
+#' tested. The third argument determines if the function acts as an indicator
+#' function or if the function returns the distance from the decision boundary
+#' for each condition in log-space. That is, the distance is 0 at the decision
+#' boundary, negative for a 0 decision and positive for a 1 decision.
+#'
+#' For two-sided decision functions, the two components can be
+#' extracted with functions [lower()] and [upper()]. The distance
+#' as calculated by the decision function is returned as a list with
+#' components `lower` and `upper`.
 #'
 #' @references Gsponer T, Gerber F, Bornkamp B, Ohlssen D,
 #' Vandemeulebroecke M, Schmidli H.A practical guide to Bayesian group
@@ -72,15 +83,40 @@
 #' successCrit <- decision2S(c(0.95, 0.5), c(0, 50), FALSE)
 #' # the futility criterion acts in the opposite direction
 #' futilityCrit <- decision2S(c(0.90), c(40), TRUE)
+#' # intermediate criteria can also be defined: no futility and no success.
+#' # version 1: not significant, but good effect size.
+#' intermediateCrit1 <- decision2S(
+#'   c(1 - 0.95, 0.5, 1 - 0.90),
+#'   c(0, 50, 40),
+#'   c(TRUE, FALSE, TRUE)
+#' )
+#' # version 2: significant, but too small effect size.
+#' intermediateCrit2 <- decision2S(
+#'   c(0.95, 1 - 0.5, 1 - 0.90),
+#'   c(0, 50, 40),
+#'   c(FALSE, TRUE, TRUE)
+#' )
+#' # version 3: not significant and small effect size.
+#' intermediateCrit3 <- decision2S(
+#'   c(1 - 0.95, 1 - 0.5, 1 - 0.90),
+#'   c(0, 50, 40),
+#'   c(TRUE, TRUE, TRUE)
+#' )
 #'
 #' print(successCrit)
 #' print(futilityCrit)
+#' print(intermediateCrit1)
+#' print(intermediateCrit2)
+#' print(intermediateCrit3)
 #'
 #' # consider decision for specific outcomes
 #' postP_interim <- postmix(priorP, n = 10, m = -50)
 #' postT_interim <- postmix(priorT, n = 20, m = -80)
 #' futilityCrit(postP_interim, postT_interim)
 #' successCrit(postP_interim, postT_interim)
+#' intermediateCrit1(postP_interim, postT_interim)
+#' intermediateCrit2(postP_interim, postT_interim)
+#' intermediateCrit3(postP_interim, postT_interim)
 #'
 #' # Binary endpoint with double criterion decision on log-odds scale
 #' # 95% certain positive difference and an odds ratio of 2 at least
@@ -104,9 +140,26 @@ decision2S <- function(
   lower.tail = TRUE,
   link = c("identity", "logit", "log")
 ) {
-  assert_that(length(pc) == length(qc))
-  lpc <- log(pc)
+  assert_numeric(pc, lower = 0, upper = 1, any.missing = FALSE, finite = TRUE)
+  assert_numeric(qc, len = length(pc), any.missing = FALSE)
+  assert_logical(lower.tail, any.missing = FALSE)
+  assert_true(length(lower.tail) == 1L || length(lower.tail) == length(pc))
+  lower.tail <- scalar_if_same(lower.tail)
   link <- match.arg(link)
+
+  is_two_sided <- length(lower.tail) > 1
+
+  if (is_two_sided) {
+    create_decision2S_2sided(pc, qc, lower.tail, link)
+  } else {
+    create_decision2S_1sided(pc, qc, lower.tail, link)
+  }
+}
+
+#' Internal Constructor for Atomic 2 Sample One-sided Decision Function
+#' @keywords internal
+create_decision2S_atomic <- function(pc, qc, lower.tail, link) {
+  lpc <- log(pc)
   dlink_obj <- link_map[[link]]
   fun <- function(mix1, mix2, dist = FALSE) {
     dlink(mix1) <- dlink_obj
@@ -132,29 +185,118 @@ decision2S <- function(
   attr(fun, "pc") <- pc
   attr(fun, "qc") <- qc
   attr(fun, "link") <- link
-  attr(fun, "lower.tail") <- lower.tail
-  class(fun) <- c("decision2S", "function")
+  attr(fun, "lower.tail") <- scalar_if_same(lower.tail)
+
+  class(fun) <- c("decision2S_atomic", "function")
   fun
 }
 
-#' @export
-print.decision2S <- function(x, ...) {
-  cat("2 sample decision function\n")
-  cat("Conditions for acceptance:\n")
-  link <- attr(x, "link")
+#' Internal Constructor for 2 Sample One-sided Decision Function
+#' @keywords internal
+create_decision2S_1sided <- function(pc, qc, lower.tail, link) {
+  assert_flag(lower.tail)
+
+  atomic_fun <- create_decision2S_atomic(pc, qc, lower.tail, link)
+  attr_name <- if (lower.tail) "lower" else "upper"
+  attr_compl_name <- if (lower.tail) "upper" else "lower"
+
+  fun <- function(mix1, mix2, dist = FALSE) {
+    test <- atomic_fun(mix1, mix2, dist)
+    if (dist) {
+      ret <- stats::setNames(list(test), attr_name)
+      return(ret)
+    }
+    test
+  }
+  attr(fun, attr_name) <- atomic_fun
+  attr(fun, attr_compl_name) <- function(mix1, mix2, ...) {
+    return(1)
+  }
+  attr(fun, "link") <- link
+  attr(fun, "lower.tail") <- lower.tail
+  class(fun) <- c("decision2S", "decision2S_1sided", "function")
+  fun
+}
+
+#' Internal Constructor for 2 Sample Two-sided Decision Function
+#' @keywords internal
+create_decision2S_2sided <- function(pc, qc, lower.tail, link) {
+  use_lower <- which(lower.tail)
+  use_upper <- which(!lower.tail)
+  assert_true(length(use_lower) > 0 && length(use_upper) > 0)
+
+  lower_part <- create_decision2S_atomic(
+    pc[use_lower],
+    qc[use_lower],
+    TRUE,
+    link
+  )
+  upper_part <- create_decision2S_atomic(
+    pc[use_upper],
+    qc[use_upper],
+    FALSE,
+    link
+  )
+
+  fun <- function(mix1, mix2, dist = FALSE) {
+    dl <- lower_part(mix1, mix2, dist)
+    du <- upper_part(mix1, mix2, dist)
+    if (dist) {
+      return(list(lower = dl, upper = du))
+    }
+    as.numeric(dl && du)
+  }
+  attr(fun, "lower") <- lower_part
+  attr(fun, "upper") <- upper_part
+  attr(fun, "link") <- link
+
+  class(fun) <- c("decision2S", "decision2S_2sided", "function")
+  fun
+}
+
+#' @keywords internal
+print_decision2S_atomic <- function(x) {
   qc <- attr(x, "qc")
   pc <- attr(x, "pc")
   low <- attr(x, "lower.tail")
   cmp <- ifelse(low, "<=", ">")
-  for (i in seq_along(qc)) {
-    cat(paste0("P(theta1 - theta2 ", cmp, " ", qc[i], ") > ", pc[i], "\n"))
+  cat(paste0("P(theta1 - theta2 ", cmp, " ", qc, ") > ", pc, "\n"), sep = "")
+}
+
+#' @export
+print.decision2S_1sided <- function(x, ...) {
+  cat("2 sample decision function\n")
+  cat("Conditions for acceptance:\n")
+
+  atomic_fun <- if (has_lower(x)) {
+    lower(x)
+  } else {
+    upper(x)
   }
+  print_decision2S_atomic(atomic_fun)
+
+  link <- attr(x, "link")
+  cat("Link:", link, "\n")
+
+  invisible(x)
+}
+
+#' @export
+print.decision2S_2sided <- function(x, ...) {
+  cat("2 sample two-sided decision function\n")
+
+  cat("Lower side conditions for acceptance:\n")
+  print_decision2S_atomic(lower(x))
+  cat("Upper side conditions for acceptance:\n")
+  print_decision2S_atomic(upper(x))
+
+  link <- attr(x, "link")
   cat("Link:", link, "\n")
   invisible(x)
 }
 
-#' @describeIn decision2S Deprecated old function name. Please use
-#' `decision2S` instead.
+#' @describeIn decision2S `r lifecycle::badge("deprecated")`
+#'   Deprecated old function name. Please use `decision2S` instead.
 #' @export
 oc2Sdecision <- function(
   pc = 0.975,
@@ -162,6 +304,6 @@ oc2Sdecision <- function(
   lower.tail = TRUE,
   link = c("identity", "logit", "log")
 ) {
-  deprecated("oc2Sdecision", "decision2S")
+  lifecycle::deprecate_warn("1.3.0", "oc2Sdecision()", "decision2S()")
   return(decision2S(pc, qc, lower.tail, link))
 }
