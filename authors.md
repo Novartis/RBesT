@@ -28,7 +28,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/Novartis/RBesT/blob/v1.9-0-rc.1/inst/CITATION)
+[`inst/CITATION`](https://github.com/Novartis/RBesT/blob/main/inst/CITATION)
 
 Weber S, Li Y, Seaman JW, Kakizume T, Schmidli H (2021). “Applying
 Meta-Analytic-Predictive Priors with the R Bayesian Evidence Synthesis
