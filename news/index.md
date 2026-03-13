@@ -1,6 +1,6 @@
 # Changelog
 
-## RBesT 1.9-0.9000 - development version
+## RBesT 1.9-0 - March 13th, 2026
 
 ### Enhancements
 

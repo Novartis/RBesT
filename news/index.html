@@ -38,20 +38,20 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.9-0.9000" id="rbest-19-09000---development-version">RBesT 1.9-0.9000 - development version<a class="anchor" aria-label="anchor" href="#rbest-19-09000---development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.9-0" id="rbest-19-0---march-13th-2026">RBesT 1.9-0 - March 13th, 2026<a class="anchor" aria-label="anchor" href="#rbest-19-0---march-13th-2026"></a></h2>
 <div class="section level3">
-<h3 id="enhancements-1-9-0-9000">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-0-9000"></a></h3>
+<h3 id="enhancements-1-9-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-9-0"></a></h3>
 <ul><li>Reformat R sources using <code>Air</code>.</li>
 <li>Extend normal outcome functions to two-sided decisions: <code>decision1S</code> and <code>decision2S</code> now allow <code>lower.tail</code> to have as many elements as <code>pc</code> to allow the specification of two-sided decision boundaries (mixed <code>lower.tail</code> elements, i.e. some specifying “lower” and some “upper”) to capture intermediate result scenarios.</li>
 <li>Introduce global option <code>RBesT.MC.save_warmup</code>, which is set to <code>FALSE</code> causing to drop warmup samples from the <code>gMAP</code> fit object. Note that the pre-1.9.0 behavior was to store the warmup samples (but these were not used). To restore the original behavior set <code>options(RBesT.MC.save_warmup=TRUE)</code> once globally.</li>
 <li>Add experimental <code>as_draws*</code> functions allowing to extract samples in the posterior draws format from <code>gMAP</code> objects.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bugfixes-1-9-0-9000">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-9-0-9000"></a></h3>
+<h3 id="bugfixes-1-9-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-9-0"></a></h3>
 <ul><li>Avoid use of <code>size</code> argument to <code>ggplot2</code> routines, which have been deprecated.</li>
 </ul></div>
 </div>
