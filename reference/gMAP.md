@@ -175,6 +175,11 @@ below for applicable functions to query the object.
 
 ## Details
 
+Setting `chains = 0` runs the model setup without Stan sampling and
+returns a `gMAP` skeleton without posterior draws. This mode is intended
+for advanced workflows such as fixture construction where draws are
+injected later.
+
 The meta-analytic-predictive (MAP) approach derives a prior from
 historical data using a hierarchical model. The statistical model is
 formulated as a generalized linear mixed model for binary, normal (with
@@ -300,7 +305,10 @@ endpoints are:
   User can choose with `type` if the result is on the response or the
   link scale.
 
-- `as.matrix(gMAP)`: extracts the posterior sample of the model.
+- `as.matrix(gMAP)`: **\[deprecated\]** extracts the posterior sample of
+  the model. Use
+  [`posterior::as_draws_matrix()`](https://mc-stan.org/posterior/reference/draws_matrix.html)
+  instead.
 
 - `summary(gMAP)`: returns the summaries of a gMAP. analysis. Output is
   a `gMAPsummary` object, which is a list containing
@@ -467,15 +475,15 @@ print(map_AS)
 #> 
 #> Exchangeability tau strata: 1 
 #> Prediction tau stratum    : 1 
-#> Maximal Rhat              : 1.38 
+#> Maximal Rhat              : 1.32 
 #> 
 #> Between-trial heterogeneity of tau prediction stratum
-#>   mean     sd   2.5%    50%  97.5% 
-#> 0.3570 0.2790 0.0339 0.2540 1.1100 
+#>         mean median    sd   q2.5   q50 q97.5
+#> tau[1] 0.357  0.254 0.279 0.0339 0.254  1.11
 #> 
 #> MAP Prior MCMC sample
-#>   mean     sd   2.5%    50%  97.5% 
-#> 0.2550 0.0703 0.1550 0.2480 0.3870 
+#>                  mean median     sd  q2.5   q50 q97.5
+#> theta_resp_pred 0.255  0.248 0.0703 0.155 0.248 0.387
 #> Warning: Parts of the model have not converged (some Rhats are > 1.1).
 #> Be careful when analysing the results! It is recommend to run
 #> more iterations and/or setting stronger priors.
@@ -484,26 +492,26 @@ print(map_AS)
 map_sum <- summary(map_AS)
 print(map_sum)
 #> Heterogeneity parameter tau per stratum:
-#>         mean    sd   2.5%   50% 97.5%
-#> tau[1] 0.357 0.279 0.0339 0.254  1.11
+#>         mean median    sd   q2.5   q50 q97.5
+#> tau[1] 0.357  0.254 0.279 0.0339 0.254  1.11
 #> 
 #> Regression coefficients:
-#>             mean    sd  2.5%  50%  97.5%
-#> (Intercept) -1.1 0.148 -1.37 -1.1 -0.802
+#>             mean median    sd  q2.5  q50  q97.5
+#> (Intercept) -1.1   -1.1 0.148 -1.37 -1.1 -0.802
 #> 
 #> Mean estimate MCMC sample:
-#>             mean     sd  2.5%  50% 97.5%
-#> theta_resp 0.252 0.0278 0.202 0.25  0.31
+#>             mean median     sd  q2.5  q50 q97.5
+#> theta_resp 0.252   0.25 0.0278 0.202 0.25  0.31
 #> 
 #> MAP Prior MCMC sample:
-#>                  mean     sd  2.5%   50% 97.5%
-#> theta_resp_pred 0.255 0.0703 0.155 0.248 0.387
+#>                  mean median     sd  q2.5   q50 q97.5
+#> theta_resp_pred 0.255  0.248 0.0703 0.155 0.248 0.387
 names(map_sum)
 #> [1] "tau"        "beta"       "theta.pred" "theta"     
 # [1] "tau"        "beta"       "theta.pred" "theta"
 map_sum$theta.pred
-#>                      mean         sd      2.5%       50%     97.5%
-#> theta_resp_pred 0.2549457 0.07032729 0.1551565 0.2478659 0.3873613
+#>                      mean    median         sd      q2.5       q50     q97.5
+#> theta_resp_pred 0.2549457 0.2478659 0.07032729 0.1551565 0.2478659 0.3873613
 
 # \donttest{
 # graphical model checks (returns list of ggplot2 plots)
@@ -521,20 +529,20 @@ map_checks$densityThetaStarLink
 
 # obtain shrinkage estimates
 fitted(map_AS)
-#>              mean         sd       2.5%       50%     97.5%
-#> Study 1 0.2252533 0.02915686 0.17586555 0.2234652 0.2787151
-#> Study 2 0.2590342 0.04732878 0.18497373 0.2540597 0.3376507
-#> Study 3 0.3058962 0.06317604 0.21082514 0.2928621 0.4697599
-#> Study 4 0.2477289 0.04949967 0.13889275 0.2503697 0.3210718
-#> Study 5 0.2696371 0.03187143 0.21890677 0.2674901 0.3358586
-#> Study 6 0.2740316 0.05239060 0.19933868 0.2692248 0.3850659
-#> Study 7 0.1866212 0.05384795 0.08614304 0.1820334 0.2813637
-#> Study 8 0.2616912 0.05019108 0.18280811 0.2552497 0.3655984
+#>              mean    median         sd       q2.5       q50     q97.5
+#> Study 1 0.2252533 0.2234652 0.02915686 0.17586555 0.2234652 0.2787151
+#> Study 2 0.2590342 0.2540597 0.04732878 0.18497373 0.2540597 0.3376507
+#> Study 3 0.3058962 0.2928621 0.06317604 0.21082514 0.2928621 0.4697599
+#> Study 4 0.2477289 0.2503697 0.04949967 0.13889275 0.2503697 0.3210718
+#> Study 5 0.2696371 0.2674901 0.03187143 0.21890677 0.2674901 0.3358586
+#> Study 6 0.2740316 0.2692248 0.05239060 0.19933868 0.2692248 0.3850659
+#> Study 7 0.1866212 0.1820334 0.05384795 0.08614304 0.1820334 0.2813637
+#> Study 8 0.2616912 0.2552497 0.05019108 0.18280811 0.2552497 0.3655984
 
 # regression coefficients
 coef(map_AS)
-#>                  mean        sd      2.5%       50%      97.5%
-#> (Intercept) -1.095205 0.1476927 -1.371133 -1.099922 -0.8015874
+#>                  mean    median        sd      q2.5       q50      q97.5
+#> (Intercept) -1.095205 -1.099922 0.1476927 -1.371133 -1.099922 -0.8015874
 
 # finally fit MAP prior with parametric mixture
 map_mix <- mixfit(map_AS, Nc = 2)

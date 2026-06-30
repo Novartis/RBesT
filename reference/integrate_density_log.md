@@ -1,35 +1,55 @@
-# internal function used for integration of densities which appears to be much more stable from -Inf to +Inf in the logit space while the density to be integrated recieves inputs from 0 to 1 such that the inverse distribution function must be used. The integral solved is int_x dmix(mix,x) integrand(x) where integrand must be given as log and we integrate over the support of mix.
+# Integrate a log-space function against a mixture density
 
-integrate density in logit space and split by component such that the
-quantile function of each component is used. This ensures that the R
-implementation of the quantile function is always used.
+Computes \\\int \exp(\text{log\\integrand}(x)) f\_{\text{mix}}(x) dx\\.
+Uses logit-space transformation for numerical stability with adaptive
+integration. S3 generic dispatching on the mixture type.
 
 ## Usage
 
 ``` r
+# S3 method for class 'normMix'
+integrate_density_log(mix, log_integrand, ...)
+
+# S3 method for class 'betaMix'
+integrate_density_log(mix, log_integrand, ...)
+
+# S3 method for class 'gammaMix'
+integrate_density_log(mix, log_integrand, ...)
+
+integrate_density_log(mix, log_integrand, ...)
+
+# Default S3 method
 integrate_density_log(
-  log_integrand,
   mix,
+  log_integrand,
   Lplower = -Inf,
   Lpupper = Inf,
-  eps = getOption("RBesT.integrate_prob_eps", 1e-06)
+  eps = getOption("RBesT.integrate_prob_eps", 1e-06),
+  ...
 )
 ```
 
 ## Arguments
 
-- log_integrand:
-
-  function to integrate over which must return the log(f)
-
 - mix:
 
-  density over which to integrate
+  mixture density to integrate over (dispatch argument)
 
-- Lplower:
+- log_integrand:
 
-  logit of lower cumulative density
+  function returning `log(g(x))`
 
-- Lpupper:
+- ...:
 
-  logit of upper cumulative density
+  additional arguments passed to methods
+
+## Methods (by class)
+
+- `integrate_density_log(normMix)`: Gauss-Hermite method for normMix
+
+- `integrate_density_log(betaMix)`: Gauss-Jacobi method for betaMix
+
+- `integrate_density_log(gammaMix)`: Gauss-Laguerre method for gammaMix
+
+- `integrate_density_log(default)`: Default method using adaptive
+  logit-space integration

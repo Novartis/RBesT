@@ -19,6 +19,7 @@ following resources:
   reference for R and graphics in R
 
 ``` r
+
 # Load required libraries
 library(RBesT)
 library(ggplot2)
@@ -37,6 +38,7 @@ library(dplyr)
     ##     intersect, setdiff, setequal, union
 
 ``` r
+
 library(tidyr)
 library(bayesplot)
 ```
@@ -52,6 +54,7 @@ library(bayesplot)
     ##    * See ?bayesplot_theme_set for details on theme setting
 
 ``` r
+
 # Default settings for bayesplot
 color_scheme_set("blue")
 theme_set(theme_default(base_size = 12))
@@ -82,12 +85,12 @@ print(map_crohn)
     ## Estimated reference scale : 88 
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
-    ##  mean    sd  2.5%   50% 97.5% 
-    ## 14.00  9.44  1.27 12.10 38.70 
+    ##        mean median   sd q2.5  q50 q97.5
+    ## tau[1]   14   12.1 9.44 1.27 12.1  38.7
     ## 
     ## MAP Prior MCMC sample
-    ##  mean    sd  2.5%   50% 97.5% 
-    ## -50.3  19.1 -90.8 -48.7 -14.3
+    ##                  mean median   sd  q2.5   q50 q97.5
+    ## theta_resp_pred -50.3  -48.7 19.1 -90.8 -48.7 -14.3
 
 ## Forest plot
 
@@ -96,6 +99,7 @@ Meta-Analytic-Predictive (MAP) prior additionally summarized in the
 bottom row:
 
 ``` r
+
 forest_plot(map_crohn)
 ```
 
@@ -105,6 +109,7 @@ We can also include the model-based estimates for each study, and add a
 legend to explain the different linetypes.
 
 ``` r
+
 forest_plot(map_crohn, model = "both") + legend_move("right")
 ```
 
@@ -115,6 +120,7 @@ We can modify the color scheme as follows (refer to
 for a full list of themes):
 
 ``` r
+
 # preview a color scheme
 color_scheme_view("mix-blue-red")
 ```
@@ -122,6 +128,7 @@ color_scheme_view("mix-blue-red")
 ![](customizing_plots_files/figure-html/unnamed-chunk-6-1.png)
 
 ``` r
+
 # and now let's use it
 color_scheme_set("mix-blue-red")
 forest_plot(map_crohn)
@@ -130,6 +137,7 @@ forest_plot(map_crohn)
 ![](customizing_plots_files/figure-html/unnamed-chunk-6-2.png)
 
 ``` r
+
 color_scheme_set("gray")
 forest_plot(map_crohn)
 ```
@@ -139,6 +147,7 @@ forest_plot(map_crohn)
 The point size can be modified and the vertical line removed:
 
 ``` r
+
 color_scheme_set("blue")
 forest_plot(map_crohn, size = 0.5, alpha = 0)
 ```
@@ -154,6 +163,7 @@ document) and that elements of the plot are clearly visible. Here we
 show a few simple statements that can be used for this purpose.
 
 ``` r
+
 # adjust the base font size
 theme_set(theme_default(base_size = 16))
 forest_plot(map_crohn, model = "both", est = "MAP", size = 1) + legend_move("right") +
@@ -170,11 +180,12 @@ which allows control (and hence consistency) of image size. Note that
 the font size will be enforced in the requested size; a small image with
 large font size may result in too little space for the plot itself. The
 image is sized according to the golden cut
-($\phi = \frac{1 + \sqrt{5}}{2} \approx 1.62$) which is perceived as a
+($`\phi=\frac{1+\sqrt5}{2} \approx 1.62`$) which is perceived as a
 pleasing axis ratio. Png is the recommended image file type for
 presentations and study documents.
 
 ``` r
+
 ggsave("plot1.png", last_plot(), width = 1.62 * 2.78, height = 2.78, unit = "in") # too small for the chosen font size
 ggsave("plot2.png", last_plot(), width = 1.62 * 5.56, height = 5.56, unit = "in") # fits a single ppt slide quite well
 ```
@@ -196,22 +207,24 @@ estimates and a different linestyle for the vertical line. A tailored
 plot can be created as follows.
 
 ``` r
+
 # Extract the data from the returned object
 fp_data <- forest_plot(map_crohn)$data
 print(fp_data, digits = 2)
 ```
 
-    ##                 mean  sem median  low    up    study      model
-    ## Gastr06          -51 10.2    -51  -71 -30.9  Gastr06 stratified
-    ## AIMed07          -49  6.8    -49  -62 -35.6  AIMed07 stratified
-    ## NEJM07           -36  4.9    -36  -46 -26.5   NEJM07 stratified
-    ## Gastr01a         -47 19.7    -47  -86  -8.4 Gastr01a stratified
-    ## APhTh04          -90 17.6    -90 -124 -55.5  APhTh04 stratified
-    ## Gastr01b         -54 11.6    -54  -77 -31.4 Gastr01b stratified
-    ## theta_resp_pred  -50 19.1    -49  -91 -14.3      MAP       meta
-    ## theta_resp       -50  8.3    -49  -68 -35.8     Mean       meta
+    ##            mean  sem median  low    up    study      model
+    ## Gastr06     -51 10.2    -51  -71 -30.9  Gastr06 stratified
+    ## AIMed07     -49  6.8    -49  -62 -35.6  AIMed07 stratified
+    ## NEJM07      -36  4.9    -36  -46 -26.5   NEJM07 stratified
+    ## Gastr01a    -47 19.7    -47  -86  -8.4 Gastr01a stratified
+    ## APhTh04     -90 17.6    -90 -124 -55.5  APhTh04 stratified
+    ## Gastr01b    -54 11.6    -54  -77 -31.4 Gastr01b stratified
+    ## theta.pred  -50 19.1    -49  -91 -14.3      MAP       meta
+    ## theta       -50  8.3    -49  -68 -35.8     Mean       meta
 
 ``` r
+
 # Use a two-component map mixture to compute the vertical line location
 map_mix <- mixfit(map_crohn, Nc = 2)
 # Finally compose a ggplot call for the desired graph
@@ -230,15 +243,17 @@ ggplot(fp_data, aes(x = study, y = median, ymin = low, ymax = up, linetype = mod
 
 Here we show how to create outcome and operating characteristic plots
 for a clinical trial comparing a developmental drug against placebo. The
-primary endpoint is binary (with event probability $p$) and we use an
+primary endpoint is binary (with event probability $`p`$) and we use an
 informative prior for the placebo arm event rate. The experimental drug
 is believed to lower the event rate, and the criteria for study outcome
 are hence as follows:
 
-$$\begin{aligned}
-{\text{Criterion 1:}\Pr\left( p_{trt}/p_{pbo} < 1 \right)} & {> 0.9} \\
-{\text{Criterion 2:}\Pr\left( p_{trt}/p_{pbo} < 0.5 \right)} & {> 0.5}
-\end{aligned}$$
+``` math
+\begin{align*}
+\textrm{Criterion 1:}  \Pr(p_{trt} / p_{pbo} < 1) &> 0.9\\
+\textrm{Criterion 2:}  \Pr(p_{trt} / p_{pbo} < 0.5) &> 0.5
+\end{align*}
+```
 
 The outcome is success (GO) if both criteria are satisfied, futility
 (STOP) if neither is satisfied, and indeterminate if only one or the
@@ -248,6 +263,7 @@ We now create a plot that shows the study conclusion, given any
 combination of outcomes on the two treatment arms.
 
 ``` r
+
 # Define prior distributions
 prior_pbo <- mixbeta(inf1 = c(0.60, 19, 29), inf2 = c(0.30, 4, 5), rob = c(0.10, 1, 1))
 prior_trt <- mixbeta(c(1, 1 / 3, 1 / 3))
@@ -295,6 +311,7 @@ We can also use the design functions that were already derived
 (`design_suc` and `design_fut`) to compute operating characteristics.
 
 ``` r
+
 # Define the grid of true event rates for which to evaluate OC
 p_trt <- seq(0, 0.5, length = 200)
 p_pbo <- c(0.35, 0.40, 0.45, 0.50)
@@ -333,12 +350,13 @@ ggplot(oc, aes(x = p_trt, y = Probability, colour = Outcome, linetype = Outcome)
 ![](customizing_plots_files/figure-html/unnamed-chunk-13-1.png)
 
 ``` r
+
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -357,29 +375,29 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] bayesplot_1.15.0 tidyr_1.3.2      dplyr_1.2.0      ggplot2_4.0.2   
-    ## [5] knitr_1.51       RBesT_1.9-0     
+    ## [1] bayesplot_1.15.0 tidyr_1.3.2      dplyr_1.2.1      ggplot2_4.0.3   
+    ## [5] knitr_1.51       RBesT_1.10-0    
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] tensorA_0.36.2.1      sass_0.4.10           generics_0.1.4       
-    ##  [4] digest_0.6.39         magrittr_2.0.4        evaluate_1.0.5       
-    ##  [7] grid_4.5.3            RColorBrewer_1.1-3    mvtnorm_1.3-5        
+    ##  [4] digest_0.6.39         magrittr_2.0.5        evaluate_1.0.5       
+    ##  [7] grid_4.6.1            RColorBrewer_1.1-3    mvtnorm_1.4-1        
     ## [10] fastmap_1.2.0         jsonlite_2.0.0        pkgbuild_1.4.8       
-    ## [13] backports_1.5.0       Formula_1.2-5         gridExtra_2.3        
-    ## [16] purrr_1.2.1           QuickJSR_1.9.0        scales_1.4.0         
+    ## [13] backports_1.5.1       Formula_1.2-5         gridExtra_2.3.1      
+    ## [16] purrr_1.2.2           QuickJSR_1.10.0       scales_1.4.0         
     ## [19] codetools_0.2-20      textshaping_1.0.5     jquerylib_0.1.4      
-    ## [22] abind_1.4-8           cli_3.6.5             rlang_1.1.7          
-    ## [25] withr_3.0.2           cachem_1.1.0          yaml_2.3.12          
-    ## [28] otel_0.2.0            StanHeaders_2.32.10   parallel_4.5.3       
-    ## [31] inline_0.3.21         rstan_2.32.7          tools_4.5.3          
+    ## [22] abind_1.4-8           cli_3.6.6             rlang_1.2.0          
+    ## [25] withr_3.0.3           cachem_1.1.0          yaml_2.3.12          
+    ## [28] otel_0.2.0            StanHeaders_2.32.10   parallel_4.6.1       
+    ## [31] inline_0.3.21         rstan_2.32.7          tools_4.6.1          
     ## [34] rstantools_2.6.0      checkmate_2.3.4       assertthat_0.2.1     
-    ## [37] vctrs_0.7.1           posterior_1.6.1       R6_2.6.1             
-    ## [40] stats4_4.5.3          matrixStats_1.5.0     lifecycle_1.0.5      
-    ## [43] fs_1.6.7              htmlwidgets_1.6.4     ragg_1.5.1           
+    ## [37] vctrs_0.7.3           posterior_1.7.0       R6_2.6.1             
+    ## [40] stats4_4.6.1          matrixStats_1.5.0     lifecycle_1.0.5      
+    ## [43] fs_2.1.0              htmlwidgets_1.6.4     ragg_1.5.2           
     ## [46] pkgconfig_2.0.3       desc_1.4.3            pkgdown_2.2.0        
-    ## [49] RcppParallel_5.1.11-2 bslib_0.10.0          pillar_1.11.1        
-    ## [52] gtable_0.3.6          loo_2.9.0             glue_1.8.0           
-    ## [55] Rcpp_1.1.1            systemfonts_1.3.2     xfun_0.56            
+    ## [49] RcppParallel_5.1.11-2 bslib_0.11.0          pillar_1.11.1        
+    ## [52] gtable_0.3.6          loo_2.10.0            glue_1.8.1           
+    ## [55] Rcpp_1.1.1-1.1        systemfonts_1.3.2     xfun_0.59            
     ## [58] tibble_3.3.1          tidyselect_1.2.1      farver_2.1.2         
-    ## [61] htmltools_0.5.9       labeling_0.4.3        rmarkdown_2.30       
-    ## [64] compiler_4.5.3        S7_0.2.1              distributional_0.6.0
+    ## [61] htmltools_0.5.9       labeling_0.4.3        rmarkdown_2.31       
+    ## [64] compiler_4.6.1        S7_0.2.2              distributional_0.8.1

@@ -31,17 +31,18 @@ function.
 
 ## Supported Conjugate Prior-Likelihood Pairs
 
-|                     |                             |                             |                |
-|---------------------|-----------------------------|-----------------------------|----------------|
-| **Prior/Posterior** | **Likelihood**              | **Predictive**              | **Summaries**  |
-| Beta                | Binomial                    | Beta-Binomial               | `n`, `r`       |
-| Normal              | Normal (*fixed \\\sigma\\*) | Normal                      | `n`, `m`, `se` |
-| Gamma               | Poisson                     | Gamma-Poisson               | `n`, `m`       |
-| Gamma               | Exponential                 | Gamma-Exp (*not supported*) | `n`, `m`       |
+|  |  |  |  |
+|----|----|----|----|
+| **Prior/Posterior** | **Likelihood** | **Predictive** | **Summaries** |
+| Beta | Binomial | Beta-Binomial | `n`, `r` |
+| Normal | Normal (*fixed \\\sigma\\*) | Normal | `n`, `m`, `se` |
+| Gamma | Poisson | Gamma-Poisson | `n`, `m` |
+| Gamma | Exponential | Gamma-Exp (*not supported*) | `n`, `m` |
 
 ## Examples
 
 ``` r
+
 # Gamma mixture
 gmix <- mixgamma(c(0.3, 20, 4), c(0.7, 50, 10))
 

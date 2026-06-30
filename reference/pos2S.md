@@ -25,6 +25,9 @@ pos2S(
   sigma2,
   eps = 1e-06,
   Ngrid = 10,
+  family = NULL,
+  offset1 = 0,
+  offset2 = offset1,
   ...
 )
 
@@ -75,6 +78,31 @@ pos2S(prior1, prior2, n1, n2, decision, eps = 1e-06, ...)
 
   Determines density of discretization grid on which decision function
   is evaluated (see below for more details).
+
+- family:
+
+  Optional [`family`](https://rdrr.io/r/stats/family.html) object
+  specifying a GLM family and link function (e.g.\\
+  [`binomial()`](https://rdrr.io/r/stats/family.html),
+  `MASS::negative.binomial(theta)`). When provided, the sampling
+  standard deviation of each sample varies with the respective parameter
+  value via the family's variance function and link. For the Gaussian
+  family `sigma1`/`sigma2` act as the dispersion parameters and must be
+  supplied; for all other families they must *not* be given (they are
+  determined by the family). Default is `NULL` (constant `sigma1` and
+  `sigma2`).
+
+- offset1:
+
+  Numeric scalar added to the linear predictor of sample 1 before
+  evaluating the family's variance function. Relevant for
+  Poisson/negative-binomial models with log link where
+  `offset1 = log(exposure)`. Default is `0`.
+
+- offset2:
+
+  Numeric scalar added to the linear predictor of sample 2; see
+  `offset1`. Defaults to `offset1`.
 
 ## Value
 
@@ -156,6 +184,7 @@ Other design2S:
 ## Examples
 
 ``` r
+
 # see ?decision2S for details of example
 priorT <- mixnorm(c(1, 0, 0.001), sigma = 88, param = "mn")
 priorP <- mixnorm(c(1, -49, 20), sigma = 88, param = "mn")
@@ -195,5 +224,5 @@ pos_final <- pos2S(postP_interim, postT_interim, 20, 30, successCrit)
 #> Using default prior 2 reference scale 88
 
 pos_final(postP_interim, postT_interim)
-#> [1] 0.145567
+#> [1] 0.1455674
 ```

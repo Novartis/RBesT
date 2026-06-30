@@ -124,6 +124,7 @@ Other design2S:
 ## Examples
 
 ``` r
+
 # see Gsponer et al., 2010
 priorT <- mixnorm(c(1, 0, 0.001), sigma = 88, param = "mn")
 priorP <- mixnorm(c(1, -49, 20), sigma = 88, param = "mn")

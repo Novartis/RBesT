@@ -109,6 +109,7 @@ Other design1S:
 ## Examples
 
 ``` r
+
 # see Neuenschwander et al., 2011
 
 # example is for a time-to-event trial evaluating non-inferiority (NI)

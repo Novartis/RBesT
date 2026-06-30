@@ -22,27 +22,34 @@ it's help page for a detailed description of the statistical model.
 
 ## Global Options
 
-|                            |                                     |                                                                                     |
-|----------------------------|-------------------------------------|-------------------------------------------------------------------------------------|
-| Option                     | Default                             | Description                                                                         |
-| `RBesT.MC.warmup`          | 2000                                | MCMC warmup iterations                                                              |
-| `RBesT.MC.iter`            | 6000                                | total MCMC iterations                                                               |
-| `RBesT.MC.chains`          | 4                                   | MCMC chains                                                                         |
-| `RBesT.MC.thin`            | 4                                   | MCMC thinning                                                                       |
-| `RBesT.MC.save_warmup`     | `FALSE`                             | MCMC warmup samples saving                                                          |
-| `RBesT.MC.control`         | `list(adapt_delta=0.99,`            | sets `control` argument for Stan call                                               |
-|                            | `stepsize=0.01,`                    |                                                                                     |
-|                            | `max_treedepth=20)`                 |                                                                                     |
-| `RBesT.MC.ncp`             | 1                                   | parametrization: 0=CP, 1=NCP, 2=Automatic                                           |
-| `RBesT.MC.init`            | 1                                   | range of initial uniform \\\[-1,1\]\\ is the default                                |
-| `RBesT.MC.rescale`         | `TRUE`                              | Automatic rescaling of raw parameters                                               |
-| `RBesT.verbose`            | `FALSE`                             | requests outputs to be more verbose                                                 |
-| `RBesT.integrate_args`     | `list(lower=-Inf,`                  | arguments passed to `integrate` for                                                 |
-|                            | `upper=Inf,`                        | intergation of densities                                                            |
-|                            | `rel.tol=.Machine$double.eps^0.25,` |                                                                                     |
-|                            | `abs.tol=.Machine$double.eps^0.25,` |                                                                                     |
-|                            | `subdivisions=1E3)`                 |                                                                                     |
-| `RBesT.integrate_prob_eps` | `1E-6`                              | probability mass left out from tails if integration needs to be restricted in range |
+|  |  |  |
+|----|----|----|
+| Option | Default | Description |
+| `RBesT.MC.warmup` | 2000 | MCMC warmup iterations |
+| `RBesT.MC.iter` | 6000 | total MCMC iterations |
+| `RBesT.MC.chains` | 4 | MCMC chains |
+| `RBesT.MC.thin` | 4 | MCMC thinning |
+| `RBesT.MC.save_warmup` | `FALSE` | MCMC warmup samples saving |
+| `RBesT.MC.control` | `list(adapt_delta=0.99,` | sets `control` argument for Stan call |
+|  | `stepsize=0.01,` |  |
+|  | `max_treedepth=20)` |  |
+| `RBesT.MC.ncp` | 1 | parametrization: 0=CP, 1=NCP, 2=Automatic |
+| `RBesT.MC.init` | 1 | range of initial uniform \\\[-1,1\]\\ is the default |
+| `RBesT.MC.rescale` | `TRUE` | Automatic rescaling of raw parameters |
+| `RBesT.verbose` | `FALSE` | requests outputs to be more verbose |
+| `RBesT.integrate_args` | `list(lower=-Inf,` | arguments passed to `integrate` for |
+|  | `upper=Inf,` | adaptive integration of densities (used when |
+|  | `rel.tol=.Machine$double.eps^0.25,` | `RBesT.integrate_method` is `"adaptive"` |
+|  | `abs.tol=.Machine$double.eps^0.25,` | or for non-`normMix` densities) |
+|  | `subdivisions=1E3)` |  |
+| `RBesT.integrate_prob_eps` | `1E-6` | probability mass left out from tails if integration needs to be restricted in range |
+| `RBesT.integrate_method` | `"GQ"` | integration method for mixture densities: `"GQ"` (Gaussian quadrature, deterministic) or `"adaptive"` (adaptive Gauss-Kronrod). GQ uses Gauss-Hermite for `normMix`, Gauss-Jacobi for `betaMix`, and Gauss-Laguerre for `gammaMix`. |
+| `RBesT.GQ_nodes` | `20` | starting number of Gaussian quadrature nodes (only used when `RBesT.integrate_method` is `"GQ"`) |
+| `RBesT.GQ_rel_tol` | `1E-4` | relative tolerance target for GQ refinement; the node count is increased until successive estimates agree within `max(RBesT.GQ_abs_tol, RBesT.GQ_rel_tol * |I|)`. Set to a non-finite or non-positive value (e.g. `Inf`) to disable refinement (single evaluation at `RBesT.GQ_nodes`). |
+| `RBesT.GQ_abs_tol` | `1E-6` | absolute tolerance floor for GQ refinement |
+| `RBesT.GQ_max_nodes` | `240` | upper cap on the GQ node count during refinement |
+| `RBesT.GQ_node_growth` | `2` | multiplicative growth factor for the GQ node count between refinement steps |
+| `RBesT.GQ_on_nonconvergence` | `"adaptive"` | behaviour when GQ refinement reaches `RBesT.GQ_max_nodes` without meeting tolerance: `"adaptive"` (fall through to adaptive integration), `"warn"` (warn and return best estimate), `"error"`, or `"silent"` |
 
 ## Version History
 
@@ -64,6 +71,10 @@ Useful links:
 ## Author
 
 **Maintainer**: Sebastian Weber <sebastian.weber@novartis.com>
+
+Authors:
+
+- Sebastian Weber <sebastian.weber@novartis.com>
 
 Other contributors:
 

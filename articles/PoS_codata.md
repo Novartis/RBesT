@@ -32,55 +32,60 @@ consideration of uncertainty in parameters conditional on available
 data. In contrast, the conditional power (CP) calculates the frequency a
 given experemintal design will be successful for a known value of the
 parameters. For example, in a 1-sample experiment with a one-sided
-success criterion the trial is successful if the collected data $y_{N}$
-of sample size $N$ exceeds some critical value $y_{c}$; recall that the
-critical value $y_{c}$ is determined by the success criterion, prior and
-sample size when evaluated. Assuming that the sampling model of the data
-is $p\left( y|\theta \right)$, then
+success criterion the trial is successful if the collected data $`y_N`$
+of sample size $`N`$ exceeds some critical value $`y_c`$; recall that
+the critical value $`y_c`$ is determined by the success criterion, prior
+and sample size when evaluated. Assuming that the sampling model of the
+data is $`p(y|\theta)`$, then
 
-$$CP_{N}(\theta) = \int I\left( y_{N} > y_{c} \right)\, p\left( y_{N}|\theta \right)\, dy_{N}.$$
+``` math
+ CP_N(\theta) = \int I(y_N  > y_c) \, p(y_N|\theta) \, dy_N.
+```
 
-The integration over the data $y_{N}$ comprises all possible outcomes of
-the trial. Note that before the start of the trial,
-$CP_{N}\left( \theta_{0} \right)$ is the type I error rate under the
-conventional null hypothesis ($\theta = \theta_{0}$) and
-$CP_{N}\left( \theta_{a} \right)$ the power of the trial under the
-alternative ($\theta = \theta_{a}$). At an interim analysis at sample
-size $n_{I}$, the conditional power is then evaluated conditional on the
-observed data so far (the $n_{I}$ measurements) while the remaining
-sample size ($N - n_{I}$) is random and distributed according to
-$p\left( y|\theta \right)$ with $\theta$ set to some known value,
+The integration over the data $`y_N`$ comprises all possible outcomes of
+the trial. Note that before the start of the trial, $`CP_N(\theta_0)`$
+is the type I error rate under the conventional null hypothesis
+($`\theta=\theta_0`$) and $`CP_N(\theta_a)`$ the power of the trial
+under the alternative ($`\theta=\theta_a`$). At an interim analysis at
+sample size $`n_I`$, the conditional power is then evaluated conditional
+on the observed data so far (the $`n_I`$ measurements) while the
+remaining sample size ($`N-n_I`$) is random and distributed according to
+$`p(y|\theta)`$ with $`\theta`$ set to some known value,
 
-$$CP_{N - n_{I}}\left( \theta|y_{n_{I}} \right) = \int I\left( y_{n_{I}} + y_{N - n_{I}} = y_{N} > y_{c}|y_{n_{I}} \right)\, p\left( y_{N - n_{I}}|\theta \right)\, dy_{N - n_{I}}.$$
+``` math
+ CP_{N-n_I}(\theta|y_{n_I}) = \int I(y_{n_I} + y_{N-n_I} = y_N > y_c|y_{n_I}) \, p(y_{N-n_I}|\theta) \, dy_{N-n_I}.
+```
 
 The known value can be set equal to the observed point estimate at the
-interim,
-$CP_{N - n_{I}}\left( {\widehat{\theta}}_{I}|y_{n_{I}} \right)$, or to
-the assumed true alternative,
-$CP_{N - n_{I}}\left( \theta_{a}|y_{n_{I}} \right)$, used to plan the
+interim, $`CP_{N-n_I}(\hat{\theta}_{I}|y_{n_I})`$, or to the assumed
+true alternative, $`CP_{N-n_I}(\theta_a|y_{n_I})`$, used to plan the
 trial.
 
-The probability of success in contrast assigns $\theta$ a distribution
+The probability of success in contrast assigns $`\theta`$ a distribution
 and marginalizes the conditional power over this distribution. In
 absence of additional trial external information this distribution is
-the posterior for $p\left( \theta|y_{n_{I}} \right)$ obtained from the
-prior for $p(\theta)$ and the data collected up to the interim,
+the posterior for $`p(\theta|y_{n_I})`$ obtained from the prior for
+$`p(\theta)`$ and the data collected up to the interim,
 
-$$PoS_{I} = \int CP_{N - n_{I}}\left( \theta|y_{n_{I}} \right)\, p\left( \theta|y_{n_{I}} \right)\, d\theta.$$
+``` math
+ PoS_I = \int CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{n_I}) \, d\theta.
+```
 
-However, our knowledge about $\theta$ can be refined if other
+However, our knowledge about $`\theta`$ can be refined if other
 data-sources like completed (historical) or concurrent trials are
 available,
 
-$$PoS_{I,H,...} = \int CP_{N - n_{I}}\left( \theta|y_{n_{I}} \right)\, p\left( \theta|y_{I},y_{H},... \right)\, d\theta.$$
+``` math
+ PoS_{I,H,...} = \int CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{I},y_{H},...) \, d\theta.
+```
 
 It is important to note that the conditional power is *always* evaluated
 with respect to the trial data (and prior) only. Thus, additional
 data-sources are not part of the analysis of the trial. In practice this
 means that the probability of success is usually calculated for a trial
 which uses non-informative priors, but at interim we may use additional
-data-sources to refine our knowledge on $\theta$ which will not be part
-of the trial analysis.
+data-sources to refine our knowledge on $`\theta`$ which will not be
+part of the trial analysis.
 
 ## Example Data Scenario
 
@@ -88,18 +93,19 @@ In the following the hypothetical example as in \[1\] is discussed. The
 assumed endpoint is time-to-event, which is analyzed using the normal
 approximation of the log-rank statistic for comparing two groups. Under
 a 1:1 randomization the standard error of the log-hazard ratio scales
-with the number of events as $2/\sqrt{N_{events}}$. This implies a
-corresponding sampling standard deviation of $2$, which defines the unit
-information prior used later on in the analysis. The historical data
-considered is a proof of concept and a phase II trial. The twin phase
-III studies are event driven. Each trial stops whenever a total of $379$
-events is reached and an interim is planned whenever at least $150$
-events have occured. The assumed true hazard ratio used for the design
-of the trial is $0.8$.
+with the number of events as $`2/\sqrt{N_{events}}`$. This implies a
+corresponding sampling standard deviation of $`2`$, which defines the
+unit information prior used later on in the analysis. The historical
+data considered is a proof of concept and a phase II trial. The twin
+phase III studies are event driven. Each trial stops whenever a total of
+$`379`$ events is reached and an interim is planned whenever at least
+$`150`$ events have occured. The assumed true hazard ratio used for the
+design of the trial is $`0.8`$.
 
 Example data:
 
 ``` r
+
 trials <- data.frame(
   study = c("PoC", "PhII", "PhIII_A", "PhIII_B"),
   deaths = c(8, 85, 162, 150),
@@ -136,9 +142,9 @@ Key design choices:
 
 - time-to-event endpoint
 - phase III trials stop at target \# of events 379
-- null hypothesis of no difference in HR, $\theta_{0} = 1.0$
-- one-sided $\alpha = 0.025$
-- alternative hypothesis assumes true HR of $\theta_{a} = 0.75$
+- null hypothesis of no difference in HR, $`\theta_0 = 1.0`$
+- one-sided $`\alpha = 0.025`$
+- alternative hypothesis assumes true HR of $`\theta_a=0.75`$
 - interim when at least 150 events reached
 
 Historical data:
@@ -148,12 +154,13 @@ Historical data:
 
 Co-data:
 
-- two phase III trials run in parallel $\Rightarrow$ each phase III
+- two phase III trials run in parallel $`\Rightarrow`$ each phase III
   trial is *concurrent* with the other
 
 Define design choices
 
 ``` r
+
 Nev <- 379
 
 alt_HR <- 0.75
@@ -168,6 +175,7 @@ Here we use the unit information prior as non-informative prior and
 define it using the mean & effective sample size (ESS) specification:
 
 ``` r
+
 unit_inf <- mixnorm(c(1, 0, 1), sigma = 2, param = "mn")
 unit_inf
 ```
@@ -183,6 +191,7 @@ unit_inf
 Define conditional power for the overall trial:
 
 ``` r
+
 success_crit <- decision1S(1 - alpha, 0)
 ## let's print the defined criterion
 success_crit
@@ -193,12 +202,14 @@ success_crit
     ## P(theta <= 0) > 0.975
 
 ``` r
+
 design <- oc1S(unit_inf, Nev, success_crit, sigma = 2)
 ```
 
 Under the alternative these design choices result in 80% power
 
 ``` r
+
 design(alt_logHR)
 ```
 
@@ -208,6 +219,7 @@ The impact of the unit-information prior is minimal which can be seen by
 comparing to the frequentist calculation:
 
 ``` r
+
 power.t.test(n = Nev, delta = -1 * alt_logHR, sd = 2, type = "one.sample", sig.level = 0.025, alternative = "one.sided")
 ```
 
@@ -225,6 +237,7 @@ With RBesT we can explore the conditional power for a range of
 alternatives:
 
 ``` r
+
 ggplot(data.frame(HR = c(0.5, 1.2)), aes(HR)) +
   stat_function(fun = compose(design, log)) +
   vline_at(c(alt_HR, 1.0), linetype = I(2)) +
@@ -243,6 +256,7 @@ The critical value determines at which observed logHR we *just* conclude
 that the success criterion is fulfilled.
 
 ``` r
+
 design_crit <- decision1S_boundary(unit_inf, Nev, success_crit, sigma = 2)
 
 design_crit
@@ -251,6 +265,7 @@ design_crit
     ## [1] -0.2017185
 
 ``` r
+
 exp(design_crit)
 ```
 
@@ -259,6 +274,7 @@ exp(design_crit)
 We can check this:
 
 ``` r
+
 success_crit(postmix(unit_inf, m = design_crit, n = 379))
 ```
 
@@ -271,6 +287,7 @@ Ok, when observing the critical value, we get a success.
 Now, what if we observe a 1% worse result?
 
 ``` r
+
 success_crit(postmix(unit_inf, m = design_crit + log(1.01), n = 379))
 ```
 
@@ -278,7 +295,7 @@ success_crit(postmix(unit_inf, m = design_crit + log(1.01), n = 379))
 
     ## [1] 0
 
-No success then $\Rightarrow$ this is the critical boundary value.
+No success then $`\Rightarrow`$ this is the critical boundary value.
 
 ## PoS at interim for phase III trial A only
 
@@ -288,6 +305,7 @@ Posterior of treatment effect at interim. The trial uses a
 non-informative prior for the treatment effect:
 
 ``` r
+
 interim_A <- postmix(unit_inf, m = trials$logHR[3], se = trials$sem[3])
 interim_A
 ```
@@ -305,6 +323,7 @@ for the analysis of the second half is given by the data collected so
 far.
 
 ``` r
+
 interim_pos_A <- pos1S(interim_A, Nev - trials$deaths[3], success_crit, sigma = 2)
 ```
 
@@ -313,6 +332,7 @@ distribution on the treatment effect. In case we do not use any
 historical information, then this is just the interim posterior:
 
 ``` r
+
 interim_pos_A(interim_A)
 ```
 
@@ -320,33 +340,35 @@ interim_pos_A(interim_A)
 
 The above command integrates the *conditional power* over the
 uncertainty which we have about the treatment effect as defined above
-for $PoS_{I}$.
+for $`PoS_I`$.
 
 The conditional power and the operating characteristics of a trial
 coincide whenever we do not condition on any observed data. The key
 difference of the conditional power as compared to the probability of
 success is that it assumes a known value for the parameter of interest.
 This can be seen as follows: First define the conditional power which is
-conditional on the observed data,
-$CP_{N - n_{I}}\left( \theta|y_{n_{I}} \right)$:
+conditional on the observed data, $`CP_{N-n_I}(\theta|y_{n_I})`$:
 
 ``` r
+
 interim_oc_A <- oc1S(interim_A, Nev - trials$deaths[3], success_crit, sigma = 2)
 ```
 
 The conditional power assuming the alternative is true (a HR of 0.75):
 
 ``` r
+
 interim_oc_A(alt_logHR)
 ```
 
     ## [1] 0.708769
 
 In case there is no uncertainty of the treatment effect (here
-$se = 10^{-}4$), then this result agrees with the probability of success
+$`se=10^-4`$), then this result agrees with the probability of success
 calculation:
 
 ``` r
+
 interim_pos_A(mixnorm(c(1, alt_logHR, 1E-4)))
 ```
 
@@ -355,6 +377,7 @@ interim_pos_A(mixnorm(c(1, alt_logHR, 1E-4)))
 For trial B the calculation is:
 
 ``` r
+
 interim_B <- postmix(unit_inf, m = trials$logHR[4], se = trials$sem[4])
 interim_pos_B <- pos1S(interim_B, Nev - trials$deaths[4], success_crit, sigma = 2)
 interim_pos_B(interim_B)
@@ -372,6 +395,7 @@ trial. We now derive from these a MAP prior; recall that the MAP prior
 is the prediction of the log-hazard ratio of a future trial:
 
 ``` r
+
 base <- trials[1:2, ]
 
 set.seed(342345)
@@ -389,6 +413,7 @@ forest_plot(base_map_mc, est = "MAP")
 ![](PoS_codata_files/figure-html/unnamed-chunk-21-1.png)
 
 ``` r
+
 base_map <- automixfit(base_map_mc)
 
 plot(base_map)$mix + xlab(expression(log(theta)))
@@ -397,6 +422,7 @@ plot(base_map)$mix + xlab(expression(log(theta)))
 ![](PoS_codata_files/figure-html/unnamed-chunk-21-2.png)
 
 ``` r
+
 base_map
 ```
 
@@ -416,6 +442,7 @@ effect through the interim data itself which we can include into the MAP
 prior:
 
 ``` r
+
 interim_A_combined <- postmix(base_map, m = trials$logHR[3], se = trials$sem[3])
 ```
 
@@ -423,6 +450,7 @@ The PoS for this posterior at interim (representing historical *and*
 interim data collected) is:
 
 ``` r
+
 interim_pos_A(interim_A_combined)
 ```
 
@@ -435,6 +463,7 @@ the final analysis will use a non-informative prior.
 For trial B the calculation is:
 
 ``` r
+
 interim_B_combined <- postmix(base_map, m = trials$logHR[4], se = trials$sem[4])
 interim_pos_B(interim_B_combined)
 ```
@@ -447,28 +476,40 @@ However, there is even more information which can be used here, since
 the phase III result of trial B is also available:
 
 ``` r
+
 interim_map_mc <- update(base_map_mc, data = trials)
 ```
 
 Now the trial B specific posterior at interim is
 
 ``` r
+
 kable(fitted(interim_map_mc), digits = 3)
 ```
 
-|         |   mean |    sd |   2.5% |    50% | 97.5% |
-|:--------|-------:|------:|-------:|-------:|------:|
-| PoC     | -0.253 | 0.243 | -0.772 | -0.245 | 0.233 |
-| PhII    | -0.254 | 0.150 | -0.561 | -0.251 | 0.031 |
-| PhIII_A | -0.214 | 0.126 | -0.456 | -0.216 | 0.040 |
-| PhIII_B | -0.239 | 0.128 | -0.492 | -0.239 | 0.009 |
+|         |   mean | median |    sd |   q2.5 |    q50 | q97.5 |
+|:--------|-------:|-------:|------:|-------:|-------:|------:|
+| PoC     | -0.253 | -0.245 | 0.243 | -0.772 | -0.245 | 0.233 |
+| PhII    | -0.254 | -0.251 | 0.150 | -0.561 | -0.251 | 0.031 |
+| PhIII_A | -0.214 | -0.216 | 0.126 | -0.456 | -0.216 | 0.040 |
+| PhIII_B | -0.239 | -0.239 | 0.128 | -0.492 | -0.239 | 0.009 |
 
 which we can extract as:
 
 1.  obtain posterior (which we restrict to the first 4 columns)
 
 ``` r
+
 interim_map_post <- as.matrix(interim_map_mc)[, 1:4]
+```
+
+    ## Warning: `as.matrix.gMAP()` was deprecated in RBesT 1.10.0.
+    ## ℹ Please use `posterior::as_draws_matrix()` instead.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
 
 dim(interim_map_post) # posterior is given as matrix: iteration x parameter
 ```
@@ -476,24 +517,27 @@ dim(interim_map_post) # posterior is given as matrix: iteration x parameter
     ## [1] 4000    4
 
 ``` r
+
 head(interim_map_post, n = 3)
 ```
 
-    ##           parameters
-    ## iterations   theta[1]   theta[2]   theta[3]    theta[4]
-    ##       [1,] -0.4277097 -0.1835350 -0.1678440 -0.07992145
-    ##       [2,] -0.3229801 -0.3425734 -0.2638770 -0.35817687
-    ##       [3,] -0.3251523 -0.2242466 -0.1748201 -0.25177923
+    ##     variable
+    ## draw   theta[1]   theta[2]   theta[3]    theta[4]
+    ##    1 -0.4277097 -0.1835350 -0.1678440 -0.07992145
+    ##    2 -0.3229801 -0.3425734 -0.2638770 -0.35817687
+    ##    3 -0.3251523 -0.2242466 -0.1748201 -0.25177923
 
 2.  turn MCMC posterior sample into parametric mixture
 
 ``` r
+
 interim_A_allcombined <- automixfit(interim_map_post[, "theta[3]"])
 ```
 
 3.  and finally evaluate the PoS
 
 ``` r
+
 interim_pos_A(interim_A_allcombined)
 ```
 
@@ -505,6 +549,7 @@ exchangeability.
 For trial B computations are:
 
 ``` r
+
 interim_B_allcombined <- automixfit(interim_map_post[, "theta[4]"])
 interim_pos_B(interim_B_allcombined)
 ```
@@ -520,6 +565,7 @@ historical data in comparison to the twin phase III trials.
 Assign data to historical (2) and concurrent data strata (1):
 
 ``` r
+
 trials <- trials %>% mutate(stratum = c(2, 2, 1, 1))
 
 kable(trials, digits = 2)
@@ -533,6 +579,7 @@ kable(trials, digits = 2)
 | PhIII_B |    150 | 0.78 | -0.25 | 0.16 |       1 |
 
 ``` r
+
 set.seed(435345)
 interim_diff_map_mc <- gMAP(cbind(logHR, sem) ~ 1 | study,
   tau.strata = stratum,
@@ -554,6 +601,7 @@ interim_pos_A(interim_A_diff_allcombined)
     ## [1] 0.498148
 
 ``` r
+
 interim_pos_B(interim_B_diff_allcombined)
 ```
 
@@ -568,6 +616,7 @@ Recall, the PoS is the conditional power integrated over an assumed true
 effect distribution. Hence, we had for trial A:
 
 ``` r
+
 interim_pos_A(interim_A)
 ```
 
@@ -577,19 +626,24 @@ As explained, the conditional power is the operating characerstic of a
 design when conditioning on the already observed data:
 
 ``` r
+
 interim_oc_A <- oc1S(interim_A, Nev - trials$deaths[3], success_crit, sigma = 2)
 ```
 
 The PoS is then the integral of the conditional power over the parameter
-space $\theta$ representing our knowledge. This integral can be
+space $`\theta`$ representing our knowledge. This integral can be
 evaluated in a Monte-Carlo (MC) approach as
 
-$$PoS_{I} = \int CP_{N - n_{I}}\left( \theta|y_{n_{I}} \right)\, p\left( \theta|y_{n_{I}} \right)\, d\theta \approx \frac{1}{S}\sum\limits_{i = 1}^{S}CP\left( \theta_{i} \right),$$
+``` math
+ PoS_I = \int CP_{N-n_I}(\theta|y_{n_I}) \, p(\theta|y_{n_I}) \,
+d\theta \approx \frac{1}{S} \sum_{i=1}^S CP(\theta_i),
+```
 
-whenever we have a sample of $p\left( \theta|y_{n_{I}} \right)$ of size
-$S$… which we have:
+whenever we have a sample of $`p(\theta|y_{n_I})`$ of size $`S`$… which
+we have:
 
 ``` r
+
 interim_A_samp <- rmix(interim_A, 1E4)
 mean(interim_oc_A(interim_A_samp))
 ```
@@ -600,16 +654,23 @@ This is an MC approach to calculating the PoS.
 
 When now considering the probability for both trials being successful we
 have to perform an MC integration over the joint density
-$p\left( \theta_{A},\theta_{B}|y_{n_{I_{A}}},y_{n_{I_{B}}} \right)$
+$`p(\theta_A,\theta_B|y_{n_{I_A}},y_{n_{I_B}})`$
 
-$$\begin{aligned}
-{PoS} & {= \iint CP_{N - n_{I_{A}}}\left( \theta_{A}|y_{n_{I_{A}}} \right)\, CP_{N - n_{I_{B}}}\left( \theta_{B}|y_{n_{I_{B}}} \right)\, p\left( \theta_{A},\theta_{B}|y_{n_{I_{A}}},y_{n_{I_{B}}} \right)\, d\theta_{A}d\theta_{B}} \\
- & {\approx \frac{1}{S}\sum\limits_{i = 1}^{S}CP_{N - n_{I_{A}}}\left( \theta_{A,i}|y_{n_{I_{A}}} \right)\, CP_{N - n_{I_{B}}}\left( \theta_{B,i}|y_{n_{I_{B}}} \right).}
-\end{aligned}$$
+``` math
+\begin{aligned}
+PoS &= \iint CP_{N-n_{I_A}}(\theta_A|y_{n_{I_A}}) \,
+CP_{N-n_{I_B}}(\theta_B|y_{n_{I_B}})\,
+p(\theta_A,\theta_B|y_{n_{I_A}},y_{n_{I_B}}) \, d\theta_A d\theta_B \\
+& \approx
+\frac{1}{S} \sum_{i=1}^S CP_{N-n_{I_A}}(\theta_{A,i}|y_{n_{I_A}}) \,
+CP_{N-n_{I_B}}(\theta_{B,i}|y_{n_{I_B}}).
+\end{aligned}
+```
 
 Thus we need to also get the conditional power for trial B at interim…
 
 ``` r
+
 interim_oc_B <- oc1S(interim_B, Nev - trials$deaths[4], success_crit, sigma = 2)
 ```
 
@@ -617,6 +678,7 @@ interim_oc_B <- oc1S(interim_B, Nev - trials$deaths[4], success_crit, sigma = 2)
 case)
 
 ``` r
+
 mean(interim_oc_A(interim_diff_map_post[, "theta[3]"]) * interim_oc_B(interim_diff_map_post[, "theta[4]"]))
 ```
 
@@ -625,6 +687,7 @@ mean(interim_oc_A(interim_diff_map_post[, "theta[3]"]) * interim_oc_B(interim_di
 which is slightly larger than assuming independence:
 
 ``` r
+
 interim_pos_A(interim_A) * interim_pos_B(interim_B)
 ```
 
@@ -633,6 +696,7 @@ interim_pos_A(interim_A) * interim_pos_B(interim_B)
 This is due to dependence of the posteriors
 
 ``` r
+
 cor(interim_diff_map_post[, c("theta[3]", "theta[4]")])
 ```
 
@@ -643,6 +707,7 @@ cor(interim_diff_map_post[, c("theta[3]", "theta[4]")])
 For the full exchangeability case we have
 
 ``` r
+
 mean(interim_oc_A(interim_map_post[, "theta[3]"]) * interim_oc_B(interim_map_post[, "theta[4]"]))
 ```
 
@@ -661,6 +726,7 @@ calculations.
 Phase III trial A:
 
 ``` r
+
 ## only interim data of trial A
 interim_pos_A(interim_A)
 ```
@@ -668,6 +734,7 @@ interim_pos_A(interim_A)
     ## [1] 0.4465623
 
 ``` r
+
 ## in addition with prior historical data PoC & phase II data
 interim_pos_A(interim_A_combined)
 ```
@@ -675,6 +742,7 @@ interim_pos_A(interim_A_combined)
     ## [1] 0.4937129
 
 ``` r
+
 ## finally with the interim data of the phase III B
 interim_pos_A(interim_A_allcombined)
 ```
@@ -684,6 +752,7 @@ interim_pos_A(interim_A_allcombined)
 Phase III trial B:
 
 ``` r
+
 ## only interim data of trial B
 interim_pos_B(interim_B)
 ```
@@ -691,6 +760,7 @@ interim_pos_B(interim_B)
     ## [1] 0.6411569
 
 ``` r
+
 ## in addition with prior historical data PoC & phase II data
 interim_pos_B(interim_B_combined)
 ```
@@ -698,6 +768,7 @@ interim_pos_B(interim_B_combined)
     ## [1] 0.6762344
 
 ``` r
+
 ## finally with the interim data of the phase III A
 interim_pos_B(interim_B_allcombined)
 ```
@@ -728,6 +799,7 @@ Run `gMAP` with base data and produce a large MCMC sample (10 chains) to
 get a very high precision.
 
 ``` r
+
 base_map_mc_2 <- gMAP(cbind(logHR, sem) ~ 1 | study,
   family = gaussian,
   data = base,
@@ -741,6 +813,7 @@ base_map_mc_2 <- gMAP(cbind(logHR, sem) ~ 1 | study,
 Force an accurate fit with 5 components:
 
 ``` r
+
 base_map_2 <- mixfit(base_map_mc_2, Nc = 5)
 base_map_2
 ```
@@ -760,6 +833,7 @@ Now, combine the MAP prior (representing historical knowledge) with the
 interim data of trial A:
 
 ``` r
+
 interim_A_combined_2 <- postmix(base_map_2, m = trials$logHR[3], se = trials$sem[3])
 ```
 
@@ -767,6 +841,7 @@ interim_A_combined_2 <- postmix(base_map_2, m = trials$logHR[3], se = trials$sem
     phase III A trial, but excluding the phase III B data):
 
 ``` r
+
 interim_map_mc_2 <- update(base_map_mc_2, data = trials[-4, ])
 ```
 
@@ -781,12 +856,14 @@ interim_map_mc_2 <- update(base_map_mc_2, data = trials[-4, ])
     ## options(RBesT.MC.control=list(adapt_delta=0.999))
 
 ``` r
+
 interim_map_post_2 <- as.matrix(interim_map_mc_2)[, 1:3]
 ```
 
 2.  turn MCMC posterior sample into parametric mixture
 
 ``` r
+
 interim_A_allcombined_2 <- mixfit(interim_map_post_2[, "theta[3]"], Nc = 5)
 
 interim_A_allcombined_2
@@ -805,6 +882,7 @@ interim_A_allcombined_2
 Now let’s overlay the two posterior’s
 
 ``` r
+
 ggplot(data.frame(logHR = c(-0.8, 0.25)), aes(logHR)) +
   stat_function(fun = dmix, args = list(mix = interim_A_combined_2), aes(linetype = "MAP")) +
   stat_function(fun = dmix, args = list(mix = interim_A_allcombined_2), aes(linetype = "MAC")) +
@@ -817,12 +895,14 @@ ggplot(data.frame(logHR = c(-0.8, 0.25)), aes(logHR)) +
 The PoS is essentially the same
 
 ``` r
+
 interim_pos_A(interim_A_combined_2)
 ```
 
     ## [1] 0.4900712
 
 ``` r
+
 interim_pos_A(interim_A_allcombined_2)
 ```
 
@@ -833,21 +913,26 @@ interim_pos_A(interim_A_allcombined_2)
 The stated equivalence requires that the posterior of a trial specific
 parameter
 
-$$p\left( \theta_{\star}|y_{\star},y_{H} \right),$$
+``` math
+p(\theta_\star|y_\star,y_H),
+```
 
-which is conditional on the trial specific data $y_{\star}$**and** the
-historical data $y_{H}$ (MAC approach, joint use of $y_{H},y_{\star}$),
-is equivalent to obtaining the MAP prior
-$p\left( \theta_{\star}|y_{H} \right)$ based on the historical data and
-then analyzing the new trial with this prior.
+which is conditional on the trial specific data $`y_\star`$**and** the
+historical data $`y_H`$ (MAC approach, joint use of $`y_H,y_\star`$), is
+equivalent to obtaining the MAP prior $`p(\theta_\star|y_H)`$ based on
+the historical data and then analyzing the new trial with this prior.
 
-$$\begin{aligned}
-{p\left( \theta_{\star}|y_{\star},y_{H} \right)} & {\propto p\left( \theta_{\star},\theta_{H}|y_{\star},y_{H} \right)} \\
- & {\propto p\left( y_{\star},y_{H}|\theta_{\star},\theta_{H} \right)\, p\left( \theta_{\star},\theta_{H} \right)} \\
- & {= p\left( y_{\star}|\theta_{\star} \right)\, p\left( y_{H}|\theta_{H} \right)\, p\left( \theta_{\star},\theta_{H} \right)} \\
- & {\propto p\left( y_{\star}|\theta_{\star} \right)\, p\left( \theta_{\star},\theta_{H}|y_{H} \right)} \\
- & {\propto p\left( y_{\star}|\theta_{\star} \right)\, p\left( \theta_{\star}|y_{H} \right)}
-\end{aligned}$$
+``` math
+\begin{aligned}
+p(\theta_\star|y_\star,y_H) &\propto p(\theta_\star,\theta_H|y_\star,y_H) \\
+ &\propto p(y_\star,y_H|\theta_\star,\theta_H) \,
+ p(\theta_\star,\theta_H) \\ 
+ &= p(y_\star|\theta_\star) \, p(y_H|\theta_H) \,
+ p(\theta_\star,\theta_H) \\ 
+&\propto p(y_\star|\theta_\star) \, p(\theta_\star,\theta_H|y_H) \\
+&\propto p(y_\star|\theta_\star) \, p(\theta_\star|y_H)
+\end{aligned}
+```
 
 The equivalence holds under the use of the meta-analytic model.
 
@@ -865,12 +950,13 @@ Biometrics. 2014;70(4):1023-1032.
 ## R Session Info
 
 ``` r
+
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -889,30 +975,30 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] purrr_1.2.1      dplyr_1.2.0      bayesplot_1.15.0 ggplot2_4.0.2   
-    ## [5] knitr_1.51       RBesT_1.9-0     
+    ## [1] purrr_1.2.2      dplyr_1.2.1      bayesplot_1.15.0 ggplot2_4.0.3   
+    ## [5] knitr_1.51       RBesT_1.10-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            
-    ##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          
-    ## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       
+    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
+    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
+    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
+    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
     ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           
-    ## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         
+    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
+    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
+    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
     ## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     
     ## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          
     ## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        
     ## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  
-    ## [37] abind_1.4-8           posterior_1.6.1       rstan_2.32.7         
-    ## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.3-5        
+    ## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         
+    ## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        
     ## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       
-    ## [46] fastmap_1.2.0         grid_4.5.3            cli_3.6.5            
-    ## [49] magrittr_2.0.4        loo_2.9.0             pkgbuild_1.4.8       
-    ## [52] withr_3.0.2           scales_1.4.0          backports_1.5.0      
-    ## [55] rmarkdown_2.30        matrixStats_1.5.0     otel_0.2.0           
-    ## [58] gridExtra_2.3         ragg_1.5.1            evaluate_1.0.5       
-    ## [61] rstantools_2.6.0      rlang_1.1.7           Rcpp_1.1.1           
-    ## [64] glue_1.8.0            jsonlite_2.0.0        plyr_1.8.9           
-    ## [67] R6_2.6.1              systemfonts_1.3.2     fs_1.6.7
+    ## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
+    ## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
+    ## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      
+    ## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
+    ## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
+    ## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
+    ## [64] glue_1.8.1            jsonlite_2.0.0        plyr_1.8.9           
+    ## [67] R6_2.6.1              systemfonts_1.3.2     fs_2.1.0

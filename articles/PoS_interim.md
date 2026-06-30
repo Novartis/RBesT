@@ -24,6 +24,7 @@ upon treatment is considered improvement in the patients. Below is the
 summary statistics of this primary endpoint by group at the interim.
 
 ``` r
+
 ia <- data.frame(
   n = c(12, 14),
   median_count = c(20.5, 21),
@@ -45,6 +46,7 @@ kable(ia)
 The predefined dual PoC criteria is as follows,
 
 ``` r
+
 n <- 21 # planned total n per arm
 rules <- decision2S(c(0.9, 0.5), c(0, -0.357), lower.tail = TRUE)
 print(rules)
@@ -63,6 +65,7 @@ over placebo numerically. The variability of this endpoint is higher
 than what was assumed for study sample size calculation.
 
 ``` r
+
 priorP <- priorT <- mixnorm(c(1, log(20), 1), sigma = 0.47, param = "mn")
 ## posterior at IA data
 postT_interim <- postmix(priorT, m = ia["active", "mean_log"], se = ia["active", "se_log"])
@@ -73,6 +76,7 @@ pmixdiff(postT_interim, postP_interim, 0)
     ## [1] 0.5900663
 
 ``` r
+
 pmixdiff(postT_interim, postP_interim, -0.357)
 ```
 
@@ -83,12 +87,14 @@ of meeting PoC criteria at trial completion given observed interim data,
 was computed using function
 **[`pos2S()`](https://opensource.nibr.com/RBesT/reference/pos2S.md)**.
 One could assume that the new data after the interim would be from the
-same distribution as the interim data. If the $\sigma_{1}$ and
-$\sigma_{2}$ in
+same distribution as the interim data. If the $`\sigma_{1}`$ and
+$`\sigma_{2}`$ in
 **[`pos2S()`](https://opensource.nibr.com/RBesT/reference/pos2S.md)**
-were not specified, i.e. the previously assumed $\sigma$ would be used.
+were not specified, i.e. the previously assumed $`\sigma`$ would be
+used.
 
 ``` r
+
 pos_final <- pos2S(
   postT_interim,
   postP_interim,
@@ -108,16 +114,18 @@ are used, the calculated probability is small, suggesting a low chance
 of success at the final analysis given observed IA data.
 
 ``` r
+
 pos_final(postT_interim, postP_interim)
 ```
 
-    ## [1] 0.02413245
+    ## [1] 0.02413365
 
 One can also use
 **[`oc2S()`](https://opensource.nibr.com/RBesT/reference/oc2S.md)** to
 compute conditional power for any given treatment effect.
 
 ``` r
+
 ia_oc <- oc2S(
   postT_interim,
   postP_interim,
@@ -156,9 +164,9 @@ ggplot(data = out, aes(x = diff_pct, y = cp)) +
 
 ### R Session Info
 
-    ## R version 4.5.3 (2026-03-11)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -177,28 +185,28 @@ ggplot(data = out, aes(x = diff_pct, y = cp)) +
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] dplyr_1.2.0   scales_1.4.0  ggplot2_4.0.2 knitr_1.51    RBesT_1.9-0  
+    ## [1] dplyr_1.2.1   scales_1.4.0  ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] tensorA_0.36.2.1      sass_0.4.10           generics_0.1.4       
-    ##  [4] digest_0.6.39         magrittr_2.0.4        evaluate_1.0.5       
-    ##  [7] grid_4.5.3            RColorBrewer_1.1-3    mvtnorm_1.3-5        
+    ##  [4] digest_0.6.39         magrittr_2.0.5        evaluate_1.0.5       
+    ##  [7] grid_4.6.1            RColorBrewer_1.1-3    mvtnorm_1.4-1        
     ## [10] fastmap_1.2.0         jsonlite_2.0.0        pkgbuild_1.4.8       
-    ## [13] backports_1.5.0       Formula_1.2-5         gridExtra_2.3        
-    ## [16] QuickJSR_1.9.0        codetools_0.2-20      textshaping_1.0.5    
-    ## [19] jquerylib_0.1.4       abind_1.4-8           cli_3.6.5            
-    ## [22] rlang_1.1.7           withr_3.0.2           cachem_1.1.0         
+    ## [13] backports_1.5.1       Formula_1.2-5         gridExtra_2.3.1      
+    ## [16] QuickJSR_1.10.0       codetools_0.2-20      textshaping_1.0.5    
+    ## [19] jquerylib_0.1.4       abind_1.4-8           cli_3.6.6            
+    ## [22] rlang_1.2.0           withr_3.0.3           cachem_1.1.0         
     ## [25] yaml_2.3.12           otel_0.2.0            StanHeaders_2.32.10  
-    ## [28] parallel_4.5.3        inline_0.3.21         rstan_2.32.7         
-    ## [31] tools_4.5.3           rstantools_2.6.0      checkmate_2.3.4      
-    ## [34] assertthat_0.2.1      vctrs_0.7.1           posterior_1.6.1      
-    ## [37] R6_2.6.1              stats4_4.5.3          matrixStats_1.5.0    
-    ## [40] lifecycle_1.0.5       fs_1.6.7              htmlwidgets_1.6.4    
-    ## [43] ragg_1.5.1            pkgconfig_2.0.3       desc_1.4.3           
-    ## [46] pkgdown_2.2.0         RcppParallel_5.1.11-2 bslib_0.10.0         
-    ## [49] pillar_1.11.1         gtable_0.3.6          loo_2.9.0            
-    ## [52] glue_1.8.0            Rcpp_1.1.1            systemfonts_1.3.2    
-    ## [55] xfun_0.56             tibble_3.3.1          tidyselect_1.2.1     
-    ## [58] farver_2.1.2          htmltools_0.5.9       labeling_0.4.3       
-    ## [61] rmarkdown_2.30        compiler_4.5.3        S7_0.2.1             
-    ## [64] distributional_0.6.0
+    ## [28] parallel_4.6.1        inline_0.3.21         rstan_2.32.7         
+    ## [31] tools_4.6.1           rstantools_2.6.0      checkmate_2.3.4      
+    ## [34] assertthat_0.2.1      vctrs_0.7.3           posterior_1.7.0      
+    ## [37] R6_2.6.1              stats4_4.6.1          matrixStats_1.5.0    
+    ## [40] lifecycle_1.0.5       fs_2.1.0              htmlwidgets_1.6.4    
+    ## [43] ragg_1.5.2            pkgconfig_2.0.3       desc_1.4.3           
+    ## [46] pkgdown_2.2.0         RcppParallel_5.1.11-2 bslib_0.11.0         
+    ## [49] pillar_1.11.1         gtable_0.3.6          loo_2.10.0           
+    ## [52] glue_1.8.1            Rcpp_1.1.1-1.1        statmod_1.5.2        
+    ## [55] systemfonts_1.3.2     xfun_0.59             tibble_3.3.1         
+    ## [58] tidyselect_1.2.1      farver_2.1.2          htmltools_0.5.9      
+    ## [61] labeling_0.4.3        rmarkdown_2.31        compiler_4.6.1       
+    ## [64] S7_0.2.2              distributional_0.8.1

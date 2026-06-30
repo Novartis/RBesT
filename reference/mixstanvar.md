@@ -60,12 +60,12 @@ functions (the suffix `_lpdf` is automatically added by
 arguments to these mixture distributions depend on the specific
 distribution type as follows:
 
-|                            |                                                                   |
-|----------------------------|-------------------------------------------------------------------|
-| Density                    | Arguments                                                         |
-| `mixbeta(w, a, b)`         | `w` weights, `a` shapes, `b` shapes                               |
-| `mixgamma(w, a, b)`        | `w` weights, `a` shapes, `b` inverse scales                       |
-| `mixnorm(w, m, s)`         | `w` weights, `m` means, `s` standard deviations                   |
+|  |  |
+|----|----|
+| Density | Arguments |
+| `mixbeta(w, a, b)` | `w` weights, `a` shapes, `b` shapes |
+| `mixgamma(w, a, b)` | `w` weights, `a` shapes, `b` inverse scales |
+| `mixnorm(w, m, s)` | `w` weights, `m` means, `s` standard deviations |
 | `mixmvnorm(w, m, sigma_L)` | `w` weights, `m` means, `sigma_L` cholesky factors of covariances |
 
 These arguments to the mixture densities refer to the different density

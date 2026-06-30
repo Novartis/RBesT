@@ -20,60 +20,16 @@ vignette as a first read.
 
 # Package index
 
-## All functions
-
-- [`AS`](https://opensource.nibr.com/RBesT/reference/AS.md) : Ankylosing
-  Spondylitis.
-
-- [`BinaryExactCI()`](https://opensource.nibr.com/RBesT/reference/BinaryExactCI.md)
-  : Exact Confidence interval for Binary Proportion
+## Package overview
 
 - [`RBesT`](https://opensource.nibr.com/RBesT/reference/RBesT-package.md)
   [`RBesT-package`](https://opensource.nibr.com/RBesT/reference/RBesT-package.md)
   : R Bayesian Evidence Synthesis Tools
 
-- [`automixfit()`](https://opensource.nibr.com/RBesT/reference/automixfit.md)
-  : Automatic Fitting of Mixtures of Conjugate Distributions to a Sample
+## Prior derivation (Meta-Analytic-Predictive analysis)
 
-- [`colitis`](https://opensource.nibr.com/RBesT/reference/colitis.md) :
-  Ulcerative Colitis.
-
-- [`crohn`](https://opensource.nibr.com/RBesT/reference/crohn.md) :
-  Crohn's disease.
-
-- [`decision1S()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
-  [`has_lower()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
-  [`has_upper()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
-  [`lower()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
-  [`upper()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
-  [`oc1Sdecision()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
-  : Decision Function for 1 Sample Designs
-
-- [`decision1S_boundary()`](https://opensource.nibr.com/RBesT/reference/decision1S_boundary.md)
-  : Decision Boundary for 1 Sample Designs
-
-- [`decision2S()`](https://opensource.nibr.com/RBesT/reference/decision2S.md)
-  [`oc2Sdecision()`](https://opensource.nibr.com/RBesT/reference/decision2S.md)
-  : Decision Function for 2 Sample Designs
-
-- [`decision2S_boundary()`](https://opensource.nibr.com/RBesT/reference/decision2S_boundary.md)
-  : Decision Boundary for 2 Sample Designs
-
-- [`as_draws(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
-  [`as_draws_matrix(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
-  [`as_draws_array(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
-  [`as_draws_df(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
-  [`as_draws_list(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
-  [`as_draws_rvars(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
-  **\[experimental\]** :
-
-  Transform `gMAP` to `draws` objects
-
-- [`ess()`](https://opensource.nibr.com/RBesT/reference/ess.md) :
-  Effective Sample Size for a Conjugate Prior
-
-- [`forest_plot()`](https://opensource.nibr.com/RBesT/reference/forest_plot.md)
-  : Forest Plot
+Combine historical data into a Meta-Analytic-Predictive (MAP) prior and
+inspect the model fit.
 
 - [`gMAP()`](https://opensource.nibr.com/RBesT/reference/gMAP.md)
   [`print(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/gMAP.md)
@@ -83,20 +39,98 @@ vignette as a first read.
   [`summary(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/gMAP.md)
   : Meta-Analytic-Predictive Analysis for Generalized Linear Models
 
-- [`likelihood()`](https://opensource.nibr.com/RBesT/reference/likelihood.md)
-  [`` `likelihood<-`() ``](https://opensource.nibr.com/RBesT/reference/likelihood.md)
-  : Read and Set Likelihood to the Corresponding Conjugate Prior
+- [`predict(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
+  [`print(`*`<gMAPpred>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
+  [`summary(`*`<gMAPpred>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
+  [`as.matrix(`*`<gMAPpred>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
+  : Predictions from gMAP analyses
 
-- [`logit()`](https://opensource.nibr.com/RBesT/reference/lodds.md)
-  [`inv_logit()`](https://opensource.nibr.com/RBesT/reference/lodds.md)
-  : Logit (log-odds) and inverse-logit function.
+- [`plot(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/plot.gMAP.md)
+  : Diagnostic plots for gMAP analyses
 
-- [`dmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
-  [`pmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
-  [`qmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
-  [`rmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
-  [`` `[[`( ``*`<mix>`*`)`](https://opensource.nibr.com/RBesT/reference/mix.md)
-  : Mixture Distributions
+- [`forest_plot()`](https://opensource.nibr.com/RBesT/reference/forest_plot.md)
+  : Forest Plot
+
+- [`as_draws(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
+  [`as_draws_matrix(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
+  [`as_draws_array(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
+  [`as_draws_df(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
+  [`as_draws_list(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
+  [`as_draws_rvars(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/draws-RBesT.md)
+  :
+
+  Transform `gMAP` to `draws` objects
+
+- [`nsamples(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/nsamples.gMAP.md)
+  : Return the number of posterior samples
+
+## Prior approximation
+
+Approximate MCMC samples (or any sample) by a parametric mixture of
+conjugate distributions.
+
+- [`mixfit()`](https://opensource.nibr.com/RBesT/reference/mixfit.md) :
+  Fit of Mixture Densities to Samples
+- [`automixfit()`](https://opensource.nibr.com/RBesT/reference/automixfit.md)
+  : Automatic Fitting of Mixtures of Conjugate Distributions to a Sample
+- [`plot(`*`<EM>`*`)`](https://opensource.nibr.com/RBesT/reference/plot.EM.md)
+  : Diagnostic plots for EM fits
+
+## Effective sample size
+
+Quantify the informativeness of a (mixture) prior.
+
+- [`ess()`](https://opensource.nibr.com/RBesT/reference/ess.md) :
+  Effective Sample Size for a Conjugate Prior
+
+## Prior robustification
+
+Make a prior robust against prior-data conflict.
+
+- [`robustify()`](https://opensource.nibr.com/RBesT/reference/robustify.md)
+  : Robustify Mixture Priors
+
+## Design evaluation
+
+Define decision rules and evaluate operating characteristics and the
+probability of success for 1- and 2-sample designs.
+
+- [`decision1S()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
+  [`has_lower()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
+  [`has_upper()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
+  [`lower()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
+  [`upper()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
+  [`oc1Sdecision()`](https://opensource.nibr.com/RBesT/reference/decision1S.md)
+  : Decision Function for 1 Sample Designs
+- [`decision2S()`](https://opensource.nibr.com/RBesT/reference/decision2S.md)
+  [`oc2Sdecision()`](https://opensource.nibr.com/RBesT/reference/decision2S.md)
+  : Decision Function for 2 Sample Designs
+- [`decision1S_boundary()`](https://opensource.nibr.com/RBesT/reference/decision1S_boundary.md)
+  : Decision Boundary for 1 Sample Designs
+- [`decision2S_boundary()`](https://opensource.nibr.com/RBesT/reference/decision2S_boundary.md)
+  : Decision Boundary for 2 Sample Designs
+- [`oc1S()`](https://opensource.nibr.com/RBesT/reference/oc1S.md) :
+  Operating Characteristics for 1 Sample Design
+- [`oc2S()`](https://opensource.nibr.com/RBesT/reference/oc2S.md) :
+  Operating Characteristics for 2 Sample Design
+- [`pos1S()`](https://opensource.nibr.com/RBesT/reference/pos1S.md) :
+  Probability of Success for a 1 Sample Design
+- [`pos2S()`](https://opensource.nibr.com/RBesT/reference/pos2S.md) :
+  Probability of Success for 2 Sample Design
+
+## Trial analysis
+
+Conjugate posterior updating and predictive distributions used to
+analyse the actual trial outcome.
+
+- [`postmix()`](https://opensource.nibr.com/RBesT/reference/postmix.md)
+  : Conjugate Posterior Analysis
+- [`preddist()`](https://opensource.nibr.com/RBesT/reference/preddist.md)
+  : Predictive Distributions for Mixture Distributions
+
+## Mixture distributions
+
+Construct, combine and evaluate mixture distributions.
 
 - [`mixbeta()`](https://opensource.nibr.com/RBesT/reference/mixbeta.md)
   [`ms2beta()`](https://opensource.nibr.com/RBesT/reference/mixbeta.md)
@@ -106,19 +140,6 @@ vignette as a first read.
   [`summary(`*`<betaMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixbeta.md)
   [`summary(`*`<betaBinomialMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixbeta.md)
   : Beta Mixture Density
-
-- [`mixcombine()`](https://opensource.nibr.com/RBesT/reference/mixcombine.md)
-  : Combine Mixture Distributions
-
-- [`dmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
-  [`pmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
-  [`qmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
-  [`rmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
-  : Difference of mixture distributions
-
-- [`mixfit()`](https://opensource.nibr.com/RBesT/reference/mixfit.md) :
-  Fit of Mixture Densities to Samples
-
 - [`mixgamma()`](https://opensource.nibr.com/RBesT/reference/mixgamma.md)
   [`ms2gamma()`](https://opensource.nibr.com/RBesT/reference/mixgamma.md)
   [`mn2gamma()`](https://opensource.nibr.com/RBesT/reference/mixgamma.md)
@@ -128,18 +149,6 @@ vignette as a first read.
   [`summary(`*`<gammaMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixgamma.md)
   [`summary(`*`<gammaPoissonMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixgamma.md)
   : The Gamma Mixture Distribution
-
-- [`write_mix_json()`](https://opensource.nibr.com/RBesT/reference/mixjson.md)
-  [`read_mix_json()`](https://opensource.nibr.com/RBesT/reference/mixjson.md)
-  **\[experimental\]** : Write and Read a Mixture Object with JSON
-
-- [`mixmvnorm()`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
-  [`msr2mvnorm()`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
-  [`print(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
-  [`summary(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
-  [`sigma(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
-  : Multivariate Normal Mixture Density
-
 - [`mixnorm()`](https://opensource.nibr.com/RBesT/reference/mixnorm.md)
   [`mn2norm()`](https://opensource.nibr.com/RBesT/reference/mixnorm.md)
   [`print(`*`<normMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixnorm.md)
@@ -147,52 +156,62 @@ vignette as a first read.
   [`sigma(`*`<normMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixnorm.md)
   [`` `sigma<-`() ``](https://opensource.nibr.com/RBesT/reference/mixnorm.md)
   : Normal Mixture Density
-
+- [`mixmvnorm()`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
+  [`msr2mvnorm()`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
+  [`print(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
+  [`summary(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
+  [`sigma(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixmvnorm.md)
+  : Multivariate Normal Mixture Density
+- [`mixcombine()`](https://opensource.nibr.com/RBesT/reference/mixcombine.md)
+  : Combine Mixture Distributions
+- [`dmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
+  [`pmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
+  [`qmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
+  [`rmix()`](https://opensource.nibr.com/RBesT/reference/mix.md)
+  [`` `[[`( ``*`<mix>`*`)`](https://opensource.nibr.com/RBesT/reference/mix.md)
+  : Mixture Distributions
+- [`dmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
+  [`pmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
+  [`qmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
+  [`rmixdiff()`](https://opensource.nibr.com/RBesT/reference/mixdiff.md)
+  : Difference of mixture distributions
 - [`plot(`*`<mix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixplot.md)
   [`plot(`*`<mvnormMix>`*`)`](https://opensource.nibr.com/RBesT/reference/mixplot.md)
   : Plot mixture distributions
+- [`likelihood()`](https://opensource.nibr.com/RBesT/reference/likelihood.md)
+  [`` `likelihood<-`() ``](https://opensource.nibr.com/RBesT/reference/likelihood.md)
+  : Read and Set Likelihood to the Corresponding Conjugate Prior
+
+## Interoperability and utilities
+
+Read/write mixtures, use them in brms, and helper functions.
 
 - [`mixstanvar()`](https://opensource.nibr.com/RBesT/reference/mixstanvar.md)
   :
 
   Mixture distributions as `brms` priors
 
-- [`nsamples(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/nsamples.gMAP.md)
-  : Return the number of posterior samples
+- [`write_mix_json()`](https://opensource.nibr.com/RBesT/reference/mixjson.md)
+  [`read_mix_json()`](https://opensource.nibr.com/RBesT/reference/mixjson.md)
+  **\[experimental\]** : Write and Read a Mixture Object with JSON
 
-- [`oc1S()`](https://opensource.nibr.com/RBesT/reference/oc1S.md) :
-  Operating Characteristics for 1 Sample Design
+- [`logit()`](https://opensource.nibr.com/RBesT/reference/lodds.md)
+  [`inv_logit()`](https://opensource.nibr.com/RBesT/reference/lodds.md)
+  : Logit (log-odds) and inverse-logit function.
 
-- [`oc2S()`](https://opensource.nibr.com/RBesT/reference/oc2S.md) :
-  Operating Characteristics for 2 Sample Design
+- [`BinaryExactCI()`](https://opensource.nibr.com/RBesT/reference/BinaryExactCI.md)
+  : Exact Confidence interval for Binary Proportion
 
-- [`plot(`*`<EM>`*`)`](https://opensource.nibr.com/RBesT/reference/plot.EM.md)
-  : Diagnostic plots for EM fits
+## Datasets
 
-- [`plot(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/plot.gMAP.md)
-  : Diagnostic plots for gMAP analyses
-
-- [`pos1S()`](https://opensource.nibr.com/RBesT/reference/pos1S.md) :
-  Probability of Success for a 1 Sample Design
-
-- [`pos2S()`](https://opensource.nibr.com/RBesT/reference/pos2S.md) :
-  Probability of Success for 2 Sample Design
-
-- [`postmix()`](https://opensource.nibr.com/RBesT/reference/postmix.md)
-  : Conjugate Posterior Analysis
-
-- [`preddist()`](https://opensource.nibr.com/RBesT/reference/preddist.md)
-  : Predictive Distributions for Mixture Distributions
-
-- [`predict(`*`<gMAP>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
-  [`print(`*`<gMAPpred>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
-  [`summary(`*`<gMAPpred>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
-  [`as.matrix(`*`<gMAPpred>`*`)`](https://opensource.nibr.com/RBesT/reference/predict.gMAP.md)
-  : Predictions from gMAP analyses
-
-- [`robustify()`](https://opensource.nibr.com/RBesT/reference/robustify.md)
-  : Robustify Mixture Priors
-
+- [`AS`](https://opensource.nibr.com/RBesT/reference/AS.md) : Ankylosing
+  Spondylitis.
+- [`asthma`](https://opensource.nibr.com/RBesT/reference/asthma.md) :
+  Asthma exacerbation recurrent event data.
+- [`colitis`](https://opensource.nibr.com/RBesT/reference/colitis.md) :
+  Ulcerative Colitis.
+- [`crohn`](https://opensource.nibr.com/RBesT/reference/crohn.md) :
+  Crohn's disease.
 - [`transplant`](https://opensource.nibr.com/RBesT/reference/transplant.md)
   : Transplant.
 
@@ -206,6 +225,8 @@ vignette as a first read.
   Endpoint](https://opensource.nibr.com/RBesT/articles/introduction_normal.md):
 - [Getting started with RBesT
   (binary)](https://opensource.nibr.com/RBesT/articles/introduction.md):
+- [Interim Futility for Negative Binomial
+  Endpoints](https://opensource.nibr.com/RBesT/articles/negbin_interim_futility.md):
 - [Probability of Success with
   Co-Data](https://opensource.nibr.com/RBesT/articles/PoS_codata.md):
 - [Probability of Success at an Interim

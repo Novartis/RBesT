@@ -1,7 +1,5 @@
 # Transform `gMAP` to `draws` objects
 
-**\[experimental\]**
-
 Transform a `gMAP` object to a format supported by the posterior
 package.
 
@@ -57,9 +55,6 @@ as_draws_rvars(x, variable = NULL, regex = FALSE, inc_warmup = FALSE, ...)
 To subset iterations, chains, or draws, use the
 [`posterior::subset_draws()`](https://mc-stan.org/posterior/reference/subset_draws.html)
 method after transforming the input object to a `draws` object.
-
-The function is experimental as the set of exported posterior variables
-are subject to updates.
 
 ## See also
 

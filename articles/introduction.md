@@ -62,12 +62,13 @@ reproducible, the `set.seed` function must be called prior to calling
 **`gMAP`** .
 
 A key parameter in a meta-analysis is the between-trial heterogeneity
-parameter $\tau$ which controls the amount of borrowing from historical
-information for the estimation of the population mean will occur. As we
-often have only few historical trials, the prior is important. For
-binary endpoints with an expected response rate of 20%-80% we recommend
-a conservative `HalfNormal(0,1)` prior as a default. Please refer to the
-help-page of **`gMAP`** for more information.
+parameter $`\tau`$ which controls the amount of borrowing from
+historical information for the estimation of the population mean will
+occur. As we often have only few historical trials, the prior is
+important. For binary endpoints with an expected response rate of
+20%-80% we recommend a conservative `HalfNormal(0,1)` prior as a
+default. Please refer to the help-page of **`gMAP`** for more
+information.
 
 The **`gMAP`** function returns an analysis object from which we can
 extract information using the functions from RBesT. We do recommend to
@@ -78,6 +79,7 @@ For a standard forest plot without the shrinkage estimates please refer
 to the `forest_plot` function in RBesT.
 
 ``` r
+
 # load R packages
 library(RBesT)
 library(ggplot2)
@@ -96,6 +98,7 @@ map_mcmc <- gMAP(cbind(r, n - r) ~ 1 | study,
     ## Assuming default prior location   for beta: 0
 
 ``` r
+
 print(map_mcmc)
 ```
 
@@ -109,14 +112,15 @@ print(map_mcmc)
     ## Maximal Rhat              : 1 
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
-    ##   mean     sd   2.5%    50%  97.5% 
-    ## 0.3870 0.2150 0.0399 0.3590 0.8970 
+    ##         mean median    sd   q2.5   q50 q97.5
+    ## tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897
     ## 
     ## MAP Prior MCMC sample
-    ##   mean     sd   2.5%    50%  97.5% 
-    ## 0.2550 0.0864 0.1060 0.2470 0.4610
+    ##                  mean median     sd  q2.5   q50 q97.5
+    ## theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461
 
 ``` r
+
 ## a graphical representation of model checks is available
 pl <- plot(map_mcmc)
 
@@ -127,6 +131,7 @@ names(pl)
     ## [1] "densityThetaStar"     "densityThetaStarLink" "forest_model"
 
 ``` r
+
 ## forest plot with model estimates
 print(pl$forest_model)
 ```
@@ -137,11 +142,12 @@ An often raised concern with a Bayesian analysis is the choice of the
 prior. Hence sensitivity analyses may sometimes be necessary. They can
 be quickly performed with the **`update`** function. Suppose we want to
 evaluate a more optimistic scenario (with less between-trial
-heterogeneity), expressed by a `HalfNormal(0,1/2)` prior on $\tau$. Then
-we can rerun the original analysis, but with modified arguments of
+heterogeneity), expressed by a `HalfNormal(0,1/2)` prior on $`\tau`$.
+Then we can rerun the original analysis, but with modified arguments of
 **`gMAP`**:
 
 ``` r
+
 set.seed(36546)
 map_mcmc_sens <- update(map_mcmc, tau.prior = 1 / 2)
 ```
@@ -149,6 +155,7 @@ map_mcmc_sens <- update(map_mcmc, tau.prior = 1 / 2)
     ## Assuming default prior location   for beta: 0
 
 ``` r
+
 print(map_mcmc_sens)
 ```
 
@@ -162,12 +169,12 @@ print(map_mcmc_sens)
     ## Maximal Rhat              : 1 
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
-    ##   mean     sd   2.5%    50%  97.5% 
-    ## 0.3350 0.1720 0.0397 0.3200 0.7180 
+    ##         mean median    sd   q2.5  q50 q97.5
+    ## tau[1] 0.335   0.32 0.172 0.0397 0.32 0.718
     ## 
     ## MAP Prior MCMC sample
-    ##   mean     sd   2.5%    50%  97.5% 
-    ## 0.2590 0.0776 0.1290 0.2500 0.4420
+    ##                  mean median     sd  q2.5  q50 q97.5
+    ## theta_resp_pred 0.259   0.25 0.0776 0.129 0.25 0.442
 
 ### Parametric Approximation
 
@@ -181,6 +188,7 @@ the user to assess whether the marginal mixture density (shown in black)
 matches well with the histogram of the MAP MCMC sample.
 
 ``` r
+
 map <- automixfit(map_mcmc)
 print(map)
 ```
@@ -196,6 +204,7 @@ print(map)
     ## b 103.0146367  41.5205219  55.9202833   5.4812202
 
 ``` r
+
 plot(map)$mix
 ```
 
@@ -216,18 +225,21 @@ conservative (small) ESS estimates while the Morita \[3\] method tends
 to estimates liberal (large) ESS estimates when used with mixtures:
 
 ``` r
+
 round(ess(map, method = "elir")) ## default method
 ```
 
     ## [1] 38
 
 ``` r
+
 round(ess(map, method = "moment"))
 ```
 
     ## [1] 24
 
 ``` r
+
 round(ess(map, method = "morita"))
 ```
 
@@ -247,6 +259,7 @@ i.e. if the future trial data strongly deviate from the historical
 control information.
 
 ``` r
+
 ## add a 20% non-informative mixture component
 map_robust <- robustify(map, weight = 0.2, mean = 1 / 2)
 print(map_robust)
@@ -260,6 +273,7 @@ print(map_robust)
     ## b 103.0146367  41.5205219  55.9202833   5.4812202   1.0000000
 
 ``` r
+
 round(ess(map_robust))
 ```
 
@@ -275,6 +289,7 @@ illustrate the relationship of the prior ESS as a function of the robust
 mixture component weight:
 
 ``` r
+
 ess_weight <- data.frame(weight = seq(0.05, 0.95, by = 0.05), ess = NA)
 for (i in seq_along(ess_weight$weight)) {
   ess_weight$ess[i] <- ess(robustify(map, ess_weight$weight[i], 0.5))
@@ -318,11 +333,13 @@ spondylitis \[2\]. This trial tested 6 patients on placebo as control
 against 24 patients on an active experimental treatment. Success was
 declared whenever the condition
 
-$$\Pr\left( \theta_{active} - \theta_{control} > 0 \right) > 0.95$$
+``` math
+\Pr(\theta_{active} - \theta_{control} > 0) > 0.95
+```
 
-was met for the response rates $\theta_{active}$ and $\theta_{control}$.
-A MAP prior was used for the placebo response rate parameter. Here we
-evaluate a few design options as an example.
+was met for the response rates $`\theta_{active}`$ and
+$`\theta_{control}`$. A MAP prior was used for the placebo response rate
+parameter. Here we evaluate a few design options as an example.
 
 The operating characteristics are setup in RBesT in a stepwise manner:
 
@@ -340,11 +357,12 @@ Note that for a 1-sample situation the respective `decision1S` and
 
 #### Type I Error
 
-The type I can be increased compared to the nominal $\alpha$ level in
+The type I can be increased compared to the nominal $`\alpha`$ level in
 case of a conflict between the trial data and the prior. Note, that in
 this example the MAP prior has a 95% interval of about 0.1 to 0.5.
 
 ``` r
+
 theta <- seq(0.1, 0.95, by = 0.01)
 uniform_prior <- mixbeta(c(1, 1, 1))
 treat_prior <- mixbeta(c(1, 0.5, 1)) # prior for treatment used in trial
@@ -379,16 +397,18 @@ Note that observing response rates greater that 50% is highly
 implausible based on the MAP analysis:
 
 ``` r
+
 summary(map)
 ```
 
     ##       mean         sd       2.5%      50.0%      97.5% 
     ## 0.25545885 0.08662045 0.10730400 0.24758768 0.46276759
 
-Hence, it is resonable to restrict the response rates $\theta$ for which
-we evaluate the type I error to a a range of plausible values:
+Hence, it is resonable to restrict the response rates $`\theta`$ for
+which we evaluate the type I error to a a range of plausible values:
 
 ``` r
+
 ggplot(ocI, aes(theta, typeI, colour = prior)) +
   geom_line() +
   ggtitle("Type I Error - response rate restricted to plausible range") +
@@ -400,10 +420,11 @@ ggplot(ocI, aes(theta, typeI, colour = prior)) +
 #### Power
 
 The power demonstrates the gain of using an informative prior; i.e. 80%
-power is reached for smaller $\delta$ values in comparison to a design
+power is reached for smaller $`\delta`$ values in comparison to a design
 with non-informative priors for both arms.
 
 ``` r
+
 delta <- seq(0, 0.7, by = 0.01)
 mean_control <- summary(map)["mean"]
 theta_active <- mean_control + delta
@@ -429,10 +450,11 @@ ggplot(ocP, aes(delta, power, colour = prior)) +
 ![](introduction_files/figure-html/unnamed-chunk-13-1.png)
 
 We see that with the MAP prior one reaches greater power at smaller
-differences $\delta$ in the response rate. For example, the $\delta$ for
-which 80% power is reached can be found with:
+differences $`\delta`$ in the response rate. For example, the $`\delta`$
+for which 80% power is reached can be found with:
 
 ``` r
+
 find_delta <- function(design, theta_control, target_power) {
   uniroot(
     function(delta) {
@@ -472,6 +494,7 @@ the critical values at which the decision criterion flips. In the
 **`decision2S_boundary`** help for more information.
 
 ``` r
+
 ## Critical values at which the decision flips are given conditional
 ## on the outcome of the second read-out; as we like to have this as a
 ## function of the treatment group outcome, we flip label 1 and 2
@@ -501,6 +524,7 @@ non-robust prior and assuming 15 events in the treatment group, three
 result, we can directly evaluate the decision function:
 
 ``` r
+
 ## just positive
 decision(postmix(treat_prior, n = 24, r = 15), postmix(map, n = 6, r = 3))
 ```
@@ -508,6 +532,7 @@ decision(postmix(treat_prior, n = 24, r = 15), postmix(map, n = 6, r = 3))
     ## [1] 1
 
 ``` r
+
 ## negative
 decision(postmix(treat_prior, n = 24, r = 14), postmix(map, n = 6, r = 4))
 ```
@@ -521,6 +546,7 @@ can be run with RBesT using the **`postmix`** function. Calculations are
 performed analytically as we are in the conjugate mixture setting.
 
 ``` r
+
 r_placebo <- 1
 r_treat <- 14
 
@@ -538,12 +564,14 @@ prob_smaller
     ## [1] 0.9917197
 
 ``` r
+
 prob_smaller > 0.95
 ```
 
     ## [1] TRUE
 
 ``` r
+
 ## alternativley we can use the decision object
 decision(post_treat, post_placebo)
 ```
@@ -561,12 +589,13 @@ decision(post_treat, post_placebo)
 #### R Session Info
 
 ``` r
+
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -585,30 +614,30 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.2 knitr_1.51    RBesT_1.9-0  
+    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            
-    ##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          
-    ## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       
+    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
+    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
+    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
+    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
     ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           
-    ## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     
-    ## [28] htmltools_0.5.9       sass_0.4.10           bayesplot_1.15.0     
-    ## [31] yaml_2.3.12           Formula_1.2-5         pillar_1.11.1        
-    ## [34] pkgdown_2.2.0         jquerylib_0.1.4       cachem_1.1.0         
-    ## [37] StanHeaders_2.32.10   abind_1.4-8           posterior_1.6.1      
-    ## [40] rstan_2.32.7          tidyselect_1.2.1      digest_0.6.39        
-    ## [43] mvtnorm_1.3-5         stringi_1.8.7         dplyr_1.2.0          
-    ## [46] reshape2_1.4.5        labeling_0.4.3        fastmap_1.2.0        
-    ## [49] grid_4.5.3            cli_3.6.5             magrittr_2.0.4       
-    ## [52] loo_2.9.0             pkgbuild_1.4.8        withr_3.0.2          
-    ## [55] scales_1.4.0          backports_1.5.0       rmarkdown_2.30       
-    ## [58] matrixStats_1.5.0     otel_0.2.0            gridExtra_2.3        
-    ## [61] ragg_1.5.1            evaluate_1.0.5        rstantools_2.6.0     
-    ## [64] rlang_1.1.7           Rcpp_1.1.1            glue_1.8.0           
-    ## [67] jsonlite_2.0.0        R6_2.6.1              plyr_1.8.9           
-    ## [70] systemfonts_1.3.2     fs_1.6.7
+    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
+    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
+    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
+    ## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        
+    ## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          
+    ## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        
+    ## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
+    ## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          
+    ## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     
+    ## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        
+    ## [46] dplyr_1.2.1           reshape2_1.4.5        labeling_0.4.3       
+    ## [49] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
+    ## [52] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
+    ## [55] withr_3.0.3           scales_1.4.0          backports_1.5.1      
+    ## [58] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
+    ## [61] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
+    ## [64] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
+    ## [67] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             
+    ## [70] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0

@@ -85,17 +85,18 @@ mean\\\bar{y}\_n = 1/n \sum\_{i=1}^n y_i\\.
 
 ## Supported Conjugate Prior-Likelihood Pairs
 
-|                     |                             |                             |                |
-|---------------------|-----------------------------|-----------------------------|----------------|
-| **Prior/Posterior** | **Likelihood**              | **Predictive**              | **Summaries**  |
-| Beta                | Binomial                    | Beta-Binomial               | `n`, `r`       |
-| Normal              | Normal (*fixed \\\sigma\\*) | Normal                      | `n`, `m`, `se` |
-| Gamma               | Poisson                     | Gamma-Poisson               | `n`, `m`       |
-| Gamma               | Exponential                 | Gamma-Exp (*not supported*) | `n`, `m`       |
+|  |  |  |  |
+|----|----|----|----|
+| **Prior/Posterior** | **Likelihood** | **Predictive** | **Summaries** |
+| Beta | Binomial | Beta-Binomial | `n`, `r` |
+| Normal | Normal (*fixed \\\sigma\\*) | Normal | `n`, `m`, `se` |
+| Gamma | Poisson | Gamma-Poisson | `n`, `m` |
+| Gamma | Exponential | Gamma-Exp (*not supported*) | `n`, `m` |
 
 ## Examples
 
 ``` r
+
 # Example 1: predictive distribution from uniform prior.
 bm <- mixbeta(c(1, 1, 1))
 bmPred <- preddist(bm, n = 10)

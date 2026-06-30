@@ -115,6 +115,7 @@ Other mixdist:
 ## Examples
 
 ``` r
+
 nm <- mixnorm(rob = c(0.2, 0, 2), inf = c(0.8, 2, 2), sigma = 5)
 
 print(nm)

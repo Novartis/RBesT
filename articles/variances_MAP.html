@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Meta-Analytic-Predictive Priors for Variances • RBesT</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Meta-Analytic-Predictive Priors for Variances">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,7 @@
 <li><a class="dropdown-item" href="../articles/customizing_plots.html">Customizing RBesT plots</a></li>
     <li><a class="dropdown-item" href="../articles/introduction_normal.html">RBesT for a Normal Endpoint</a></li>
     <li><a class="dropdown-item" href="../articles/introduction.html">Getting started with RBesT (binary)</a></li>
+    <li><a class="dropdown-item" href="../articles/negbin_interim_futility.html">Interim Futility for Negative Binomial Endpoints</a></li>
     <li><a class="dropdown-item" href="../articles/PoS_codata.html">Probability of Success with Co-Data</a></li>
     <li><a class="dropdown-item" href="../articles/PoS_interim.html">Probability of Success at an Interim Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/variances_MAP.html">Meta-Analytic-Predictive Priors for Variances</a></li>
@@ -67,9 +68,9 @@
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2026-03-13</h4>
+            <h4 data-toc-skip class="date">2026-06-30</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.9-0/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
       <div class="d-none name"><code>variances_MAP.Rmd</code></div>
     </div>
 
@@ -86,7 +87,7 @@ estimator for a sample
 of size
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>j</mi></msub><annotation encoding="application/x-tex">n_j</annotation></semantics></math>
 is</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mi>j</mi></msub><mo>−</mo><mn>1</mn></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>j</mi></msub></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mrow><mi>j</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msub><mover><mi>y</mi><mo accent="true">‾</mo></mover><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex"> s^2_j = \frac{1}{n_j-1} \sum_{i=1}^{n_j} (y_{j,i} - \bar{y}_j)^2, </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mi>j</mi></msub><mo>−</mo><mn>1</mn></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>n</mi><mi>j</mi></msub></munderover><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mrow><mi>j</mi><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msub><mover><mi>y</mi><mo accent="true">‾</mo></mover><mi>j</mi></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex"> s^2_j = \frac{1}{n_j-1} \sum_{i=1}^{n_j} (y_{j,i} - \bar{y}_j)^2, </annotation></semantics></math></p>
 <p>which follows a
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>ν</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\chi^2_\nu</annotation></semantics></math>
 distribution with
@@ -94,45 +95,45 @@ distribution with
 degrees of freedom. The
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mi>ν</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\chi^2_\nu</annotation></semantics></math>
 can be rewritten as a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 distribution</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="false" form="prefix">|</mo><msub><mi>ν</mi><mi>j</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>j</mi></msub><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo>,</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mspace width="0.167em"></mspace><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> s^2_j|\nu_j,\sigma_j \sim \Gamma(\nu_j/2, \nu_j/(2\,\sigma^2_j)) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇔</mo><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mspace width="0.167em"></mspace><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="false" form="prefix">|</mo><msub><mi>ν</mi><mi>j</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>j</mi></msub><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo>,</mo><mn>1</mn><mi>/</mi><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Leftrightarrow s^2_j \, \nu_j /2 |\nu_j,\sigma_j \sim \Gamma(\nu_j/2, 1/\sigma^2_j), </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="false" form="prefix">|</mo><msub><mi>ν</mi><mi>j</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>j</mi></msub><mo>∼</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo>,</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mspace width="0.167em"></mspace><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> s^2_j|\nu_j,\sigma_j \sim \Gamma(\nu_j/2, \nu_j/(2\,\sigma^2_j)) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇔</mo><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mspace width="0.167em"></mspace><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="false" form="prefix">|</mo><msub><mi>ν</mi><mi>j</mi></msub><mo>,</mo><msub><mi>σ</mi><mi>j</mi></msub><mo>∼</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo>,</mo><mn>1</mn><mi>/</mi><msubsup><mi>σ</mi><mi>j</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex"> \Leftrightarrow s^2_j \, \nu_j /2 |\nu_j,\sigma_j \sim \Gamma(\nu_j/2, 1/\sigma^2_j), </annotation></semantics></math></p>
 <p>where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\sigma_j</annotation></semantics></math>
 is the (unknown) sampling standard deviation for the data
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>j</mi></msub><annotation encoding="application/x-tex">y_j</annotation></semantics></math>.</p>
 <p>While this is not directly supported in <code>RBesT</code>, a normal
 approximation of the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 transformed
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 variate can be applied. When
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 transforming a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma(\alpha,\beta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Gamma(\alpha,\beta)</annotation></semantics></math>
 variate it’s moment and variance can analytically be shown to be (see
 [2], for example)</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> E[\log(X)] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[\log(X)] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">[</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mi>ψ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> E[\log(X)] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mo stretchy="false" form="prefix">[</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[\log(X)] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
 <p>Here,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\psi(x)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ψ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\psi(x)</annotation></semantics></math>
 is the digamma function and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\psi^{(1)}(x)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ψ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\psi^{(1)}(x)</annotation></semantics></math>
 is the polygamma function of order 1 (second derivative of the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 of the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 function).</p>
 <p>Thus, by approximating the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 transformed
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 distribution with a normal approximation, we can apply <code>gMAP</code>
 as if we were using a normal endpoint. Specifically, we apply the
 transform
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>j</mi></msub><mo>=</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mspace width="0.167em"></mspace><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">Y_j=\log(s^2_j
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>j</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi>s</mi><mi>j</mi><mn>2</mn></msubsup><mspace width="0.167em"></mspace><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mi>ψ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>ν</mi><mi>j</mi></msub><mi>/</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Y_j=\log(s^2_j
 \, \nu_j /2) - \psi(\nu_j/2)</annotation></semantics></math> such that
 the meta-analytic model directly considers
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><msub><mi>σ</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">\log \sigma_j</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><msub><mi>σ</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">\log \sigma_j</annotation></semantics></math>
 as random variate. The normal approximation becomes more accurate, the
 larger the degrees of freedom are. The section at the bottom of this
 vignette discusses this approximation accuracy and concludes that
@@ -184,7 +185,7 @@ is shown in table 2:</p>
 <p>Using the above equations (and using plug-in estimates for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\sigma_j</annotation></semantics></math>)
 this translates into an approximate normal distribution for the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 variance as:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">hdata</span>,</span>
@@ -267,7 +268,7 @@ and the intercept
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
 is needed. In reference [3] it is demonstrated that the (approximate)
 sampling standard deviation of the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 variance is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math>.
 Thus, a <code>HalfNormal(0,sqrt(2)/2)</code> is a very conservative
@@ -298,59 +299,65 @@ which is in line with reference [1]:</p>
 <span><span class="co">## Maximal Rhat              : 1 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
-<span><span class="co">##   mean     sd   2.5%    50%  97.5% </span></span>
-<span><span class="co">## 0.2020 0.1020 0.0758 0.1810 0.4710 </span></span>
+<span><span class="co">##         mean median    sd   q2.5   q50 q97.5</span></span>
+<span><span class="co">## tau[1] 0.202  0.181 0.102 0.0758 0.181 0.471</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
-<span><span class="co">##  mean    sd  2.5%   50% 97.5% </span></span>
-<span><span class="co">## 4.780 0.247 4.270 4.780 5.290</span></span></code></pre>
+<span><span class="co">##                 mean median    sd q2.5  q50 q97.5</span></span>
+<span><span class="co">## theta_resp_pred 4.78   4.78 0.247 4.27 4.78  5.29</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Heterogeneity parameter tau per stratum:</span></span>
-<span><span class="co">##         mean    sd   2.5%   50% 97.5%</span></span>
-<span><span class="co">## tau[1] 0.202 0.102 0.0758 0.181 0.471</span></span>
+<span><span class="co">##         mean median    sd   q2.5   q50 q97.5</span></span>
+<span><span class="co">## tau[1] 0.202  0.181 0.102 0.0758 0.181 0.471</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Regression coefficients:</span></span>
-<span><span class="co">##             mean  sd 2.5%  50% 97.5%</span></span>
-<span><span class="co">## (Intercept) 4.78 0.1 4.58 4.78  4.98</span></span>
+<span><span class="co">##             mean median  sd q2.5  q50 q97.5</span></span>
+<span><span class="co">## (Intercept) 4.78   4.78 0.1 4.58 4.78  4.98</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Mean estimate MCMC sample:</span></span>
-<span><span class="co">##            mean  sd 2.5%  50% 97.5%</span></span>
-<span><span class="co">## theta_resp 4.78 0.1 4.58 4.78  4.98</span></span>
+<span><span class="co">##            mean median  sd q2.5  q50 q97.5</span></span>
+<span><span class="co">## theta_resp 4.78   4.78 0.1 4.58 4.78  4.98</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample:</span></span>
-<span><span class="co">##                 mean    sd 2.5%  50% 97.5%</span></span>
-<span><span class="co">## theta_resp_pred 4.78 0.247 4.27 4.78  5.29</span></span></code></pre>
+<span><span class="co">##                 mean median    sd q2.5  q50 q97.5</span></span>
+<span><span class="co">## theta_resp_pred 4.78   4.78 0.247 4.27 4.78  5.29</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span><span class="op">$</span><span class="va">forest_model</span></span></code></pre></div>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>In reference [1] the correct
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 likelihood is used in contrast to the approximate normal approach above.
 Still, the results match very close, even for the outer quantiles.</p>
 <div class="section level2">
 <h2 id="map-prior-for-the-sampling-standard-deviation">MAP prior for the sampling standard deviation<a class="anchor" aria-label="anchor" href="#map-prior-for-the-sampling-standard-deviation"></a>
 </h2>
 <p>While the MAP analysis is performed for the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 variance, we are actually interested in the MAP of the respective
 sampling standard deviation. Since the sampling standard deviation is a
 strictly positive quantity it is suitable to approximate the MCMC
 posterior of the MAP prior using a mixture of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 variates, which can be done using <code>RBesT</code> as:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">map_mc_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span></span>
-<span><span class="va">sd_trans</span> <span class="op">&lt;-</span> <span class="fu">compose</span><span class="op">(</span><span class="va">sqrt</span>, <span class="va">exp</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">map_mc_post</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: `as.matrix.gMAP()` was deprecated in RBesT 1.10.0.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please use `posterior::as_draws_matrix()` instead.</span></span>
+<span><span class="co">## <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sd_trans</span> <span class="op">&lt;-</span> <span class="fu">compose</span><span class="op">(</span><span class="va">sqrt</span>, <span class="va">exp</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://mc-stan.org/bayesplot/reference/MCMC-intervals.html" class="external-link">mcmc_intervals</a></span><span class="op">(</span><span class="va">map_mc_post</span>, regex_pars <span class="op">=</span> <span class="st">"theta"</span>, transformation <span class="op">=</span> <span class="va">sd_trans</span><span class="op">)</span></span></code></pre></div>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_sigma_mc</span> <span class="op">&lt;-</span> <span class="fu">sd_trans</span><span class="op">(</span><span class="va">map_mc_post</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"theta_pred"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">map_sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">map_sigma_mc</span>, type <span class="op">=</span> <span class="st">"gamma"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_sigma</span><span class="op">)</span><span class="op">$</span><span class="va">mix</span></span></code></pre></div>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-8-2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## 95% interval MAP for the sampling standard deviation</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_sigma</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##      mean        sd      2.5%     50.0%     97.5% </span></span>
@@ -358,25 +365,25 @@ variates, which can be done using <code>RBesT</code> as:</p>
 </div>
 <div class="section level2">
 <h2 id="normal-approximation-of-a-loggamma-variate">Normal approximation of a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>Γ</mi></mrow><annotation encoding="application/x-tex">\log\Gamma</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi mathvariant="normal">Γ</mi></mrow><annotation encoding="application/x-tex">\log\Gamma</annotation></semantics></math>
 variate<a class="anchor" aria-label="anchor" href="#normal-approximation-of-a-loggamma-variate"></a>
 </h2>
 <p>For a
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Gamma(y|\alpha, \beta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Gamma(y|\alpha, \beta)</annotation></semantics></math>
 variate
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>,
 which is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>log</mo><annotation encoding="application/x-tex">\log</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 transformed,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">z = \log(y)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo>=</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z = \log(y)</annotation></semantics></math>,
 we have by the law of transformations for univariate densities:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> y|\alpha,\beta \sim \Gamma(\alpha,\beta) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>y</mi><mo>=</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> p(z) = p(y) \, y = p(\exp(z)) \, \exp(z) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mo>log</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇔</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mi>Γ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>z</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Leftrightarrow \exp(z)|\alpha,\beta \sim \Gamma(\alpha,\beta) \, \exp(z) </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> y|\alpha,\beta \sim \Gamma(\alpha,\beta) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>y</mi><mo>=</mo><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p(z) = p(y) \, y = p(\exp(z)) \, \exp(z) </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇔</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo>∼</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Leftrightarrow \exp(z)|\alpha,\beta \sim \Gamma(\alpha,\beta) \, \exp(z) </annotation></semantics></math></p>
 <p>The first and second moment of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
 is then
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>z</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> E[z] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>z</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[z] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">[</mo><mi>z</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mi>ψ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> E[z] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mo stretchy="false" form="prefix">[</mo><mi>z</mi><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[z] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
 <p>A short simulation demonstrates the above results:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixgamma.html">mixgamma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">18</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## logGamma density</span></span>
@@ -440,11 +447,11 @@ Chapter 4, p. 84</p>
 <div class="section level3">
 <h3 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.5.3 (2026-03-11)</span></span>
+<pre><code><span><span class="co">## R version 4.6.1 (2026-06-24)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.3 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.4 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -463,33 +470,33 @@ Chapter 4, p. 84</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] bayesplot_1.15.0 purrr_1.2.1      dplyr_1.2.0      ggplot2_4.0.2   </span></span>
-<span><span class="co">## [5] knitr_1.51       RBesT_1.9-0     </span></span>
+<span><span class="co">## [1] bayesplot_1.15.0 purrr_1.2.2      dplyr_1.2.1      ggplot2_4.0.3   </span></span>
+<span><span class="co">## [5] knitr_1.51       RBesT_1.10-0    </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            </span></span>
-<span><span class="co">##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    </span></span>
-<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          </span></span>
-<span><span class="co">## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       </span></span>
+<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            </span></span>
+<span><span class="co">##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    </span></span>
+<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          </span></span>
+<span><span class="co">## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       </span></span>
 <span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
-<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           </span></span>
-<span><span class="co">## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
-<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         </span></span>
+<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           </span></span>
+<span><span class="co">## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
+<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         </span></span>
 <span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     </span></span>
 <span><span class="co">## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          </span></span>
 <span><span class="co">## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        </span></span>
 <span><span class="co">## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  </span></span>
-<span><span class="co">## [37] abind_1.4-8           posterior_1.6.1       rstan_2.32.7         </span></span>
-<span><span class="co">## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.3-5        </span></span>
+<span><span class="co">## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         </span></span>
+<span><span class="co">## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        </span></span>
 <span><span class="co">## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       </span></span>
-<span><span class="co">## [46] fastmap_1.2.0         grid_4.5.3            cli_3.6.5            </span></span>
-<span><span class="co">## [49] magrittr_2.0.4        loo_2.9.0             pkgbuild_1.4.8       </span></span>
-<span><span class="co">## [52] withr_3.0.2           scales_1.4.0          backports_1.5.0      </span></span>
-<span><span class="co">## [55] rmarkdown_2.30        matrixStats_1.5.0     otel_0.2.0           </span></span>
-<span><span class="co">## [58] gridExtra_2.3         ragg_1.5.1            evaluate_1.0.5       </span></span>
-<span><span class="co">## [61] rstantools_2.6.0      rlang_1.1.7           Rcpp_1.1.1           </span></span>
-<span><span class="co">## [64] glue_1.8.0            jsonlite_2.0.0        R6_2.6.1             </span></span>
-<span><span class="co">## [67] plyr_1.8.9            systemfonts_1.3.2     fs_1.6.7</span></span></code></pre>
+<span><span class="co">## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            </span></span>
+<span><span class="co">## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       </span></span>
+<span><span class="co">## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      </span></span>
+<span><span class="co">## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           </span></span>
+<span><span class="co">## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       </span></span>
+<span><span class="co">## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       </span></span>
+<span><span class="co">## [64] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             </span></span>
+<span><span class="co">## [67] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -68,6 +68,7 @@ use the numerical integration function
 ## Examples
 
 ``` r
+
 # 1. Difference between two beta distributions, i.e. Pr( mix1 - mix2 > 0)
 mix1 <- mixbeta(c(1, 11, 4))
 mix2 <- mixbeta(c(1, 8, 7))
@@ -76,7 +77,7 @@ pmixdiff(mix1, mix2, 0, FALSE)
 
 # Interval probability, i.e. Pr( 0.3 > mix1 - mix2 > 0)
 pmixdiff(mix1, mix2, 0.3) - pmixdiff(mix1, mix2, 0)
-#> [1] 0.6005884
+#> [1] 0.6005883
 
 # 2. two distributions, one of them a mixture
 m1 <- mixbeta(c(1, 30, 50))
@@ -97,7 +98,7 @@ pmixdiff(m1, m2, 0)
 mean(rM < 0)
 #> [1] 0.2471
 pmixdiff(m1, m2, 0.2)
-#> [1] 0.9025757
+#> [1] 0.9025758
 mean(rM < 0.2)
 #> [1] 0.907
 
@@ -108,7 +109,7 @@ mean(rM < mdn)
 
 # 95%-interval
 qmixdiff(m1, m2, c(0.025, 0.975))
-#> [1] -0.5257954  0.2877204
+#> [1] -0.5258179  0.2877268
 quantile(rM, c(0.025, 0.975))
 #>       2.5%      97.5% 
 #> -0.5232376  0.2862964 

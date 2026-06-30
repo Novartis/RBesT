@@ -1,6 +1,51 @@
 # Changelog
 
+## RBesT 1.10-0 - June 30th, 2026
+
+### Enhancements
+
+- Add a `family` argument to `oc1S`, `oc2S`, `pos1S`, `pos2S`,
+  `decision1S_boundary`, and `decision2S_boundary` for the normal case.
+  Under the normal approximation this allows operating characteristics,
+  probability of success, and decision boundaries to be evaluated for
+  arbitrary exponential family endpoints.
+- Add a new article (vignette) demonstrating a futility interim analysis
+  for a negative binomial endpoint, including grid-based operating
+  characteristics for two-stage designs, MAP-prior borrowing on control
+  at the interim, and conditional vs. predictive power.
+- Use Gaussian quadrature (GQ) for numerical integration against mixture
+  densities (Gauss-Hermite for `normMix`, Gauss-Jacobi for `betaMix`,
+  Gauss-Laguerre for `gammaMix`), replacing adaptive Gauss-Kronrod
+  integration on identity-link paths in `oc2S`, `pos2S`, `dmixdiff`,
+  `pmixdiff`, and `ess` for deterministic and robust results. The node
+  count is refined automatically (starting from `RBesT.GQ_nodes`) until
+  successive estimates agree within
+  `max(RBesT.GQ_abs_tol, RBesT.GQ_rel_tol * |I|)`, falling through to
+  adaptive integration if the node cap is reached. Non-identity link
+  cases and betaMix ESS continue to use adaptive integration, which can
+  also be restored globally with
+  `options(RBesT.integrate_method = "adaptive")`.
+- Use modern posterior functions to produce posterior summaries. Note
+  that this can change the numeric values wrt to previous versions
+  (e.g. a modernized Rhat definition is used).
+- Refactor `gMAP` posterior sample storage to use `posterior` draws
+  objects plus aligned sampler diagnostics instead of relying on a raw
+  `rstan` `stanfit`; update summaries, predictions, plotting, and
+  posterior accessors accordingly. The previously stored `fit` slot has
+  been removed.
+- Enable default test coverage for `gMAP` related functions using
+  compact approximate posterior draw fixtures, so these tests can run
+  routinely without full MCMC fixture generation.
+
+### Bugfixes
+
+- Make `read_mix_json` robust against `jsonlite` 2.0.0 simplification
+  behavior by using deterministic JSON parsing, fixing reads of normal
+  mixtures with three or more components.
+
 ## RBesT 1.9-0 - March 13th, 2026
+
+CRAN release: 2026-03-13
 
 ### Enhancements
 

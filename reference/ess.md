@@ -118,22 +118,22 @@ dispersion only.
 
 ## Supported Conjugate Prior-Likelihood Pairs
 
-|                     |                             |                             |                |
-|---------------------|-----------------------------|-----------------------------|----------------|
-| **Prior/Posterior** | **Likelihood**              | **Predictive**              | **Summaries**  |
-| Beta                | Binomial                    | Beta-Binomial               | `n`, `r`       |
-| Normal              | Normal (*fixed \\\sigma\\*) | Normal                      | `n`, `m`, `se` |
-| Gamma               | Poisson                     | Gamma-Poisson               | `n`, `m`       |
-| Gamma               | Exponential                 | Gamma-Exp (*not supported*) | `n`, `m`       |
+|  |  |  |  |
+|----|----|----|----|
+| **Prior/Posterior** | **Likelihood** | **Predictive** | **Summaries** |
+| Beta | Binomial | Beta-Binomial | `n`, `r` |
+| Normal | Normal (*fixed \\\sigma\\*) | Normal | `n`, `m`, `se` |
+| Gamma | Poisson | Gamma-Poisson | `n`, `m` |
+| Gamma | Exponential | Gamma-Exp (*not supported*) | `n`, `m` |
 
 ## References
 
 Morita S, Thall PF, Mueller P. Determining the effective sample size of
 a parametric prior. *Biometrics* 2008;64(2):595-602.
 
-Neuenschwander B., Weber S., Schmidli H., O’Hagan A. (2020).
+Neuenschwander B., Weber S., Schmidli H., O'Hagan A. (2020).
 Predictively consistent prior effective sample sizes. *Biometrics*,
-76(2), 578–587. https://doi.org/10.1111/biom.13252
+76(2), 578-587. https://doi.org/10.1111/biom.13252
 
 ## Examples
 
@@ -181,7 +181,7 @@ bmix_logit <- mixnorm(
   inf = c(0.8, log(10 / 2), sqrt(1 / 10 + 1 / 2))
 )
 ess(bmix_logit, family = binomial)
-#> [1] 10.12276
+#> [1] 10.12272
 
 # Predictive consistency of elir
 n_forward <- 1E1

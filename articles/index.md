@@ -8,6 +8,8 @@
   Endpoint](https://opensource.nibr.com/RBesT/articles/introduction_normal.md):
 - [Getting started with RBesT
   (binary)](https://opensource.nibr.com/RBesT/articles/introduction.md):
+- [Interim Futility for Negative Binomial
+  Endpoints](https://opensource.nibr.com/RBesT/articles/negbin_interim_futility.md):
 - [Probability of Success with
   Co-Data](https://opensource.nibr.com/RBesT/articles/PoS_codata.md):
 - [Probability of Success at an Interim

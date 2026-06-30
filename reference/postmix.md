@@ -116,13 +116,13 @@ conjugate mixture prior densities.
 
 ## Supported Conjugate Prior-Likelihood Pairs
 
-|                     |                             |                             |                |
-|---------------------|-----------------------------|-----------------------------|----------------|
-| **Prior/Posterior** | **Likelihood**              | **Predictive**              | **Summaries**  |
-| Beta                | Binomial                    | Beta-Binomial               | `n`, `r`       |
-| Normal              | Normal (*fixed \\\sigma\\*) | Normal                      | `n`, `m`, `se` |
-| Gamma               | Poisson                     | Gamma-Poisson               | `n`, `m`       |
-| Gamma               | Exponential                 | Gamma-Exp (*not supported*) | `n`, `m`       |
+|  |  |  |  |
+|----|----|----|----|
+| **Prior/Posterior** | **Likelihood** | **Predictive** | **Summaries** |
+| Beta | Binomial | Beta-Binomial | `n`, `r` |
+| Normal | Normal (*fixed \\\sigma\\*) | Normal | `n`, `m`, `se` |
+| Gamma | Poisson | Gamma-Poisson | `n`, `m` |
+| Gamma | Exponential | Gamma-Exp (*not supported*) | `n`, `m` |
 
 ## References
 
@@ -134,6 +134,7 @@ trials with historical control information. *Biometrics*
 ## Examples
 
 ``` r
+
 # binary example with individual data (1=event,0=no event), uniform prior
 prior.unif <- mixbeta(c(1, 1, 1))
 data.indiv <- c(1, 0, 1, 1, 0, 1)

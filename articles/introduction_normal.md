@@ -22,10 +22,11 @@ distributed. Note that for CDAI, an improved outcome corresponds to a
 negative change from baseline.
 
 First from historical studies we get the estimated standard deviation of
-the response variable as $\sigma$ = 88, which is used to obtain the
+the response variable as $`\sigma`$ = 88, which is used to obtain the
 standard errors of the effect estimates.
 
 ``` r
+
 dat <- crohn
 crohn_sigma <- 88
 dat$y.se <- crohn_sigma / sqrt(dat$n)
@@ -43,13 +44,13 @@ dat$y.se <- crohn_sigma / sqrt(dat$n)
 ### Derivation of MAP Prior
 
 The MAP prior can be derived with the function **`gMAP`**. The
-between-trial heterogeneity parameter $\tau$ governs how much
+between-trial heterogeneity parameter $`\tau`$ governs how much
 information will be shared from the historical trials into the design
 and analysis of the future trials. In the normal case with a known
-sampling standard deviation $\sigma$, the amount of borrowing from
-historical data depends on the ratio $\tau/\sigma$. A conservative
-choice for the prior on $\tau$ is a **`HalfNormal(0,`**
-$\sigma/2$**`)`** distribution. For the prior on the intercept we
+sampling standard deviation $`\sigma`$, the amount of borrowing from
+historical data depends on the ratio $`\tau/\sigma`$. A conservative
+choice for the prior on $`\tau`$ is a **`HalfNormal(0,`**
+$`\sigma/2`$**`)`** distribution. For the prior on the intercept we
 recommend a “unit-information” prior \[3\] which is set to a precision
 corresponding to a single observation and centered here at no change
 from baseline. Please refer to the help page
@@ -58,6 +59,7 @@ detailed information. The **`set.seed`** function is used to make the
 results exactly reproducible.
 
 ``` r
+
 library(RBesT)
 set.seed(689654)
 map_mcmc <- gMAP(cbind(y, y.se) ~ 1 | study,
@@ -81,14 +83,15 @@ print(map_mcmc)
     ## Estimated reference scale : 88 
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
-    ##  mean    sd  2.5%   50% 97.5% 
-    ## 14.30  9.99  1.35 12.20 38.40 
+    ##        mean median   sd q2.5  q50 q97.5
+    ## tau[1] 14.3   12.2 9.99 1.35 12.2  38.4
     ## 
     ## MAP Prior MCMC sample
-    ##  mean    sd  2.5%   50% 97.5% 
-    ## -50.0  19.3 -93.1 -48.6 -13.8
+    ##                 mean median   sd  q2.5   q50 q97.5
+    ## theta_resp_pred  -50  -48.6 19.3 -93.1 -48.6 -13.8
 
 ``` r
+
 ## a graphical representation is also available
 pl <- plot(map_mcmc)
 
@@ -99,6 +102,7 @@ names(pl)
     ## [1] "densityThetaStar"     "densityThetaStarLink" "forest_model"
 
 ``` r
+
 ## forest plot with model estimates
 print(pl$forest_model)
 ```
@@ -116,6 +120,7 @@ components for the mixture via **`mixfit`** function and compare with
 the **`automixfit`** outcome.
 
 ``` r
+
 map <- automixfit(map_mcmc)
 print(map)
 ```
@@ -132,6 +137,7 @@ print(map)
     ## s  19.04525409   7.85193726  44.57325000
 
 ``` r
+
 ## check accuracy of mixture fit
 plot(map)$mix
 ```
@@ -151,6 +157,7 @@ conservative moment-based ESS of 20 was used to reduce the planned
 sample size of the control group.
 
 ``` r
+
 round(ess(map)) ## default elir method
 ```
 
@@ -159,6 +166,7 @@ round(ess(map)) ## default elir method
     ## [1] 39
 
 ``` r
+
 round(ess(map, method = "morita"))
 ```
 
@@ -167,6 +175,7 @@ round(ess(map, method = "morita"))
     ## [1] 89
 
 ``` r
+
 round(ess(map, method = "moment"))
 ```
 
@@ -179,7 +188,7 @@ round(ess(map, method = "moment"))
 We recommend robustifying \[5\] the prior with the **`robustify`**
 function, which protects against type-I error inflation in presence of
 prior-data conflict. For the normal case we strongly recommend
-explicitly choosing the mean of the robust component. We use $- 50$
+explicitly choosing the mean of the robust component. We use $`-50`$
 consistent with the mean of the MAP prior. Furthermore, 20% probability
 is used for the additional robust (unit-information) mixture component.
 The choice of such probability reflects the confidence about the
@@ -189,6 +198,7 @@ criteria in the current trial as compared to the historical control
 group population. Note that robustification decreases the ESS.
 
 ``` r
+
 ## add a 20% non-informative mixture component
 map_robust <- robustify(map, weight = 0.2, mean = -50)
 ```
@@ -196,6 +206,7 @@ map_robust <- robustify(map, weight = 0.2, mean = -50)
     ## Using default prior reference scale 88
 
 ``` r
+
 print(map_robust)
 ```
 
@@ -208,6 +219,7 @@ print(map_robust)
     ## s  19.04525409   7.85193726  44.57325000  88.00000000
 
 ``` r
+
 round(ess(map_robust))
 ```
 
@@ -232,10 +244,13 @@ options. Such factors are not considered here for simplicity purpose.
 
 Consider this 2-arm design of placebo (with an informative prior)
 against an experimental treatment. The dual-criterion for success is
-defined as follows: $$\begin{array}{rlr}
-\text{Criterion 1:} & {\Pr\left( \theta_{act} - \theta_{pbo} < 0 \right)} & {> 0.95} \\
-\text{Criterion 2:} & {\Pr\left( \theta_{act} - \theta_{pbo} < - 50 \right)} & {> 0.50.}
-\end{array}$$
+defined as follows:
+``` math
+\begin{align*}
+\textrm{Criterion 1:} &  \Pr(\theta_{act} - \theta_{pbo} \lt 0) &> 0.95 \\
+\textrm{Criterion 2:} & \Pr(\theta_{act} - \theta_{pbo} \lt -50) &> 0.50.
+\end{align*}
+```
 
 Equivalently, the second criterion requires that the posterior median
 difference exceeds -50. The dual-criteria account for statistical
@@ -243,6 +258,7 @@ significance as well as clinical relevance. Note that a negative change
 from baseline in CDAI corresponds to improvement.
 
 ``` r
+
 ## dual decision criteria
 ## pay attention to "lower.tail" argument and the order of active and pbo
 poc <- decision2S(pc = c(0.95, 0.5), qc = c(0, -50), lower.tail = TRUE)
@@ -263,6 +279,7 @@ prior. Also, we set up the few design options with different choices of
 control prior and different sizes of control group.
 
 ``` r
+
 ## set up prior for active group
 weak_prior <- mixnorm(c(1, -50, 1), sigma = crohn_sigma, param = "mn")
 n_act <- 40
@@ -287,12 +304,13 @@ design_rob_ub <- oc2S(weak_prior, map_robust, n_act, n_pbo, poc,
 
 #### Type I Error
 
-The type I can be increased compared to the nominal $\alpha$ level in
+The type I can be increased compared to the nominal $`\alpha`$ level in
 case of a conflict between the trial data and the prior. The robustified
 MAP prior can reduce the type I error inflation in this case to a lower
 level.
 
 ``` r
+
 # the range for true values
 cfb_truth <- seq(-120, -40, by = 1)
 
@@ -333,11 +351,12 @@ ggplot(ocI, aes(cfb_truth, typeI, colour = design)) +
 #### Power
 
 The power shows the gain of using an informative prior for the control
-arm; i.e. 90% power is reached for smaller $\delta$ values compared to
+arm; i.e. 90% power is reached for smaller $`\delta`$ values compared to
 the design with weakly informative priors for both arms or the balanced
 design.
 
 ``` r
+
 delta <- seq(-80, 0, by = 1)
 m <- summary(map)["mean"]
 cfb_truth1 <- m + delta # active for 1
@@ -395,6 +414,7 @@ deviation is known and fixed. Therefore, no uncertainty in its estimate
 is taken into account.
 
 ``` r
+
 ## one can either use summary data or individual data. See ?postmix.
 y.act <- -29.2
 y.act.se <- 14.0
@@ -417,6 +437,7 @@ print(p1)
     ## [1] 0.06270104
 
 ``` r
+
 p2 <- pmixdiff(post_act, post_pbo, -50)
 print(p2)
 ```
@@ -424,12 +445,14 @@ print(p2)
     ## [1] 3.827361e-06
 
 ``` r
+
 print(p1 > 0.95 & p2 > 0.5)
 ```
 
     ## [1] FALSE
 
 ``` r
+
 ## or we can use the decision function
 poc(post_act, post_pbo)
 ```
@@ -448,12 +471,13 @@ poc(post_act, post_pbo)
 #### R Session Info
 
 ``` r
+
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -472,30 +496,30 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.2 knitr_1.51    RBesT_1.9-0  
+    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            
-    ##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          
-    ## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       
+    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
+    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
+    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
+    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
     ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           
-    ## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     
-    ## [28] htmltools_0.5.9       sass_0.4.10           bayesplot_1.15.0     
-    ## [31] yaml_2.3.12           Formula_1.2-5         pillar_1.11.1        
-    ## [34] pkgdown_2.2.0         jquerylib_0.1.4       cachem_1.1.0         
-    ## [37] StanHeaders_2.32.10   abind_1.4-8           posterior_1.6.1      
-    ## [40] rstan_2.32.7          tidyselect_1.2.1      digest_0.6.39        
-    ## [43] mvtnorm_1.3-5         stringi_1.8.7         dplyr_1.2.0          
-    ## [46] reshape2_1.4.5        labeling_0.4.3        fastmap_1.2.0        
-    ## [49] grid_4.5.3            cli_3.6.5             magrittr_2.0.4       
-    ## [52] loo_2.9.0             pkgbuild_1.4.8        withr_3.0.2          
-    ## [55] scales_1.4.0          backports_1.5.0       rmarkdown_2.30       
-    ## [58] matrixStats_1.5.0     otel_0.2.0            gridExtra_2.3        
-    ## [61] ragg_1.5.1            evaluate_1.0.5        rstantools_2.6.0     
-    ## [64] rlang_1.1.7           Rcpp_1.1.1            glue_1.8.0           
-    ## [67] jsonlite_2.0.0        R6_2.6.1              plyr_1.8.9           
-    ## [70] systemfonts_1.3.2     fs_1.6.7
+    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
+    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
+    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
+    ## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        
+    ## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          
+    ## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        
+    ## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
+    ## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          
+    ## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     
+    ## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        
+    ## [46] dplyr_1.2.1           reshape2_1.4.5        labeling_0.4.3       
+    ## [49] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
+    ## [52] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
+    ## [55] withr_3.0.3           scales_1.4.0          backports_1.5.1      
+    ## [58] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
+    ## [61] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
+    ## [64] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
+    ## [67] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             
+    ## [70] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0

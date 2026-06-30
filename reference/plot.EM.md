@@ -77,6 +77,7 @@ Other EM:
 ## Examples
 
 ``` r
+
 bmix <- mixbeta(rob = c(0.2, 1, 1), inf = c(0.8, 10, 2))
 bsamp <- rmix(bmix, 1000)
 bfit <- mixfit(bsamp, type = "beta", Nc = 2)

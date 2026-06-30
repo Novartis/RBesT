@@ -1,14 +1,15 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   articles/customizing_plots: customizing_plots.html
   articles/introduction_normal: introduction_normal.html
   introduction: introduction.html
+  articles/negbin_interim_futility: negbin_interim_futility.html
   articles/PoS_codata: PoS_codata.html
   articles/PoS_interim: PoS_interim.html
   articles/variances_MAP: variances_MAP.html
-last_built: 2026-03-13T09:21Z
+last_built: 2026-06-30T16:36Z
 urls:
   reference: https://opensource.nibr.com/RBesT/reference
   article: https://opensource.nibr.com/RBesT/articles

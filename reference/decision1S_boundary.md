@@ -13,7 +13,16 @@ decision1S_boundary(prior, n, decision, ...)
 decision1S_boundary(prior, n, decision, ...)
 
 # S3 method for class 'normMix'
-decision1S_boundary(prior, n, decision, sigma, eps = 1e-06, ...)
+decision1S_boundary(
+  prior,
+  n,
+  decision,
+  sigma,
+  eps = 1e-06,
+  family = NULL,
+  offset = 0,
+  ...
+)
 
 # S3 method for class 'gammaMix'
 decision1S_boundary(prior, n, decision, eps = 1e-06, ...)
@@ -41,12 +50,30 @@ decision1S_boundary(prior, n, decision, eps = 1e-06, ...)
 - sigma:
 
   The fixed reference scale. If left unspecified, the default reference
-  scale of the prior is assumed.
+  scale of the prior is assumed. When `family` is a non-Gaussian family,
+  `sigma` must not be specified (it is determined by the family). When
+  `family = gaussian()`, `sigma` is required and acts as the dispersion
+  parameter.
 
 - eps:
 
   Support of random variables are determined as the interval covering
   `1-eps` probability mass. Defaults to \\10^{-6}\\.
+
+- family:
+
+  Optional [`family`](https://rdrr.io/r/stats/family.html) object
+  specifying a GLM family and link function (e.g.\\
+  [`binomial()`](https://rdrr.io/r/stats/family.html),
+  `MASS::negative.binomial(theta)`). When provided, the sampling
+  standard deviation varies with the parameter value via the family's
+  variance function and link. Default is `NULL` (constant `sigma`).
+
+- offset:
+
+  Numeric scalar added to the linear predictor before evaluating the
+  family's variance function. Relevant for Poisson/negative-binomial
+  models with log link where `offset = log(exposure)`. Default is `0`.
 
 ## Value
 
@@ -92,6 +119,16 @@ This is aligned with the cumulative density function definition within R
   (defaults to \\10^{-6}\\). The critical value \\y_c\\ is searched in
   the region of probability mass `1-eps` for \\y\\.
 
+  When `family` is specified, the sampling standard deviation becomes a
+  function of the parameter value \\\theta\\ via \$\$\sigma(\theta) =
+  \sqrt{\phi \\ V(\mu)} / \|g'(\mu)\|\$\$ where \\V\\ is the variance
+  function, \\g\\ the link function of the family, and \\\phi\\ the
+  dispersion parameter. For the Gaussian family \\\phi = \sigma^2\\ (so
+  `sigma` must be supplied); for all other families \\\phi = 1\\ and
+  `sigma` must *not* be given. Specifying
+  `family = gaussian("identity")` with `sigma` is equivalent to the
+  standard fixed-\\\sigma\\ path.
+
 - `decision1S_boundary(gammaMix)`: Applies for the Poisson model with a
   gamma mixture prior for the rate parameter. The function
   `decision1S_boundary` takes an extra argument `eps` (defaults to
@@ -108,6 +145,7 @@ Other design1S:
 ## Examples
 
 ``` r
+
 # non-inferiority example using normal approximation of log-hazard
 # ratio, see ?decision1S for all details
 s <- 2

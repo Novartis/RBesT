@@ -7,41 +7,52 @@ these reliable information on the sampling standard deviation is crucial
 for planning the trial.
 
 Under a normal sampling distribution the (standard) unbiased variance
-estimator for a sample $y_{j}$ of size $n_{j}$ is
+estimator for a sample $`y_j`$ of size $`n_j`$ is
 
-$$s_{j}^{2} = \frac{1}{n_{j} - 1}\sum\limits_{i = 1}^{n_{j}}\left( y_{j,i} - {\bar{y}}_{j} \right)^{2},$$
+``` math
+ s^2_j = \frac{1}{n_j-1} \sum_{i=1}^{n_j} (y_{j,i} - \bar{y}_j)^2, 
+```
 
-which follows a $\chi_{\nu}^{2}$ distribution with $\nu_{j} = n_{j} - 1$
-degrees of freedom. The $\chi_{\nu}^{2}$ can be rewritten as a $\Gamma$
+which follows a $`\chi^2_\nu`$ distribution with $`\nu_j = n_j-1`$
+degrees of freedom. The $`\chi^2_\nu`$ can be rewritten as a $`\Gamma`$
 distribution
 
-$$s_{j}^{2}|\nu_{j},\sigma_{j} \sim \Gamma\left( \nu_{j}/2,\nu_{j}/\left( 2\,\sigma_{j}^{2} \right) \right)$$$$\left. \Leftrightarrow s_{j}^{2}\,\nu_{j}/2|\nu_{j},\sigma_{j} \sim \Gamma\left( \nu_{j}/2,1/\sigma_{j}^{2} \right), \right.$$
+``` math
+ s^2_j|\nu_j,\sigma_j \sim \Gamma(\nu_j/2, \nu_j/(2\,\sigma^2_j)) 
+```
+``` math
+ \Leftrightarrow s^2_j \, \nu_j /2 |\nu_j,\sigma_j \sim \Gamma(\nu_j/2, 1/\sigma^2_j), 
+```
 
-where $\sigma_{j}$ is the (unknown) sampling standard deviation for the
-data $y_{j}$.
+where $`\sigma_j`$ is the (unknown) sampling standard deviation for the
+data $`y_j`$.
 
 While this is not directly supported in `RBesT`, a normal approximation
-of the $\log$ transformed $\Gamma$ variate can be applied. When $\log$
-transforming a $\Gamma(\alpha,\beta)$ variate it’s moment and variance
-can analytically be shown to be (see \[2\], for example)
+of the $`\log`$ transformed $`\Gamma`$ variate can be applied. When
+$`\log`$ transforming a $`\Gamma(\alpha,\beta)`$ variate it’s moment and
+variance can analytically be shown to be (see \[2\], for example)
 
-$$E\left\lbrack \log(X) \right\rbrack = \psi(\alpha) - \log(\beta)$$$$Var\left\lbrack \log(X) \right\rbrack = \psi^{(1)}(\alpha).$$
+``` math
+ E[\log(X)] = \psi(\alpha) - \log(\beta)
+```
+``` math
+ Var[\log(X)] = \psi^{(1)}(\alpha).
+```
 
-Here, $\psi(x)$ is the digamma function and $\psi^{(1)}(x)$ is the
-polygamma function of order 1 (second derivative of the $\log$ of the
-$\Gamma$ function).
+Here, $`\psi(x)`$ is the digamma function and $`\psi^{(1)}(x)`$ is the
+polygamma function of order 1 (second derivative of the $`\log`$ of the
+$`\Gamma`$ function).
 
-Thus, by approximating the $\log$ transformed $\Gamma$ distribution with
-a normal approximation, we can apply `gMAP` as if we were using a normal
-endpoint. Specifically, we apply the transform
-$Y_{j} = \log\left( s_{j}^{2}\,\nu_{j}/2 \right) - \psi\left( \nu_{j}/2 \right)$
-such that the meta-analytic model directly considers $\log\sigma_{j}$ as
-random variate. The normal approximation becomes more accurate, the
-larger the degrees of freedom are. The section at the bottom of this
-vignette discusses this approximation accuracy and concludes that
-independent of the true $\sigma$ value for 10 observations the
-approxmation is useful and a very good one for more than 20
-observations.
+Thus, by approximating the $`\log`$ transformed $`\Gamma`$ distribution
+with a normal approximation, we can apply `gMAP` as if we were using a
+normal endpoint. Specifically, we apply the transform $`Y_j=\log(s^2_j
+\, \nu_j /2) - \psi(\nu_j/2)`$ such that the meta-analytic model
+directly considers $`\log \sigma_j`$ as random variate. The normal
+approximation becomes more accurate, the larger the degrees of freedom
+are. The section at the bottom of this vignette discusses this
+approximation accuracy and concludes that independent of the true
+$`\sigma`$ value for 10 observations the approxmation is useful and a
+very good one for more than 20 observations.
 
 In the following we reanalyze the main example of reference \[1\] which
 is shown in table 2:
@@ -55,11 +66,12 @@ is shown in table 2:
 |     5 | 10.97 | 906 |
 |     6 | 10.95 | 903 |
 
-Using the above equations (and using plug-in estimates for $\sigma_{j}$)
-this translates into an approximate normal distribution for the $\log$
+Using the above equations (and using plug-in estimates for $`\sigma_j`$)
+this translates into an approximate normal distribution for the $`\log`$
 variance as:
 
 ``` r
+
 hdata <- mutate(hdata,
   alpha = df / 2,
   beta = alpha / sd^2,
@@ -78,16 +90,17 @@ hdata <- mutate(hdata,
 |     6 | 10.95 | 903 | 451.5 | 3.7656 |      4.7878 |     0.0022 |
 
 In order to run the MAP analysis a prior for the heterogeniety parameter
-$\tau$ and the intercept $\beta$ is needed. In reference \[3\] it is
+$`\tau`$ and the intercept $`\beta`$ is needed. In reference \[3\] it is
 demonstrated that the (approximate) sampling standard deviation of the
-$\log$ variance is $\sqrt{2}$. Thus, a `HalfNormal(0,sqrt(2)/2)` is a
-very conservative choice for the between-study heterogeniety parameter.
-A less conservative choice is `HalfNormal(0,sqrt(2)/4)`, which gives
-very similar results in this case. For the intercept $\beta$ a very wide
-prior is used with a standard deviation of $100$ which is in line with
-reference \[1\]:
+$`\log`$ variance is $`\sqrt{2}`$. Thus, a `HalfNormal(0,sqrt(2)/2)` is
+a very conservative choice for the between-study heterogeniety
+parameter. A less conservative choice is `HalfNormal(0,sqrt(2)/4)`,
+which gives very similar results in this case. For the intercept
+$`\beta`$ a very wide prior is used with a standard deviation of $`100`$
+which is in line with reference \[1\]:
 
 ``` r
+
 map_mc <- gMAP(cbind(logvar_mean, sqrt(logvar_var)) ~ 1 | study,
   data = hdata,
   tau.dist = "HalfNormal", tau.prior = sqrt(2) / 2,
@@ -109,54 +122,67 @@ map_mc
     ## Maximal Rhat              : 1 
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
-    ##   mean     sd   2.5%    50%  97.5% 
-    ## 0.2020 0.1020 0.0758 0.1810 0.4710 
+    ##         mean median    sd   q2.5   q50 q97.5
+    ## tau[1] 0.202  0.181 0.102 0.0758 0.181 0.471
     ## 
     ## MAP Prior MCMC sample
-    ##  mean    sd  2.5%   50% 97.5% 
-    ## 4.780 0.247 4.270 4.780 5.290
+    ##                 mean median    sd q2.5  q50 q97.5
+    ## theta_resp_pred 4.78   4.78 0.247 4.27 4.78  5.29
 
 ``` r
+
 summary(map_mc)
 ```
 
     ## Heterogeneity parameter tau per stratum:
-    ##         mean    sd   2.5%   50% 97.5%
-    ## tau[1] 0.202 0.102 0.0758 0.181 0.471
+    ##         mean median    sd   q2.5   q50 q97.5
+    ## tau[1] 0.202  0.181 0.102 0.0758 0.181 0.471
     ## 
     ## Regression coefficients:
-    ##             mean  sd 2.5%  50% 97.5%
-    ## (Intercept) 4.78 0.1 4.58 4.78  4.98
+    ##             mean median  sd q2.5  q50 q97.5
+    ## (Intercept) 4.78   4.78 0.1 4.58 4.78  4.98
     ## 
     ## Mean estimate MCMC sample:
-    ##            mean  sd 2.5%  50% 97.5%
-    ## theta_resp 4.78 0.1 4.58 4.78  4.98
+    ##            mean median  sd q2.5  q50 q97.5
+    ## theta_resp 4.78   4.78 0.1 4.58 4.78  4.98
     ## 
     ## MAP Prior MCMC sample:
-    ##                 mean    sd 2.5%  50% 97.5%
-    ## theta_resp_pred 4.78 0.247 4.27 4.78  5.29
+    ##                 mean median    sd q2.5  q50 q97.5
+    ## theta_resp_pred 4.78   4.78 0.247 4.27 4.78  5.29
 
 ``` r
+
 plot(map_mc)$forest_model
 ```
 
 ![](variances_MAP_files/figure-html/unnamed-chunk-7-1.png)
 
-In reference \[1\] the correct $\Gamma$ likelihood is used in contrast
+In reference \[1\] the correct $`\Gamma`$ likelihood is used in contrast
 to the approximate normal approach above. Still, the results match very
 close, even for the outer quantiles.
 
 ## MAP prior for the sampling standard deviation
 
-While the MAP analysis is performed for the $\log$ variance, we are
+While the MAP analysis is performed for the $`\log`$ variance, we are
 actually interested in the MAP of the respective sampling standard
 deviation. Since the sampling standard deviation is a strictly positive
 quantity it is suitable to approximate the MCMC posterior of the MAP
-prior using a mixture of $\Gamma$ variates, which can be done using
+prior using a mixture of $`\Gamma`$ variates, which can be done using
 `RBesT` as:
 
 ``` r
+
 map_mc_post <- as.matrix(map_mc)
+```
+
+    ## Warning: `as.matrix.gMAP()` was deprecated in RBesT 1.10.0.
+    ## ℹ Please use `posterior::as_draws_matrix()` instead.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
+
 sd_trans <- compose(sqrt, exp)
 mcmc_intervals(map_mc_post, regex_pars = "theta", transformation = sd_trans)
 ```
@@ -164,6 +190,7 @@ mcmc_intervals(map_mc_post, regex_pars = "theta", transformation = sd_trans)
 ![](variances_MAP_files/figure-html/unnamed-chunk-8-1.png)
 
 ``` r
+
 map_sigma_mc <- sd_trans(map_mc_post[, c("theta_pred")])
 map_sigma <- automixfit(map_sigma_mc, type = "gamma")
 
@@ -173,6 +200,7 @@ plot(map_sigma)$mix
 ![](variances_MAP_files/figure-html/unnamed-chunk-8-2.png)
 
 ``` r
+
 ## 95% interval MAP for the sampling standard deviation
 summary(map_sigma)
 ```
@@ -180,20 +208,37 @@ summary(map_sigma)
     ##      mean        sd      2.5%     50.0%     97.5% 
     ## 10.981347  1.379548  8.426170 10.892624 14.262895
 
-## Normal approximation of a $\log\Gamma$ variate
+## Normal approximation of a $`\log\Gamma`$ variate
 
-For a $\Gamma\left( y|\alpha,\beta \right)$ variate $y$, which is $\log$
-transformed, $z = \log(y)$, we have by the law of transformations for
+For a $`\Gamma(y|\alpha, \beta)`$ variate $`y`$, which is $`\log`$
+transformed, $`z = \log(y)`$, we have by the law of transformations for
 univariate densities:
 
-$$y|\alpha,\beta \sim \Gamma(\alpha,\beta)$$$$p(z) = p(y)\, y = p\left( \exp(z) \right)\,\exp(z)$$$$z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)$$$$\left. \Leftrightarrow\exp(z)|\alpha,\beta \sim \Gamma(\alpha,\beta)\,\exp(z) \right.$$
+``` math
+ y|\alpha,\beta \sim \Gamma(\alpha,\beta) 
+```
+``` math
+ p(z) = p(y) \, y = p(\exp(z)) \, \exp(z) 
+```
+``` math
+ z|\alpha,\beta \sim \log\Gamma(\alpha,\beta)
+```
+``` math
+\Leftrightarrow \exp(z)|\alpha,\beta \sim \Gamma(\alpha,\beta) \, \exp(z) 
+```
 
-The first and second moment of $z$ is then
-$$E\lbrack z\rbrack = \psi(\alpha) - \log(\beta)$$$$Var\lbrack z\rbrack = \psi^{(1)}(\alpha).$$
+The first and second moment of $`z`$ is then
+``` math
+ E[z] = \psi(\alpha) - \log(\beta)
+```
+``` math
+ Var[z] = \psi^{(1)}(\alpha).
+```
 
 A short simulation demonstrates the above results:
 
 ``` r
+
 gamma_dist <- mixgamma(c(1, 18, 6))
 
 ## logGamma density
@@ -225,13 +270,13 @@ mcmc_hist(data.frame(logGamma = log(sim)), freq = FALSE, binwidth = 0.1) +
 
 ![](variances_MAP_files/figure-html/unnamed-chunk-9-1.png)
 
-We see that for $\nu = 9$ only, the approximation with a normal density
-is reasonable. However, by comparing as a function of $\nu$ the $2.5$%,
-$50$% and $97.5$% quantiles of the correct distribution with the
-respective approximate distribution we can assess the adequatness of the
-approximation. The respective R code is accessible via the vignette
-overview page while here the graphical result is presented for two
-different $\sigma$ values:
+We see that for $`\nu=9`$ only, the approximation with a normal density
+is reasonable. However, by comparing as a function of $`\nu`$ the
+$`2.5`$%, $`50`$% and $`97.5`$% quantiles of the correct distribution
+with the respective approximate distribution we can assess the
+adequatness of the approximation. The respective R code is accessible
+via the vignette overview page while here the graphical result is
+presented for two different $`\sigma`$ values:
 
 ![](variances_MAP_files/figure-html/unnamed-chunk-10-1.png)![](variances_MAP_files/figure-html/unnamed-chunk-10-2.png)![](variances_MAP_files/figure-html/unnamed-chunk-10-3.png)![](variances_MAP_files/figure-html/unnamed-chunk-10-4.png)
 
@@ -252,12 +297,13 @@ Chapter 4, p. 84
 ### R Session Info
 
 ``` r
+
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -276,30 +322,30 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] bayesplot_1.15.0 purrr_1.2.1      dplyr_1.2.0      ggplot2_4.0.2   
-    ## [5] knitr_1.51       RBesT_1.9-0     
+    ## [1] bayesplot_1.15.0 purrr_1.2.2      dplyr_1.2.1      ggplot2_4.0.3   
+    ## [5] knitr_1.51       RBesT_1.10-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.56            
-    ##  [4] bslib_0.10.0          QuickJSR_1.9.0        htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.1           tools_4.5.3          
-    ## [10] generics_0.1.4        stats4_4.5.3          parallel_4.5.3       
+    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
+    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
+    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
+    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
     ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.1              desc_1.4.3           
-    ## [19] distributional_0.6.0  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.5.3        farver_2.1.2         
+    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
+    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
+    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
     ## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     
     ## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          
     ## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        
     ## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  
-    ## [37] abind_1.4-8           posterior_1.6.1       rstan_2.32.7         
-    ## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.3-5        
+    ## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         
+    ## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        
     ## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       
-    ## [46] fastmap_1.2.0         grid_4.5.3            cli_3.6.5            
-    ## [49] magrittr_2.0.4        loo_2.9.0             pkgbuild_1.4.8       
-    ## [52] withr_3.0.2           scales_1.4.0          backports_1.5.0      
-    ## [55] rmarkdown_2.30        matrixStats_1.5.0     otel_0.2.0           
-    ## [58] gridExtra_2.3         ragg_1.5.1            evaluate_1.0.5       
-    ## [61] rstantools_2.6.0      rlang_1.1.7           Rcpp_1.1.1           
-    ## [64] glue_1.8.0            jsonlite_2.0.0        R6_2.6.1             
-    ## [67] plyr_1.8.9            systemfonts_1.3.2     fs_1.6.7
+    ## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
+    ## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
+    ## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      
+    ## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
+    ## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
+    ## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
+    ## [64] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             
+    ## [67] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0
