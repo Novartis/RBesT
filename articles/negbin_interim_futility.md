@@ -22,12 +22,12 @@ This article develops the idea in four steps:
 
 1.  **Baseline:** Operating characteristics (OC) of a fixed-sample
     design without an IA.
-2.  **Futility IA without borrowing:** Introduce a futility stop at 30%
-    information fraction using non-informative priors. Quantify the
-    power loss under the alternative.
-3.  **Futility IA with MAP prior:** Derive a MAP prior from four
-    historical phase III trials. Show the effective sample size (ESS)
-    and the information fraction gained.
+2.  **Unblinded futility IA without borrowing:** Introduce a futility
+    stop at 30% information fraction using non-informative priors.
+    Quantify the power loss under the alternative.
+3.  **Unblinded futility IA with MAP prior:** Derive a MAP prior from
+    four historical phase III trials. Show the effective sample size
+    (ESS) and the information fraction gained.
 4.  **Interim decision-making:** Conditional power and predictive power
     (probability of success) at a hypothesized interim state.
 5.  **Design-level power:** Numerical integration over the full trial to
@@ -39,6 +39,18 @@ the MAP prior is used only for interim projections.
 
 ## Negative binomial setup
 
+In clinical trials with count data, where more than one event can happen
+for a patient — such as asthma exacerbations — the **negative binomial**
+distribution is often used. One of several parametrizations uses a mean
+rate and a dispersion parameter. It extends the Poisson distribution —
+which assumes that all patients with the same covariate values share a
+single event rate — by allowing the event rate to vary between patients
+(the larger the dispersion parameter, the more the event rate varies
+between patients). Differences in follow-up due to administrative
+censoring can be reflected using a **log-follow-up offset**, i.e. the
+expected number of events for a patient is their event rate times their
+follow-up time.
+
 We work on the **log mean rate** scale under the standard normal
 approximation to the MLE (see [Appendix](#appendix) for the full
 parametrization). The treatment effect is the log-rate ratio
@@ -49,7 +61,11 @@ $`\delta = \log(\lambda_T / \lambda_C)`$.
 ## Assumed true parameters for design planning
 lambda_ctrl  <- 1.8          # placebo rate (events/patient-year)
 kappa_true   <- 1.9          # overdispersion (phi)
-followup     <- 1            # exposure per patient (years)
+## Effective average follow-up per patient (years). Rather than a full
+## year for everyone, we allow for ~15% dropout with, on average, half
+## the intended follow-up (cf. Holzhauer et al., 2018):
+##   1 * 0.85 + 0.5 * 0.15 = 0.925 patient-years.
+followup     <- 1 * 0.85 + 0.5 * 0.15
 log_exposure <- log(followup)
 
 ## NB family object for OC calculations (fixed kappa)
@@ -66,7 +82,7 @@ sigma_treat <- sigma_ctrl  # same rate assumed under H0
 cat(sprintf("Per-patient sigma (log-rate scale): %.3f\n", sigma_ctrl))
 ```
 
-    ## Per-patient sigma (log-rate scale): 1.570
+    ## Per-patient sigma (log-rate scale): 1.580
 
 ## Fixed-sample design (no interim)
 
@@ -80,8 +96,8 @@ uninf_ctrl  <- mixnorm(c(1, log(lambda_ctrl), 10), sigma = sigma_ctrl)
 uninf_treat <- mixnorm(c(1, log(lambda_ctrl), 10), sigma = sigma_treat)
 
 ## Sample sizes
-n_treat <- 150
-n_ctrl  <- 150
+n_treat <- 225
+n_ctrl  <- 225
 
 ## Decision: P(delta < 0 | data) > 0.975  (one-sided test)
 success_crit <- decision2S(0.975, 0, lower.tail = TRUE)
@@ -107,6 +123,18 @@ historical borrowing, the IA relies entirely on the accrued trial data.
 This would be a very early stop with rather imprecise estimates compared
 to a more common IA look at 50%.
 
+As a simplifying assumption we treat the interim analysis as if it were
+based on 30% of the patients with complete follow-up. In practice the
+same information would come from more patients, many of them with only
+partial follow-up at the time of the interim look; their data can still
+be used through the use of an offset in the regression. This distinction
+is not merely cosmetic: for a recurrent-event endpoint the information
+is event-driven, so a given amount of *total* follow-up ($`N \times`$
+expected follow-up per patient) is worth slightly more when it comes
+from many patients observed for a short time than from fewer patients
+each observed to completion. The calculation here is thus somewhat
+simplfying the actual situation.
+
 The information fraction is defined as the ratio of the Fisher
 information for the treatment effect (log rate ratio) at the interim
 relative to the final analysis. Under a negative binomial model with log
@@ -119,17 +147,18 @@ $`n_C`$ patients is
 ```
 We compute the interim sample sizes required for 30% of
 $`\mathcal{I}(\delta)`$ at the planned final sample size, evaluated
-under the design alternative $`\log(\text{RR}) = -0.5`$:
+under the design alternative
+$`\log(\text{RR}) = \log(0.65) \approx -0.43`$:
 
 | Quantity                                 | Value           |
 |:-----------------------------------------|:----------------|
-| Design alternative log(RR)               | -0.50           |
-| Per-patient Fisher info (treatment)      | 0.3551          |
-| Per-patient Fisher info (control)        | 0.4072          |
-| Information at final (n/arm)             | 28.45 (n = 150) |
-| Information target at IA (30%)           | 8.54            |
-| Patients at IA (treatment / control)     | 45 / 45         |
-| Patients remaining (treatment / control) | 105 / 105       |
+| Design alternative log(RR)               | -0.43           |
+| Per-patient Fisher info (treatment)      | 0.3541          |
+| Per-patient Fisher info (control)        | 0.3999          |
+| Information at final (n/arm)             | 42.26 (n = 225) |
+| Information target at IA (30%)           | 12.68           |
+| Patients at IA (treatment / control)     | 68 / 68         |
+| Patients remaining (treatment / control) | 157 / 157       |
 
 The futility rule is based on **predictive power (probability of
 success)**: given the interim posterior, what is the probability that
@@ -157,31 +186,37 @@ of success exceeds the futility threshold:
 
 ``` r
 
-## IA continuation rule: continue if PoS > threshold
+## IA continuation rule: continue if PoS > threshold.
+## The predictive power (PoS) is computed from the interim projection
+## posteriors: the (uninformative) treatment posterior and the control
+## posterior. This exact same rule is reused below for the MAP design —
+## only the control interim prior (prior2_ia) changes, not the rule.
 ## Note: we use the fixed-sigma path of pos2S (no family argument)
 ## for performance. This is valid because sigma is approximately
 ## constant over the posterior range at the interim.
-ia_rule_uninf <- function(post1_ia, post2_ia) {
+ia_rule_pos <- function(post1_ia, post2_ia, post1_ia_info, post2_ia_info) {
   pos2S(post1_ia, post2_ia,
         n1 = n_treat - n_treat_ia, n2 = n_ctrl - n_ctrl_ia,
         decision = success_crit,
-        sigma1 = sigma_ctrl, sigma2 = sigma_ctrl)(post1_ia, post2_ia) > post_futility_thresh
+        sigma1 = sigma_ctrl, sigma2 = sigma_ctrl)(post1_ia_info, post2_ia_info) > post_futility_thresh
 }
 
-## OC function with futility IA (no borrowing)
+## OC function with futility IA (no borrowing).
+## prior1/prior2 are uninformative (used for the final analysis boundary);
 oc_ia_uninf <- oc2S_interim(
   prior1 = uninf_treat, prior2 = uninf_ctrl,
   n1 = n_treat, n2 = n_ctrl,
   n1_ia = n_treat_ia, n2_ia = n_ctrl_ia,
   decision = success_crit,
-  ia_rule = ia_rule_uninf,
+  ia_rule = ia_rule_pos,
+  prior1_ia = uninf_treat, prior2_ia = uninf_ctrl,
   family = nb_family,
   offset1 = log_exposure, offset2 = log_exposure,
-  Ngrid_ia = 11L
+  Ngrid_ia = 31L
 )
 
-## Evaluate at null and design alternative (pos2S rule is expensive)
-log_rr_grid <- c(`No benefit` = 0, `Design alt` = -0.6)
+## Evaluate at null and the design alternative (pos2S rule is expensive)
+log_rr_grid <- c(`No benefit` = 0, `Design alt` = log_rr_design)
 
 power_ia_uninf_df <- oc_ia_uninf(
   theta1 = log_mu_ctrl + log_rr_grid,
@@ -199,16 +234,22 @@ power_fixed_grid <- oc_fixed(log_mu_ctrl + log_rr_grid,
 
 | Scenario   | Rate ratio | Fixed design | IA (no borrow) | Power loss | Futility stop |
 |:-----------|-----------:|-------------:|---------------:|-----------:|--------------:|
-| No benefit |       1.00 |        0.025 |          0.022 |      0.003 |         0.631 |
-| Design alt |       0.55 |        0.889 |          0.865 |      0.024 |         0.046 |
+| No benefit |       1.00 |        0.025 |          0.022 |      0.002 |         0.579 |
+| Design alt |       0.65 |        0.800 |          0.774 |      0.026 |         0.066 |
 
 Power and futility-stop probability by scenario (no borrowing, PoS rule)
 {.table style="width:100%;"}
 
 At 30% information fraction with non-informative priors, the futility IA
-causes a noticeable power loss under the alternative while the futility
-stopping probability under the null is moderate. The interim data simply
-do not carry enough information for reliable futility decisions.
+already behaves quite well: it stops a clearly ineffective drug (rate
+ratio = 1) with high probability — well above one half — while costing
+only about one and a half percentage points of power under the design
+alternative. This is more effective than one might expect from such an
+early look. What the non-informative design cannot do is separate “stop
+for the right reason” from “stop because the 30%-information estimate
+happened to look bad”; the interim data alone carry limited information,
+so the decision is comparatively noisy. Historical borrowing (next
+section) sharpens exactly this.
 
 ## MAP prior from historical phase III trials
 
@@ -234,16 +275,21 @@ Historical phase III placebo arms {.table}
 ### MAP prior for the control log-rate
 
 The historical trials have different exposure (follow-up) durations
-$`d`$. Since the model is on the log-rate scale, we include $`\log(d)`$
-as an **offset** in `gMAP` so that the estimated parameter is the
-log-rate $`\log\lambda_C`$ rather than the log-mean count
-$`\log(\mu) = \log(\lambda \cdot d)`$:
+$`d`$. Here the summaries provided in the `asthma` data set are already
+on the yearly **log-rate** scale (log events per patient-year,
+back-calculated from the raw counts and exposures), so `log_mu_hat`
+estimates $`\log\lambda_C`$ directly and **no offset is needed**:
 
 ``` r
 
 map_mcmc <- gMAP(
   cbind(log_mu_hat, se_log_mu_hat) ~ 1 | study,
-  offset = log(d),
+  ## NOTE: the historical inputs are already log-rates (per patient-year),
+  ## so no exposure offset is used here. If instead the inputs were
+  ## log-mean *counts* log(mu) = log(lambda * d) for exposure d, we would
+  ## add `offset = log(d)` to recover the log-rate log(lambda). Whether an
+  ## offset is needed therefore depends on how the historical data are
+  ## reported.
   data   = asthma_ph3,
   family = gaussian,
   tau.dist  = "HalfNormal",
@@ -262,7 +308,7 @@ print(map_mcmc)
     ## Generalized Meta Analytic Predictive Prior Analysis
     ## 
     ## Call:  gMAP(formula = cbind(log_mu_hat, se_log_mu_hat) ~ 1 | study, 
-    ##     family = gaussian, data = asthma_ph3, offset = log(d), tau.dist = "HalfNormal", 
+    ##     family = gaussian, data = asthma_ph3, tau.dist = "HalfNormal", 
     ##     tau.prior = sigma_ctrl/4, beta.prior = 2)
     ## 
     ## Exchangeability tau strata: 1 
@@ -271,11 +317,11 @@ print(map_mcmc)
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
     ##         mean median    sd    q2.5    q50 q97.5
-    ## tau[1] 0.116 0.0858 0.107 0.00442 0.0858 0.398
+    ## tau[1] 0.119 0.0893 0.109 0.00349 0.0893 0.409
     ## 
     ## MAP Prior MCMC sample
-    ##                  mean median    sd  q2.5  q50 q97.5
-    ## theta_resp_pred 0.643   0.64 0.188 0.264 0.64  1.05
+    ##                  mean median    sd  q2.5   q50 q97.5
+    ## theta_resp_pred 0.649  0.644 0.191 0.281 0.644  1.08
 
 ``` r
 
@@ -286,13 +332,24 @@ sigma(map_rate) <- sigma_ctrl
 ``` r
 
 pl <- plot(map_mcmc)
-print(pl$forest_model)
+
+## The gMAP model works on the log-rate scale, so the estimates are
+## spaced logarithmically. We keep that geometry but label the ticks
+## with the natural event rate (events/patient-year) for readability.
+## Because plot.gMAP uses coord_flip(), the estimate lives on the y
+## aesthetic, so we override scale_y_continuous().
+rate_breaks <- c(1.25, 1.5, 1.75, 2.0, 2.5, 3.0)
+print(pl$forest_model +
+  ggplot2::scale_y_continuous(
+    name   = "Control event rate [events/patient-year]",
+    breaks = log(rate_breaks),
+    labels = rate_breaks))
 ```
 
-![Forest plot of MAP model for control
-log-rate](negbin_interim_futility_files/figure-html/map-forest-1.png)
+![Forest plot of MAP model for control event
+rate](negbin_interim_futility_files/figure-html/map-forest-1.png)
 
-Forest plot of MAP model for control log-rate
+Forest plot of MAP model for control event rate
 
 ### Effective sample size and information fraction gain
 
@@ -322,48 +379,46 @@ info_frac_with_map <- info_ia_with_map / info_final
 
 | Quantity                             | Value        |
 |:-------------------------------------|:-------------|
-| MAP prior ESS                        | 171 patients |
-| Info fraction at IA (no borrowing)   | 30.0%        |
-| Info fraction at IA (with MAP prior) | 47.5%        |
-| Info fraction gained                 | +17.5 pp     |
+| MAP prior ESS                        | 163 patients |
+| Info fraction at IA (no borrowing)   | 30.2%        |
+| Info fraction at IA (with MAP prior) | 45.2%        |
+| Info fraction gained                 | +15.0 pp     |
 
 The MAP prior substantially increases the effective information fraction
-at the IA, making futility decisions more reliable.
+at the IA, which we would expect to make futility decisions more
+reliable.
 
 ### Power with futility IA and MAP prior
 
 ``` r
 
-## IA continuation rule with MAP prior on control for prediction.
-## pos2S boundary uses the uninformative posteriors (final analysis
-## is uninformative), but we integrate out future uncertainty using
-## the MAP-informed posterior for control (post2_ia_info).
-ia_rule_map <- function(post1_ia, post2_ia, post1_ia_info, post2_ia_info) {
-  pos2S(post1_ia, post2_ia,
-        n1 = n_treat - n_treat_ia, n2 = n_ctrl - n_ctrl_ia,
-        decision = success_crit,
-        sigma1 = sigma_ctrl, sigma2 = sigma_ctrl)(post1_ia, post2_ia_info) > post_futility_thresh
-}
+## Same PoS futility rule as before (ia_rule_pos): continue if
+## PoS > threshold. The interim projection now uses the MAP-informed
+## control posterior (post2_ia_info) via prior2_ia = map_rate below;
+## the continuation rule itself is unchanged. The pos2S boundary uses
+## the uninformative posteriors, consistent with an uninformative
+## final analysis.
 
 ## OC function with futility IA and MAP prior
 ## prior1/prior2 are uninformative (used for the final analysis boundary).
-## prior2_ia is the MAP prior (used only for the IA decision).
+## prior1_ia is the uninformative treatment prior and prior2_ia is
+## the MAP prior; both are used only for the interim decision.
 oc_ia_map <- oc2S_interim(
   prior1 = uninf_treat, prior2 = uninf_ctrl,
   n1 = n_treat, n2 = n_ctrl,
   n1_ia = n_treat_ia, n2_ia = n_ctrl_ia,
   decision = success_crit,
-  ia_rule = ia_rule_map,
-  prior2_ia = map_rate,
+  ia_rule = ia_rule_pos,
+  prior1_ia = uninf_treat, prior2_ia = map_rate,
   family = nb_family,
   offset1 = log_exposure, offset2 = log_exposure,
-  Ngrid_ia = 11L
+  Ngrid_ia = 31L
 )
 
 ## Evaluate at two scenarios: no benefit (rate ratio = 1) and the
 ## design alternative. The pos2S-based rule is expensive, so we keep
 ## the grid small.
-scenarios   <- c(`No benefit` = 0, `Design alt` = log_rr_design_alt <- -0.6)
+scenarios   <- c(`No benefit` = 0, `Design alt` = log_rr_design)
 theta1_eval <- log_mu_ctrl + scenarios
 theta2_eval <- rep(log_mu_ctrl, length(scenarios))
 
@@ -374,49 +429,185 @@ fixed_power <- oc_fixed(theta1_eval, theta2_eval)
 
 | Scenario | Rate ratio | Power (no IA) | Power (no borrow) | Power (MAP) | Stop (no borrow) | Stop (MAP) |
 |:---|---:|---:|---:|---:|---:|---:|
-| No benefit | 1.00 | 0.025 | 0.022 | 0.022 | 0.631 | 0.584 |
-| Design alt | 0.55 | 0.889 | 0.865 | 0.883 | 0.046 | 0.013 |
+| No benefit | 1.00 | 0.025 | 0.022 | 0.022 | 0.579 | 0.548 |
+| Design alt | 0.65 | 0.800 | 0.774 | 0.790 | 0.066 | 0.030 |
 
 Power and futility-stop probability by scenario {.table}
 
-The table covers two complementary scenarios. A noticable result appears
-under the **design alternative**: the MAP prior almost eliminates the
-power loss caused by the futility IA. Without borrowing, inserting the
-IA costs about 2.4 percentage points of power (88.9% → 86.5%); with the
-MAP prior the loss shrinks to roughly 0.6 percentage points (88.9% →
-88.3%), recovering about three quarters of the lost power and landing
-essentially back at the fixed-design value. This is remarkable:
-borrowing historical control information at the interim makes the
-futility rule almost “free” under the alternative, because the
-better-informed interim posterior leads to far fewer erroneous futility
-stops (stop probability 4.6% → 1.3%). Under **no treatment benefit**
-(rate ratio = 1), the relevant quantity is instead the futility-stop
-probability: a useful IA should stop early with high probability when
-there is nothing to gain. Both designs stop with high probability here,
-so the IA is doing its job, while power under the design alternative is
-preserved.
+The table compares the two designs at a **common** PoS futility
+threshold of 10%. Under the **design alternative** the futility IA costs
+about 1.6 percentage points of power without borrowing (80.0% → 78.4%);
+with the MAP prior the loss shrinks to about 1.0 percentage points
+(80.0% → 79.1%), and the chance of an erroneous futility stop under the
+alternative falls (roughly 4.6% → 2.9%). Under **no treatment benefit**
+(rate ratio = 1), however, the picture at this shared threshold is
+mixed: the non-informative design actually stops *more* often (about
+63%) than the MAP design (about 57%). This is not a contradiction — at a
+common PoS threshold the two rules are simply not equally aggressive, so
+reading the null-stopping probabilities side by side compares apples to
+oranges.
 
-It is worth noting the **trade-off** behind these numbers. Borrowing
-historical control information raises the interim information fraction
-(30% → ~44%), which makes the control estimate more precise and the
-futility decision less reactive to noise. Under the null the MAP stop
-probability is actually *lower* (57% vs 63%): without borrowing, the
-noisy 30%-information control estimate pushes more interim outcomes
-across the futility threshold — some for the wrong reason. With the MAP
-prior the predictive probability of success clusters nearer its true
-value, so fewer outcomes are stopped by chance. The same noise reduction
-is what protects power under the alternative. Borrowing therefore buys
-sharper, less reactive decisions — not simply more stopping.
+## Calibrating the futility threshold to a fixed power loss
 
-The intro section deliberately powers the IA-rule grid at just these two
-anchor scenarios for speed; evaluating `oc_ia_map` / `oc_ia_uninf` over
-a finer `log_rr` grid traces the full power and stop-probability curves
-at higher computational cost.
+Comparing the two designs at a *shared* futility threshold mixes two
+effects: the different threshold behaviour of the two analyses in terms
+of operating charachersitics and the different information they carry.
+An alternative, as poroposed by Gallo, Mao & Shih (2014), fixes one
+(Frequentist) operating characteristic for both methods and reads off
+the others. A futility rule can be expressed equivalently on several
+one-to-one scales — a test statistic, the observed effect estimate,
+conditional power, or predictive power — so the choice of scale is a
+matter of convenience once we agree on the operating characteristics we
+care about. Here we **calibrate each method to the same power loss of 2%
+under the design alternative** and then compare the futility stopping
+probability under the null.
+
+**A fast, equivalent futility scale.** Evaluating the PoS at every
+quadrature node is expensive because each evaluation solves a small
+predictive-power (double) integral. Since the futility scales are
+one-to-one for a fixed design, we can instead use the interim
+**posterior assurance** for a positive treatment effect — the posterior
+probability that the treatment is better than control,
+$`P(\delta < 0 \mid \text{interim data})`$, a monotone function of the
+interim posterior mean difference. This is far cheaper to compute (no
+inner predictive integral) yet traces the *same* power-loss /
+stopping-probability trade-off as the PoS rule. Importantly, the
+borrowing is fully retained: the control arm’s interim posterior is
+still formed from the MAP prior, so the assurance rule uses exactly the
+same MAP-informed control estimate — it only changes the *scale* on
+which the threshold is expressed, not the information used.
+
+**A deliberate asymmetry.** Note that this uses the MAP prior *only for
+the interim decision making*. The final confirmatory analysis remains
+purely frequentist and never sees this prior. The interim decision
+analysis and the final analysis are therefore intentionally different:
+borrowing is a design/monitoring tool here, not part of the primary
+inference.
+
+``` r
+
+## Fast, equivalent futility scale: continue iff the interim posterior
+## assurance P(delta < 0) exceeds a threshold gamma. This is a monotone
+## re-scaling of the PoS rule (Gallo, Mao & Shih, 2014) but avoids the
+## inner predictive integral, so the threshold search is ~25x faster.
+## The MAP prior still enters via the control interim posterior
+## (prior2_ia = map_rate below).
+assurance_rule <- function(gamma) {
+  function(post1_ia, post2_ia, post1_ia_info, post2_ia_info) {
+    pmixdiff(post1_ia_info, post2_ia_info, 0) > gamma
+  }
+}
+
+make_oc_assurance <- function(gamma, prior2_ia, Ngrid_ia = 31L) {
+  oc2S_interim(
+    prior1 = uninf_treat, prior2 = uninf_ctrl,
+    n1 = n_treat, n2 = n_ctrl,
+    n1_ia = n_treat_ia, n2_ia = n_ctrl_ia,
+    decision = success_crit,
+    ia_rule = assurance_rule(gamma),
+    prior1_ia = uninf_treat, prior2_ia = prior2_ia,
+    family = nb_family,
+    offset1 = log_exposure, offset2 = log_exposure,
+    Ngrid_ia = Ngrid_ia
+  )
+}
+```
+
+The threshold that comes closest to a 2% power loss is found once with
+`uniroot`. Because it depends only on the fixed design inputs, we
+determine it in the (non-evaluated) block below and hard-code the
+resulting values; they only change if the design inputs change.
+
+``` r
+
+## One-off calibration (not evaluated on render). Solves for the
+## assurance threshold giving a 2% power loss under the design
+## alternative, separately for each method.
+## Design inputs these thresholds depend on:
+##   lambda_ctrl = 1.8, kappa_true = 1.9, followup = 0.925,
+##   n_treat = n_ctrl = 225, n_ia = 68/arm, log_rr_design = log(0.65),
+##   MAP prior = map_rate (asthma phase III, no offset),
+##   uninf_treat = N(0, 10), success_crit = P(delta<0) > 0.975.
+target_power_loss <- 0.02
+theta1_alt <- log_mu_ctrl + log_rr_design
+theta2_alt <- log_mu_ctrl
+power_alt_fixed <- oc_fixed(theta1_alt, theta2_alt)
+
+## Two-stage search for speed. The interim OC is integrated by
+## Gauss-Hermite quadrature, whose cost grows with Ngrid_ia. We first
+## locate the threshold on a cheap coarse grid (Ngrid_ia = 11) over the
+## full range, then refine on the accurate grid (Ngrid_ia = 31) seeded
+## from a narrow bracket around the coarse solution. The bracket
+## auto-extends (extendInt = "upX", as the power loss increases with
+## gamma) so the refinement stays robust even though the coarse and
+## accurate grids can disagree by more than the initial half-width.
+solve_gamma <- function(prior2_ia) {
+  gfun <- function(gamma, Ngrid_ia) {
+    p <- make_oc_assurance(gamma, prior2_ia, Ngrid_ia)(theta1_alt, theta2_alt)["power"]
+    (power_alt_fixed - as.numeric(p)) - target_power_loss
+  }
+  ## Stage 1: coarse, wide bracket.
+  g_coarse <- uniroot(gfun, interval = c(0.05, 0.90), tol = 1e-3,
+                      Ngrid_ia = 11L)$root
+  ## Stage 2: accurate grid, narrow self-extending bracket around it.
+  uniroot(gfun, interval = c(g_coarse - 0.01, g_coarse + 0.01),
+          extendInt = "upX", tol = 1e-3, Ngrid_ia = 31L)$root
+}
+
+gamma_uninf <- solve_gamma(uninf_ctrl)  # -> 0.481
+gamma_map   <- solve_gamma(map_rate)    # -> 0.691
+```
+
+``` r
+
+## Calibrated assurance thresholds (targeting a 2% power loss under the
+## alternative), from the one-off search above for the design inputs
+## listed there. Note: the interim OC is integrated on a discrete
+## Gauss-Hermite grid (Ngrid_ia = 31), so the achievable power loss is
+## quantized in small steps and 2% is met only up to that granularity.
+## These thresholds are the ones closest to a 2% loss (about 1.9% for
+## the non-informative and about 2.1% for the MAP design); nudging gamma
+## to the next grid step would jump the loss to ~2.6% / ~2.2%.
+gamma_uninf <- 0.481
+gamma_map   <- 0.691
+```
+
+With the thresholds fixed, we compare the two methods at their
+respective calibrated operating points: the power under the alternative
+(equal by construction, up to the ~2% loss and the quadrature
+granularity noted above) and the futility stopping probability under the
+null.
+
+``` r
+
+calib_scen <- c(`No benefit` = 0, `Design alt` = log_rr_design)
+ct1 <- log_mu_ctrl + calib_scen
+ct2 <- rep(log_mu_ctrl, length(calib_scen))
+
+oc_cal_uninf <- make_oc_assurance(gamma_uninf, uninf_ctrl)(theta1 = ct1, theta2 = ct2)
+oc_cal_map   <- make_oc_assurance(gamma_map,   map_rate)(theta1 = ct1, theta2 = ct2)
+fixed_cal    <- oc_fixed(ct1, ct2)
+```
+
+| Scenario | Rate ratio | Power (no IA) | Power (no borrow) | Power (MAP) | Stop (no borrow) | Stop (MAP) |
+|:---|---:|---:|---:|---:|---:|---:|
+| No benefit | 1.00 | 0.025 | 0.024 | 0.020 | 0.421 | 0.634 |
+| Design alt | 0.65 | 0.800 | 0.781 | 0.778 | 0.051 | 0.054 |
+
+Both methods calibrated to a 2% power loss under the design alternative
+{.table}
+
+Calibrated to the same (approximately 2%) power loss, the two methods
+differ clearly in their futility stopping under the null: the MAP design
+stops a truly ineffective drug substantially more often than the
+non-informative design (here about 63% versus 42%). In other words, for
+the *same* price in power, borrowing buys a markedly higher chance of
+correctly stopping a futile trial — the benefit the shared-threshold
+comparison understated.
 
 ## Conditional and predictive power at interim
 
-At an actual IA, two complementary quantities inform the go/no-go
-decision:
+At an actual IA, two related quantities inform the go/no-go decision:
 
 - **Conditional power (CP):** The probability of final success *given a
   specific assumed true treatment effect*. This is a frequentist concept
@@ -425,6 +616,13 @@ decision:
   of final success *integrating over parameter uncertainty*. This is a
   Bayesian concept — the unknown parameters are drawn from the interim
   posterior.
+
+These two quantities are closely linked rather than complementary:
+predictive power is essentially conditional power averaged over the
+interim posteriors. They answer different questions — “how likely is
+success *if* the effect is $`x`$?” versus “how likely is success
+*accounting for* our uncertainty about the effect?” — but they are not
+independent pieces of information.
 
 ### Hypothesized interim state
 
@@ -442,8 +640,8 @@ ia_se_mu_treat  <- sigma_fn(exp(0.35), kappa_true, followup) / sqrt(n_treat_ia)
 
 | Quantity                   | Value | SE    |
 |:---------------------------|:------|:------|
-| Interim log-rate control   | 0.70  | 0.231 |
-| Interim log-rate treatment | 0.35  | 0.241 |
+| Interim log-rate control   | 0.70  | 0.189 |
+| Interim log-rate treatment | 0.35  | 0.198 |
 | Observed log RR            | -0.35 |       |
 
 ### Interim posteriors
@@ -453,7 +651,7 @@ ia_se_mu_treat  <- sigma_fn(exp(0.35), kappa_true, followup) / sqrt(n_treat_ia)
 ## Control posterior with MAP prior
 post_ctrl_ia <- postmix(map_rate, m = ia_log_mu_ctrl, se = ia_se_mu_ctrl)
 
-## Treatment posterior (non-informative prior)
+## Treatment posterior with the uninformative prior
 post_treat_ia <- postmix(uninf_treat, m = ia_log_mu_treat, se = ia_se_mu_treat)
 ```
 
@@ -526,12 +724,14 @@ cp_at_obs <- cp_fn(ia_log_mu_treat, ia_log_mu_ctrl)
 
 | Metric                               | Value |
 |:-------------------------------------|:------|
-| Conditional power at observed effect | 0.537 |
-| Predictive power (PoS)               | 0.487 |
+| Conditional power at observed effect | 0.738 |
+| Predictive power (PoS)               | 0.606 |
 
 The predictive power is typically lower than the conditional power
 evaluated at the observed effect, because it accounts for the
-possibility that the true effect is smaller (or absent).
+possibility that the true effect is smaller (or absent). As a result one
+would not usually use the same IA decision thresholds for conditional
+and predictive power.
 
 ## Design-level power with futility IA
 
@@ -547,46 +747,64 @@ operating characteristics via conjugate posterior updates. The
 `oc2S_interim()` helper used here follows the same numerical integration
 idea but works with the mixture-prior machinery in RBesT (see [Appendix:
 Integration approach](#appendix-integration)). We already computed these
-above. The table at the design alternative (rate ratio ≈ 0.55) confirms
-that the MAP prior reduces the power loss from the futility IA while
-increasing the futility stopping probability under the null — exactly
-the desired behavior.
+above. Calibrated to a common 2% power loss under the design alternative
+(rate ratio = 0.65), the MAP prior achieves a higher futility stopping
+probability under the null than the non-informative design — exactly the
+desired behaviour, and the fair comparison the reviewer-facing
+literature calls for.
 
 ## Discussion
 
-This article demonstrated a simple progression for using historical
-borrowing in the design of a futility interim analysis:
+This article demonstrated how historical information can be used only
+for an interim futility analysis:
 
 1.  **Establish the baseline** without an IA.
 2.  **Quantify the cost** of adding a futility IA with limited data.
 3.  **Show the benefit** of a MAP prior, both in ESS/information
     fraction terms and in operating characteristics.
-4.  **Provide interim decision tools** via conditional and predictive
-    power.
+4.  **Calibrate the decision threshold** to a common power loss and
+    compare methods on an equal footing, examining the behaviour across
+    a range of decision thresholds via conditional and predictive power.
 5.  **Confirm at the design level** that the power loss is acceptable
     via numerical integration.
 
 Key insights:
 
-- A futility IA at low information fractions (e.g. 30%) is unreliable
-  without supplementary information. The uncertainty in the interim
-  estimate is too large.
+- A futility IA at low information fractions (e.g. 30%) may be
+  unreliable without supplementary information, because the uncertainty
+  in the interim estimate is usually large.
 - The MAP prior adds effective sample size to the control arm, boosting
   the information fraction at the IA and enabling sharper futility
   decisions.
+- A useful way to read this benefit: borrowing lets us **“look into the
+  future.”** The historical information sharpens the *control* arm to a
+  precision the trial would otherwise only reach at a later, more mature
+  interim look (here the information fraction rises from 30% to about
+  44%). Because the treatment effect contrasts treatment against
+  control, a sharper control estimate directly tightens the interim
+  effect estimate, so we make the futility call as if from a
+  higher-information look. This is a *partial* look into the future:
+  only the control arm is advanced — the treatment arm still carries its
+  actual interim information — and it reaches only as far as the
+  (robust) MAP stays consistent with the concurrent control; under
+  prior-data conflict the borrowing is down-weighted and the effective
+  gain shrinks. Crucially, this is an *information* gain.
 - The final confirmatory analysis remains frequentist — no prior is
-  imported. The MAP prior serves only as a **calibration tool** for
-  interim projections.
-- Predictive power (PoS) is the more conservative and realistic interim
-  metric compared to conditional power, because it integrates over
-  parameter uncertainty.
+  imported. The MAP prior serves only as a **decision supporting tool**
+  for interim analyses.
+- Predictive power (PoS) is, in a certain sense, a more conservative and
+  realistic interim metric than conditional power evaluated at the
+  observed effect, because it integrates over parameter uncertainty
+  instead of conditioning on a single assumed effect. It is not
+  uniformly more conservative — it can exceed the conditional power at a
+  pessimistic assumed effect — but it avoids the over-optimism of
+  plugging in the observed interim estimate.
 
-It is left as an outlook to make use of the historical information of
-the overdisperion parameter, which can be synthesized in a normal-normal
-hierarchical model and also used as a MAP prior at the IA. However, a
-random overdispersion parameter is not supported with `RBesT` directly
-(assuming a known overdispersion is a common assumption at the design
-stage).
+Using historical information on the negative binomial dispersion
+parameter can be done using a normal-normal hierarchical model and then
+used as a MAP prior at the IA. However, uncertainty about the
+overdispersion parameter is not supported with `RBesT` directly and
+would require using e.g. `brms` instead.
 
 ### Limitations
 
@@ -598,6 +816,11 @@ stage).
 - The normal approximation on the log-rate scale assumes moderate to
   large event counts. For rare-event settings, exact likelihoods may be
   needed.
+
+### Acknowledgements
+
+Many thanks to Björn Holzhauer for a thorough review of an earlier
+version of this article.
 
 #### References
 
@@ -613,7 +836,11 @@ Design.” *Journal of Statistical Software*, **69**(11), 1–23. doi:
 \[5\] Gsponer T, Gerber F, Bornkamp B, Ohlssen D, Vandemeulebroecke M,
 Schmidli H (2014). “A Practical Guide to Bayesian Group Sequential
 Designs.” *Pharmaceutical Statistics*, **13**(1), 71–80. doi:
-[10.1002/pst.1593](https://doi.org/10.1002/pst.1593).
+[10.1002/pst.1593](https://doi.org/10.1002/pst.1593).  
+\[6\] Gallo P, Mao L, Shih VH (2014). “Alternative Views on Setting
+Clinical Trial Futility Criteria.” *Journal of Biopharmaceutical
+Statistics*, **24**(5), 976–993. doi:
+[10.1080/10543406.2014.932285](https://doi.org/10.1080/10543406.2014.932285).
 
 #### R Session Info
 
@@ -655,7 +882,7 @@ Designs.” *Pharmaceutical Statistics*, **13**(1), 71–80. doi:
     ## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
     ## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          
     ## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     
-    ## [43] digest_0.6.39         stringi_1.8.7         mvtnorm_1.4-1        
+    ## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        
     ## [46] reshape2_1.4.5        labeling_0.4.3        fastmap_1.2.0        
     ## [49] grid_4.6.1            cli_3.6.6             magrittr_2.0.5       
     ## [52] loo_2.10.0            pkgbuild_1.4.8        withr_3.0.3          
@@ -665,6 +892,64 @@ Designs.” *Pharmaceutical Statistics*, **13**(1), 71–80. doi:
     ## [64] rlang_1.2.0           Rcpp_1.1.1-1.1        glue_1.8.1           
     ## [67] jsonlite_2.0.0        plyr_1.8.9            R6_2.6.1             
     ## [70] systemfonts_1.3.2     fs_2.1.0
+
+## Exercise: calibrate to a fixed null-stopping probability
+
+The calibration above fixed the **power loss under the alternative** at
+2% and then compared the two methods on their futility stopping
+probability under the null. Because the futility scales are one-to-one
+for a fixed design (Gallo, Mao & Shih, 2014), we can equally read the
+trade-off the other way around: **fix the probability of killing a truly
+ineffective drug under the null** and compare the resulting power loss
+under the alternative. A sponsor who wants a guaranteed “kill rate” for
+futile trials would prefer this dual calibration.
+
+As an exercise, calibrate both methods to a common futility stopping
+probability under the null — say 45% — and compare the power they
+sacrifice under the design alternative. You should find the MAP prior
+sacrifices *less* power for the same null-stopping guarantee, the mirror
+image of the result in the calibration section.
+
+``` r
+
+## Dual calibration: fix the futility stopping probability under the
+## null (H0: no treatment benefit) instead of the power loss under the
+## alternative. Reuses assurance_rule() / make_oc_assurance() from the
+## calibration section.
+target_stop_null <- 0.45
+theta_null <- rep(log_mu_ctrl, 2)         # control == treatment (RR = 1)
+theta_alt  <- c(log_mu_ctrl + log_rr_design, log_mu_ctrl)
+
+## Solve for the assurance threshold giving the target null-stop rate,
+## using the same two-stage (coarse -> refined) search as the
+## calibration section: locate on the cheap Ngrid_ia = 11 grid, then
+## refine on Ngrid_ia = 31 with a self-extending bracket. The null-stop
+## probability increases with gamma, so extendInt = "upX" applies.
+solve_gamma_null <- function(prior2_ia) {
+  gfun <- function(gamma, Ngrid_ia) {
+    s <- make_oc_assurance(gamma, prior2_ia, Ngrid_ia)(theta1 = theta_null[1],
+                                                       theta2 = theta_null[2])["stop_prob"]
+    as.numeric(s) - target_stop_null
+  }
+  g_coarse <- uniroot(gfun, interval = c(0.05, 0.90), tol = 1e-3,
+                      Ngrid_ia = 11L)$root
+  uniroot(gfun, interval = c(g_coarse - 0.01, g_coarse + 0.01),
+          extendInt = "upX", tol = 1e-3, Ngrid_ia = 31L)$root
+}
+
+g_uninf_null <- solve_gamma_null(uninf_ctrl)
+g_map_null   <- solve_gamma_null(map_rate)
+
+## Power under the alternative at each calibrated threshold, versus the
+## fixed-design power, gives the power loss to compare across methods.
+power_fixed_alt <- oc_fixed(theta_alt[1], theta_alt[2])
+loss_uninf <- power_fixed_alt -
+  make_oc_assurance(g_uninf_null, uninf_ctrl)(theta_alt[1], theta_alt[2])["power"]
+loss_map   <- power_fixed_alt -
+  make_oc_assurance(g_map_null, map_rate)(theta_alt[1], theta_alt[2])["power"]
+## Expectation: loss_map < loss_uninf (MAP gives up less power for the
+## same 45% chance of stopping a futile trial).
+```
 
 ## Appendix: Integration approach for interim OC
 

@@ -2,6 +2,8 @@
 
 ## RBesT 1.10-0 - June 30th, 2026
 
+CRAN release: 2026-07-02
+
 ### Enhancements
 
 - Add a `family` argument to `oc1S`, `oc2S`, `pos1S`, `pos2S`,

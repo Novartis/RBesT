@@ -68,9 +68,9 @@
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2026-07-01</h4>
+            <h4 data-toc-skip class="date">2026-07-06</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.10-0/vignettes/articles/negbin_interim_futility.Rmd" class="external-link"><code>vignettes/articles/negbin_interim_futility.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/negbin_interim_futility.Rmd" class="external-link"><code>vignettes/articles/negbin_interim_futility.Rmd</code></a></small>
       <div class="d-none name"><code>negbin_interim_futility.Rmd</code></div>
     </div>
 
@@ -99,13 +99,13 @@ decisions.</p>
 <strong>Baseline:</strong> Operating characteristics (OC) of a
 fixed-sample design without an IA.</li>
 <li>
-<strong>Futility IA without borrowing:</strong> Introduce a futility
-stop at 30% information fraction using non-informative priors. Quantify
-the power loss under the alternative.</li>
+<strong>Unblinded futility IA without borrowing:</strong> Introduce
+a futility stop at 30% information fraction using non-informative
+priors. Quantify the power loss under the alternative.</li>
 <li>
-<strong>Futility IA with MAP prior:</strong> Derive a MAP prior from
-four historical phase III trials. Show the effective sample size (ESS)
-and the information fraction gained.</li>
+<strong>Unblinded futility IA with MAP prior:</strong> Derive a MAP
+prior from four historical phase III trials. Show the effective sample
+size (ESS) and the information fraction gained.</li>
 <li>
 <strong>Interim decision-making:</strong> Conditional power and
 predictive power (probability of success) at a hypothesized interim
@@ -122,6 +122,17 @@ projections.</p>
 <div class="section level2">
 <h2 id="negative-binomial-setup">Negative binomial setup<a class="anchor" aria-label="anchor" href="#negative-binomial-setup"></a>
 </h2>
+<p>In clinical trials with count data, where more than one event can
+happen for a patient — such as asthma exacerbations — the
+<strong>negative binomial</strong> distribution is often used. One of
+several parametrizations uses a mean rate and a dispersion parameter. It
+extends the Poisson distribution — which assumes that all patients with
+the same covariate values share a single event rate — by allowing the
+event rate to vary between patients (the larger the dispersion
+parameter, the more the event rate varies between patients). Differences
+in follow-up due to administrative censoring can be reflected using a
+<strong>log-follow-up offset</strong>, i.e. the expected number of
+events for a patient is their event rate times their follow-up time.</p>
 <p>We work on the <strong>log mean rate</strong> scale under the
 standard normal approximation to the MLE (see <a href="#appendix">Appendix</a> for the full parametrization). The
 treatment effect is the log-rate ratio
@@ -130,7 +141,11 @@ treatment effect is the log-rate ratio
 <code class="sourceCode R"><span><span class="co">## Assumed true parameters for design planning</span></span>
 <span><span class="va">lambda_ctrl</span>  <span class="op">&lt;-</span> <span class="fl">1.8</span>          <span class="co"># placebo rate (events/patient-year)</span></span>
 <span><span class="va">kappa_true</span>   <span class="op">&lt;-</span> <span class="fl">1.9</span>          <span class="co"># overdispersion (phi)</span></span>
-<span><span class="va">followup</span>     <span class="op">&lt;-</span> <span class="fl">1</span>            <span class="co"># exposure per patient (years)</span></span>
+<span><span class="co">## Effective average follow-up per patient (years). Rather than a full</span></span>
+<span><span class="co">## year for everyone, we allow for ~15% dropout with, on average, half</span></span>
+<span><span class="co">## the intended follow-up (cf. Holzhauer et al., 2018):</span></span>
+<span><span class="co">##   1 * 0.85 + 0.5 * 0.15 = 0.925 patient-years.</span></span>
+<span><span class="va">followup</span>     <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">*</span> <span class="fl">0.85</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fl">0.15</span></span>
 <span><span class="va">log_exposure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">followup</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## NB family object for OC calculations (fixed kappa)</span></span>
@@ -145,7 +160,7 @@ treatment effect is the log-rate ratio
 <span><span class="va">sigma_treat</span> <span class="op">&lt;-</span> <span class="va">sigma_ctrl</span>  <span class="co"># same rate assumed under H0</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Per-patient sigma (log-rate scale): %.3f\n"</span>, <span class="va">sigma_ctrl</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Per-patient sigma (log-rate scale): 1.570</span></span></code></pre>
+<pre><code><span><span class="co">## Per-patient sigma (log-rate scale): 1.580</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="fixed-sample-design-no-interim">Fixed-sample design (no interim)<a class="anchor" aria-label="anchor" href="#fixed-sample-design-no-interim"></a>
@@ -158,8 +173,8 @@ treatment effect is the log-rate ratio
 <span><span class="va">uninf_treat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixnorm.html">mixnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">lambda_ctrl</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="va">sigma_treat</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Sample sizes</span></span>
-<span><span class="va">n_treat</span> <span class="op">&lt;-</span> <span class="fl">150</span></span>
-<span><span class="va">n_ctrl</span>  <span class="op">&lt;-</span> <span class="fl">150</span></span>
+<span><span class="va">n_treat</span> <span class="op">&lt;-</span> <span class="fl">225</span></span>
+<span><span class="va">n_ctrl</span>  <span class="op">&lt;-</span> <span class="fl">225</span></span>
 <span></span>
 <span><span class="co">## Decision: P(delta &lt; 0 | data) &gt; 0.975  (one-sided test)</span></span>
 <span><span class="va">success_crit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/decision2S.html">decision2S</a></span><span class="op">(</span><span class="fl">0.975</span>, <span class="fl">0</span>, lower.tail <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -184,6 +199,19 @@ Power curve — fixed-sample design (no IA)
 historical borrowing, the IA relies entirely on the accrued trial data.
 This would be a very early stop with rather imprecise estimates compared
 to a more common IA look at 50%.</p>
+<p>As a simplifying assumption we treat the interim analysis as if it
+were based on 30% of the patients with complete follow-up. In practice
+the same information would come from more patients, many of them with
+only partial follow-up at the time of the interim look; their data can
+still be used through the use of an offset in the regression. This
+distinction is not merely cosmetic: for a recurrent-event endpoint the
+information is event-driven, so a given amount of <em>total</em>
+follow-up
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>×</mo></mrow><annotation encoding="application/x-tex">N \times</annotation></semantics></math>
+expected follow-up per patient) is worth slightly more when it comes
+from many patients observed for a short time than from fewer patients
+each observed to completion. The calculation here is thus somewhat
+simplfying the actual situation.</p>
 <p>The information fraction is defined as the ratio of the Fisher
 information for the treatment effect (log rate ratio) at the interim
 relative to the final analysis. Under a negative binomial model with log
@@ -206,7 +234,7 @@ patients is
 required for 30% of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℐ</mi><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{I}(\delta)</annotation></semantics></math>
 at the planned final sample size, evaluated under the design alternative
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">RR</mtext><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\log(\text{RR}) = -0.5</annotation></semantics></math>:</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">RR</mtext><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0.65</mn><mo stretchy="false" form="postfix">)</mo><mo>≈</mo><mi>−</mi><mn>0.43</mn></mrow><annotation encoding="application/x-tex">\log(\text{RR}) = \log(0.65) \approx -0.43</annotation></semantics></math>:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Quantity</th>
@@ -215,31 +243,31 @@ at the planned final sample size, evaluated under the design alternative
 <tbody>
 <tr class="odd">
 <td align="left">Design alternative log(RR)</td>
-<td align="left">-0.50</td>
+<td align="left">-0.43</td>
 </tr>
 <tr class="even">
 <td align="left">Per-patient Fisher info (treatment)</td>
-<td align="left">0.3551</td>
+<td align="left">0.3541</td>
 </tr>
 <tr class="odd">
 <td align="left">Per-patient Fisher info (control)</td>
-<td align="left">0.4072</td>
+<td align="left">0.3999</td>
 </tr>
 <tr class="even">
 <td align="left">Information at final (n/arm)</td>
-<td align="left">28.45 (n = 150)</td>
+<td align="left">42.26 (n = 225)</td>
 </tr>
 <tr class="odd">
 <td align="left">Information target at IA (30%)</td>
-<td align="left">8.54</td>
+<td align="left">12.68</td>
 </tr>
 <tr class="even">
 <td align="left">Patients at IA (treatment / control)</td>
-<td align="left">45 / 45</td>
+<td align="left">68 / 68</td>
 </tr>
 <tr class="odd">
 <td align="left">Patients remaining (treatment / control)</td>
-<td align="left">105 / 105</td>
+<td align="left">157 / 157</td>
 </tr>
 </tbody>
 </table>
@@ -265,31 +293,37 @@ Integration approach</a> for details).</p>
 <p>The interim decision rule continues the trial whenever the
 probability of success exceeds the futility threshold:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## IA continuation rule: continue if PoS &gt; threshold</span></span>
+<code class="sourceCode R"><span><span class="co">## IA continuation rule: continue if PoS &gt; threshold.</span></span>
+<span><span class="co">## The predictive power (PoS) is computed from the interim projection</span></span>
+<span><span class="co">## posteriors: the (uninformative) treatment posterior and the control</span></span>
+<span><span class="co">## posterior. This exact same rule is reused below for the MAP design —</span></span>
+<span><span class="co">## only the control interim prior (prior2_ia) changes, not the rule.</span></span>
 <span><span class="co">## Note: we use the fixed-sigma path of pos2S (no family argument)</span></span>
 <span><span class="co">## for performance. This is valid because sigma is approximately</span></span>
 <span><span class="co">## constant over the posterior range at the interim.</span></span>
-<span><span class="va">ia_rule_uninf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">ia_rule_pos</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span>, <span class="va">post1_ia_info</span>, <span class="va">post2_ia_info</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/pos2S.html">pos2S</a></span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span>,</span>
 <span>        n1 <span class="op">=</span> <span class="va">n_treat</span> <span class="op">-</span> <span class="va">n_treat_ia</span>, n2 <span class="op">=</span> <span class="va">n_ctrl</span> <span class="op">-</span> <span class="va">n_ctrl_ia</span>,</span>
 <span>        decision <span class="op">=</span> <span class="va">success_crit</span>,</span>
-<span>        sigma1 <span class="op">=</span> <span class="va">sigma_ctrl</span>, sigma2 <span class="op">=</span> <span class="va">sigma_ctrl</span><span class="op">)</span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">post_futility_thresh</span></span>
+<span>        sigma1 <span class="op">=</span> <span class="va">sigma_ctrl</span>, sigma2 <span class="op">=</span> <span class="va">sigma_ctrl</span><span class="op">)</span><span class="op">(</span><span class="va">post1_ia_info</span>, <span class="va">post2_ia_info</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">post_futility_thresh</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co">## OC function with futility IA (no borrowing)</span></span>
+<span><span class="co">## OC function with futility IA (no borrowing).</span></span>
+<span><span class="co">## prior1/prior2 are uninformative (used for the final analysis boundary);</span></span>
 <span><span class="va">oc_ia_uninf</span> <span class="op">&lt;-</span> <span class="fu">oc2S_interim</span><span class="op">(</span></span>
 <span>  prior1 <span class="op">=</span> <span class="va">uninf_treat</span>, prior2 <span class="op">=</span> <span class="va">uninf_ctrl</span>,</span>
 <span>  n1 <span class="op">=</span> <span class="va">n_treat</span>, n2 <span class="op">=</span> <span class="va">n_ctrl</span>,</span>
 <span>  n1_ia <span class="op">=</span> <span class="va">n_treat_ia</span>, n2_ia <span class="op">=</span> <span class="va">n_ctrl_ia</span>,</span>
 <span>  decision <span class="op">=</span> <span class="va">success_crit</span>,</span>
-<span>  ia_rule <span class="op">=</span> <span class="va">ia_rule_uninf</span>,</span>
+<span>  ia_rule <span class="op">=</span> <span class="va">ia_rule_pos</span>,</span>
+<span>  prior1_ia <span class="op">=</span> <span class="va">uninf_treat</span>, prior2_ia <span class="op">=</span> <span class="va">uninf_ctrl</span>,</span>
 <span>  family <span class="op">=</span> <span class="va">nb_family</span>,</span>
 <span>  offset1 <span class="op">=</span> <span class="va">log_exposure</span>, offset2 <span class="op">=</span> <span class="va">log_exposure</span>,</span>
-<span>  Ngrid_ia <span class="op">=</span> <span class="fl">11L</span></span>
+<span>  Ngrid_ia <span class="op">=</span> <span class="fl">31L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Evaluate at null and design alternative (pos2S rule is expensive)</span></span>
-<span><span class="va">log_rr_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`No benefit` <span class="op">=</span> <span class="fl">0</span>, `Design alt` <span class="op">=</span> <span class="op">-</span><span class="fl">0.6</span><span class="op">)</span></span>
+<span><span class="co">## Evaluate at null and the design alternative (pos2S rule is expensive)</span></span>
+<span><span class="va">log_rr_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`No benefit` <span class="op">=</span> <span class="fl">0</span>, `Design alt` <span class="op">=</span> <span class="va">log_rr_design</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">power_ia_uninf_df</span> <span class="op">&lt;-</span> <span class="fu">oc_ia_uninf</span><span class="op">(</span></span>
 <span>  theta1 <span class="op">=</span> <span class="va">log_mu_ctrl</span> <span class="op">+</span> <span class="va">log_rr_grid</span>,</span>
@@ -325,24 +359,29 @@ PoS rule)</caption>
 <td align="right">1.00</td>
 <td align="right">0.025</td>
 <td align="right">0.022</td>
-<td align="right">0.003</td>
-<td align="right">0.631</td>
+<td align="right">0.002</td>
+<td align="right">0.579</td>
 </tr>
 <tr class="even">
 <td align="left">Design alt</td>
-<td align="right">0.55</td>
-<td align="right">0.889</td>
-<td align="right">0.865</td>
-<td align="right">0.024</td>
-<td align="right">0.046</td>
+<td align="right">0.65</td>
+<td align="right">0.800</td>
+<td align="right">0.774</td>
+<td align="right">0.026</td>
+<td align="right">0.066</td>
 </tr>
 </tbody>
 </table>
 <p>At 30% information fraction with non-informative priors, the futility
-IA causes a noticeable power loss under the alternative while the
-futility stopping probability under the null is moderate. The interim
-data simply do not carry enough information for reliable futility
-decisions.</p>
+IA already behaves quite well: it stops a clearly ineffective drug (rate
+ratio = 1) with high probability — well above one half — while costing
+only about one and a half percentage points of power under the design
+alternative. This is more effective than one might expect from such an
+early look. What the non-informative design cannot do is separate “stop
+for the right reason” from “stop because the 30%-information estimate
+happened to look bad”; the interim data alone carry limited information,
+so the decision is comparatively noisy. Historical borrowing (next
+section) sharpens exactly this.</p>
 </div>
 </div>
 <div class="section level2">
@@ -412,17 +451,21 @@ decisions.</p>
 </h3>
 <p>The historical trials have different exposure (follow-up) durations
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>.
-Since the model is on the log-rate scale, we include
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(d)</annotation></semantics></math>
-as an <strong>offset</strong> in <code>gMAP</code> so that the estimated
-parameter is the log-rate
+Here the summaries provided in the <code>asthma</code> data set are
+already on the yearly <strong>log-rate</strong> scale (log events per
+patient-year, back-calculated from the raw counts and exposures), so
+<code>log_mu_hat</code> estimates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><msub><mi>λ</mi><mi>C</mi></msub></mrow><annotation encoding="application/x-tex">\log\lambda_C</annotation></semantics></math>
-rather than the log-mean count
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>λ</mi><mo>⋅</mo><mi>d</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(\mu) = \log(\lambda \cdot d)</annotation></semantics></math>:</p>
+directly and <strong>no offset is needed</strong>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_mcmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gMAP.html">gMAP</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">log_mu_hat</span>, <span class="va">se_log_mu_hat</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span>
-<span>  offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,</span>
+<span>  <span class="co">## NOTE: the historical inputs are already log-rates (per patient-year),</span></span>
+<span>  <span class="co">## so no exposure offset is used here. If instead the inputs were</span></span>
+<span>  <span class="co">## log-mean *counts* log(mu) = log(lambda * d) for exposure d, we would</span></span>
+<span>  <span class="co">## add `offset = log(d)` to recover the log-rate log(lambda). Whether an</span></span>
+<span>  <span class="co">## offset is needed therefore depends on how the historical data are</span></span>
+<span>  <span class="co">## reported.</span></span>
 <span>  data   <span class="op">=</span> <span class="va">asthma_ph3</span>,</span>
 <span>  family <span class="op">=</span> <span class="va">gaussian</span>,</span>
 <span>  tau.dist  <span class="op">=</span> <span class="st">"HalfNormal"</span>,</span>
@@ -435,7 +478,7 @@ rather than the log-mean count
 <pre><code><span><span class="co">## Generalized Meta Analytic Predictive Prior Analysis</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Call:  gMAP(formula = cbind(log_mu_hat, se_log_mu_hat) ~ 1 | study, </span></span>
-<span><span class="co">##     family = gaussian, data = asthma_ph3, offset = log(d), tau.dist = "HalfNormal", </span></span>
+<span><span class="co">##     family = gaussian, data = asthma_ph3, tau.dist = "HalfNormal", </span></span>
 <span><span class="co">##     tau.prior = sigma_ctrl/4, beta.prior = 2)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Exchangeability tau strata: 1 </span></span>
@@ -444,20 +487,31 @@ rather than the log-mean count
 <span><span class="co">## </span></span>
 <span><span class="co">## Between-trial heterogeneity of tau prediction stratum</span></span>
 <span><span class="co">##         mean median    sd    q2.5    q50 q97.5</span></span>
-<span><span class="co">## tau[1] 0.116 0.0858 0.107 0.00442 0.0858 0.398</span></span>
+<span><span class="co">## tau[1] 0.119 0.0893 0.109 0.00349 0.0893 0.409</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## MAP Prior MCMC sample</span></span>
-<span><span class="co">##                  mean median    sd  q2.5  q50 q97.5</span></span>
-<span><span class="co">## theta_resp_pred 0.643   0.64 0.188 0.264 0.64  1.05</span></span></code></pre>
+<span><span class="co">##                  mean median    sd  q2.5   q50 q97.5</span></span>
+<span><span class="co">## theta_resp_pred 0.649  0.644 0.191 0.281 0.644  1.08</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_rate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/automixfit.html">automixfit</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/mixnorm.html">sigma</a></span><span class="op">(</span><span class="va">map_rate</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sigma_ctrl</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mcmc</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pl</span><span class="op">$</span><span class="va">forest_model</span><span class="op">)</span></span></code></pre></div>
+<span></span>
+<span><span class="co">## The gMAP model works on the log-rate scale, so the estimates are</span></span>
+<span><span class="co">## spaced logarithmically. We keep that geometry but label the ticks</span></span>
+<span><span class="co">## with the natural event rate (events/patient-year) for readability.</span></span>
+<span><span class="co">## Because plot.gMAP uses coord_flip(), the estimate lives on the y</span></span>
+<span><span class="co">## aesthetic, so we override scale_y_continuous().</span></span>
+<span><span class="va">rate_breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.25</span>, <span class="fl">1.5</span>, <span class="fl">1.75</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span>, <span class="fl">3.0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pl</span><span class="op">$</span><span class="va">forest_model</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>    name   <span class="op">=</span> <span class="st">"Control event rate [events/patient-year]"</span>,</span>
+<span>    breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">rate_breaks</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="va">rate_breaks</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="negbin_interim_futility_files/figure-html/map-forest-1.png" class="r-plt" alt="Forest plot of MAP model for control log-rate" width="100%"><p class="caption">
-Forest plot of MAP model for control log-rate
+<img src="negbin_interim_futility_files/figure-html/map-forest-1.png" class="r-plt" alt="Forest plot of MAP model for control event rate" width="100%"><p class="caption">
+Forest plot of MAP model for control event rate
 </p>
 </div>
 </div>
@@ -496,59 +550,57 @@ ratio, now with
 <tbody>
 <tr class="odd">
 <td align="left">MAP prior ESS</td>
-<td align="left">171 patients</td>
+<td align="left">163 patients</td>
 </tr>
 <tr class="even">
 <td align="left">Info fraction at IA (no borrowing)</td>
-<td align="left">30.0%</td>
+<td align="left">30.2%</td>
 </tr>
 <tr class="odd">
 <td align="left">Info fraction at IA (with MAP prior)</td>
-<td align="left">47.5%</td>
+<td align="left">45.2%</td>
 </tr>
 <tr class="even">
 <td align="left">Info fraction gained</td>
-<td align="left">+17.5 pp</td>
+<td align="left">+15.0 pp</td>
 </tr>
 </tbody>
 </table>
 <p>The MAP prior substantially increases the effective information
-fraction at the IA, making futility decisions more reliable.</p>
+fraction at the IA, which we would expect to make futility decisions
+more reliable.</p>
 </div>
 <div class="section level3">
 <h3 id="power-with-futility-ia-and-map-prior">Power with futility IA and MAP prior<a class="anchor" aria-label="anchor" href="#power-with-futility-ia-and-map-prior"></a>
 </h3>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## IA continuation rule with MAP prior on control for prediction.</span></span>
-<span><span class="co">## pos2S boundary uses the uninformative posteriors (final analysis</span></span>
-<span><span class="co">## is uninformative), but we integrate out future uncertainty using</span></span>
-<span><span class="co">## the MAP-informed posterior for control (post2_ia_info).</span></span>
-<span><span class="va">ia_rule_map</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span>, <span class="va">post1_ia_info</span>, <span class="va">post2_ia_info</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/pos2S.html">pos2S</a></span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span>,</span>
-<span>        n1 <span class="op">=</span> <span class="va">n_treat</span> <span class="op">-</span> <span class="va">n_treat_ia</span>, n2 <span class="op">=</span> <span class="va">n_ctrl</span> <span class="op">-</span> <span class="va">n_ctrl_ia</span>,</span>
-<span>        decision <span class="op">=</span> <span class="va">success_crit</span>,</span>
-<span>        sigma1 <span class="op">=</span> <span class="va">sigma_ctrl</span>, sigma2 <span class="op">=</span> <span class="va">sigma_ctrl</span><span class="op">)</span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia_info</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">post_futility_thresh</span></span>
-<span><span class="op">}</span></span>
+<code class="sourceCode R"><span><span class="co">## Same PoS futility rule as before (ia_rule_pos): continue if</span></span>
+<span><span class="co">## PoS &gt; threshold. The interim projection now uses the MAP-informed</span></span>
+<span><span class="co">## control posterior (post2_ia_info) via prior2_ia = map_rate below;</span></span>
+<span><span class="co">## the continuation rule itself is unchanged. The pos2S boundary uses</span></span>
+<span><span class="co">## the uninformative posteriors, consistent with an uninformative</span></span>
+<span><span class="co">## final analysis.</span></span>
 <span></span>
 <span><span class="co">## OC function with futility IA and MAP prior</span></span>
 <span><span class="co">## prior1/prior2 are uninformative (used for the final analysis boundary).</span></span>
-<span><span class="co">## prior2_ia is the MAP prior (used only for the IA decision).</span></span>
+<span><span class="co">## prior1_ia is the uninformative treatment prior and prior2_ia is</span></span>
+<span><span class="co">## the MAP prior; both are used only for the interim decision.</span></span>
 <span><span class="va">oc_ia_map</span> <span class="op">&lt;-</span> <span class="fu">oc2S_interim</span><span class="op">(</span></span>
 <span>  prior1 <span class="op">=</span> <span class="va">uninf_treat</span>, prior2 <span class="op">=</span> <span class="va">uninf_ctrl</span>,</span>
 <span>  n1 <span class="op">=</span> <span class="va">n_treat</span>, n2 <span class="op">=</span> <span class="va">n_ctrl</span>,</span>
 <span>  n1_ia <span class="op">=</span> <span class="va">n_treat_ia</span>, n2_ia <span class="op">=</span> <span class="va">n_ctrl_ia</span>,</span>
 <span>  decision <span class="op">=</span> <span class="va">success_crit</span>,</span>
-<span>  ia_rule <span class="op">=</span> <span class="va">ia_rule_map</span>,</span>
-<span>  prior2_ia <span class="op">=</span> <span class="va">map_rate</span>,</span>
+<span>  ia_rule <span class="op">=</span> <span class="va">ia_rule_pos</span>,</span>
+<span>  prior1_ia <span class="op">=</span> <span class="va">uninf_treat</span>, prior2_ia <span class="op">=</span> <span class="va">map_rate</span>,</span>
 <span>  family <span class="op">=</span> <span class="va">nb_family</span>,</span>
 <span>  offset1 <span class="op">=</span> <span class="va">log_exposure</span>, offset2 <span class="op">=</span> <span class="va">log_exposure</span>,</span>
-<span>  Ngrid_ia <span class="op">=</span> <span class="fl">11L</span></span>
+<span>  Ngrid_ia <span class="op">=</span> <span class="fl">31L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Evaluate at two scenarios: no benefit (rate ratio = 1) and the</span></span>
 <span><span class="co">## design alternative. The pos2S-based rule is expensive, so we keep</span></span>
 <span><span class="co">## the grid small.</span></span>
-<span><span class="va">scenarios</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`No benefit` <span class="op">=</span> <span class="fl">0</span>, `Design alt` <span class="op">=</span> <span class="va">log_rr_design_alt</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.6</span><span class="op">)</span></span>
+<span><span class="va">scenarios</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`No benefit` <span class="op">=</span> <span class="fl">0</span>, `Design alt` <span class="op">=</span> <span class="va">log_rr_design</span><span class="op">)</span></span>
 <span><span class="va">theta1_eval</span> <span class="op">&lt;-</span> <span class="va">log_mu_ctrl</span> <span class="op">+</span> <span class="va">scenarios</span></span>
 <span><span class="va">theta2_eval</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">log_mu_ctrl</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -582,59 +634,215 @@ fraction at the IA, making futility decisions more reliable.</p>
 <td align="right">0.025</td>
 <td align="right">0.022</td>
 <td align="right">0.022</td>
-<td align="right">0.631</td>
-<td align="right">0.584</td>
+<td align="right">0.579</td>
+<td align="right">0.548</td>
 </tr>
 <tr class="even">
 <td align="left">Design alt</td>
-<td align="right">0.55</td>
-<td align="right">0.889</td>
-<td align="right">0.865</td>
-<td align="right">0.883</td>
-<td align="right">0.046</td>
-<td align="right">0.013</td>
+<td align="right">0.65</td>
+<td align="right">0.800</td>
+<td align="right">0.774</td>
+<td align="right">0.790</td>
+<td align="right">0.066</td>
+<td align="right">0.030</td>
 </tr>
 </tbody>
 </table>
-<p>The table covers two complementary scenarios. A noticable result
-appears under the <strong>design alternative</strong>: the MAP prior
-almost eliminates the power loss caused by the futility IA. Without
-borrowing, inserting the IA costs about 2.4 percentage points of power
-(88.9% → 86.5%); with the MAP prior the loss shrinks to roughly 0.6
-percentage points (88.9% → 88.3%), recovering about three quarters of
-the lost power and landing essentially back at the fixed-design value.
-This is remarkable: borrowing historical control information at the
-interim makes the futility rule almost “free” under the alternative,
-because the better-informed interim posterior leads to far fewer
-erroneous futility stops (stop probability 4.6% → 1.3%). Under
-<strong>no treatment benefit</strong> (rate ratio = 1), the relevant
-quantity is instead the futility-stop probability: a useful IA should
-stop early with high probability when there is nothing to gain. Both
-designs stop with high probability here, so the IA is doing its job,
-while power under the design alternative is preserved.</p>
-<p>It is worth noting the <strong>trade-off</strong> behind these
-numbers. Borrowing historical control information raises the interim
-information fraction (30% → ~44%), which makes the control estimate more
-precise and the futility decision less reactive to noise. Under the null
-the MAP stop probability is actually <em>lower</em> (57% vs 63%):
-without borrowing, the noisy 30%-information control estimate pushes
-more interim outcomes across the futility threshold — some for the wrong
-reason. With the MAP prior the predictive probability of success
-clusters nearer its true value, so fewer outcomes are stopped by chance.
-The same noise reduction is what protects power under the alternative.
-Borrowing therefore buys sharper, less reactive decisions — not simply
-more stopping.</p>
-<p>The intro section deliberately powers the IA-rule grid at just these
-two anchor scenarios for speed; evaluating <code>oc_ia_map</code> /
-<code>oc_ia_uninf</code> over a finer <code>log_rr</code> grid traces
-the full power and stop-probability curves at higher computational
-cost.</p>
+<p>The table compares the two designs at a <strong>common</strong> PoS
+futility threshold of 10%. Under the <strong>design alternative</strong>
+the futility IA costs about 1.6 percentage points of power without
+borrowing (80.0% → 78.4%); with the MAP prior the loss shrinks to about
+1.0 percentage points (80.0% → 79.1%), and the chance of an erroneous
+futility stop under the alternative falls (roughly 4.6% → 2.9%). Under
+<strong>no treatment benefit</strong> (rate ratio = 1), however, the
+picture at this shared threshold is mixed: the non-informative design
+actually stops <em>more</em> often (about 63%) than the MAP design
+(about 57%). This is not a contradiction — at a common PoS threshold the
+two rules are simply not equally aggressive, so reading the
+null-stopping probabilities side by side compares apples to oranges.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="calibrating-the-futility-threshold-to-a-fixed-power-loss">Calibrating the futility threshold to a fixed power loss<a class="anchor" aria-label="anchor" href="#calibrating-the-futility-threshold-to-a-fixed-power-loss"></a>
+</h2>
+<p>Comparing the two designs at a <em>shared</em> futility threshold
+mixes two effects: the different threshold behaviour of the two analyses
+in terms of operating charachersitics and the different information they
+carry. An alternative, as poroposed by Gallo, Mao &amp; Shih (2014),
+fixes one (Frequentist) operating characteristic for both methods and
+reads off the others. A futility rule can be expressed equivalently on
+several one-to-one scales — a test statistic, the observed effect
+estimate, conditional power, or predictive power — so the choice of
+scale is a matter of convenience once we agree on the operating
+characteristics we care about. Here we <strong>calibrate each method to
+the same power loss of 2% under the design alternative</strong> and then
+compare the futility stopping probability under the null.</p>
+<p><strong>A fast, equivalent futility scale.</strong> Evaluating the
+PoS at every quadrature node is expensive because each evaluation solves
+a small predictive-power (double) integral. Since the futility scales
+are one-to-one for a fixed design, we can instead use the interim
+<strong>posterior assurance</strong> for a positive treatment effect —
+the posterior probability that the treatment is better than control,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mo>&lt;</mo><mn>0</mn><mo>∣</mo><mtext mathvariant="normal">interim data</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">P(\delta &lt; 0 \mid \text{interim data})</annotation></semantics></math>,
+a monotone function of the interim posterior mean difference. This is
+far cheaper to compute (no inner predictive integral) yet traces the
+<em>same</em> power-loss / stopping-probability trade-off as the PoS
+rule. Importantly, the borrowing is fully retained: the control arm’s
+interim posterior is still formed from the MAP prior, so the assurance
+rule uses exactly the same MAP-informed control estimate — it only
+changes the <em>scale</em> on which the threshold is expressed, not the
+information used.</p>
+<p><strong>A deliberate asymmetry.</strong> Note that this uses the MAP
+prior <em>only for the interim decision making</em>. The final
+confirmatory analysis remains purely frequentist and never sees this
+prior. The interim decision analysis and the final analysis are
+therefore intentionally different: borrowing is a design/monitoring tool
+here, not part of the primary inference.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Fast, equivalent futility scale: continue iff the interim posterior</span></span>
+<span><span class="co">## assurance P(delta &lt; 0) exceeds a threshold gamma. This is a monotone</span></span>
+<span><span class="co">## re-scaling of the PoS rule (Gallo, Mao &amp; Shih, 2014) but avoids the</span></span>
+<span><span class="co">## inner predictive integral, so the threshold search is ~25x faster.</span></span>
+<span><span class="co">## The MAP prior still enters via the control interim posterior</span></span>
+<span><span class="co">## (prior2_ia = map_rate below).</span></span>
+<span><span class="va">assurance_rule</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">post1_ia</span>, <span class="va">post2_ia</span>, <span class="va">post1_ia_info</span>, <span class="va">post2_ia_info</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/mixdiff.html">pmixdiff</a></span><span class="op">(</span><span class="va">post1_ia_info</span>, <span class="va">post2_ia_info</span>, <span class="fl">0</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">gamma</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">make_oc_assurance</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gamma</span>, <span class="va">prior2_ia</span>, <span class="va">Ngrid_ia</span> <span class="op">=</span> <span class="fl">31L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">oc2S_interim</span><span class="op">(</span></span>
+<span>    prior1 <span class="op">=</span> <span class="va">uninf_treat</span>, prior2 <span class="op">=</span> <span class="va">uninf_ctrl</span>,</span>
+<span>    n1 <span class="op">=</span> <span class="va">n_treat</span>, n2 <span class="op">=</span> <span class="va">n_ctrl</span>,</span>
+<span>    n1_ia <span class="op">=</span> <span class="va">n_treat_ia</span>, n2_ia <span class="op">=</span> <span class="va">n_ctrl_ia</span>,</span>
+<span>    decision <span class="op">=</span> <span class="va">success_crit</span>,</span>
+<span>    ia_rule <span class="op">=</span> <span class="fu">assurance_rule</span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span>,</span>
+<span>    prior1_ia <span class="op">=</span> <span class="va">uninf_treat</span>, prior2_ia <span class="op">=</span> <span class="va">prior2_ia</span>,</span>
+<span>    family <span class="op">=</span> <span class="va">nb_family</span>,</span>
+<span>    offset1 <span class="op">=</span> <span class="va">log_exposure</span>, offset2 <span class="op">=</span> <span class="va">log_exposure</span>,</span>
+<span>    Ngrid_ia <span class="op">=</span> <span class="va">Ngrid_ia</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>The threshold that comes closest to a 2% power loss is found once
+with <code>uniroot</code>. Because it depends only on the fixed design
+inputs, we determine it in the (non-evaluated) block below and hard-code
+the resulting values; they only change if the design inputs change.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## One-off calibration (not evaluated on render). Solves for the</span></span>
+<span><span class="co">## assurance threshold giving a 2% power loss under the design</span></span>
+<span><span class="co">## alternative, separately for each method.</span></span>
+<span><span class="co">## Design inputs these thresholds depend on:</span></span>
+<span><span class="co">##   lambda_ctrl = 1.8, kappa_true = 1.9, followup = 0.925,</span></span>
+<span><span class="co">##   n_treat = n_ctrl = 225, n_ia = 68/arm, log_rr_design = log(0.65),</span></span>
+<span><span class="co">##   MAP prior = map_rate (asthma phase III, no offset),</span></span>
+<span><span class="co">##   uninf_treat = N(0, 10), success_crit = P(delta&lt;0) &gt; 0.975.</span></span>
+<span><span class="va">target_power_loss</span> <span class="op">&lt;-</span> <span class="fl">0.02</span></span>
+<span><span class="va">theta1_alt</span> <span class="op">&lt;-</span> <span class="va">log_mu_ctrl</span> <span class="op">+</span> <span class="va">log_rr_design</span></span>
+<span><span class="va">theta2_alt</span> <span class="op">&lt;-</span> <span class="va">log_mu_ctrl</span></span>
+<span><span class="va">power_alt_fixed</span> <span class="op">&lt;-</span> <span class="fu">oc_fixed</span><span class="op">(</span><span class="va">theta1_alt</span>, <span class="va">theta2_alt</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Two-stage search for speed. The interim OC is integrated by</span></span>
+<span><span class="co">## Gauss-Hermite quadrature, whose cost grows with Ngrid_ia. We first</span></span>
+<span><span class="co">## locate the threshold on a cheap coarse grid (Ngrid_ia = 11) over the</span></span>
+<span><span class="co">## full range, then refine on the accurate grid (Ngrid_ia = 31) seeded</span></span>
+<span><span class="co">## from a narrow bracket around the coarse solution. The bracket</span></span>
+<span><span class="co">## auto-extends (extendInt = "upX", as the power loss increases with</span></span>
+<span><span class="co">## gamma) so the refinement stays robust even though the coarse and</span></span>
+<span><span class="co">## accurate grids can disagree by more than the initial half-width.</span></span>
+<span><span class="va">solve_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prior2_ia</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">gfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gamma</span>, <span class="va">Ngrid_ia</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">make_oc_assurance</span><span class="op">(</span><span class="va">gamma</span>, <span class="va">prior2_ia</span>, <span class="va">Ngrid_ia</span><span class="op">)</span><span class="op">(</span><span class="va">theta1_alt</span>, <span class="va">theta2_alt</span><span class="op">)</span><span class="op">[</span><span class="st">"power"</span><span class="op">]</span></span>
+<span>    <span class="op">(</span><span class="va">power_alt_fixed</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="va">target_power_loss</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co">## Stage 1: coarse, wide bracket.</span></span>
+<span>  <span class="va">g_coarse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/uniroot.html" class="external-link">uniroot</a></span><span class="op">(</span><span class="va">gfun</span>, interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.90</span><span class="op">)</span>, tol <span class="op">=</span> <span class="fl">1e-3</span>,</span>
+<span>                      Ngrid_ia <span class="op">=</span> <span class="fl">11L</span><span class="op">)</span><span class="op">$</span><span class="va">root</span></span>
+<span>  <span class="co">## Stage 2: accurate grid, narrow self-extending bracket around it.</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/uniroot.html" class="external-link">uniroot</a></span><span class="op">(</span><span class="va">gfun</span>, interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g_coarse</span> <span class="op">-</span> <span class="fl">0.01</span>, <span class="va">g_coarse</span> <span class="op">+</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>          extendInt <span class="op">=</span> <span class="st">"upX"</span>, tol <span class="op">=</span> <span class="fl">1e-3</span>, Ngrid_ia <span class="op">=</span> <span class="fl">31L</span><span class="op">)</span><span class="op">$</span><span class="va">root</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">gamma_uninf</span> <span class="op">&lt;-</span> <span class="fu">solve_gamma</span><span class="op">(</span><span class="va">uninf_ctrl</span><span class="op">)</span>  <span class="co"># -&gt; 0.481</span></span>
+<span><span class="va">gamma_map</span>   <span class="op">&lt;-</span> <span class="fu">solve_gamma</span><span class="op">(</span><span class="va">map_rate</span><span class="op">)</span>    <span class="co"># -&gt; 0.691</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Calibrated assurance thresholds (targeting a 2% power loss under the</span></span>
+<span><span class="co">## alternative), from the one-off search above for the design inputs</span></span>
+<span><span class="co">## listed there. Note: the interim OC is integrated on a discrete</span></span>
+<span><span class="co">## Gauss-Hermite grid (Ngrid_ia = 31), so the achievable power loss is</span></span>
+<span><span class="co">## quantized in small steps and 2% is met only up to that granularity.</span></span>
+<span><span class="co">## These thresholds are the ones closest to a 2% loss (about 1.9% for</span></span>
+<span><span class="co">## the non-informative and about 2.1% for the MAP design); nudging gamma</span></span>
+<span><span class="co">## to the next grid step would jump the loss to ~2.6% / ~2.2%.</span></span>
+<span><span class="va">gamma_uninf</span> <span class="op">&lt;-</span> <span class="fl">0.481</span></span>
+<span><span class="va">gamma_map</span>   <span class="op">&lt;-</span> <span class="fl">0.691</span></span></code></pre></div>
+<p>With the thresholds fixed, we compare the two methods at their
+respective calibrated operating points: the power under the alternative
+(equal by construction, up to the ~2% loss and the quadrature
+granularity noted above) and the futility stopping probability under the
+null.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">calib_scen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`No benefit` <span class="op">=</span> <span class="fl">0</span>, `Design alt` <span class="op">=</span> <span class="va">log_rr_design</span><span class="op">)</span></span>
+<span><span class="va">ct1</span> <span class="op">&lt;-</span> <span class="va">log_mu_ctrl</span> <span class="op">+</span> <span class="va">calib_scen</span></span>
+<span><span class="va">ct2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">log_mu_ctrl</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">calib_scen</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">oc_cal_uninf</span> <span class="op">&lt;-</span> <span class="fu">make_oc_assurance</span><span class="op">(</span><span class="va">gamma_uninf</span>, <span class="va">uninf_ctrl</span><span class="op">)</span><span class="op">(</span>theta1 <span class="op">=</span> <span class="va">ct1</span>, theta2 <span class="op">=</span> <span class="va">ct2</span><span class="op">)</span></span>
+<span><span class="va">oc_cal_map</span>   <span class="op">&lt;-</span> <span class="fu">make_oc_assurance</span><span class="op">(</span><span class="va">gamma_map</span>,   <span class="va">map_rate</span><span class="op">)</span><span class="op">(</span>theta1 <span class="op">=</span> <span class="va">ct1</span>, theta2 <span class="op">=</span> <span class="va">ct2</span><span class="op">)</span></span>
+<span><span class="va">fixed_cal</span>    <span class="op">&lt;-</span> <span class="fu">oc_fixed</span><span class="op">(</span><span class="va">ct1</span>, <span class="va">ct2</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<caption>Both methods calibrated to a 2% power loss under the design
+alternative</caption>
+<colgroup>
+<col width="11%">
+<col width="11%">
+<col width="14%">
+<col width="19%">
+<col width="12%">
+<col width="18%">
+<col width="11%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Scenario</th>
+<th align="right">Rate ratio</th>
+<th align="right">Power (no IA)</th>
+<th align="right">Power (no borrow)</th>
+<th align="right">Power (MAP)</th>
+<th align="right">Stop (no borrow)</th>
+<th align="right">Stop (MAP)</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">No benefit</td>
+<td align="right">1.00</td>
+<td align="right">0.025</td>
+<td align="right">0.024</td>
+<td align="right">0.020</td>
+<td align="right">0.421</td>
+<td align="right">0.634</td>
+</tr>
+<tr class="even">
+<td align="left">Design alt</td>
+<td align="right">0.65</td>
+<td align="right">0.800</td>
+<td align="right">0.781</td>
+<td align="right">0.778</td>
+<td align="right">0.051</td>
+<td align="right">0.054</td>
+</tr>
+</tbody>
+</table>
+<p>Calibrated to the same (approximately 2%) power loss, the two methods
+differ clearly in their futility stopping under the null: the MAP design
+stops a truly ineffective drug substantially more often than the
+non-informative design (here about 63% versus 42%). In other words, for
+the <em>same</em> price in power, borrowing buys a markedly higher
+chance of correctly stopping a futile trial — the benefit the
+shared-threshold comparison understated.</p>
 </div>
 <div class="section level2">
 <h2 id="conditional-and-predictive-power-at-interim">Conditional and predictive power at interim<a class="anchor" aria-label="anchor" href="#conditional-and-predictive-power-at-interim"></a>
 </h2>
-<p>At an actual IA, two complementary quantities inform the go/no-go
+<p>At an actual IA, two related quantities inform the go/no-go
 decision:</p>
 <ul>
 <li>
@@ -647,12 +855,20 @@ The probability of final success <em>integrating over parameter
 uncertainty</em>. This is a Bayesian concept — the unknown parameters
 are drawn from the interim posterior.</li>
 </ul>
+<p>These two quantities are closely linked rather than complementary:
+predictive power is essentially conditional power averaged over the
+interim posteriors. They answer different questions — “how likely is
+success <em>if</em> the effect is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>?”
+versus “how likely is success <em>accounting for</em> our uncertainty
+about the effect?” — but they are not independent pieces of
+information.</p>
 <div class="section level3">
 <h3 id="hypothesized-interim-state">Hypothesized interim state<a class="anchor" aria-label="anchor" href="#hypothesized-interim-state"></a>
 </h3>
 <p>We consider a scenario where at the IA (30% information fraction),
 the observed data suggest a moderate treatment effect:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Observed interim summary statistics</span></span>
 <span><span class="va">ia_log_mu_ctrl</span>  <span class="op">&lt;-</span> <span class="fl">0.70</span>     <span class="co"># placebo MLE on log-rate scale</span></span>
 <span><span class="va">ia_se_mu_ctrl</span>   <span class="op">&lt;-</span> <span class="fu">sigma_fn</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.70</span><span class="op">)</span>, <span class="va">kappa_true</span>, <span class="va">followup</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n_ctrl_ia</span><span class="op">)</span></span>
@@ -668,12 +884,12 @@ the observed data suggest a moderate treatment effect:</p>
 <tr class="odd">
 <td align="left">Interim log-rate control</td>
 <td align="left">0.70</td>
-<td align="left">0.231</td>
+<td align="left">0.189</td>
 </tr>
 <tr class="even">
 <td align="left">Interim log-rate treatment</td>
 <td align="left">0.35</td>
-<td align="left">0.241</td>
+<td align="left">0.198</td>
 </tr>
 <tr class="odd">
 <td align="left">Observed log RR</td>
@@ -686,11 +902,11 @@ the observed data suggest a moderate treatment effect:</p>
 <div class="section level3">
 <h3 id="interim-posteriors">Interim posteriors<a class="anchor" aria-label="anchor" href="#interim-posteriors"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Control posterior with MAP prior</span></span>
 <span><span class="va">post_ctrl_ia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">map_rate</span>, m <span class="op">=</span> <span class="va">ia_log_mu_ctrl</span>, se <span class="op">=</span> <span class="va">ia_se_mu_ctrl</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Treatment posterior (non-informative prior)</span></span>
+<span><span class="co">## Treatment posterior with the uninformative prior</span></span>
 <span><span class="va">post_treat_ia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/postmix.html">postmix</a></span><span class="op">(</span><span class="va">uninf_treat</span>, m <span class="op">=</span> <span class="va">ia_log_mu_treat</span>, se <span class="op">=</span> <span class="va">ia_se_mu_treat</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -700,7 +916,7 @@ the observed data suggest a moderate treatment effect:</p>
 <em>assuming the true treatment effect equals a specific value</em>. We
 construct this using <code>oc2S</code> with the interim posteriors as
 “priors” for the remaining data:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## OC function conditioned on interim posteriors</span></span>
 <span><span class="va">cp_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/oc2S.html">oc2S</a></span><span class="op">(</span><span class="va">post_treat_ia</span>, <span class="va">post_ctrl_ia</span>,</span>
 <span>  n1 <span class="op">=</span> <span class="va">n_treat</span> <span class="op">-</span> <span class="va">n_treat_ia</span>,</span>
@@ -742,7 +958,7 @@ Conditional power at interim
 <p>Predictive power integrates over the interim posterior distribution
 of the treatment effect, providing a single summary that accounts for
 parameter uncertainty:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## PoS for remaining patients given interim posteriors</span></span>
 <span><span class="va">pos_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pos2S.html">pos2S</a></span><span class="op">(</span><span class="va">post_treat_ia</span>, <span class="va">post_ctrl_ia</span>,</span>
 <span>  n1 <span class="op">=</span> <span class="va">n_treat</span> <span class="op">-</span> <span class="va">n_treat_ia</span>,</span>
@@ -763,17 +979,19 @@ parameter uncertainty:</p>
 <tbody>
 <tr class="odd">
 <td align="left">Conditional power at observed effect</td>
-<td align="left">0.537</td>
+<td align="left">0.738</td>
 </tr>
 <tr class="even">
 <td align="left">Predictive power (PoS)</td>
-<td align="left">0.487</td>
+<td align="left">0.606</td>
 </tr>
 </tbody>
 </table>
 <p>The predictive power is typically lower than the conditional power
 evaluated at the observed effect, because it accounts for the
-possibility that the true effect is smaller (or absent).</p>
+possibility that the true effect is smaller (or absent). As a result one
+would not usually use the same IA decision thresholds for conditional
+and predictive power.</p>
 </div>
 </div>
 <div class="section level2">
@@ -789,16 +1007,17 @@ of such operating characteristics via conjugate posterior updates. The
 <code>oc2S_interim()</code> helper used here follows the same numerical
 integration idea but works with the mixture-prior machinery in RBesT
 (see <a href="#appendix-integration">Appendix: Integration
-approach</a>). We already computed these above. The table at the design
-alternative (rate ratio ≈ 0.55) confirms that the MAP prior reduces the
-power loss from the futility IA while increasing the futility stopping
-probability under the null — exactly the desired behavior.</p>
+approach</a>). We already computed these above. Calibrated to a common
+2% power loss under the design alternative (rate ratio = 0.65), the MAP
+prior achieves a higher futility stopping probability under the null
+than the non-informative design — exactly the desired behaviour, and the
+fair comparison the reviewer-facing literature calls for.</p>
 </div>
 <div class="section level2">
 <h2 id="discussion">Discussion<a class="anchor" aria-label="anchor" href="#discussion"></a>
 </h2>
-<p>This article demonstrated a simple progression for using historical
-borrowing in the design of a futility interim analysis:</p>
+<p>This article demonstrated how historical information can be used only
+for an interim futility analysis:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Establish the baseline</strong> without an IA.</li>
@@ -809,33 +1028,51 @@ limited data.</li>
 <strong>Show the benefit</strong> of a MAP prior, both in
 ESS/information fraction terms and in operating characteristics.</li>
 <li>
-<strong>Provide interim decision tools</strong> via conditional and
-predictive power.</li>
+<strong>Calibrate the decision threshold</strong> to a common power
+loss and compare methods on an equal footing, examining the behaviour
+across a range of decision thresholds via conditional and predictive
+power.</li>
 <li>
 <strong>Confirm at the design level</strong> that the power loss is
 acceptable via numerical integration.</li>
 </ol>
 <p>Key insights:</p>
 <ul>
-<li>A futility IA at low information fractions (e.g. 30%) is unreliable
-without supplementary information. The uncertainty in the interim
-estimate is too large.</li>
+<li>A futility IA at low information fractions (e.g. 30%) may be
+unreliable without supplementary information, because the uncertainty in
+the interim estimate is usually large.</li>
 <li>The MAP prior adds effective sample size to the control arm,
 boosting the information fraction at the IA and enabling sharper
 futility decisions.</li>
+<li>A useful way to read this benefit: borrowing lets us <strong>“look
+into the future.”</strong> The historical information sharpens the
+<em>control</em> arm to a precision the trial would otherwise only reach
+at a later, more mature interim look (here the information fraction
+rises from 30% to about 44%). Because the treatment effect contrasts
+treatment against control, a sharper control estimate directly tightens
+the interim effect estimate, so we make the futility call as if from a
+higher-information look. This is a <em>partial</em> look into the
+future: only the control arm is advanced — the treatment arm still
+carries its actual interim information — and it reaches only as far as
+the (robust) MAP stays consistent with the concurrent control; under
+prior-data conflict the borrowing is down-weighted and the effective
+gain shrinks. Crucially, this is an <em>information</em> gain.</li>
 <li>The final confirmatory analysis remains frequentist — no prior is
-imported. The MAP prior serves only as a <strong>calibration
-tool</strong> for interim projections.</li>
-<li>Predictive power (PoS) is the more conservative and realistic
-interim metric compared to conditional power, because it integrates over
-parameter uncertainty.</li>
+imported. The MAP prior serves only as a <strong>decision supporting
+tool</strong> for interim analyses.</li>
+<li>Predictive power (PoS) is, in a certain sense, a more conservative
+and realistic interim metric than conditional power evaluated at the
+observed effect, because it integrates over parameter uncertainty
+instead of conditioning on a single assumed effect. It is not uniformly
+more conservative — it can exceed the conditional power at a pessimistic
+assumed effect — but it avoids the over-optimism of plugging in the
+observed interim estimate.</li>
 </ul>
-<p>It is left as an outlook to make use of the historical information of
-the overdisperion parameter, which can be synthesized in a normal-normal
-hierarchical model and also used as a MAP prior at the IA. However, a
-random overdispersion parameter is not supported with <code>RBesT</code>
-directly (assuming a known overdispersion is a common assumption at the
-design stage).</p>
+<p>Using historical information on the negative binomial dispersion
+parameter can be done using a normal-normal hierarchical model and then
+used as a MAP prior at the IA. However, uncertainty about the
+overdispersion parameter is not supported with <code>RBesT</code>
+directly and would require using e.g. <code>brms</code> instead.</p>
 <div class="section level3">
 <h3 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>
 </h3>
@@ -852,6 +1089,12 @@ article on SSR</a>).</li>
 large event counts. For rare-event settings, exact likelihoods may be
 needed.</li>
 </ul>
+</div>
+<div class="section level3">
+<h3 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
+</h3>
+<p>Many thanks to Björn Holzhauer for a thorough review of an earlier
+version of this article.</p>
 <div class="section level4">
 <h4 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h4>
@@ -868,7 +1111,10 @@ doi: <a href="https://doi.org/10.18637/jss.v069.i11" class="external-link">10.18
 [5] Gsponer T, Gerber F, Bornkamp B, Ohlssen D, Vandemeulebroecke M,
 Schmidli H (2014). “A Practical Guide to Bayesian Group Sequential
 Designs.” <em>Pharmaceutical Statistics</em>, <strong>13</strong>(1),
-71–80. doi: <a href="https://doi.org/10.1002/pst.1593" class="external-link">10.1002/pst.1593</a>.</p>
+71–80. doi: <a href="https://doi.org/10.1002/pst.1593" class="external-link">10.1002/pst.1593</a>.<br>
+[6] Gallo P, Mao L, Shih VH (2014). “Alternative Views on Setting
+Clinical Trial Futility Criteria.” <em>Journal of Biopharmaceutical
+Statistics</em>, <strong>24</strong>(5), 976–993. doi: <a href="https://doi.org/10.1080/10543406.2014.932285" class="external-link">10.1080/10543406.2014.932285</a>.</p>
 </div>
 <div class="section level4">
 <h4 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
@@ -911,7 +1157,7 @@ Designs.” <em>Pharmaceutical Statistics</em>, <strong>13</strong>(1),
 <span><span class="co">## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      </span></span>
 <span><span class="co">## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          </span></span>
 <span><span class="co">## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     </span></span>
-<span><span class="co">## [43] digest_0.6.39         stringi_1.8.7         mvtnorm_1.4-1        </span></span>
+<span><span class="co">## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        </span></span>
 <span><span class="co">## [46] reshape2_1.4.5        labeling_0.4.3        fastmap_1.2.0        </span></span>
 <span><span class="co">## [49] grid_4.6.1            cli_3.6.6             magrittr_2.0.5       </span></span>
 <span><span class="co">## [52] loo_2.10.0            pkgbuild_1.4.8        withr_3.0.3          </span></span>
@@ -923,6 +1169,62 @@ Designs.” <em>Pharmaceutical Statistics</em>, <strong>13</strong>(1),
 <span><span class="co">## [70] systemfonts_1.3.2     fs_2.1.0</span></span></code></pre>
 </div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="exercise-calibrate-to-a-fixed-null-stopping-probability">Exercise: calibrate to a fixed null-stopping probability<a class="anchor" aria-label="anchor" href="#exercise-calibrate-to-a-fixed-null-stopping-probability"></a>
+</h2>
+<p>The calibration above fixed the <strong>power loss under the
+alternative</strong> at 2% and then compared the two methods on their
+futility stopping probability under the null. Because the futility
+scales are one-to-one for a fixed design (Gallo, Mao &amp; Shih, 2014),
+we can equally read the trade-off the other way around: <strong>fix the
+probability of killing a truly ineffective drug under the null</strong>
+and compare the resulting power loss under the alternative. A sponsor
+who wants a guaranteed “kill rate” for futile trials would prefer this
+dual calibration.</p>
+<p>As an exercise, calibrate both methods to a common futility stopping
+probability under the null — say 45% — and compare the power they
+sacrifice under the design alternative. You should find the MAP prior
+sacrifices <em>less</em> power for the same null-stopping guarantee, the
+mirror image of the result in the calibration section.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Dual calibration: fix the futility stopping probability under the</span></span>
+<span><span class="co">## null (H0: no treatment benefit) instead of the power loss under the</span></span>
+<span><span class="co">## alternative. Reuses assurance_rule() / make_oc_assurance() from the</span></span>
+<span><span class="co">## calibration section.</span></span>
+<span><span class="va">target_stop_null</span> <span class="op">&lt;-</span> <span class="fl">0.45</span></span>
+<span><span class="va">theta_null</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">log_mu_ctrl</span>, <span class="fl">2</span><span class="op">)</span>         <span class="co"># control == treatment (RR = 1)</span></span>
+<span><span class="va">theta_alt</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">log_mu_ctrl</span> <span class="op">+</span> <span class="va">log_rr_design</span>, <span class="va">log_mu_ctrl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Solve for the assurance threshold giving the target null-stop rate,</span></span>
+<span><span class="co">## using the same two-stage (coarse -&gt; refined) search as the</span></span>
+<span><span class="co">## calibration section: locate on the cheap Ngrid_ia = 11 grid, then</span></span>
+<span><span class="co">## refine on Ngrid_ia = 31 with a self-extending bracket. The null-stop</span></span>
+<span><span class="co">## probability increases with gamma, so extendInt = "upX" applies.</span></span>
+<span><span class="va">solve_gamma_null</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prior2_ia</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">gfun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">gamma</span>, <span class="va">Ngrid_ia</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">make_oc_assurance</span><span class="op">(</span><span class="va">gamma</span>, <span class="va">prior2_ia</span>, <span class="va">Ngrid_ia</span><span class="op">)</span><span class="op">(</span>theta1 <span class="op">=</span> <span class="va">theta_null</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>                                                       theta2 <span class="op">=</span> <span class="va">theta_null</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="st">"stop_prob"</span><span class="op">]</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">-</span> <span class="va">target_stop_null</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">g_coarse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/uniroot.html" class="external-link">uniroot</a></span><span class="op">(</span><span class="va">gfun</span>, interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.90</span><span class="op">)</span>, tol <span class="op">=</span> <span class="fl">1e-3</span>,</span>
+<span>                      Ngrid_ia <span class="op">=</span> <span class="fl">11L</span><span class="op">)</span><span class="op">$</span><span class="va">root</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/uniroot.html" class="external-link">uniroot</a></span><span class="op">(</span><span class="va">gfun</span>, interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g_coarse</span> <span class="op">-</span> <span class="fl">0.01</span>, <span class="va">g_coarse</span> <span class="op">+</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>          extendInt <span class="op">=</span> <span class="st">"upX"</span>, tol <span class="op">=</span> <span class="fl">1e-3</span>, Ngrid_ia <span class="op">=</span> <span class="fl">31L</span><span class="op">)</span><span class="op">$</span><span class="va">root</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">g_uninf_null</span> <span class="op">&lt;-</span> <span class="fu">solve_gamma_null</span><span class="op">(</span><span class="va">uninf_ctrl</span><span class="op">)</span></span>
+<span><span class="va">g_map_null</span>   <span class="op">&lt;-</span> <span class="fu">solve_gamma_null</span><span class="op">(</span><span class="va">map_rate</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Power under the alternative at each calibrated threshold, versus the</span></span>
+<span><span class="co">## fixed-design power, gives the power loss to compare across methods.</span></span>
+<span><span class="va">power_fixed_alt</span> <span class="op">&lt;-</span> <span class="fu">oc_fixed</span><span class="op">(</span><span class="va">theta_alt</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">theta_alt</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">loss_uninf</span> <span class="op">&lt;-</span> <span class="va">power_fixed_alt</span> <span class="op">-</span></span>
+<span>  <span class="fu">make_oc_assurance</span><span class="op">(</span><span class="va">g_uninf_null</span>, <span class="va">uninf_ctrl</span><span class="op">)</span><span class="op">(</span><span class="va">theta_alt</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">theta_alt</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="st">"power"</span><span class="op">]</span></span>
+<span><span class="va">loss_map</span>   <span class="op">&lt;-</span> <span class="va">power_fixed_alt</span> <span class="op">-</span></span>
+<span>  <span class="fu">make_oc_assurance</span><span class="op">(</span><span class="va">g_map_null</span>, <span class="va">map_rate</span><span class="op">)</span><span class="op">(</span><span class="va">theta_alt</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">theta_alt</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="st">"power"</span><span class="op">]</span></span>
+<span><span class="co">## Expectation: loss_map &lt; loss_uninf (MAP gives up less power for the</span></span>
+<span><span class="co">## same 45% chance of stopping a futile trial).</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="appendix-integration">Appendix: Integration approach for interim OC<a class="anchor" aria-label="anchor" href="#appendix-integration"></a>
@@ -1162,7 +1464,7 @@ variance–mean relationship
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo stretchy="false" form="prefix">(</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>μ</mi><mo>+</mo><msup><mi>μ</mi><mn>2</mn></msup><mi>/</mi><mtext mathvariant="monospace">𝚝𝚑𝚎𝚝𝚊</mtext></mrow><annotation encoding="application/x-tex">V(\mu) = \mu + \mu^2/\texttt{theta}</annotation></semantics></math>,
 which on the log-link scale translates exactly to the Fisher information
 formula above.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create NB family with kappa = 1.9 (theta = 1/1.9)</span></span>
 <span><span class="va">kappa</span> <span class="op">&lt;-</span> <span class="fl">1.9</span></span>
 <span><span class="va">nb</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/negative.binomial.html" class="external-link">negative.binomial</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">kappa</span><span class="op">)</span></span>
