@@ -1,10 +1,11 @@
 # Meta-Analytic-Predictive Priors for Variances
 
 Applying the meta-analytic-predictive (MAP) prior approach to historical
-data on variances has been suggested in \[1\]. The utility is a better
-informed planning of future trials which use a normal endpoint. For
-these reliable information on the sampling standard deviation is crucial
-for planning the trial.
+data on variances has been suggested in Schmidli et al.
+([2017](#ref-schmidli2017)). The utility is a better informed planning
+of future trials which use a normal endpoint. For these reliable
+information on the sampling standard deviation is crucial for planning
+the trial.
 
 Under a normal sampling distribution the (standard) unbiased variance
 estimator for a sample $`y_j`$ of size $`n_j`$ is
@@ -30,7 +31,10 @@ data $`y_j`$.
 While this is not directly supported in `RBesT`, a normal approximation
 of the $`\log`$ transformed $`\Gamma`$ variate can be applied. When
 $`\log`$ transforming a $`\Gamma(\alpha,\beta)`$ variate it’s moment and
-variance can analytically be shown to be (see \[2\], for example)
+variance can analytically be shown to be (see the [Wikipedia article on
+the Gamma
+distribution](https://en.wikipedia.org/wiki/Gamma_distribution#Logarithmic_expectation_and_variance),
+for example)
 
 ``` math
  E[\log(X)] = \psi(\alpha) - \log(\beta)
@@ -54,8 +58,8 @@ approximation accuracy and concludes that independent of the true
 $`\sigma`$ value for 10 observations the approxmation is useful and a
 very good one for more than 20 observations.
 
-In the following we reanalyze the main example of reference \[1\] which
-is shown in table 2:
+In the following we reanalyze the main example of Schmidli et al.
+([2017](#ref-schmidli2017)) which is shown in table 2:
 
 | study |    sd |  df |
 |------:|------:|----:|
@@ -90,14 +94,15 @@ hdata <- mutate(hdata,
 |     6 | 10.95 | 903 | 451.5 | 3.7656 |      4.7878 |     0.0022 |
 
 In order to run the MAP analysis a prior for the heterogeniety parameter
-$`\tau`$ and the intercept $`\beta`$ is needed. In reference \[3\] it is
-demonstrated that the (approximate) sampling standard deviation of the
-$`\log`$ variance is $`\sqrt{2}`$. Thus, a `HalfNormal(0,sqrt(2)/2)` is
-a very conservative choice for the between-study heterogeniety
-parameter. A less conservative choice is `HalfNormal(0,sqrt(2)/4)`,
-which gives very similar results in this case. For the intercept
-$`\beta`$ a very wide prior is used with a standard deviation of $`100`$
-which is in line with reference \[1\]:
+$`\tau`$ and the intercept $`\beta`$ is needed. In Gelman et al.
+([2014](#ref-gelman2014)) it is demonstrated that the (approximate)
+sampling standard deviation of the $`\log`$ variance is $`\sqrt{2}`$.
+Thus, a `HalfNormal(0,sqrt(2)/2)` is a very conservative choice for the
+between-study heterogeniety parameter. A less conservative choice is
+`HalfNormal(0,sqrt(2)/4)`, which gives very similar results in this
+case. For the intercept $`\beta`$ a very wide prior is used with a
+standard deviation of $`100`$ which is in line with Schmidli et al.
+([2017](#ref-schmidli2017)):
 
 ``` r
 
@@ -157,9 +162,9 @@ plot(map_mc)$forest_model
 
 ![](variances_MAP_files/figure-html/unnamed-chunk-7-1.png)
 
-In reference \[1\] the correct $`\Gamma`$ likelihood is used in contrast
-to the approximate normal approach above. Still, the results match very
-close, even for the outer quantiles.
+In Schmidli et al. ([2017](#ref-schmidli2017)) the correct $`\Gamma`$
+likelihood is used in contrast to the approximate normal approach above.
+Still, the results match very close, even for the outer quantiles.
 
 ## MAP prior for the sampling standard deviation
 
@@ -287,12 +292,14 @@ the transformation as used earlier in this vignette.
 
 ### References
 
-\[1\] Schmidli, H., et. al, Comp. Stat. and Data Analysis, 2017,
-113:100-110  
-\[2\]
-<https://en.wikipedia.org/wiki/Gamma_distribution#Logarithmic_expectation_and_variance>  
-\[3\] Gelman A, et. al, Bayesian Data Analysis. Third edit., 2014.,
-Chapter 4, p. 84
+Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
+Vehtari, and Donald B. Rubin. 2014. *Bayesian Data Analysis*. 3rd ed.
+Chapman; Hall/CRC.
+
+Schmidli, Heinz, Beat Neuenschwander, and Tim Friede. 2017.
+“Meta-Analytic-Predictive Use of Historical Variance Data for the Design
+and Analysis of Clinical Trials.” *Computational Statistics and Data
+Analysis* 113: 100–110.
 
 ### R Session Info
 
@@ -323,29 +330,30 @@ sessionInfo()
     ## 
     ## other attached packages:
     ## [1] bayesplot_1.15.0 purrr_1.2.2      dplyr_1.2.1      ggplot2_4.0.3   
-    ## [5] knitr_1.51       RBesT_1.10-0    
+    ## [5] knitr_1.51       RBesT_1.11-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
-    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
-    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
-    ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
-    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     
-    ## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          
-    ## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        
-    ## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  
-    ## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         
-    ## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        
-    ## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       
-    ## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
-    ## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
-    ## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      
-    ## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
-    ## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
-    ## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
-    ## [64] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             
-    ## [67] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
+    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
+    ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
+    ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
+    ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
+    ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   
+    ## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         
+    ## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       
+    ## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        
+    ## [37] StanHeaders_2.32.10  abind_1.4-8          posterior_1.7.0     
+    ## [40] rstan_2.32.7         tidyselect_1.2.1     digest_0.6.39       
+    ## [43] stringi_1.8.7        mvtnorm_1.4-2        reshape2_1.4.5      
+    ## [46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
+    ## [49] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
+    ## [52] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
+    ## [55] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
+    ## [58] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
+    ## [61] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
+    ## [64] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
+    ## [67] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
+    ## [70] systemfonts_1.3.2    fs_2.1.0

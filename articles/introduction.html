@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2026-07-06</h4>
+            <h4 data-toc-skip class="date">2026-08-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -82,14 +82,14 @@ Weber</h4>
 <p>The R Bayesian evidence synthesis Tools (RBesT) facilitate the use of
 historical information in clinical trials. Once relevant historical
 information has been identified, RBesT supports the derivation of
-informative priors via the Meta-Analytic-Predictive (MAP) approach [1]
-and the evaluation of the trial’s operating characteristics. The MAP
-approach performs a standard meta-analysis followed by a prediction for
-the control group parameter of a future study while accounting for the
-uncertainty in the population mean (the standard result from a
-meta-analysis) and the between-trial heterogeneity. Therefore, RBesT can
-also be used as a meta-analysis tool if one simply neglects the
-prediction part.</p>
+informative priors via the Meta-Analytic-Predictive (MAP) approach <span class="citation">(<a href="#ref-neuenschwander2010">Neuenschwander et
+al. 2010</a>)</span> and the evaluation of the trial’s operating
+characteristics. The MAP approach performs a standard meta-analysis
+followed by a prediction for the control group parameter of a future
+study while accounting for the uncertainty in the population mean (the
+standard result from a meta-analysis) and the between-trial
+heterogeneity. Therefore, RBesT can also be used as a meta-analysis tool
+if one simply neglects the prediction part.</p>
 <p>This document demonstrates RBesT as it can be used to derive from
 historical control data a prior for a binary endpoint. The <a href="https://opensource.nibr.com/RBesT/">RBesT package homepage</a>
 contains further articles on introductory material:</p>
@@ -105,11 +105,12 @@ contains further articles on introductory material:</p>
 <h2 id="binary-responder-analysis-example">Binary responder analysis example<a class="anchor" aria-label="anchor" href="#binary-responder-analysis-example"></a>
 </h2>
 <p>Let’s consider a Novartis Phase II study in ankylosing spondylitis
-comparing the Novartis test treatment secukinumab with placebo [2]. The
-primary efficacy endpoint was percentage of patients with a 20% response
-according to the Assessment of SpondyloArthritis international Society
-criteria for improvement (ASAS20) at week 6. For the control group, the
-following historical data were used to derive the MAP prior:</p>
+comparing the Novartis test treatment secukinumab with placebo <span class="citation">(<a href="#ref-baeten2013"><span class="nocase">Baeten
+et al.</span> 2013</a>)</span>. The primary efficacy endpoint was
+percentage of patients with a 20% response according to the Assessment
+of SpondyloArthritis international Society criteria for improvement
+(ASAS20) at week 6. For the control group, the following historical data
+were used to derive the MAP prior:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left">study</th>
@@ -309,10 +310,11 @@ sample size (ESS) of the prior. It can be calculated in RBesT with the
 that the concept of ESS is somewhat elusive. In particular, the
 definition of the ESS is not unique and multiple methods have therefore
 been implemented in RBesT. The default method in RBesT is the elir
-approach [5] which results in reasonable ESS estimates. The moment
-matching approach leads to conservative (small) ESS estimates while the
-Morita [3] method tends to estimates liberal (large) ESS estimates when
-used with mixtures:</p>
+approach <span class="citation">(<a href="#ref-neuenschwander2020">Neuenschwander et al. 2020</a>)</span>
+which results in reasonable ESS estimates. The moment matching approach
+leads to conservative (small) ESS estimates while the Morita <span class="citation">(<a href="#ref-morita2008">Morita et al.
+2008</a>)</span> method tends to estimates liberal (large) ESS estimates
+when used with mixtures:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/ess.html">ess</a></span><span class="op">(</span><span class="va">map</span>, method <span class="op">=</span> <span class="st">"elir"</span><span class="op">)</span><span class="op">)</span> <span class="co">## default method</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 38</span></span></code></pre>
@@ -326,15 +328,17 @@ used with mixtures:</p>
 has been found to be sensitive to a large number of mixture components.
 From experience, a realistic ESS estimate can be obtained with the elir
 method which is the only method which is predictively consistent, see
-[5] for details.</p>
+<span class="citation">(<a href="#ref-neuenschwander2020">Neuenschwander
+et al. 2020</a>)</span> for details.</p>
 </div>
 <div class="section level3">
 <h3 id="robustification-of-the-map-prior">Robustification of the MAP Prior<a class="anchor" aria-label="anchor" href="#robustification-of-the-map-prior"></a>
 </h3>
-<p>Finally, we recommend to <strong><code>robustify</code></strong> [4]
-the prior which protects against type-I error inflation in presence of
-prior-data conflict, i.e. if the future trial data strongly deviate from
-the historical control information.</p>
+<p>Finally, we recommend to <strong><code>robustify</code></strong>
+<span class="citation">(<a href="#ref-schmidli2014">Schmidli et al.
+2014</a>)</span> the prior which protects against type-I error inflation
+in presence of prior-data conflict, i.e. if the future trial data
+strongly deviate from the historical control information.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## add a 20% non-informative mixture component</span></span>
 <span><span class="va">map_robust</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/robustify.html">robustify</a></span><span class="op">(</span><span class="va">map</span>, weight <span class="op">=</span> <span class="fl">0.2</span>, mean <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -395,9 +399,10 @@ demonstrate the use of RBesT for design evaluation.</p>
 <h3 id="operating-characteristics">Operating Characteristics<a class="anchor" aria-label="anchor" href="#operating-characteristics"></a>
 </h3>
 <p>We consider the 2-arm design of the actual Novartis trial in
-ankylosing spondylitis [2]. This trial tested 6 patients on placebo as
-control against 24 patients on an active experimental treatment. Success
-was declared whenever the condition</p>
+ankylosing spondylitis <span class="citation">(<a href="#ref-baeten2013"><span class="nocase">Baeten et al.</span>
+2013</a>)</span>. This trial tested 6 patients on placebo as control
+against 24 patients on an active experimental treatment. Success was
+declared whenever the condition</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>θ</mi><mrow><mi>a</mi><mi>c</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>e</mi></mrow></msub><mo>−</mo><msub><mi>θ</mi><mrow><mi>c</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>r</mi><mi>o</mi><mi>l</mi></mrow></msub><mo>&gt;</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>&gt;</mo><mn>0.95</mn></mrow><annotation encoding="application/x-tex">\Pr(\theta_{active} - \theta_{control} &gt; 0) &gt; 0.95</annotation></semantics></math></p>
 <p>was met for the response rates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mrow><mi>a</mi><mi>c</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>e</mi></mrow></msub><annotation encoding="application/x-tex">\theta_{active}</annotation></semantics></math>
@@ -632,13 +637,38 @@ performed analytically as we are in the conjugate mixture setting.</p>
 <div class="section level4">
 <h4 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h4>
-<p>[1] Neuenschwander B. et al., <em>Clin Trials</em>. 2010;
-7(1):5-18<br>
-[2] Baeten D. et al., <em>The Lancet</em>, 2013, (382), 9906, p
-1705<br>
-[3] Morita S. et al., <em>Biometrics</em> 2008;64(2):595-602<br>
-[4] Schmidli H. et al., <em>Biometrics</em> 2014;70(4):1023-1032<br>
-[5] Neuenschwander B. et al., <em>Biometrics</em> 2020;76(2):578-587</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-baeten2013" class="csl-entry">
+<span class="nocase">Baeten, Dominique et al.</span> 2013.
+<span>“Anti-Interleukin-17<span>A</span> Monoclonal Antibody Secukinumab
+in Treatment of Ankylosing Spondylitis: A Randomised, Double-Blind,
+Placebo-Controlled Trial.”</span> <em>The Lancet</em> 382 (9906):
+1705–13.
+</div>
+<div id="ref-morita2008" class="csl-entry">
+Morita, Satoshi, Peter F. Thall, and Peter Mueller. 2008.
+<span>“Determining the Effective Sample Size of a Parametric
+Prior.”</span> <em>Biometrics</em> 64 (2): 595–602.
+</div>
+<div id="ref-neuenschwander2010" class="csl-entry">
+Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
+J. Spiegelhalter. 2010. <span>“Summarizing Historical Information on
+Controls in Clinical Trials.”</span> <em>Clinical Trials</em> 7 (1):
+5–18. <a href="https://doi.org/10.1177/1740774509356002" class="external-link">https://doi.org/10.1177/1740774509356002</a>.
+</div>
+<div id="ref-neuenschwander2020" class="csl-entry">
+Neuenschwander, Beat, Sebastian Weber, Heinz Schmidli, and Anthony
+O’Hagan. 2020. <span>“Predictively Consistent Prior Effective Sample
+Sizes.”</span> <em>Biometrics</em> 76 (2): 578–87. <a href="https://doi.org/10.1111/biom.13252" class="external-link">https://doi.org/10.1111/biom.13252</a>.
+</div>
+<div id="ref-schmidli2014" class="csl-entry">
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014.
+<span>“Robust Meta-Analytic-Predictive Priors in Clinical Trials with
+Historical Control Information.”</span> <em>Biometrics</em> 70 (4):
+1023–32. <a href="https://doi.org/10.1111/biom.12242" class="external-link">https://doi.org/10.1111/biom.12242</a>.
+</div>
+</div>
 </div>
 <div class="section level4">
 <h4 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
@@ -666,33 +696,34 @@ performed analytically as we are in the conjugate mixture setting.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 </span></span>
+<span><span class="co">## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            </span></span>
-<span><span class="co">##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    </span></span>
-<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          </span></span>
-<span><span class="co">## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       </span></span>
-<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
-<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           </span></span>
-<span><span class="co">## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
-<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         </span></span>
-<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        </span></span>
-<span><span class="co">## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          </span></span>
-<span><span class="co">## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        </span></span>
-<span><span class="co">## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      </span></span>
-<span><span class="co">## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          </span></span>
-<span><span class="co">## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     </span></span>
-<span><span class="co">## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        </span></span>
-<span><span class="co">## [46] dplyr_1.2.1           reshape2_1.4.5        labeling_0.4.3       </span></span>
-<span><span class="co">## [49] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            </span></span>
-<span><span class="co">## [52] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       </span></span>
-<span><span class="co">## [55] withr_3.0.3           scales_1.4.0          backports_1.5.1      </span></span>
-<span><span class="co">## [58] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           </span></span>
-<span><span class="co">## [61] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       </span></span>
-<span><span class="co">## [64] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       </span></span>
-<span><span class="co">## [67] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             </span></span>
-<span><span class="co">## [70] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           </span></span>
+<span><span class="co">##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   </span></span>
+<span><span class="co">##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         </span></span>
+<span><span class="co">## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        </span></span>
+<span><span class="co">## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            </span></span>
+<span><span class="co">## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  </span></span>
+<span><span class="co">## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      </span></span>
+<span><span class="co">## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   </span></span>
+<span><span class="co">## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     </span></span>
+<span><span class="co">## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         </span></span>
+<span><span class="co">## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       </span></span>
+<span><span class="co">## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 </span></span>
+<span><span class="co">## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        </span></span>
+<span><span class="co">## [43] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       </span></span>
+<span><span class="co">## [46] stringi_1.8.7        dplyr_1.2.1          reshape2_1.4.5      </span></span>
+<span><span class="co">## [49] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          </span></span>
+<span><span class="co">## [52] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          </span></span>
+<span><span class="co">## [55] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        </span></span>
+<span><span class="co">## [58] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   </span></span>
+<span><span class="co">## [61] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          </span></span>
+<span><span class="co">## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    </span></span>
+<span><span class="co">## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          </span></span>
+<span><span class="co">## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            </span></span>
+<span><span class="co">## [73] systemfonts_1.3.2    fs_2.1.0</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -706,7 +737,7 @@ performed analytically as we are in the conjugate mixture setting.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

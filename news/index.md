@@ -1,5 +1,57 @@
 # Changelog
 
+## RBesT 1.11-0 - August 3rd, 2026
+
+### Enhancements
+
+- Decision boundary estimation is now substantially faster. The fixed
+  uniform grid sweep in `decision2S_boundary` / `decision1S_boundary`
+  (and hence `oc1S`, `oc2S`, `pos1S`, `pos2S`) is replaced by an
+  adaptive scheme that only solves where the boundary bends (normal) or
+  fills provably constant runs of the monotone integer boundary without
+  further root searches (binomial, Poisson). Boundary construction is
+  roughly `10x` faster for normal endpoints and up to orders of
+  magnitude faster for near-flat discrete boundaries (e.g. large-`n`
+  Poisson); normal `oc2S`/`pos2S` run about `2-3x` faster. Boundary
+  values are unchanged (identical for discrete, within `~1e-5` for
+  normal). Set `options(RBesT.decision2S_boundary = "grid")` to restore
+  the legacy sweep.
+- Make the normal `decision2S_boundary` interpolant consistent with the
+  adaptive point placement. Curved and mixture boundaries are now
+  interpolated with a shape-preserving monotone Hermite spline
+  (`splinefun(method = "monoH.FC")`) instead of a global cubic, which
+  matches the adaptive tracer’s curvature-graded points and avoids
+  overshoot. For the provably-linear case (single-component priors with
+  constant `sigma`, including multi-criteria and `n2 = 0` decisions) the
+  boundary is now built as an exact straight line from two solves rather
+  than a grid, making these boundaries exact (previously accurate to
+  `~1e-6`). Operating characteristics / probability of success are
+  unchanged to within tolerance.
+- Lower the default decision boundary discretization density `Ngrid`
+  from `10` to `5` in `oc2S`, `pos2S`, and `decision2S_boundary` for the
+  normal case. `Ngrid` now sets the finest resolution of the adaptive
+  scheme and the grid density of the `"grid"` fallback; for the grid
+  path a coarser grid roughly halves the boundary cost. Either way the
+  resulting operating characteristics / probability of success change by
+  at most about `1e-5` across a range of mixture and exponential-family
+  settings. Pass `Ngrid = 10` to restore the previous behaviour.
+- Consolidate all package references into a single BibTeX file at
+  `inst/REFERENCES.bib`. Documentation now cites it via the `Rdpack`
+  `\insertRef` macro (roxygen `@references`), and the vignettes and
+  articles cite the same file through the R Markdown `bibliography:`
+  field, removing duplicated per-file reference lists.
+
+### Bugfixes
+
+- Fix the simulation based calibration (SBC) code under `inst/sbc`,
+  which was shipped broken in 1.10-0: the `gMAP` posterior storage
+  refactor removed the raw `rstan` `stanfit` `fit` slot, causing
+  `run_sbc_case` to fail with
+  `no applicable method for '@' applied to an object of class "NULL"`.
+  The SBC helper `fit_rbest` now reads sampler diagnostics and posterior
+  draws from the stored `posterior` draws objects instead of the removed
+  `stanfit`.
+
 ## RBesT 1.10-0 - June 30th, 2026
 
 CRAN release: 2026-07-02

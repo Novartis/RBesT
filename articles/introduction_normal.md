@@ -6,20 +6,21 @@ The R Bayesian evidence synthesis Tools (RBesT) have been created to
 facilitate the use of historical information in clinical trials. Once
 relevant historical information has been identified, RBesT supports the
 derivation of informative priors via the Meta-Analytic-Predictive (MAP)
-approach \[1\], the evaluation of the trial’s operating characteristics,
-and the data analysis with the actual trial data. RBesT has been
-developed for endpoints from a number of well known distributions. Here
-we consider an example for a normally distributed response variable.
+approach ([Neuenschwander et al. 2010](#ref-neuenschwander2010)), the
+evaluation of the trial’s operating characteristics, and the data
+analysis with the actual trial data. RBesT has been developed for
+endpoints from a number of well known distributions. Here we consider an
+example for a normally distributed response variable.
 
 ## Trial Design with Historical Control Data
 
 ### Historical Data
 
-Let’s look at the Crohn’s disease example data \[2\] (data-set `crohn`
-in RBesT). The primary endpoint is the change from baseline in Crohn’s
-Disease Activity Index (CDAI), which is assumed to be normally
-distributed. Note that for CDAI, an improved outcome corresponds to a
-negative change from baseline.
+Let’s look at the Crohn’s disease example data ([Hueber et al.
+2012](#ref-hueber2012)) (data-set `crohn` in RBesT). The primary
+endpoint is the change from baseline in Crohn’s Disease Activity Index
+(CDAI), which is assumed to be normally distributed. Note that for CDAI,
+an improved outcome corresponds to a negative change from baseline.
 
 First from historical studies we get the estimated standard deviation of
 the response variable as $`\sigma`$ = 88, which is used to obtain the
@@ -51,9 +52,10 @@ sampling standard deviation $`\sigma`$, the amount of borrowing from
 historical data depends on the ratio $`\tau/\sigma`$. A conservative
 choice for the prior on $`\tau`$ is a **`HalfNormal(0,`**
 $`\sigma/2`$**`)`** distribution. For the prior on the intercept we
-recommend a “unit-information” prior \[3\] which is set to a precision
-corresponding to a single observation and centered here at no change
-from baseline. Please refer to the help page
+recommend a “unit-information” prior ([Kass and Wasserman
+1995](#ref-kass1995)) which is set to a precision corresponding to a
+single observation and centered here at no change from baseline. Please
+refer to the help page
 **[`?gMAP`](https://opensource.nibr.com/RBesT/reference/gMAP.md)** for
 detailed information. The **`set.seed`** function is used to make the
 results exactly reproducible.
@@ -185,17 +187,18 @@ round(ess(map, method = "moment"))
 
 ### Robustification of MAP Prior
 
-We recommend robustifying \[5\] the prior with the **`robustify`**
-function, which protects against type-I error inflation in presence of
-prior-data conflict. For the normal case we strongly recommend
-explicitly choosing the mean of the robust component. We use $`-50`$
-consistent with the mean of the MAP prior. Furthermore, 20% probability
-is used for the additional robust (unit-information) mixture component.
-The choice of such probability reflects the confidence about the
-validitiy of the model assumptions, i.e. the possibility of a
-non-exchangable control group to be enrolled per inclusion/exclusion
-criteria in the current trial as compared to the historical control
-group population. Note that robustification decreases the ESS.
+We recommend robustifying ([Schmidli et al. 2014](#ref-schmidli2014))
+the prior with the **`robustify`** function, which protects against
+type-I error inflation in presence of prior-data conflict. For the
+normal case we strongly recommend explicitly choosing the mean of the
+robust component. We use $`-50`$ consistent with the mean of the MAP
+prior. Furthermore, 20% probability is used for the additional robust
+(unit-information) mixture component. The choice of such probability
+reflects the confidence about the validitiy of the model assumptions,
+i.e. the possibility of a non-exchangable control group to be enrolled
+per inclusion/exclusion criteria in the current trial as compared to the
+historical control group population. Note that robustification decreases
+the ESS.
 
 ``` r
 
@@ -461,12 +464,29 @@ poc(post_act, post_pbo)
 
 #### References
 
-\[1\] Neuenschwander B et. al, *Clin Trials*. 2010; 7(1):5-18  
-\[2\] Hueber W. et. al, *Gut*, 2012, 61(12):1693-1700  
-\[3\] Kass RE, Wasserman L, *J Amer Statist Assoc*; 1995,
-90(431):928-934.  
-\[4\] Morita S. et. al, *Biometrics* 2008;64(2):595-602  
-\[5\] Schmidli H. et. al, *Biometrics* 2014;70(4):1023-1032
+Hueber, Wolfgang, Bruce E. Sands, Steve Lewitzky, Marc
+Vandemeulebroecke, et al. 2012. “Secukinumab, a Human Anti-IL-17A
+Monoclonal Antibody, for Moderate to Severe Crohn’s Disease.” *Gut* 61
+(12): 1693–700.
+
+Kass, Robert E., and Larry Wasserman. 1995. “A Reference Bayesian Test
+for Nested Hypotheses and Its Relationship to the Schwarz Criterion.”
+*Journal of the American Statistical Association* 90 (431): 928–34.
+
+Morita, Satoshi, Peter F. Thall, and Peter Mueller. 2008. “Determining
+the Effective Sample Size of a Parametric Prior.” *Biometrics* 64 (2):
+595–602.
+
+Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
+J. Spiegelhalter. 2010. “Summarizing Historical Information on Controls
+in Clinical Trials.” *Clinical Trials* 7 (1): 5–18.
+<https://doi.org/10.1177/1740774509356002>.
+
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014. “Robust
+Meta-Analytic-Predictive Priors in Clinical Trials with Historical
+Control Information.” *Biometrics* 70 (4): 1023–32.
+<https://doi.org/10.1111/biom.12242>.
 
 #### R Session Info
 
@@ -496,30 +516,31 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
+    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
-    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
-    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
-    ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
-    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        
-    ## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          
-    ## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        
-    ## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
-    ## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          
-    ## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     
-    ## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        
-    ## [46] dplyr_1.2.1           reshape2_1.4.5        labeling_0.4.3       
-    ## [49] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
-    ## [52] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
-    ## [55] withr_3.0.3           scales_1.4.0          backports_1.5.1      
-    ## [58] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
-    ## [61] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
-    ## [64] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
-    ## [67] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             
-    ## [70] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
+    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
+    ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
+    ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
+    ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
+    ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   
+    ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
+    ## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         
+    ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
+    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
+    ## [43] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       
+    ## [46] stringi_1.8.7        dplyr_1.2.1          reshape2_1.4.5      
+    ## [49] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
+    ## [52] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
+    ## [55] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
+    ## [58] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
+    ## [61] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
+    ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
+    ## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
+    ## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
+    ## [73] systemfonts_1.3.2    fs_2.1.0

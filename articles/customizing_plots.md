@@ -376,28 +376,29 @@ sessionInfo()
     ## 
     ## other attached packages:
     ## [1] bayesplot_1.15.0 tidyr_1.3.2      dplyr_1.2.1      ggplot2_4.0.3   
-    ## [5] knitr_1.51       RBesT_1.10-0    
+    ## [5] knitr_1.51       RBesT_1.11-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] tensorA_0.36.2.1      sass_0.4.10           generics_0.1.4       
-    ##  [4] digest_0.6.39         magrittr_2.0.5        evaluate_1.0.5       
-    ##  [7] grid_4.6.1            RColorBrewer_1.1-3    mvtnorm_1.4-1        
-    ## [10] fastmap_1.2.0         jsonlite_2.0.0        pkgbuild_1.4.8       
-    ## [13] backports_1.5.1       Formula_1.2-5         gridExtra_2.3.1      
-    ## [16] purrr_1.2.2           QuickJSR_1.10.0       scales_1.4.0         
-    ## [19] codetools_0.2-20      textshaping_1.0.5     jquerylib_0.1.4      
-    ## [22] abind_1.4-8           cli_3.6.6             rlang_1.2.0          
-    ## [25] withr_3.0.3           cachem_1.1.0          yaml_2.3.12          
-    ## [28] otel_0.2.0            StanHeaders_2.32.10   parallel_4.6.1       
-    ## [31] inline_0.3.21         rstan_2.32.7          tools_4.6.1          
-    ## [34] rstantools_2.6.0      checkmate_2.3.4       assertthat_0.2.1     
-    ## [37] vctrs_0.7.3           posterior_1.7.0       R6_2.6.1             
-    ## [40] stats4_4.6.1          matrixStats_1.5.0     lifecycle_1.0.5      
-    ## [43] fs_2.1.0              htmlwidgets_1.6.4     ragg_1.5.2           
-    ## [46] pkgconfig_2.0.3       desc_1.4.3            pkgdown_2.2.0        
-    ## [49] RcppParallel_5.1.11-2 bslib_0.11.0          pillar_1.11.1        
-    ## [52] gtable_0.3.6          loo_2.10.0            glue_1.8.1           
-    ## [55] Rcpp_1.1.1-1.1        systemfonts_1.3.2     xfun_0.59            
-    ## [58] tibble_3.3.1          tidyselect_1.2.1      farver_2.1.2         
-    ## [61] htmltools_0.5.9       labeling_0.4.3        rmarkdown_2.31       
-    ## [64] compiler_4.6.1        S7_0.2.2              distributional_0.8.1
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
+    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
+    ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
+    ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
+    ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
+    ## [25] farver_2.1.2         textshaping_1.0.5    codetools_0.2-20    
+    ## [28] htmltools_0.5.9      sass_0.4.10          yaml_2.3.12         
+    ## [31] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
+    ## [34] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [37] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
+    ## [40] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       
+    ## [43] purrr_1.2.2          labeling_0.4.3       fastmap_1.2.0       
+    ## [46] grid_4.6.1           cli_3.6.6            magrittr_2.0.5      
+    ## [49] loo_2.10.1           pkgbuild_1.4.8       withr_3.0.3         
+    ## [52] scales_1.4.0         backports_1.5.1      rmarkdown_2.31      
+    ## [55] matrixStats_1.5.0    otel_0.2.0           gridExtra_2.3.1     
+    ## [58] ragg_1.5.2           evaluate_1.0.5       rbibutils_2.4.1     
+    ## [61] rstantools_2.7.0     rlang_1.3.0          Rcpp_1.1.2          
+    ## [64] glue_1.8.1           jsonlite_2.0.0       R6_2.6.1            
+    ## [67] systemfonts_1.3.2    fs_2.1.0

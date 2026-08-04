@@ -128,12 +128,12 @@ dispersion only.
 
 ## References
 
-Morita S, Thall PF, Mueller P. Determining the effective sample size of
-a parametric prior. *Biometrics* 2008;64(2):595-602.
+Morita S, Thall PF, Mueller P (2008). “Determining the effective sample
+size of a parametric prior.” *Biometrics*, **64**(2), 595–602.
 
-Neuenschwander B., Weber S., Schmidli H., O'Hagan A. (2020).
-Predictively consistent prior effective sample sizes. *Biometrics*,
-76(2), 578-587. https://doi.org/10.1111/biom.13252
+Neuenschwander B, Weber S, Schmidli H, O'Hagan A (2020). “Predictively
+consistent prior effective sample sizes.” *Biometrics*, **76**(2),
+578–587. [doi:10.1111/biom.13252](https://doi.org/10.1111/biom.13252) .
 
 ## Examples
 
@@ -195,7 +195,7 @@ pred_ess <- sapply(pred_samp, function(r) {
 ess(bmix, "elir")
 #> [1] 7.65152
 mean(pred_ess) - n_forward
-#> [1] 7.54457
+#> [1] 8.355323
 
 # Normal mixture example
 nmix <- mixnorm(rob = c(0.5, 0, 2), inf = c(0.5, 3, 4), sigma = 10)

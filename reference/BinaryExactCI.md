@@ -42,8 +42,9 @@ Details can be found in the publication listed below.
 
 ## References
 
-Clopper, C. J. & Pearson, E. S. The use of confidence or fiducial limits
-illustrated in the case of the binomial. Biometrika 1934.
+Clopper CJ, Pearson ES (1934). “The use of confidence or fiducial limits
+illustrated in the case of the binomial.” *Biometrika*, **26**(4),
+404–413.
 
 ## Examples
 

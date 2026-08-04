@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,20 @@
       <small>Source: <a href="https://github.com/Novartis/RBesT/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.11-0" id="rbest-111-0---august-3rd-2026">RBesT 1.11-0 - August 3rd, 2026<a class="anchor" aria-label="anchor" href="#rbest-111-0---august-3rd-2026"></a></h2>
+<div class="section level3">
+<h3 id="enhancements-1-11-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-11-0"></a></h3>
+<ul><li>Decision boundary estimation is now substantially faster. The fixed uniform grid sweep in <code>decision2S_boundary</code> / <code>decision1S_boundary</code> (and hence <code>oc1S</code>, <code>oc2S</code>, <code>pos1S</code>, <code>pos2S</code>) is replaced by an adaptive scheme that only solves where the boundary bends (normal) or fills provably constant runs of the monotone integer boundary without further root searches (binomial, Poisson). Boundary construction is roughly <code>10x</code> faster for normal endpoints and up to orders of magnitude faster for near-flat discrete boundaries (e.g. large-<code>n</code> Poisson); normal <code>oc2S</code>/<code>pos2S</code> run about <code>2-3x</code> faster. Boundary values are unchanged (identical for discrete, within <code>~1e-5</code> for normal). Set <code>options(RBesT.decision2S_boundary = "grid")</code> to restore the legacy sweep.</li>
+<li>Make the normal <code>decision2S_boundary</code> interpolant consistent with the adaptive point placement. Curved and mixture boundaries are now interpolated with a shape-preserving monotone Hermite spline (<code>splinefun(method = "monoH.FC")</code>) instead of a global cubic, which matches the adaptive tracer’s curvature-graded points and avoids overshoot. For the provably-linear case (single-component priors with constant <code>sigma</code>, including multi-criteria and <code>n2 = 0</code> decisions) the boundary is now built as an exact straight line from two solves rather than a grid, making these boundaries exact (previously accurate to <code>~1e-6</code>). Operating characteristics / probability of success are unchanged to within tolerance.</li>
+<li>Lower the default decision boundary discretization density <code>Ngrid</code> from <code>10</code> to <code>5</code> in <code>oc2S</code>, <code>pos2S</code>, and <code>decision2S_boundary</code> for the normal case. <code>Ngrid</code> now sets the finest resolution of the adaptive scheme and the grid density of the <code>"grid"</code> fallback; for the grid path a coarser grid roughly halves the boundary cost. Either way the resulting operating characteristics / probability of success change by at most about <code>1e-5</code> across a range of mixture and exponential-family settings. Pass <code>Ngrid = 10</code> to restore the previous behaviour.</li>
+<li>Consolidate all package references into a single BibTeX file at <code>inst/REFERENCES.bib</code>. Documentation now cites it via the <code>Rdpack</code> <code>\insertRef</code> macro (roxygen <code>@references</code>), and the vignettes and articles cite the same file through the R Markdown <code>bibliography:</code> field, removing duplicated per-file reference lists.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-1-11-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-11-0"></a></h3>
+<ul><li>Fix the simulation based calibration (SBC) code under <code>inst/sbc</code>, which was shipped broken in 1.10-0: the <code>gMAP</code> posterior storage refactor removed the raw <code>rstan</code> <code>stanfit</code> <code>fit</code> slot, causing <code>run_sbc_case</code> to fail with <code>no applicable method for '@' applied to an object of class "NULL"</code>. The SBC helper <code>fit_rbest</code> now reads sampler diagnostics and posterior draws from the stored <code>posterior</code> draws objects instead of the removed <code>stanfit</code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.10-0" id="rbest-110-0---june-30th-2026">RBesT 1.10-0 - June 30th, 2026<a class="anchor" aria-label="anchor" href="#rbest-110-0---june-30th-2026"></a></h2><p class="text-muted">CRAN release: 2026-07-02</p>
 <div class="section level3">
@@ -385,7 +399,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

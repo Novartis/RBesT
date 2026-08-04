@@ -50,6 +50,7 @@ it's help page for a detailed description of the statistical model.
 | `RBesT.GQ_max_nodes` | `240` | upper cap on the GQ node count during refinement |
 | `RBesT.GQ_node_growth` | `2` | multiplicative growth factor for the GQ node count between refinement steps |
 | `RBesT.GQ_on_nonconvergence` | `"adaptive"` | behaviour when GQ refinement reaches `RBesT.GQ_max_nodes` without meeting tolerance: `"adaptive"` (fall through to adaptive integration), `"warn"` (warn and return best estimate), `"error"`, or `"silent"` |
+| `RBesT.decision2S_boundary` | `"adaptive"` | tracing scheme for the decision boundary in [`decision2S_boundary()`](https://opensource.nibr.com/RBesT/reference/decision2S_boundary.md) (and hence `oc2S`/`pos2S`): `"adaptive"` (recursive subdivision of the `y2` range with early stop where the boundary is linear for the normal case, and monotone constant-run filling for the binomial/Poisson cases) or `"grid"` (legacy exhaustive/uniform sweep). Boundary values are unchanged (identical for the discrete families, within solver tolerance for the normal case); `"adaptive"` needs far fewer root solves. |
 
 ## Version History
 
@@ -57,8 +58,8 @@ See `NEWS.md` file.
 
 ## References
 
-Stan Development Team (2020). RStan: the R interface to Stan. R package
-version 2.19.3. https://mc-stan.org
+Stan Development Team (2020). *RStan: the R interface to Stan*. R
+package version 2.19.3, <https://mc-stan.org>.
 
 ## See also
 

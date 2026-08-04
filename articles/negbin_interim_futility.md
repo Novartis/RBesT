@@ -123,17 +123,13 @@ historical borrowing, the IA relies entirely on the accrued trial data.
 This would be a very early stop with rather imprecise estimates compared
 to a more common IA look at 50%.
 
-As a simplifying assumption we treat the interim analysis as if it were
-based on 30% of the patients with complete follow-up. In practice the
-same information would come from more patients, many of them with only
-partial follow-up at the time of the interim look; their data can still
-be used through the use of an offset in the regression. This distinction
-is not merely cosmetic: for a recurrent-event endpoint the information
-is event-driven, so a given amount of *total* follow-up ($`N \times`$
-expected follow-up per patient) is worth slightly more when it comes
-from many patients observed for a short time than from fewer patients
-each observed to completion. The calculation here is thus somewhat
-simplfying the actual situation.
+The 30% of information at the IA corresponds to patients with complete
+and partial follow-up. Hence, patients with partial follow-up at the IA
+and will continue to be monitored past the IA until the final
+assessment. Despite this dependence structure, the resulting MLE
+estimates of each period (before and after IA) are independent of one
+another as shown in Scharfstein et al. ([1997](#ref-Scharfstein1997))
+and Mütze et al. ([2018](#ref-Muetze2018)).
 
 The information fraction is defined as the ratio of the Fisher
 information for the treatment effect (log rate ratio) at the interim
@@ -235,7 +231,7 @@ power_fixed_grid <- oc_fixed(log_mu_ctrl + log_rr_grid,
 | Scenario   | Rate ratio | Fixed design | IA (no borrow) | Power loss | Futility stop |
 |:-----------|-----------:|-------------:|---------------:|-----------:|--------------:|
 | No benefit |       1.00 |        0.025 |          0.022 |      0.002 |         0.579 |
-| Design alt |       0.65 |        0.800 |          0.774 |      0.026 |         0.066 |
+| Design alt |       0.65 |        0.801 |          0.774 |      0.026 |         0.066 |
 
 Power and futility-stop probability by scenario (no borrowing, PoS rule)
 {.table style="width:100%;"}
@@ -256,7 +252,7 @@ section) sharpens exactly this.
 ### Historical data
 
 We use placebo-arm data from the phase III asthma trials in the `asthma`
-data set (Table 1 of Holzhauer, Wang & Schmidli, 2018):
+data set (Table 1 of Holzhauer et al. ([2018](#ref-holzhauer2018))):
 
 ``` r
 
@@ -430,7 +426,7 @@ fixed_power <- oc_fixed(theta1_eval, theta2_eval)
 | Scenario | Rate ratio | Power (no IA) | Power (no borrow) | Power (MAP) | Stop (no borrow) | Stop (MAP) |
 |:---|---:|---:|---:|---:|---:|---:|
 | No benefit | 1.00 | 0.025 | 0.022 | 0.022 | 0.579 | 0.548 |
-| Design alt | 0.65 | 0.800 | 0.774 | 0.790 | 0.066 | 0.030 |
+| Design alt | 0.65 | 0.801 | 0.774 | 0.790 | 0.066 | 0.030 |
 
 Power and futility-stop probability by scenario {.table}
 
@@ -452,15 +448,15 @@ oranges.
 Comparing the two designs at a *shared* futility threshold mixes two
 effects: the different threshold behaviour of the two analyses in terms
 of operating charachersitics and the different information they carry.
-An alternative, as poroposed by Gallo, Mao & Shih (2014), fixes one
-(Frequentist) operating characteristic for both methods and reads off
-the others. A futility rule can be expressed equivalently on several
-one-to-one scales — a test statistic, the observed effect estimate,
-conditional power, or predictive power — so the choice of scale is a
-matter of convenience once we agree on the operating characteristics we
-care about. Here we **calibrate each method to the same power loss of 2%
-under the design alternative** and then compare the futility stopping
-probability under the null.
+An alternative, as poroposed by Gallo et al. ([2014](#ref-gallo2014)),
+fixes one (Frequentist) operating characteristic for both methods and
+reads off the others. A futility rule can be expressed equivalently on
+several one-to-one scales — a test statistic, the observed effect
+estimate, conditional power, or predictive power — so the choice of
+scale is a matter of convenience once we agree on the operating
+characteristics we care about. Here we **calibrate each method to the
+same power loss of 2% under the design alternative** and then compare
+the futility stopping probability under the null.
 
 **A fast, equivalent futility scale.** Evaluating the PoS at every
 quadrature node is expensive because each evaluation solves a small
@@ -592,7 +588,7 @@ fixed_cal    <- oc_fixed(ct1, ct2)
 | Scenario | Rate ratio | Power (no IA) | Power (no borrow) | Power (MAP) | Stop (no borrow) | Stop (MAP) |
 |:---|---:|---:|---:|---:|---:|---:|
 | No benefit | 1.00 | 0.025 | 0.024 | 0.020 | 0.421 | 0.634 |
-| Design alt | 0.65 | 0.800 | 0.781 | 0.778 | 0.051 | 0.054 |
+| Design alt | 0.65 | 0.801 | 0.781 | 0.778 | 0.051 | 0.054 |
 
 Both methods calibrated to a 2% power loss under the design alternative
 {.table}
@@ -742,16 +738,16 @@ assumed truth.
 
 For Normal-endpoint group-sequential Bayesian designs, the
 [gsbDesign](https://cran.r-project.org/package=gsbDesign) package
-(Gerber & Gsponer, 2016) provides a full analytic treatment of such
-operating characteristics via conjugate posterior updates. The
-`oc2S_interim()` helper used here follows the same numerical integration
-idea but works with the mixture-prior machinery in RBesT (see [Appendix:
-Integration approach](#appendix-integration)). We already computed these
-above. Calibrated to a common 2% power loss under the design alternative
-(rate ratio = 0.65), the MAP prior achieves a higher futility stopping
-probability under the null than the non-informative design — exactly the
-desired behaviour, and the fair comparison the reviewer-facing
-literature calls for.
+([Gerber and Gsponer 2016](#ref-gerber2016)) provides a full analytic
+treatment of such operating characteristics via conjugate posterior
+updates. The `oc2S_interim()` helper used here follows the same
+numerical integration idea but works with the mixture-prior machinery in
+RBesT (see [Appendix: Integration approach](#appendix-integration)). We
+already computed these above. Calibrated to a common 2% power loss under
+the design alternative (rate ratio = 0.65), the MAP prior achieves a
+higher futility stopping probability under the null than the
+non-informative design — exactly the desired behaviour, and the fair
+comparison the reviewer-facing literature calls for.
 
 ## Discussion
 
@@ -810,8 +806,8 @@ would require using e.g. `brms` instead.
 
 - Overdispersion $`\kappa`$ is treated as fixed. A more thorough
   analysis would derive a MAP prior for $`\kappa`$ and integrate over
-  its posterior uncertainty (cf. Holzhauer et al., 2018; see the
-  [companion article on
+  its posterior uncertainty (cf. Holzhauer et al.
+  ([2018](#ref-holzhauer2018)); see the [companion article on
   SSR](https://opensource.nibr.com/RBesT/articles/introduction_negbin_ia_ssr.md)).
 - The normal approximation on the log-rate scale assumes moderate to
   large event counts. For rare-event settings, exact likelihoods may be
@@ -824,23 +820,46 @@ version of this article.
 
 #### References
 
-\[1\] Neuenschwander B. et al., *Clin Trials*. 2010; 7(1):5-18  
-\[2\] Holzhauer B., Wang C., Schmidli H. Evidence synthesis from
-aggregate recurrent event data for clinical trial design and analysis.
-*Statistics in Medicine*. 2018;37:867-882.  
-\[3\] Schmidli H. et al., *Biometrics* 2014;70(4):1023-1032  
-\[4\] Gerber F, Gsponer T (2016). “gsbDesign: An R Package for
+Gallo, Paul, Lu Mao, and Vivian H. Shih. 2014. “Alternative Views on
+Setting Clinical Trial Futility Criteria.” *Journal of Biopharmaceutical
+Statistics* 24 (5): 976–93.
+<https://doi.org/10.1080/10543406.2014.932285>.
+
+Gerber, Florian, and Thomas Gsponer. 2016. “gsbDesign: An R Package for
 Evaluating the Operating Characteristics of a Group Sequential Bayesian
-Design.” *Journal of Statistical Software*, **69**(11), 1–23. doi:
-[10.18637/jss.v069.i11](https://doi.org/10.18637/jss.v069.i11).  
-\[5\] Gsponer T, Gerber F, Bornkamp B, Ohlssen D, Vandemeulebroecke M,
-Schmidli H (2014). “A Practical Guide to Bayesian Group Sequential
-Designs.” *Pharmaceutical Statistics*, **13**(1), 71–80. doi:
-[10.1002/pst.1593](https://doi.org/10.1002/pst.1593).  
-\[6\] Gallo P, Mao L, Shih VH (2014). “Alternative Views on Setting
-Clinical Trial Futility Criteria.” *Journal of Biopharmaceutical
-Statistics*, **24**(5), 976–993. doi:
-[10.1080/10543406.2014.932285](https://doi.org/10.1080/10543406.2014.932285).
+Design.” *Journal of Statistical Software* 69 (11): 1–23.
+<https://doi.org/10.18637/jss.v069.i11>.
+
+Gsponer, Thomas, Florian Gerber, Bjoern Bornkamp, David Ohlssen, Marc
+Vandemeulebroecke, and Heinz Schmidli. 2014. “A Practical Guide to
+Bayesian Group Sequential Designs.” *Pharmaceutical Statistics* 13 (1):
+71–80. <https://doi.org/10.1002/pst.1593>.
+
+Holzhauer, Bjoern, Chunyan Wang, and Heinz Schmidli. 2018. “Evidence
+Synthesis from Aggregate Recurrent Event Data for Clinical Trial Design
+and Analysis.” *Statistics in Medicine* 37 (6): 867–82.
+
+Mütze, Tobias, Ekkehard Glimm, Heinz Schmidli, and Tim Friede. 2018.
+“Group Sequential Designs for Negative Binomial Outcomes.” *Statistical
+Methods in Medical Research* 28 (8): 2326–47.
+<https://doi.org/10.1177/0962280218773115>.
+
+Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
+J. Spiegelhalter. 2010. “Summarizing Historical Information on Controls
+in Clinical Trials.” *Clinical Trials* 7 (1): 5–18.
+<https://doi.org/10.1177/1740774509356002>.
+
+Scharfstein, Daniel O., Anastasios A. Tsiatis, and James M. Robins.
+1997. “Semiparametric Efficiency and Its Implication on the Design and
+Analysis of Group-Sequential Studies.” *Journal of the American
+Statistical Association* 92 (440): 1342–50.
+<https://doi.org/10.1080/01621459.1997.10473655>.
+
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014. “Robust
+Meta-Analytic-Predictive Priors in Clinical Trials with Historical
+Control Information.” *Biometrics* 70 (4): 1023–32.
+<https://doi.org/10.1111/biom.12242>.
 
 #### R Session Info
 
@@ -865,44 +884,46 @@ Statistics*, **24**(5), 976–993. doi:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] MASS_7.3-65   dplyr_1.2.1   ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
+    ## [1] MASS_7.3-65   dplyr_1.2.1   ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
-    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
-    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
-    ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
-    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        
-    ## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          
-    ## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        
-    ## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
-    ## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          
-    ## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     
-    ## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        
-    ## [46] reshape2_1.4.5        labeling_0.4.3        fastmap_1.2.0        
-    ## [49] grid_4.6.1            cli_3.6.6             magrittr_2.0.5       
-    ## [52] loo_2.10.0            pkgbuild_1.4.8        withr_3.0.3          
-    ## [55] scales_1.4.0          backports_1.5.1       rmarkdown_2.31       
-    ## [58] matrixStats_1.5.0     otel_0.2.0            gridExtra_2.3.1      
-    ## [61] ragg_1.5.2            evaluate_1.0.5        rstantools_2.6.0     
-    ## [64] rlang_1.2.0           Rcpp_1.1.1-1.1        glue_1.8.1           
-    ## [67] jsonlite_2.0.0        plyr_1.8.9            R6_2.6.1             
-    ## [70] systemfonts_1.3.2     fs_2.1.0
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
+    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
+    ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
+    ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
+    ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       
+    ## [25] compiler_4.6.1       farver_2.1.2         textshaping_1.0.5   
+    ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
+    ## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         
+    ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
+    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
+    ## [43] tidyselect_1.2.1     digest_0.6.39        stringi_1.8.7       
+    ## [46] mvtnorm_1.4-2        reshape2_1.4.5       labeling_0.4.3      
+    ## [49] fastmap_1.2.0        grid_4.6.1           cli_3.6.6           
+    ## [52] magrittr_2.0.5       loo_2.10.1           pkgbuild_1.4.8      
+    ## [55] withr_3.0.3          scales_1.4.0         backports_1.5.1     
+    ## [58] rmarkdown_2.31       matrixStats_1.5.0    otel_0.2.0          
+    ## [61] gridExtra_2.3.1      ragg_1.5.2           evaluate_1.0.5      
+    ## [64] rbibutils_2.4.1      rstantools_2.7.0     rlang_1.3.0         
+    ## [67] Rcpp_1.1.2           glue_1.8.1           jsonlite_2.0.0      
+    ## [70] plyr_1.8.9           R6_2.6.1             systemfonts_1.3.2   
+    ## [73] fs_2.1.0
 
 ## Exercise: calibrate to a fixed null-stopping probability
 
 The calibration above fixed the **power loss under the alternative** at
 2% and then compared the two methods on their futility stopping
 probability under the null. Because the futility scales are one-to-one
-for a fixed design (Gallo, Mao & Shih, 2014), we can equally read the
-trade-off the other way around: **fix the probability of killing a truly
-ineffective drug under the null** and compare the resulting power loss
-under the alternative. A sponsor who wants a guaranteed “kill rate” for
-futile trials would prefer this dual calibration.
+for a fixed design ([Gallo et al. 2014](#ref-gallo2014)), we can equally
+read the trade-off the other way around: **fix the probability of
+killing a truly ineffective drug under the null** and compare the
+resulting power loss under the alternative. A sponsor who wants a
+guaranteed “kill rate” for futile trials would prefer this dual
+calibration.
 
 As an exercise, calibrate both methods to a common futility stopping
 probability under the null — say 45% — and compare the power they

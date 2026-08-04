@@ -411,18 +411,22 @@ parameters.
 
 ## References
 
-Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ.
-Summarizing historical information on controls in clinical trials. *Clin
-Trials*. 2010; 7(1):5-18
+Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ (2010).
+“Summarizing historical information on controls in clinical trials.”
+*Clinical Trials*, **7**(1), 5–18.
+[doi:10.1177/1740774509356002](https://doi.org/10.1177/1740774509356002)
+.
 
 Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D,
-Neuenschwander B. Robust meta-analytic-predictive priors in clinical
-trials with historical control information. *Biometrics*
-2014;70(4):1023-1032.
+Neuenschwander B (2014). “Robust meta-analytic-predictive priors in
+clinical trials with historical control information.” *Biometrics*,
+**70**(4), 1023–1032.
+[doi:10.1111/biom.12242](https://doi.org/10.1111/biom.12242) .
 
-Weber S, Li Y, Seaman III J.W., Kakizume T, Schmidli H. Applying
-Meta-Analytic Predictive Priors with the R Bayesian evidence synthesis
-tools. *JSS* 2021; 100(19):1-32
+Weber S, Li Y, Seaman JW, Kakizume T, Schmidli H (2021). “Applying
+Meta-Analytic-Predictive Priors with the R Bayesian Evidence Synthesis
+Tools.” *Journal of Statistical Software*, **100**(19), 1–32.
+[doi:10.18637/jss.v100.i19](https://doi.org/10.18637/jss.v100.i19) .
 
 ## See also
 
@@ -434,10 +438,7 @@ tools. *JSS* 2021; 100(19):1-32
 ## Examples
 
 ``` r
-## Setting up dummy sampling for fast execution of example
-## Please use 4 chains and 20x more warmup & iter in practice
-.user_mc_options <- options(RBesT.MC.warmup=50, RBesT.MC.iter=100,
-                            RBesT.MC.chains=2, RBesT.MC.thin=1)
+.user_mc_options <- options()
 
 # Binary data example 1
 
@@ -455,18 +456,6 @@ map_AS <- gMAP(cbind(r, n - r) ~ 1 | study,
   beta.prior = 2
 )
 #> Assuming default prior location   for beta: 0
-#> Warning: The largest R-hat is 1.31, indicating chains have not mixed.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#r-hat
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Warning: Maximal Rhat > 1.1. Consider increasing RBesT.MC.warmup MCMC parameter.
-#> Final MCMC sample equivalent to less than 1000 independent draws.
-#> Please consider increasing the MCMC simulation size.
 print(map_AS)
 #> Generalized Meta Analytic Predictive Prior Analysis
 #> 
@@ -475,43 +464,40 @@ print(map_AS)
 #> 
 #> Exchangeability tau strata: 1 
 #> Prediction tau stratum    : 1 
-#> Maximal Rhat              : 1.32 
+#> Maximal Rhat              : 1 
 #> 
 #> Between-trial heterogeneity of tau prediction stratum
 #>         mean median    sd   q2.5   q50 q97.5
-#> tau[1] 0.357  0.254 0.279 0.0339 0.254  1.11
+#> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897
 #> 
 #> MAP Prior MCMC sample
 #>                  mean median     sd  q2.5   q50 q97.5
-#> theta_resp_pred 0.255  0.248 0.0703 0.155 0.248 0.387
-#> Warning: Parts of the model have not converged (some Rhats are > 1.1).
-#> Be careful when analysing the results! It is recommend to run
-#> more iterations and/or setting stronger priors.
+#> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461
 
 # obtain numerical summaries
 map_sum <- summary(map_AS)
 print(map_sum)
 #> Heterogeneity parameter tau per stratum:
 #>         mean median    sd   q2.5   q50 q97.5
-#> tau[1] 0.357  0.254 0.279 0.0339 0.254  1.11
+#> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897
 #> 
 #> Regression coefficients:
-#>             mean median    sd  q2.5  q50  q97.5
-#> (Intercept) -1.1   -1.1 0.148 -1.37 -1.1 -0.802
+#>              mean median    sd  q2.5   q50  q97.5
+#> (Intercept) -1.11  -1.11 0.186 -1.49 -1.11 -0.746
 #> 
 #> Mean estimate MCMC sample:
-#>             mean median     sd  q2.5  q50 q97.5
-#> theta_resp 0.252   0.25 0.0278 0.202 0.25  0.31
+#>            mean median     sd  q2.5   q50 q97.5
+#> theta_resp 0.25  0.248 0.0344 0.185 0.248 0.322
 #> 
 #> MAP Prior MCMC sample:
 #>                  mean median     sd  q2.5   q50 q97.5
-#> theta_resp_pred 0.255  0.248 0.0703 0.155 0.248 0.387
+#> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461
 names(map_sum)
 #> [1] "tau"        "beta"       "theta.pred" "theta"     
 # [1] "tau"        "beta"       "theta.pred" "theta"
 map_sum$theta.pred
-#>                      mean    median         sd      q2.5       q50     q97.5
-#> theta_resp_pred 0.2549457 0.2478659 0.07032729 0.1551565 0.2478659 0.3873613
+#>                      mean    median         sd     q2.5       q50     q97.5
+#> theta_resp_pred 0.2553014 0.2471555 0.08641111 0.106254 0.2471555 0.4614115
 
 # \donttest{
 # graphical model checks (returns list of ggplot2 plots)
@@ -530,19 +516,19 @@ map_checks$densityThetaStarLink
 # obtain shrinkage estimates
 fitted(map_AS)
 #>              mean    median         sd       q2.5       q50     q97.5
-#> Study 1 0.2252533 0.2234652 0.02915686 0.17586555 0.2234652 0.2787151
-#> Study 2 0.2590342 0.2540597 0.04732878 0.18497373 0.2540597 0.3376507
-#> Study 3 0.3058962 0.2928621 0.06317604 0.21082514 0.2928621 0.4697599
-#> Study 4 0.2477289 0.2503697 0.04949967 0.13889275 0.2503697 0.3210718
-#> Study 5 0.2696371 0.2674901 0.03187143 0.21890677 0.2674901 0.3358586
-#> Study 6 0.2740316 0.2692248 0.05239060 0.19933868 0.2692248 0.3850659
-#> Study 7 0.1866212 0.1820334 0.05384795 0.08614304 0.1820334 0.2813637
-#> Study 8 0.2616912 0.2552497 0.05019108 0.18280811 0.2552497 0.3655984
+#> Study 1 0.2272763 0.2272746 0.03437691 0.16129771 0.2272746 0.2970245
+#> Study 2 0.2614755 0.2573530 0.04859589 0.17561527 0.2573530 0.3697573
+#> Study 3 0.3149371 0.3102982 0.05848813 0.21831293 0.3102982 0.4447326
+#> Study 4 0.2414853 0.2401137 0.04789034 0.14958043 0.2401137 0.3448334
+#> Study 5 0.2705909 0.2687609 0.03415781 0.20835876 0.2687609 0.3418956
+#> Study 6 0.2677422 0.2601347 0.06281074 0.15929200 0.2601347 0.4106667
+#> Study 7 0.1741634 0.1721971 0.04459800 0.09308034 0.1721971 0.2627560
+#> Study 8 0.2675219 0.2620428 0.05365127 0.17487549 0.2620428 0.3866872
 
 # regression coefficients
 coef(map_AS)
-#>                  mean    median        sd      q2.5       q50      q97.5
-#> (Intercept) -1.095205 -1.099922 0.1476927 -1.371133 -1.099922 -0.8015874
+#>                  mean    median       sd      q2.5       q50      q97.5
+#> (Intercept) -1.109096 -1.108089 0.185939 -1.486111 -1.108089 -0.7455082
 
 # finally fit MAP prior with parametric mixture
 map_mix <- mixfit(map_AS, Nc = 2)

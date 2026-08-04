@@ -13,7 +13,7 @@ stats::glm() conventions."><link rel="stylesheet" href="https://cdn.jsdelivr.net
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -438,16 +438,21 @@ parameters.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Neuenschwander B, Capkun-Niggli G, Branson M,
-Spiegelhalter DJ. Summarizing historical information on controls in
-clinical trials. <em>Clin Trials</em>. 2010; 7(1):5-18</p>
-<p>Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D,
-Neuenschwander B.  Robust meta-analytic-predictive priors in
-clinical trials with historical control information.
-<em>Biometrics</em> 2014;70(4):1023-1032.</p>
-<p>Weber S, Li Y, Seaman III J.W., Kakizume T, Schmidli H. Applying
-Meta-Analytic Predictive Priors with the R Bayesian evidence
-synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
+    <p>Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ (2010).
+“Summarizing historical information on controls in clinical trials.”
+<em>Clinical Trials</em>, <b>7</b>(1), 5–18.
+<a href="https://doi.org/10.1177/1740774509356002" class="external-link">doi:10.1177/1740774509356002</a>
+.</p>
+<p>Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B (2014).
+“Robust meta-analytic-predictive priors in clinical trials with historical control information.”
+<em>Biometrics</em>, <b>70</b>(4), 1023–1032.
+<a href="https://doi.org/10.1111/biom.12242" class="external-link">doi:10.1111/biom.12242</a>
+.</p>
+<p>Weber S, Li Y, Seaman JW, Kakizume T, Schmidli H (2021).
+“Applying Meta-Analytic-Predictive Priors with the R Bayesian Evidence Synthesis Tools.”
+<em>Journal of Statistical Software</em>, <b>100</b>(19), 1–32.
+<a href="https://doi.org/10.18637/jss.v100.i19" class="external-link">doi:10.18637/jss.v100.i19</a>
+.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -456,10 +461,7 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Setting up dummy sampling for fast execution of example</span></span></span>
-<span class="r-in"><span><span class="co">## Please use 4 chains and 20x more warmup &amp; iter in practice</span></span></span>
-<span class="r-in"><span><span class="va">.user_mc_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>RBesT.MC.warmup<span class="op">=</span><span class="fl">50</span>, RBesT.MC.iter<span class="op">=</span><span class="fl">100</span>,</span></span>
-<span class="r-in"><span>                            RBesT.MC.chains<span class="op">=</span><span class="fl">2</span>, RBesT.MC.thin<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">.user_mc_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Binary data example 1</span></span></span>
 <span class="r-in"><span></span></span>
@@ -477,18 +479,6 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span>  beta.prior <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming default prior location   for beta: 0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.31, indicating chains have not mixed.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Maximal Rhat &gt; 1.1. Consider increasing RBesT.MC.warmup MCMC parameter.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Final MCMC sample equivalent to less than 1000 independent draws.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please consider increasing the MCMC simulation size.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generalized Meta Analytic Predictive Prior Analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -497,43 +487,40 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exchangeability tau strata: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Prediction tau stratum    : 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Maximal Rhat              : 1.32 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Maximal Rhat              : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Between-trial heterogeneity of tau prediction stratum</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean median    sd   q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.357  0.254 0.279 0.0339 0.254  1.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MAP Prior MCMC sample</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255  0.248 0.0703 0.155 0.248 0.387</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Parts of the model have not converged (some Rhats are &gt; 1.1).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Be careful when analysing the results! It is recommend to run</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> more iterations and/or setting stronger priors.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># obtain numerical summaries</span></span></span>
 <span class="r-in"><span><span class="va">map_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity parameter tau per stratum:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean median    sd   q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.357  0.254 0.279 0.0339 0.254  1.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Regression coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             mean median    sd  q2.5  q50  q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.1   -1.1 0.148 -1.37 -1.1 -0.802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              mean median    sd  q2.5   q50  q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.11  -1.11 0.186 -1.49 -1.11 -0.746</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean estimate MCMC sample:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             mean median     sd  q2.5  q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp 0.252   0.25 0.0278 0.202 0.25  0.31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            mean median     sd  q2.5   q50 q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp 0.25  0.248 0.0344 0.185 0.248 0.322</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MAP Prior MCMC sample:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255  0.248 0.0703 0.155 0.248 0.387</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">map_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tau"        "beta"       "theta.pred" "theta"     </span>
 <span class="r-in"><span><span class="co"># [1] "tau"        "beta"       "theta.pred" "theta"</span></span></span>
 <span class="r-in"><span><span class="va">map_sum</span><span class="op">$</span><span class="va">theta.pred</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      mean    median         sd      q2.5       q50     q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.2549457 0.2478659 0.07032729 0.1551565 0.2478659 0.3873613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      mean    median         sd     q2.5       q50     q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.2553014 0.2471555 0.08641111 0.106254 0.2471555 0.4614115</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># graphical model checks (returns list of ggplot2 plots)</span></span></span>
@@ -552,19 +539,19 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 <span class="r-in"><span><span class="co"># obtain shrinkage estimates</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              mean    median         sd       q2.5       q50     q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 1 0.2252533 0.2234652 0.02915686 0.17586555 0.2234652 0.2787151</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 2 0.2590342 0.2540597 0.04732878 0.18497373 0.2540597 0.3376507</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 3 0.3058962 0.2928621 0.06317604 0.21082514 0.2928621 0.4697599</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 4 0.2477289 0.2503697 0.04949967 0.13889275 0.2503697 0.3210718</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 5 0.2696371 0.2674901 0.03187143 0.21890677 0.2674901 0.3358586</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 6 0.2740316 0.2692248 0.05239060 0.19933868 0.2692248 0.3850659</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 7 0.1866212 0.1820334 0.05384795 0.08614304 0.1820334 0.2813637</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 8 0.2616912 0.2552497 0.05019108 0.18280811 0.2552497 0.3655984</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 1 0.2272763 0.2272746 0.03437691 0.16129771 0.2272746 0.2970245</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 2 0.2614755 0.2573530 0.04859589 0.17561527 0.2573530 0.3697573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 3 0.3149371 0.3102982 0.05848813 0.21831293 0.3102982 0.4447326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 4 0.2414853 0.2401137 0.04789034 0.14958043 0.2401137 0.3448334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 5 0.2705909 0.2687609 0.03415781 0.20835876 0.2687609 0.3418956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 6 0.2677422 0.2601347 0.06281074 0.15929200 0.2601347 0.4106667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 7 0.1741634 0.1721971 0.04459800 0.09308034 0.1721971 0.2627560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 8 0.2675219 0.2620428 0.05365127 0.17487549 0.2620428 0.3866872</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    median        sd      q2.5       q50      q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.095205 -1.099922 0.1476927 -1.371133 -1.099922 -0.8015874</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    median       sd      q2.5       q50      q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.109096 -1.108089 0.185939 -1.486111 -1.108089 -0.7455082</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># finally fit MAP prior with parametric mixture</span></span></span>
 <span class="r-in"><span><span class="va">map_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">map_AS</span>, Nc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
@@ -628,7 +615,7 @@ synthesis tools. <em>JSS</em> 2021; 100(19):1-32</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

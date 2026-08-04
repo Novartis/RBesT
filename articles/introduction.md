@@ -5,10 +5,11 @@
 The R Bayesian evidence synthesis Tools (RBesT) facilitate the use of
 historical information in clinical trials. Once relevant historical
 information has been identified, RBesT supports the derivation of
-informative priors via the Meta-Analytic-Predictive (MAP) approach \[1\]
-and the evaluation of the trial’s operating characteristics. The MAP
-approach performs a standard meta-analysis followed by a prediction for
-the control group parameter of a future study while accounting for the
+informative priors via the Meta-Analytic-Predictive (MAP) approach
+([Neuenschwander et al. 2010](#ref-neuenschwander2010)) and the
+evaluation of the trial’s operating characteristics. The MAP approach
+performs a standard meta-analysis followed by a prediction for the
+control group parameter of a future study while accounting for the
 uncertainty in the population mean (the standard result from a
 meta-analysis) and the between-trial heterogeneity. Therefore, RBesT can
 also be used as a meta-analysis tool if one simply neglects the
@@ -28,11 +29,12 @@ articles on introductory material:
 ## Binary responder analysis example
 
 Let’s consider a Novartis Phase II study in ankylosing spondylitis
-comparing the Novartis test treatment secukinumab with placebo \[2\].
-The primary efficacy endpoint was percentage of patients with a 20%
-response according to the Assessment of SpondyloArthritis international
-Society criteria for improvement (ASAS20) at week 6. For the control
-group, the following historical data were used to derive the MAP prior:
+comparing the Novartis test treatment secukinumab with placebo ([Baeten
+et al. 2013](#ref-baeten2013)). The primary efficacy endpoint was
+percentage of patients with a 20% response according to the Assessment
+of SpondyloArthritis international Society criteria for improvement
+(ASAS20) at week 6. For the control group, the following historical data
+were used to derive the MAP prior:
 
 | study   |   n |   r |
 |:--------|----:|----:|
@@ -219,10 +221,12 @@ sample size (ESS) of the prior. It can be calculated in RBesT with the
 **`ess`** function. It should be noted, however, that the concept of ESS
 is somewhat elusive. In particular, the definition of the ESS is not
 unique and multiple methods have therefore been implemented in RBesT.
-The default method in RBesT is the elir approach \[5\] which results in
-reasonable ESS estimates. The moment matching approach leads to
-conservative (small) ESS estimates while the Morita \[3\] method tends
-to estimates liberal (large) ESS estimates when used with mixtures:
+The default method in RBesT is the elir approach ([Neuenschwander et al.
+2020](#ref-neuenschwander2020)) which results in reasonable ESS
+estimates. The moment matching approach leads to conservative (small)
+ESS estimates while the Morita ([Morita et al. 2008](#ref-morita2008))
+method tends to estimates liberal (large) ESS estimates when used with
+mixtures:
 
 ``` r
 
@@ -249,14 +253,14 @@ The Morita approach uses the curvature of the prior at the mode and has
 been found to be sensitive to a large number of mixture components. From
 experience, a realistic ESS estimate can be obtained with the elir
 method which is the only method which is predictively consistent, see
-\[5\] for details.
+([Neuenschwander et al. 2020](#ref-neuenschwander2020)) for details.
 
 ### Robustification of the MAP Prior
 
-Finally, we recommend to **`robustify`** \[4\] the prior which protects
-against type-I error inflation in presence of prior-data conflict,
-i.e. if the future trial data strongly deviate from the historical
-control information.
+Finally, we recommend to **`robustify`** ([Schmidli et al.
+2014](#ref-schmidli2014)) the prior which protects against type-I error
+inflation in presence of prior-data conflict, i.e. if the future trial
+data strongly deviate from the historical control information.
 
 ``` r
 
@@ -329,9 +333,9 @@ demonstrate the use of RBesT for design evaluation.
 ### Operating Characteristics
 
 We consider the 2-arm design of the actual Novartis trial in ankylosing
-spondylitis \[2\]. This trial tested 6 patients on placebo as control
-against 24 patients on an active experimental treatment. Success was
-declared whenever the condition
+spondylitis ([Baeten et al. 2013](#ref-baeten2013)). This trial tested 6
+patients on placebo as control against 24 patients on an active
+experimental treatment. Success was declared whenever the condition
 
 ``` math
 \Pr(\theta_{active} - \theta_{control} > 0) > 0.95
@@ -580,11 +584,29 @@ decision(post_treat, post_placebo)
 
 #### References
 
-\[1\] Neuenschwander B. et al., *Clin Trials*. 2010; 7(1):5-18  
-\[2\] Baeten D. et al., *The Lancet*, 2013, (382), 9906, p 1705  
-\[3\] Morita S. et al., *Biometrics* 2008;64(2):595-602  
-\[4\] Schmidli H. et al., *Biometrics* 2014;70(4):1023-1032  
-\[5\] Neuenschwander B. et al., *Biometrics* 2020;76(2):578-587
+Baeten, Dominique et al. 2013. “Anti-Interleukin-17A Monoclonal Antibody
+Secukinumab in Treatment of Ankylosing Spondylitis: A Randomised,
+Double-Blind, Placebo-Controlled Trial.” *The Lancet* 382 (9906):
+1705–13.
+
+Morita, Satoshi, Peter F. Thall, and Peter Mueller. 2008. “Determining
+the Effective Sample Size of a Parametric Prior.” *Biometrics* 64 (2):
+595–602.
+
+Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
+J. Spiegelhalter. 2010. “Summarizing Historical Information on Controls
+in Clinical Trials.” *Clinical Trials* 7 (1): 5–18.
+<https://doi.org/10.1177/1740774509356002>.
+
+Neuenschwander, Beat, Sebastian Weber, Heinz Schmidli, and Anthony
+O’Hagan. 2020. “Predictively Consistent Prior Effective Sample Sizes.”
+*Biometrics* 76 (2): 578–87. <https://doi.org/10.1111/biom.13252>.
+
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014. “Robust
+Meta-Analytic-Predictive Priors in Clinical Trials with Historical
+Control Information.” *Biometrics* 70 (4): 1023–32.
+<https://doi.org/10.1111/biom.12242>.
 
 #### R Session Info
 
@@ -614,30 +636,31 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
+    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
-    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
-    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
-    ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
-    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        
-    ## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          
-    ## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        
-    ## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      
-    ## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          
-    ## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     
-    ## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        
-    ## [46] dplyr_1.2.1           reshape2_1.4.5        labeling_0.4.3       
-    ## [49] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
-    ## [52] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
-    ## [55] withr_3.0.3           scales_1.4.0          backports_1.5.1      
-    ## [58] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
-    ## [61] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
-    ## [64] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
-    ## [67] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             
-    ## [70] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
+    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
+    ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
+    ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
+    ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
+    ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   
+    ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
+    ## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         
+    ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
+    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
+    ## [43] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       
+    ## [46] stringi_1.8.7        dplyr_1.2.1          reshape2_1.4.5      
+    ## [49] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
+    ## [52] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
+    ## [55] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
+    ## [58] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
+    ## [61] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
+    ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
+    ## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
+    ## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
+    ## [73] systemfonts_1.3.2    fs_2.1.0

@@ -157,9 +157,9 @@ reordering of the data vector may alleviate the issue.
 
 ## References
 
-Dempster A.P., Laird N.M., Rubin D.B. Maximum Likelihood from Incomplete
-Data via the EM Algorithm. *Journal of the Royal Statistical Society,
-Series B* 1977; 39 (1): 1-38.
+Dempster AP, Laird NM, Rubin DB (1977). “Maximum Likelihood from
+Incomplete Data via the EM Algorithm.” *Journal of the Royal Statistical
+Society, Series B*, **39**(1), 1–38.
 
 ## See also
 

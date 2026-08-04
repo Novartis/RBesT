@@ -24,7 +24,7 @@ pos2S(
   sigma1,
   sigma2,
   eps = 1e-06,
-  Ngrid = 10,
+  Ngrid = 5,
   family = NULL,
   offset1 = 0,
   offset2 = offset1,
@@ -224,5 +224,5 @@ pos_final <- pos2S(postP_interim, postT_interim, 20, 30, successCrit)
 #> Using default prior 2 reference scale 88
 
 pos_final(postP_interim, postT_interim)
-#> [1] 0.1455674
+#> [1] 0.1455677
 ```

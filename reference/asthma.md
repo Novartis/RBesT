@@ -64,16 +64,14 @@ A data frame with 10 rows and 11 variables:
 
 ## References
 
-Holzhauer B., Wang C. and Schmidli H. *Statistics in Medicine*, 2018,
-37(10):1640-1657
+Holzhauer B, Wang C, Schmidli H (2018). “Historical control information
+for clinical trials with a recurrent event endpoint.” *Statistics in
+Medicine*, **37**(10), 1640–1657.
 
 ## Examples
 
 ``` r
-## Setting up dummy sampling for fast execution of example
-## Please use 4 chains and 20x more warmup & iter in practice
-.user_mc_options <- options(RBesT.MC.warmup=50, RBesT.MC.iter=100,
-                            RBesT.MC.chains=2, RBesT.MC.thin=1)
+.user_mc_options <- options()
 
 set.seed(34563)
 asthma_ph3 <- subset(asthma, phase == "phase III")
@@ -83,17 +81,6 @@ map_asthma <- gMAP(cbind(log_mu_hat, se_log_mu_hat) ~ 1 + offset(log(d)) | study
   tau.dist = "HalfNormal", tau.prior = 0.5,
   beta.prior = cbind(0, 2)
 )
-#> Warning: The largest R-hat is 1.12, indicating chains have not mixed.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#r-hat
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#tail-ess
-#> Final MCMC sample equivalent to less than 1000 independent draws.
-#> Please consider increasing the MCMC simulation size.
 ## Recover user set sampling defaults
 options(.user_mc_options)
 ```

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
       <h1>RBesT for a Normal Endpoint</h1>
                         <h4 data-toc-skip class="author">Yue Li</h4>
             
-            <h4 data-toc-skip class="date">2026-07-06</h4>
+            <h4 data-toc-skip class="date">2026-08-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/introduction_normal.Rmd" class="external-link"><code>vignettes/articles/introduction_normal.Rmd</code></a></small>
       <div class="d-none name"><code>introduction_normal.Rmd</code></div>
@@ -82,10 +82,11 @@
 facilitate the use of historical information in clinical trials. Once
 relevant historical information has been identified, RBesT supports the
 derivation of informative priors via the Meta-Analytic-Predictive (MAP)
-approach [1], the evaluation of the trial’s operating characteristics,
-and the data analysis with the actual trial data. RBesT has been
-developed for endpoints from a number of well known distributions. Here
-we consider an example for a normally distributed response variable.</p>
+approach <span class="citation">(<a href="#ref-neuenschwander2010">Neuenschwander et al. 2010</a>)</span>,
+the evaluation of the trial’s operating characteristics, and the data
+analysis with the actual trial data. RBesT has been developed for
+endpoints from a number of well known distributions. Here we consider an
+example for a normally distributed response variable.</p>
 </div>
 <div class="section level2">
 <h2 id="trial-design-with-historical-control-data">Trial Design with Historical Control Data<a class="anchor" aria-label="anchor" href="#trial-design-with-historical-control-data"></a>
@@ -93,11 +94,12 @@ we consider an example for a normally distributed response variable.</p>
 <div class="section level3">
 <h3 id="historical-data">Historical Data<a class="anchor" aria-label="anchor" href="#historical-data"></a>
 </h3>
-<p>Let’s look at the Crohn’s disease example data [2] (data-set
-<code>crohn</code> in RBesT). The primary endpoint is the change from
-baseline in Crohn’s Disease Activity Index (CDAI), which is assumed to
-be normally distributed. Note that for CDAI, an improved outcome
-corresponds to a negative change from baseline.</p>
+<p>Let’s look at the Crohn’s disease example data <span class="citation">(<a href="#ref-hueber2012"><span class="nocase">Hueber
+et al.</span> 2012</a>)</span> (data-set <code>crohn</code> in RBesT).
+The primary endpoint is the change from baseline in Crohn’s Disease
+Activity Index (CDAI), which is assumed to be normally distributed. Note
+that for CDAI, an improved outcome corresponds to a negative change from
+baseline.</p>
 <p>First from historical studies we get the estimated standard deviation
 of the response variable as
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
@@ -172,11 +174,12 @@ A conservative choice for the prior on
 is a <strong><code>HalfNormal(0,</code></strong>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\sigma/2</annotation></semantics></math><strong><code>)</code></strong>
 distribution. For the prior on the intercept we recommend a
-“unit-information” prior [3] which is set to a precision corresponding
-to a single observation and centered here at no change from baseline.
-Please refer to the help page <strong><code><a href="../reference/gMAP.html">?gMAP</a></code></strong> for
-detailed information. The <strong><code>set.seed</code></strong>
-function is used to make the results exactly reproducible.</p>
+“unit-information” prior <span class="citation">(<a href="#ref-kass1995">Kass and Wasserman 1995</a>)</span> which is set to
+a precision corresponding to a single observation and centered here at
+no change from baseline. Please refer to the help page
+<strong><code><a href="../reference/gMAP.html">?gMAP</a></code></strong> for detailed information. The
+<strong><code>set.seed</code></strong> function is used to make the
+results exactly reproducible.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://opensource.nibr.com/RBesT/">RBesT</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">689654</span><span class="op">)</span></span>
@@ -273,11 +276,11 @@ sample size of the control group.</p>
 <div class="section level3">
 <h3 id="robustification-of-map-prior">Robustification of MAP Prior<a class="anchor" aria-label="anchor" href="#robustification-of-map-prior"></a>
 </h3>
-<p>We recommend robustifying [5] the prior with the
-<strong><code>robustify</code></strong> function, which protects against
-type-I error inflation in presence of prior-data conflict. For the
-normal case we strongly recommend explicitly choosing the mean of the
-robust component. We use
+<p>We recommend robustifying <span class="citation">(<a href="#ref-schmidli2014">Schmidli et al. 2014</a>)</span> the prior with
+the <strong><code>robustify</code></strong> function, which protects
+against type-I error inflation in presence of prior-data conflict. For
+the normal case we strongly recommend explicitly choosing the mean of
+the robust component. We use
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>50</mn></mrow><annotation encoding="application/x-tex">-50</annotation></semantics></math>
 consistent with the mean of the MAP prior. Furthermore, 20% probability
 is used for the additional robust (unit-information) mixture component.
@@ -517,13 +520,39 @@ is taken into account.</p>
 <div class="section level4">
 <h4 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h4>
-<p>[1] Neuenschwander B et. al, <em>Clin Trials</em>. 2010;
-7(1):5-18<br>
-[2] Hueber W. et. al, <em>Gut</em>, 2012, 61(12):1693-1700<br>
-[3] Kass RE, Wasserman L, <em>J Amer Statist Assoc</em>; 1995,
-90(431):928-934.<br>
-[4] Morita S. et. al, <em>Biometrics</em> 2008;64(2):595-602<br>
-[5] Schmidli H. et. al, <em>Biometrics</em> 2014;70(4):1023-1032</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-hueber2012" class="csl-entry">
+<span class="nocase">Hueber, Wolfgang, Bruce E. Sands, Steve Lewitzky,
+Marc Vandemeulebroecke, et al.</span> 2012. <span>“Secukinumab, a Human
+Anti-<span>IL</span>-17<span>A</span> Monoclonal Antibody, for Moderate
+to Severe <span>C</span>rohn’s Disease.”</span> <em>Gut</em> 61 (12):
+1693–700.
+</div>
+<div id="ref-kass1995" class="csl-entry">
+Kass, Robert E., and Larry Wasserman. 1995. <span>“A Reference Bayesian
+Test for Nested Hypotheses and Its Relationship to the Schwarz
+Criterion.”</span> <em>Journal of the American Statistical
+Association</em> 90 (431): 928–34.
+</div>
+<div id="ref-morita2008" class="csl-entry">
+Morita, Satoshi, Peter F. Thall, and Peter Mueller. 2008.
+<span>“Determining the Effective Sample Size of a Parametric
+Prior.”</span> <em>Biometrics</em> 64 (2): 595–602.
+</div>
+<div id="ref-neuenschwander2010" class="csl-entry">
+Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
+J. Spiegelhalter. 2010. <span>“Summarizing Historical Information on
+Controls in Clinical Trials.”</span> <em>Clinical Trials</em> 7 (1):
+5–18. <a href="https://doi.org/10.1177/1740774509356002" class="external-link">https://doi.org/10.1177/1740774509356002</a>.
+</div>
+<div id="ref-schmidli2014" class="csl-entry">
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014.
+<span>“Robust Meta-Analytic-Predictive Priors in Clinical Trials with
+Historical Control Information.”</span> <em>Biometrics</em> 70 (4):
+1023–32. <a href="https://doi.org/10.1111/biom.12242" class="external-link">https://doi.org/10.1111/biom.12242</a>.
+</div>
+</div>
 </div>
 <div class="section level4">
 <h4 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
@@ -551,33 +580,34 @@ is taken into account.</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 </span></span>
+<span><span class="co">## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            </span></span>
-<span><span class="co">##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    </span></span>
-<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          </span></span>
-<span><span class="co">## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       </span></span>
-<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
-<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           </span></span>
-<span><span class="co">## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
-<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         </span></span>
-<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     statmod_1.5.2        </span></span>
-<span><span class="co">## [28] codetools_0.2-20      htmltools_0.5.9       sass_0.4.10          </span></span>
-<span><span class="co">## [31] bayesplot_1.15.0      yaml_2.3.12           Formula_1.2-5        </span></span>
-<span><span class="co">## [34] pillar_1.11.1         pkgdown_2.2.0         jquerylib_0.1.4      </span></span>
-<span><span class="co">## [37] cachem_1.1.0          StanHeaders_2.32.10   abind_1.4-8          </span></span>
-<span><span class="co">## [40] posterior_1.7.0       rstan_2.32.7          tidyselect_1.2.1     </span></span>
-<span><span class="co">## [43] digest_0.6.39         mvtnorm_1.4-1         stringi_1.8.7        </span></span>
-<span><span class="co">## [46] dplyr_1.2.1           reshape2_1.4.5        labeling_0.4.3       </span></span>
-<span><span class="co">## [49] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            </span></span>
-<span><span class="co">## [52] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       </span></span>
-<span><span class="co">## [55] withr_3.0.3           scales_1.4.0          backports_1.5.1      </span></span>
-<span><span class="co">## [58] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           </span></span>
-<span><span class="co">## [61] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       </span></span>
-<span><span class="co">## [64] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       </span></span>
-<span><span class="co">## [67] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             </span></span>
-<span><span class="co">## [70] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           </span></span>
+<span><span class="co">##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   </span></span>
+<span><span class="co">##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         </span></span>
+<span><span class="co">## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        </span></span>
+<span><span class="co">## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            </span></span>
+<span><span class="co">## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  </span></span>
+<span><span class="co">## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      </span></span>
+<span><span class="co">## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   </span></span>
+<span><span class="co">## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     </span></span>
+<span><span class="co">## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         </span></span>
+<span><span class="co">## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       </span></span>
+<span><span class="co">## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 </span></span>
+<span><span class="co">## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        </span></span>
+<span><span class="co">## [43] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       </span></span>
+<span><span class="co">## [46] stringi_1.8.7        dplyr_1.2.1          reshape2_1.4.5      </span></span>
+<span><span class="co">## [49] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          </span></span>
+<span><span class="co">## [52] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          </span></span>
+<span><span class="co">## [55] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        </span></span>
+<span><span class="co">## [58] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   </span></span>
+<span><span class="co">## [61] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          </span></span>
+<span><span class="co">## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    </span></span>
+<span><span class="co">## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          </span></span>
+<span><span class="co">## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            </span></span>
+<span><span class="co">## [73] systemfonts_1.3.2    fs_2.1.0</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -591,7 +621,7 @@ is taken into account.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

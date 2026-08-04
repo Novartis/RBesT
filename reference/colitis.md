@@ -28,6 +28,8 @@ A data frame with 4 rows and 3 variables:
 
 ## References
 
-Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ.
-Summarizing historical information on controls in clinical trials. *Clin
-Trials*. 2010; 7(1):5-18
+Neuenschwander B, Capkun-Niggli G, Branson M, Spiegelhalter DJ (2010).
+“Summarizing historical information on controls in clinical trials.”
+*Clinical Trials*, **7**(1), 5–18.
+[doi:10.1177/1740774509356002](https://doi.org/10.1177/1740774509356002)
+.

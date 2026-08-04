@@ -127,9 +127,10 @@ conjugate mixture prior densities.
 ## References
 
 Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D,
-Neuenschwander B. Robust meta-analytic-predictive priors in clinical
-trials with historical control information. *Biometrics*
-2014;70(4):1023-1032.
+Neuenschwander B (2014). “Robust meta-analytic-predictive priors in
+clinical trials with historical control information.” *Biometrics*,
+**70**(4), 1023–1032.
+[doi:10.1111/biom.12242](https://doi.org/10.1111/biom.12242) .
 
 ## Examples
 

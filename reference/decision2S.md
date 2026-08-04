@@ -111,8 +111,9 @@ be given on the transformed scale.
 ## References
 
 Gsponer T, Gerber F, Bornkamp B, Ohlssen D, Vandemeulebroecke M,
-Schmidli H.A practical guide to Bayesian group sequential designs.
-*Pharm. Stat.*. 2014; 13: 71-80
+Schmidli H (2014). “A practical guide to Bayesian group sequential
+designs.” *Pharmaceutical Statistics*, **13**(1), 71–80.
+[doi:10.1002/pst.1593](https://doi.org/10.1002/pst.1593) .
 
 ## See also
 

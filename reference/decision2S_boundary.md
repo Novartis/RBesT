@@ -25,7 +25,7 @@ decision2S_boundary(
   sigma1,
   sigma2,
   eps = 1e-06,
-  Ngrid = 10,
+  Ngrid = 5,
   family = NULL,
   offset1 = 0,
   offset2 = offset1,

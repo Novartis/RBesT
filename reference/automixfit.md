@@ -59,8 +59,8 @@ components a value of 6 is used as default.
 
 ## References
 
-Collet D. *Modeling Survival Data in Medical Research*. 2003; Chapman
-and Hall/CRC.
+Collett D (2003). *Modelling Survival Data in Medical Research*, 2nd
+edition. Chapman and Hall/CRC.
 
 ## Examples
 
@@ -74,19 +74,19 @@ bmSamp <- rmix(bm, 1000)
 bmFit <- automixfit(bmSamp, Nc = 1:10, thresh = 0, type = "beta")
 bmFit
 #> EM for Beta Mixture Model
-#> Log-Likelihood = 1099.367
+#> Log-Likelihood = 1130.983
 #> 
 #> Univariate beta mixture
 #> Mixture Components:
-#>   comp1     comp2    
-#> w  0.586131  0.413869
-#> a 33.422658 18.251968
-#> b 61.784396 82.825370
+#>   comp1      comp2     
+#> w  0.6098402  0.3901598
+#> a 34.8965697 20.8913411
+#> b 64.8756213 93.3172690
 
 # advanced usage: find out about all discarded models
 bmFitAll <- attr(bmFit, "models")
 
 sapply(bmFitAll, AIC, k = 6)
 #>         2         3         1 
-#> -2168.735 -2150.802 -1871.069 
+#> -2231.965 -2212.242 -1921.889 
 ```

@@ -11,7 +11,7 @@ equivalent to."><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -172,13 +172,14 @@ supports non-gaussian families with unit dispersion only.</p>
 <table class="table table"><tr><td><strong>Prior/Posterior</strong></td><td><strong>Likelihood</strong></td><td><strong>Predictive</strong></td><td><strong>Summaries</strong></td></tr><tr><td>Beta</td><td>Binomial</td><td>Beta-Binomial</td><td><code>n</code>, <code>r</code></td></tr><tr><td>Normal</td><td>Normal (<em>fixed \(\sigma\)</em>)</td><td>Normal</td><td><code>n</code>, <code>m</code>, <code>se</code></td></tr><tr><td>Gamma</td><td>Poisson</td><td>Gamma-Poisson</td><td><code>n</code>, <code>m</code></td></tr><tr><td>Gamma</td><td>Exponential</td><td>Gamma-Exp (<em>not supported</em>)</td><td><code>n</code>, <code>m</code></td></tr></table></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Morita S, Thall PF, Mueller P.  Determining the
-effective sample size of a parametric prior.  <em>Biometrics</em>
-2008;64(2):595-602.</p>
-<p>Neuenschwander B., Weber S., Schmidli H., O'Hagan
-A. (2020). Predictively consistent prior effective sample
-sizes. <em>Biometrics</em>, 76(2),
-578-587. https://doi.org/10.1111/biom.13252</p>
+    <p>Morita S, Thall PF, Mueller P (2008).
+“Determining the effective sample size of a parametric prior.”
+<em>Biometrics</em>, <b>64</b>(2), 595–602.</p>
+<p>Neuenschwander B, Weber S, Schmidli H, O'Hagan A (2020).
+“Predictively consistent prior effective sample sizes.”
+<em>Biometrics</em>, <b>76</b>(2), 578–587.
+<a href="https://doi.org/10.1111/biom.13252" class="external-link">doi:10.1111/biom.13252</a>
+.</p>
     </div>
 
     <div class="section level2">
@@ -240,7 +241,7 @@ sizes. <em>Biometrics</em>, 76(2),
 <span class="r-in"><span><span class="fu">ess</span><span class="op">(</span><span class="va">bmix</span>, <span class="st">"elir"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.65152</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred_ess</span><span class="op">)</span> <span class="op">-</span> <span class="va">n_forward</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7.54457</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.355323</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Normal mixture example</span></span></span>
 <span class="r-in"><span><span class="va">nmix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixnorm.html">mixnorm</a></span><span class="op">(</span>rob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
@@ -285,7 +286,7 @@ sizes. <em>Biometrics</em>, 76(2),
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

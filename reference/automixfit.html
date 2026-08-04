@@ -17,7 +17,7 @@ value is then selected."><link rel="stylesheet" href="https://cdn.jsdelivr.net/n
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,9 +117,9 @@ complex models. To favor mixtures with fewer components a value of
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Collet D.
-<em>Modeling Survival Data in Medical Research</em>.
-2003; Chapman and Hall/CRC.</p>
+    <p>Collett D (2003).
+<em>Modelling Survival Data in Medical Research</em>, 2nd edition.
+Chapman and Hall/CRC.</p>
     </div>
 
     <div class="section level2">
@@ -133,21 +133,21 @@ complex models. To favor mixtures with fewer components a value of
 <span class="r-in"><span><span class="va">bmFit</span> <span class="op">&lt;-</span> <span class="fu">automixfit</span><span class="op">(</span><span class="va">bmSamp</span>, Nc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, thresh <span class="op">=</span> <span class="fl">0</span>, type <span class="op">=</span> <span class="st">"beta"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bmFit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EM for Beta Mixture Model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Log-Likelihood = 1099.367</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Log-Likelihood = 1130.983</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Univariate beta mixture</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mixture Components:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   comp1     comp2    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> w  0.586131  0.413869</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a 33.422658 18.251968</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b 61.784396 82.825370</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   comp1      comp2     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> w  0.6098402  0.3901598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a 34.8965697 20.8913411</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b 64.8756213 93.3172690</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># advanced usage: find out about all discarded models</span></span></span>
 <span class="r-in"><span><span class="va">bmFitAll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">bmFit</span>, <span class="st">"models"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">bmFitAll</span>, <span class="va">AIC</span>, k <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         2         3         1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -2168.735 -2150.802 -1871.069 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -2231.965 -2212.242 -1921.889 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -160,7 +160,7 @@ complex models. To favor mixtures with fewer components a value of
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

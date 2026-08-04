@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ Clinical Trails with RBesT</h3>
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2026-07-06</h4>
+            <h4 data-toc-skip class="date">2026-08-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/PoS_codata.Rmd" class="external-link"><code>vignettes/articles/PoS_codata.Rmd</code></a></small>
       <div class="d-none name"><code>PoS_codata.Rmd</code></div>
@@ -90,21 +90,22 @@ complex data situations.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The co-data concept has been introduced in [1]. It differs from the
-use of historical data in that the approach makes use of contemporary
-data. A meta-analytic-predictive (MAP) analysis assumes that historical
-data is known at the time-point of specyfing the analysis and is as such
-a retrospective summary of available data. The MAP prior is then
-combined with the current trial data. A co-data approach extends this
-sequential procedure to a meta-analytic-combined (MAC) analysis. In the
-MAC approach all available data is analyzed in a single step - that is,
-historical and concurrent data is combined in a single inference step.
-Both approaches MAP and MAC yield exactly the same results as is
-demonstrated in the appendix at the bottom. An example for a co-data
-scenario in drug development is the simultaneous execution of twin phase
-III trails for registriation. In such a setting, a futility analysis at
-an interim analysis may take historical and all contemporary data into
-account in a co-data approach. This example has been discussed in [1]
+<p>The co-data concept has been introduced in <span class="citation">(<a href="#ref-neuenschwander2016">Neuenschwander et al. 2016</a>)</span>.
+It differs from the use of historical data in that the approach makes
+use of contemporary data. A meta-analytic-predictive (MAP) analysis
+assumes that historical data is known at the time-point of specyfing the
+analysis and is as such a retrospective summary of available data. The
+MAP prior is then combined with the current trial data. A co-data
+approach extends this sequential procedure to a meta-analytic-combined
+(MAC) analysis. In the MAC approach all available data is analyzed in a
+single step - that is, historical and concurrent data is combined in a
+single inference step. Both approaches MAP and MAC yield exactly the
+same results as is demonstrated in the appendix at the bottom. An
+example for a co-data scenario in drug development is the simultaneous
+execution of twin phase III trails for registriation. In such a setting,
+a futility analysis at an interim analysis may take historical and all
+contemporary data into account in a co-data approach. This example has
+been discussed in <span class="citation">(<a href="#ref-neuenschwander2016">Neuenschwander et al. 2016</a>)</span>
 using the probability of success (PoS) as metric to assess futility at
 an interim analysis and is discussed here in detail.</p>
 <p>The key property of the probability of success metric is the
@@ -182,11 +183,12 @@ which will not be part of the trial analysis.</p>
 <div class="section level2">
 <h2 id="example-data-scenario">Example Data Scenario<a class="anchor" aria-label="anchor" href="#example-data-scenario"></a>
 </h2>
-<p>In the following the hypothetical example as in [1] is discussed. The
-assumed endpoint is time-to-event, which is analyzed using the normal
-approximation of the log-rank statistic for comparing two groups. Under
-a 1:1 randomization the standard error of the log-hazard ratio scales
-with the number of events as
+<p>In the following the hypothetical example as in <span class="citation">(<a href="#ref-neuenschwander2016">Neuenschwander et
+al. 2016</a>)</span> is discussed. The assumed endpoint is
+time-to-event, which is analyzed using the normal approximation of the
+log-rank statistic for comparing two groups. Under a 1:1 randomization
+the standard error of the log-hazard ratio scales with the number of
+events as
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><msqrt><msub><mi>N</mi><mrow><mi>e</mi><mi>v</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>s</mi></mrow></msub></msqrt></mrow><annotation encoding="application/x-tex">2/\sqrt{N_{events}}</annotation></semantics></math>.
 This implies a corresponding sampling standard deviation of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
@@ -790,10 +792,11 @@ calculations.</p>
 <h2 id="appendix-map-and-mac-equivalence">Appendix: MAP and MAC equivalence<a class="anchor" aria-label="anchor" href="#appendix-map-and-mac-equivalence"></a>
 </h2>
 <p>In the preceeding sections we have used MAP and MAC equivalence
-already. The proof for the equivalence is presented reference in [2].
-The formal deriavtion is shown at the end of this section</p>
+already. The proof for the equivalence is presented reference in <span class="citation">(<a href="#ref-schmidli2014">Schmidli et al.
+2014</a>)</span>. The formal deriavtion is shown at the end of this
+section</p>
 <p>While MAP and MAC provide the exact same results, the difference is a
-sequential vs a joint analysis as (see also [2]):</p>
+sequential vs a joint analysis as (see also <span class="citation">(<a href="#ref-schmidli2014">Schmidli et al. 2014</a>)</span>):</p>
 <ol style="list-style-type: decimal">
 <li>MAP: Summarize historical information as MAP and then update the MAP
 with the trial result (MCMC, then <code>postmix</code>).</li>
@@ -912,13 +915,20 @@ p(\theta_\star|y_\star,y_H) &amp;\propto p(\theta_\star,\theta_H|y_\star,y_H) \\
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>[1] Neuenschwander, B., Roychoudhury, S., &amp; Schmidli, H. (2016).
-On the Use of Co-Data in Clinical Trials. Statistics in
-Biopharmaceutical Research, 8(3), 345-354. </p>
-<p>[2] 1. Schmidli H, Gsteiger S, Roychoudhury S, O’Hagan A,
-Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive
-priors in clinical trials with historical control information.
-Biometrics. 2014;70(4):1023-1032. </p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-neuenschwander2016" class="csl-entry">
+Neuenschwander, Beat, Satrajit Roychoudhury, and Heinz Schmidli. 2016.
+<span>“On the Use of Co-Data in Clinical Trials.”</span> <em>Statistics
+in Biopharmaceutical Research</em> 8 (3): 345–54. <a href="https://doi.org/10.1080/19466315.2016.1174149" class="external-link">https://doi.org/10.1080/19466315.2016.1174149</a>.
+</div>
+<div id="ref-schmidli2014" class="csl-entry">
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014.
+<span>“Robust Meta-Analytic-Predictive Priors in Clinical Trials with
+Historical Control Information.”</span> <em>Biometrics</em> 70 (4):
+1023–32. <a href="https://doi.org/10.1111/biom.12242" class="external-link">https://doi.org/10.1111/biom.12242</a>.
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
@@ -947,32 +957,33 @@ Biometrics. 2014;70(4):1023-1032. </p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] purrr_1.2.2      dplyr_1.2.1      bayesplot_1.15.0 ggplot2_4.0.3   </span></span>
-<span><span class="co">## [5] knitr_1.51       RBesT_1.10-0    </span></span>
+<span><span class="co">## [5] knitr_1.51       RBesT_1.11-0    </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            </span></span>
-<span><span class="co">##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    </span></span>
-<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          </span></span>
-<span><span class="co">## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       </span></span>
-<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
-<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           </span></span>
-<span><span class="co">## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
-<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         </span></span>
-<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     </span></span>
-<span><span class="co">## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          </span></span>
-<span><span class="co">## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        </span></span>
-<span><span class="co">## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  </span></span>
-<span><span class="co">## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         </span></span>
-<span><span class="co">## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        </span></span>
-<span><span class="co">## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       </span></span>
-<span><span class="co">## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            </span></span>
-<span><span class="co">## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       </span></span>
-<span><span class="co">## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      </span></span>
-<span><span class="co">## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           </span></span>
-<span><span class="co">## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       </span></span>
-<span><span class="co">## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       </span></span>
-<span><span class="co">## [64] glue_1.8.1            jsonlite_2.0.0        plyr_1.8.9           </span></span>
-<span><span class="co">## [67] R6_2.6.1              systemfonts_1.3.2     fs_2.1.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           </span></span>
+<span><span class="co">##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   </span></span>
+<span><span class="co">##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         </span></span>
+<span><span class="co">## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        </span></span>
+<span><span class="co">## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            </span></span>
+<span><span class="co">## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  </span></span>
+<span><span class="co">## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       </span></span>
+<span><span class="co">## [25] compiler_4.6.1       farver_2.1.2         textshaping_1.0.5   </span></span>
+<span><span class="co">## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         </span></span>
+<span><span class="co">## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       </span></span>
+<span><span class="co">## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        </span></span>
+<span><span class="co">## [37] StanHeaders_2.32.10  abind_1.4-8          posterior_1.7.0     </span></span>
+<span><span class="co">## [40] rstan_2.32.7         tidyselect_1.2.1     digest_0.6.39       </span></span>
+<span><span class="co">## [43] stringi_1.8.7        mvtnorm_1.4-2        reshape2_1.4.5      </span></span>
+<span><span class="co">## [46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          </span></span>
+<span><span class="co">## [49] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          </span></span>
+<span><span class="co">## [52] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        </span></span>
+<span><span class="co">## [55] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   </span></span>
+<span><span class="co">## [58] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          </span></span>
+<span><span class="co">## [61] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    </span></span>
+<span><span class="co">## [64] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          </span></span>
+<span><span class="co">## [67] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            </span></span>
+<span><span class="co">## [70] systemfonts_1.3.2    fs_2.1.0</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -985,7 +996,7 @@ Biometrics. 2014;70(4):1023-1032. </p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

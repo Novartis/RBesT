@@ -15,7 +15,7 @@ Society criteria for improvement (ASAS20) at week 6."><link rel="stylesheet" hre
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,15 +79,14 @@ Society criteria for improvement (ASAS20) at week 6.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Baeten D. et. al, <em>The Lancet</em>, 2013, (382), 9906, p 1705</p>
+    <p>Baeten D, others (2013).
+“Anti-interleukin-17A monoclonal antibody secukinumab in treatment of ankylosing spondylitis: a randomised, double-blind, placebo-controlled trial.”
+<em>The Lancet</em>, <b>382</b>(9906), 1705–1713.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Setting up dummy sampling for fast execution of example</span></span></span>
-<span class="r-in"><span><span class="co">## Please use 4 chains and 20x more warmup &amp; iter in practice</span></span></span>
-<span class="r-in"><span><span class="va">.user_mc_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>RBesT.MC.warmup<span class="op">=</span><span class="fl">50</span>, RBesT.MC.iter<span class="op">=</span><span class="fl">100</span>,</span></span>
-<span class="r-in"><span>                            RBesT.MC.chains<span class="op">=</span><span class="fl">2</span>, RBesT.MC.thin<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">.user_mc_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">34563</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">map_AS</span> <span class="op">&lt;-</span> <span class="fu"><a href="gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">n</span> <span class="op">-</span> <span class="va">r</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span></span>
@@ -97,18 +96,6 @@ Society criteria for improvement (ASAS20) at week 6.</p>
 <span class="r-in"><span>  beta.prior <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Assuming default prior location   for beta: 0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.31, indicating chains have not mixed.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#tail-ess</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Maximal Rhat &gt; 1.1. Consider increasing RBesT.MC.warmup MCMC parameter.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Final MCMC sample equivalent to less than 1000 independent draws.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please consider increasing the MCMC simulation size.</span>
 <span class="r-in"><span><span class="co">## Recover user set sampling defaults</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">.user_mc_options</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -123,7 +110,7 @@ Society criteria for improvement (ASAS20) at week 6.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

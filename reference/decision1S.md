@@ -95,9 +95,9 @@ or PoS calculations using
 
 ## References
 
-Neuenschwander B, Rouyrre N, Hollaender H, Zuber E, Branson M. A proof
-of concept phase II non-inferiority criterion. *Stat. in Med.*. 2011,
-30:1618-1627
+Neuenschwander B, Rouyrre N, Hollaender H, Zuber E, Branson M (2011). “A
+proof of concept phase II non-inferiority criterion.” *Statistics in
+Medicine*, **30**(13), 1618–1627.
 
 ## See also
 

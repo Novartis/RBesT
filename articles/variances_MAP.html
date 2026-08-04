@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.10-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
                         <h4 data-toc-skip class="author">Sebastian
 Weber</h4>
             
-            <h4 data-toc-skip class="date">2026-07-06</h4>
+            <h4 data-toc-skip class="date">2026-08-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/vignettes/articles/variances_MAP.Rmd" class="external-link"><code>vignettes/articles/variances_MAP.Rmd</code></a></small>
       <div class="d-none name"><code>variances_MAP.Rmd</code></div>
@@ -77,10 +77,10 @@ Weber</h4>
     
     
 <p>Applying the meta-analytic-predictive (MAP) prior approach to
-historical data on variances has been suggested in [1]. The utility is a
-better informed planning of future trials which use a normal endpoint.
-For these reliable information on the sampling standard deviation is
-crucial for planning the trial.</p>
+historical data on variances has been suggested in <span class="citation">Schmidli et al. (<a href="#ref-schmidli2017">2017</a>)</span>. The utility is a better
+informed planning of future trials which use a normal endpoint. For
+these reliable information on the sampling standard deviation is crucial
+for planning the trial.</p>
 <p>Under a normal sampling distribution the (standard) unbiased variance
 estimator for a sample
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>j</mi></msub><annotation encoding="application/x-tex">y_j</annotation></semantics></math>
@@ -112,7 +112,8 @@ variate can be applied. When
 transforming a
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\Gamma(\alpha,\beta)</annotation></semantics></math>
 variate it’s moment and variance can analytically be shown to be (see
-[2], for example)</p>
+the <a href="https://en.wikipedia.org/wiki/Gamma_distribution#Logarithmic_expectation_and_variance" class="external-link">Wikipedia
+article on the Gamma distribution</a>, for example)</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">[</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><mi>ψ</mi><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> E[\log(X)] = \psi(\alpha) - \log(\beta)</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mi>a</mi><mi>r</mi><mo stretchy="false" form="prefix">[</mo><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>=</mo><msup><mi>ψ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex"> Var[\log(X)] = \psi^{(1)}(\alpha).</annotation></semantics></math></p>
 <p>Here,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ψ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\psi(x)</annotation></semantics></math>
@@ -141,8 +142,7 @@ independent of the true
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
 value for 10 observations the approxmation is useful and a very good one
 for more than 20 observations.</p>
-<p>In the following we reanalyze the main example of reference [1] which
-is shown in table 2:</p>
+<p>In the following we reanalyze the main example of <span class="citation">Schmidli et al. (<a href="#ref-schmidli2017">2017</a>)</span> which is shown in table 2:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="right">study</th>
@@ -266,8 +266,8 @@ parameter
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
 and the intercept
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
-is needed. In reference [3] it is demonstrated that the (approximate)
-sampling standard deviation of the
+is needed. In <span class="citation">Gelman et al. (<a href="#ref-gelman2014">2014</a>)</span> it is demonstrated that the
+(approximate) sampling standard deviation of the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">log</mi><annotation encoding="application/x-tex">\log</annotation></semantics></math>
 variance is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mn>2</mn></msqrt><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math>.
@@ -278,7 +278,7 @@ very similar results in this case. For the intercept
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
 a very wide prior is used with a standard deviation of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
-which is in line with reference [1]:</p>
+which is in line with <span class="citation">Schmidli et al. (<a href="#ref-schmidli2017">2017</a>)</span>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_mc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gMAP.html">gMAP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">logvar_mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">logvar_var</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">study</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">hdata</span>,</span>
@@ -325,7 +325,7 @@ which is in line with reference [1]:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map_mc</span><span class="op">)</span><span class="op">$</span><span class="va">forest_model</span></span></code></pre></div>
 <p><img src="variances_MAP_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<p>In reference [1] the correct
+<p>In <span class="citation">Schmidli et al. (<a href="#ref-schmidli2017">2017</a>)</span> the correct
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Γ</mi><annotation encoding="application/x-tex">\Gamma</annotation></semantics></math>
 likelihood is used in contrast to the approximate normal approach above.
 Still, the results match very close, even for the outer quantiles.</p>
@@ -438,11 +438,19 @@ with the transformation as used earlier in this vignette.</p>
 <div class="section level3">
 <h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h3>
-<p>[1] Schmidli, H., et. al, Comp. Stat. and Data Analysis, 2017,
-113:100-110<br>
-[2] <a href="https://en.wikipedia.org/wiki/Gamma_distribution#Logarithmic_expectation_and_variance" class="external-link uri">https://en.wikipedia.org/wiki/Gamma_distribution#Logarithmic_expectation_and_variance</a><br>
-[3] Gelman A, et. al, Bayesian Data Analysis. Third edit., 2014.,
-Chapter 4, p. 84</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-gelman2014" class="csl-entry">
+Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
+Vehtari, and Donald B. Rubin. 2014. <em>Bayesian Data Analysis</em>. 3rd
+ed. Chapman; Hall/CRC.
+</div>
+<div id="ref-schmidli2017" class="csl-entry">
+Schmidli, Heinz, Beat Neuenschwander, and Tim Friede. 2017.
+<span>“Meta-Analytic-Predictive Use of Historical Variance Data for the
+Design and Analysis of Clinical Trials.”</span> <em>Computational
+Statistics and Data Analysis</em> 113: 100–110.
+</div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="r-session-info">R Session Info<a class="anchor" aria-label="anchor" href="#r-session-info"></a>
@@ -471,32 +479,33 @@ Chapter 4, p. 84</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
 <span><span class="co">## [1] bayesplot_1.15.0 purrr_1.2.2      dplyr_1.2.1      ggplot2_4.0.3   </span></span>
-<span><span class="co">## [5] knitr_1.51       RBesT_1.10-0    </span></span>
+<span><span class="co">## [5] knitr_1.51       RBesT_1.11-0    </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            </span></span>
-<span><span class="co">##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    </span></span>
-<span><span class="co">##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          </span></span>
-<span><span class="co">## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       </span></span>
-<span><span class="co">## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      </span></span>
-<span><span class="co">## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           </span></span>
-<span><span class="co">## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     </span></span>
-<span><span class="co">## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         </span></span>
-<span><span class="co">## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     </span></span>
-<span><span class="co">## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          </span></span>
-<span><span class="co">## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        </span></span>
-<span><span class="co">## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  </span></span>
-<span><span class="co">## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         </span></span>
-<span><span class="co">## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        </span></span>
-<span><span class="co">## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       </span></span>
-<span><span class="co">## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            </span></span>
-<span><span class="co">## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       </span></span>
-<span><span class="co">## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      </span></span>
-<span><span class="co">## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           </span></span>
-<span><span class="co">## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       </span></span>
-<span><span class="co">## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       </span></span>
-<span><span class="co">## [64] glue_1.8.1            jsonlite_2.0.0        R6_2.6.1             </span></span>
-<span><span class="co">## [67] plyr_1.8.9            systemfonts_1.3.2     fs_2.1.0</span></span></code></pre>
+<span><span class="co">##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           </span></span>
+<span><span class="co">##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   </span></span>
+<span><span class="co">##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         </span></span>
+<span><span class="co">## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        </span></span>
+<span><span class="co">## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     </span></span>
+<span><span class="co">## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            </span></span>
+<span><span class="co">## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  </span></span>
+<span><span class="co">## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      </span></span>
+<span><span class="co">## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   </span></span>
+<span><span class="co">## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         </span></span>
+<span><span class="co">## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       </span></span>
+<span><span class="co">## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        </span></span>
+<span><span class="co">## [37] StanHeaders_2.32.10  abind_1.4-8          posterior_1.7.0     </span></span>
+<span><span class="co">## [40] rstan_2.32.7         tidyselect_1.2.1     digest_0.6.39       </span></span>
+<span><span class="co">## [43] stringi_1.8.7        mvtnorm_1.4-2        reshape2_1.4.5      </span></span>
+<span><span class="co">## [46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          </span></span>
+<span><span class="co">## [49] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          </span></span>
+<span><span class="co">## [52] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        </span></span>
+<span><span class="co">## [55] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   </span></span>
+<span><span class="co">## [58] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          </span></span>
+<span><span class="co">## [61] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    </span></span>
+<span><span class="co">## [64] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          </span></span>
+<span><span class="co">## [67] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            </span></span>
+<span><span class="co">## [70] systemfonts_1.3.2    fs_2.1.0</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -510,7 +519,7 @@ Chapter 4, p. 84</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

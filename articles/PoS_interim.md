@@ -118,7 +118,7 @@ of success at the final analysis given observed IA data.
 pos_final(postT_interim, postP_interim)
 ```
 
-    ## [1] 0.02413365
+    ## [1] 0.02414134
 
 One can also use
 **[`oc2S()`](https://opensource.nibr.com/RBesT/reference/oc2S.md)** to
@@ -185,28 +185,29 @@ ggplot(data = out, aes(x = diff_pct, y = cp)) +
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] dplyr_1.2.1   scales_1.4.0  ggplot2_4.0.3 knitr_1.51    RBesT_1.10-0 
+    ## [1] dplyr_1.2.1   scales_1.4.0  ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] tensorA_0.36.2.1      sass_0.4.10           generics_0.1.4       
-    ##  [4] digest_0.6.39         magrittr_2.0.5        evaluate_1.0.5       
-    ##  [7] grid_4.6.1            RColorBrewer_1.1-3    mvtnorm_1.4-1        
-    ## [10] fastmap_1.2.0         jsonlite_2.0.0        pkgbuild_1.4.8       
-    ## [13] backports_1.5.1       Formula_1.2-5         gridExtra_2.3.1      
-    ## [16] QuickJSR_1.10.0       codetools_0.2-20      textshaping_1.0.5    
-    ## [19] jquerylib_0.1.4       abind_1.4-8           cli_3.6.6            
-    ## [22] rlang_1.2.0           withr_3.0.3           cachem_1.1.0         
-    ## [25] yaml_2.3.12           otel_0.2.0            StanHeaders_2.32.10  
-    ## [28] parallel_4.6.1        inline_0.3.21         rstan_2.32.7         
-    ## [31] tools_4.6.1           rstantools_2.6.0      checkmate_2.3.4      
-    ## [34] assertthat_0.2.1      vctrs_0.7.3           posterior_1.7.0      
-    ## [37] R6_2.6.1              stats4_4.6.1          matrixStats_1.5.0    
-    ## [40] lifecycle_1.0.5       fs_2.1.0              htmlwidgets_1.6.4    
-    ## [43] ragg_1.5.2            pkgconfig_2.0.3       desc_1.4.3           
-    ## [46] pkgdown_2.2.0         RcppParallel_5.1.11-2 bslib_0.11.0         
-    ## [49] pillar_1.11.1         gtable_0.3.6          loo_2.10.0           
-    ## [52] glue_1.8.1            Rcpp_1.1.1-1.1        statmod_1.5.2        
-    ## [55] systemfonts_1.3.2     xfun_0.59             tibble_3.3.1         
-    ## [58] tidyselect_1.2.1      farver_2.1.2          htmltools_0.5.9      
-    ## [61] labeling_0.4.3        rmarkdown_2.31        compiler_4.6.1       
-    ## [64] S7_0.2.2              distributional_0.8.1
+    ##  [1] tensorA_0.36.2.1     sass_0.4.10          generics_0.1.4      
+    ##  [4] digest_0.6.39        magrittr_2.0.5       evaluate_1.0.5      
+    ##  [7] grid_4.6.1           RColorBrewer_1.1-3   mvtnorm_1.4-2       
+    ## [10] fastmap_1.2.0        jsonlite_2.0.0       pkgbuild_1.4.8      
+    ## [13] backports_1.5.1      Formula_1.2-6        gridExtra_2.3.1     
+    ## [16] QuickJSR_1.10.0      codetools_0.2-20     textshaping_1.0.5   
+    ## [19] jquerylib_0.1.4      abind_1.4-8          Rdpack_2.6.6        
+    ## [22] cli_3.6.6            rlang_1.3.0          rbibutils_2.4.1     
+    ## [25] withr_3.0.3          cachem_1.1.0         yaml_2.3.12         
+    ## [28] otel_0.2.0           StanHeaders_2.32.10  parallel_4.6.1      
+    ## [31] inline_0.3.21        rstan_2.32.7         tools_4.6.1         
+    ## [34] rstantools_2.7.0     checkmate_2.3.4      assertthat_0.2.1    
+    ## [37] posterior_1.7.0      vctrs_0.7.3          R6_2.6.1            
+    ## [40] stats4_4.6.1         matrixStats_1.5.0    lifecycle_1.0.5     
+    ## [43] fs_2.1.0             htmlwidgets_1.6.4    ragg_1.5.2          
+    ## [46] pkgconfig_2.0.3      desc_1.4.3           pkgdown_2.2.1       
+    ## [49] RcppParallel_6.2.0   bslib_0.12.0         pillar_1.11.1       
+    ## [52] gtable_0.3.6         loo_2.10.1           glue_1.8.1          
+    ## [55] Rcpp_1.1.2           statmod_1.5.2        systemfonts_1.3.2   
+    ## [58] xfun_0.60            tibble_3.3.1         tidyselect_1.2.1    
+    ## [61] farver_2.1.2         htmltools_0.5.9      labeling_0.4.3      
+    ## [64] rmarkdown_2.31       compiler_4.6.1       S7_0.2.2            
+    ## [67] distributional_0.8.1

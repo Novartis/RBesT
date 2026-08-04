@@ -9,23 +9,25 @@ complex data situations.
 
 ## Introduction
 
-The co-data concept has been introduced in \[1\]. It differs from the
-use of historical data in that the approach makes use of contemporary
-data. A meta-analytic-predictive (MAP) analysis assumes that historical
-data is known at the time-point of specyfing the analysis and is as such
-a retrospective summary of available data. The MAP prior is then
-combined with the current trial data. A co-data approach extends this
-sequential procedure to a meta-analytic-combined (MAC) analysis. In the
-MAC approach all available data is analyzed in a single step - that is,
+The co-data concept has been introduced in ([Neuenschwander et al.
+2016](#ref-neuenschwander2016)). It differs from the use of historical
+data in that the approach makes use of contemporary data. A
+meta-analytic-predictive (MAP) analysis assumes that historical data is
+known at the time-point of specyfing the analysis and is as such a
+retrospective summary of available data. The MAP prior is then combined
+with the current trial data. A co-data approach extends this sequential
+procedure to a meta-analytic-combined (MAC) analysis. In the MAC
+approach all available data is analyzed in a single step - that is,
 historical and concurrent data is combined in a single inference step.
 Both approaches MAP and MAC yield exactly the same results as is
 demonstrated in the appendix at the bottom. An example for a co-data
 scenario in drug development is the simultaneous execution of twin phase
 III trails for registriation. In such a setting, a futility analysis at
 an interim analysis may take historical and all contemporary data into
-account in a co-data approach. This example has been discussed in \[1\]
-using the probability of success (PoS) as metric to assess futility at
-an interim analysis and is discussed here in detail.
+account in a co-data approach. This example has been discussed in
+([Neuenschwander et al. 2016](#ref-neuenschwander2016)) using the
+probability of success (PoS) as metric to assess futility at an interim
+analysis and is discussed here in detail.
 
 The key property of the probability of success metric is the
 consideration of uncertainty in parameters conditional on available
@@ -89,18 +91,19 @@ part of the trial analysis.
 
 ## Example Data Scenario
 
-In the following the hypothetical example as in \[1\] is discussed. The
-assumed endpoint is time-to-event, which is analyzed using the normal
-approximation of the log-rank statistic for comparing two groups. Under
-a 1:1 randomization the standard error of the log-hazard ratio scales
-with the number of events as $`2/\sqrt{N_{events}}`$. This implies a
-corresponding sampling standard deviation of $`2`$, which defines the
-unit information prior used later on in the analysis. The historical
-data considered is a proof of concept and a phase II trial. The twin
-phase III studies are event driven. Each trial stops whenever a total of
-$`379`$ events is reached and an interim is planned whenever at least
-$`150`$ events have occured. The assumed true hazard ratio used for the
-design of the trial is $`0.8`$.
+In the following the hypothetical example as in ([Neuenschwander et al.
+2016](#ref-neuenschwander2016)) is discussed. The assumed endpoint is
+time-to-event, which is analyzed using the normal approximation of the
+log-rank statistic for comparing two groups. Under a 1:1 randomization
+the standard error of the log-hazard ratio scales with the number of
+events as $`2/\sqrt{N_{events}}`$. This implies a corresponding sampling
+standard deviation of $`2`$, which defines the unit information prior
+used later on in the analysis. The historical data considered is a proof
+of concept and a phase II trial. The twin phase III studies are event
+driven. Each trial stops whenever a total of $`379`$ events is reached
+and an interim is planned whenever at least $`150`$ events have occured.
+The assumed true hazard ratio used for the design of the trial is
+$`0.8`$.
 
 Example data:
 
@@ -778,11 +781,13 @@ interim_pos_B(interim_B_allcombined)
 ## Appendix: MAP and MAC equivalence
 
 In the preceeding sections we have used MAP and MAC equivalence already.
-The proof for the equivalence is presented reference in \[2\]. The
-formal deriavtion is shown at the end of this section
+The proof for the equivalence is presented reference in ([Schmidli et
+al. 2014](#ref-schmidli2014)). The formal deriavtion is shown at the end
+of this section
 
 While MAP and MAC provide the exact same results, the difference is a
-sequential vs a joint analysis as (see also \[2\]):
+sequential vs a joint analysis as (see also ([Schmidli et al.
+2014](#ref-schmidli2014))):
 
 1.  MAP: Summarize historical information as MAP and then update the MAP
     with the trial result (MCMC, then `postmix`).
@@ -938,14 +943,16 @@ The equivalence holds under the use of the meta-analytic model.
 
 ## References
 
-\[1\] Neuenschwander, B., Roychoudhury, S., & Schmidli, H. (2016). On
-the Use of Co-Data in Clinical Trials. Statistics in Biopharmaceutical
-Research, 8(3), 345-354.
+Neuenschwander, Beat, Satrajit Roychoudhury, and Heinz Schmidli. 2016.
+“On the Use of Co-Data in Clinical Trials.” *Statistics in
+Biopharmaceutical Research* 8 (3): 345–54.
+<https://doi.org/10.1080/19466315.2016.1174149>.
 
-\[2\] 1. Schmidli H, Gsteiger S, Roychoudhury S, O’Hagan A,
-Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive
-priors in clinical trials with historical control information.
-Biometrics. 2014;70(4):1023-1032.
+Schmidli, Heinz, Sandro Gsteiger, Satrajit Roychoudhury, Anthony
+O’Hagan, David Spiegelhalter, and Beat Neuenschwander. 2014. “Robust
+Meta-Analytic-Predictive Priors in Clinical Trials with Historical
+Control Information.” *Biometrics* 70 (4): 1023–32.
+<https://doi.org/10.1111/biom.12242>.
 
 ## R Session Info
 
@@ -976,29 +983,30 @@ sessionInfo()
     ## 
     ## other attached packages:
     ## [1] purrr_1.2.2      dplyr_1.2.1      bayesplot_1.15.0 ggplot2_4.0.3   
-    ## [5] knitr_1.51       RBesT_1.10-0    
+    ## [5] knitr_1.51       RBesT_1.11-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6          tensorA_0.36.2.1      xfun_0.59            
-    ##  [4] bslib_0.11.0          QuickJSR_1.10.0       htmlwidgets_1.6.4    
-    ##  [7] inline_0.3.21         vctrs_0.7.3           tools_4.6.1          
-    ## [10] generics_0.1.4        stats4_4.6.1          parallel_4.6.1       
-    ## [13] tibble_3.3.1          pkgconfig_2.0.3       checkmate_2.3.4      
-    ## [16] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           
-    ## [19] distributional_0.8.1  RcppParallel_5.1.11-2 assertthat_0.2.1     
-    ## [22] lifecycle_1.0.5       compiler_4.6.1        farver_2.1.2         
-    ## [25] stringr_1.6.0         textshaping_1.0.5     codetools_0.2-20     
-    ## [28] htmltools_0.5.9       sass_0.4.10           yaml_2.3.12          
-    ## [31] Formula_1.2-5         pillar_1.11.1         pkgdown_2.2.0        
-    ## [34] jquerylib_0.1.4       cachem_1.1.0          StanHeaders_2.32.10  
-    ## [37] abind_1.4-8           posterior_1.7.0       rstan_2.32.7         
-    ## [40] tidyselect_1.2.1      digest_0.6.39         mvtnorm_1.4-1        
-    ## [43] stringi_1.8.7         reshape2_1.4.5        labeling_0.4.3       
-    ## [46] fastmap_1.2.0         grid_4.6.1            cli_3.6.6            
-    ## [49] magrittr_2.0.5        loo_2.10.0            pkgbuild_1.4.8       
-    ## [52] withr_3.0.3           scales_1.4.0          backports_1.5.1      
-    ## [55] rmarkdown_2.31        matrixStats_1.5.0     otel_0.2.0           
-    ## [58] gridExtra_2.3.1       ragg_1.5.2            evaluate_1.0.5       
-    ## [61] rstantools_2.6.0      rlang_1.2.0           Rcpp_1.1.1-1.1       
-    ## [64] glue_1.8.1            jsonlite_2.0.0        plyr_1.8.9           
-    ## [67] R6_2.6.1              systemfonts_1.3.2     fs_2.1.0
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
+    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
+    ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
+    ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
+    ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       
+    ## [25] compiler_4.6.1       farver_2.1.2         textshaping_1.0.5   
+    ## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         
+    ## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       
+    ## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        
+    ## [37] StanHeaders_2.32.10  abind_1.4-8          posterior_1.7.0     
+    ## [40] rstan_2.32.7         tidyselect_1.2.1     digest_0.6.39       
+    ## [43] stringi_1.8.7        mvtnorm_1.4-2        reshape2_1.4.5      
+    ## [46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
+    ## [49] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
+    ## [52] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
+    ## [55] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
+    ## [58] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
+    ## [61] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
+    ## [64] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
+    ## [67] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
+    ## [70] systemfonts_1.3.2    fs_2.1.0
