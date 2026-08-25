@@ -105,13 +105,13 @@ gfmix <- mixgamma(rob1 = c(0.15, mn2gamma(2, 1)),
                   inf = c(0.7, 50, 10))
 }
 \seealso{
-Other mixdist: 
+Other mixdist:
 \code{\link{mix}},
-\code{\link{mixbeta}()},
-\code{\link{mixcombine}()},
+\code{\link[=mixbeta]{mixbeta()}},
+\code{\link[=mixcombine]{mixcombine()}},
 \code{\link{mixjson}},
-\code{\link{mixmvnorm}()},
-\code{\link{mixnorm}()},
+\code{\link[=mixmvnorm]{mixmvnorm()}},
+\code{\link[=mixnorm]{mixnorm()}},
 \code{\link{mixplot}}
 }
 \concept{mixdist}

@@ -1,3 +1,30 @@
+# RBesT 1.12-0 - unreleased
+
+## Enhancements
+
+* `gMAP` now samples the group random effects in a sum-to-zero
+  parametrization whenever the model has an intercept, normal random
+  effects and a single `tau` stratum. The data-free common shift shared
+  by the intercept and the random effects is marginalized analytically
+  using an orthonormal basis of the sum-to-zero subspace, which removes
+  the ridge between `beta[1]` and `mean(eps)` that made the posterior
+  hard to explore. The model is mathematically unchanged and all outputs
+  keep their previous meaning; only the sampling geometry differs.
+  Student-t random effects, several `tau` strata and intercept-free
+  models continue to use the previous parametrization. Set
+  `options(RBesT.MC.s2z = FALSE)` to return to the previous
+  parametrization.
+* Lower the default `adapt_delta` for `gMAP` from `0.99` to `0.95`
+  (`options(RBesT.MC.control)`). The sum-to-zero parametrization no
+  longer needs the very conservative target acceptance rate that the old
+  geometry required, and the lower target draws the same effective
+  sample size from substantially fewer gradient evaluations. Should
+  divergent transitions still occur, the reported warning now recommends
+  raising `adapt_delta` to `0.99`. Setting
+  `options(RBesT.MC.s2z = FALSE)` also restores the previous
+  `adapt_delta` default of `0.99`, since the legacy geometry needs the
+  more conservative target acceptance rate.
+
 # RBesT 1.11-0 - August 3rd, 2026
 
 ## Enhancements

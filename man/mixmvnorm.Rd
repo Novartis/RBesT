@@ -109,13 +109,13 @@ print(mvnm1_alt)
 
 }
 \seealso{
-Other mixdist: 
+Other mixdist:
 \code{\link{mix}},
-\code{\link{mixbeta}()},
-\code{\link{mixcombine}()},
-\code{\link{mixgamma}()},
+\code{\link[=mixbeta]{mixbeta()}},
+\code{\link[=mixcombine]{mixcombine()}},
+\code{\link[=mixgamma]{mixgamma()}},
 \code{\link{mixjson}},
-\code{\link{mixnorm}()},
+\code{\link[=mixnorm]{mixnorm()}},
 \code{\link{mixplot}}
 }
 \concept{mixdist}

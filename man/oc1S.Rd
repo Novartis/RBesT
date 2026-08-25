@@ -185,9 +185,9 @@ designIntermediate_nL(theta_eval)
 
 }
 \seealso{
-Other design1S: 
-\code{\link{decision1S}()},
-\code{\link{decision1S_boundary}()},
-\code{\link{pos1S}()}
+Other design1S:
+\code{\link[=decision1S]{decision1S()}},
+\code{\link[=decision1S_boundary]{decision1S_boundary()}},
+\code{\link[=pos1S]{pos1S()}}
 }
 \concept{design1S}

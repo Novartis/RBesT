@@ -808,6 +808,14 @@ gMAP <- function(
 
   assert_number(ncp, lower = 0, upper = 2)
 
+  ## Sum-to-zero reparametrization of the group random effects. On by
+  ## default; setting the option to FALSE recovers the legacy sampling
+  ## scheme (and with it the legacy adapt_delta, see below). The two
+  ## parametrizations describe the same model.
+  use_s2z <- getOption("RBesT.MC.s2z", TRUE)
+
+  assert_flag(use_s2z)
+
   ## automatically detect if we have a sparse or rich data situation
   ## (very experimental detection, default is to use NCP)
   if (ncp == 2) {
@@ -859,6 +867,8 @@ gMAP <- function(
     "H",
     "X",
     "mX",
+    "has_intercept",
+    "use_s2z",
     "link",
     "y",
     "y_se",
@@ -891,6 +901,8 @@ gMAP <- function(
 
   ## convert to Stan's 0/1 convention
   dataL$prior_PD <- as.integer(dataL$prior_PD)
+  dataL$has_intercept <- as.integer(dataL$has_intercept)
+  dataL$use_s2z <- as.integer(dataL$use_s2z)
 
   ## change variable naming conventions, replace forbidden "." to
   ## "_"
@@ -899,11 +911,7 @@ gMAP <- function(
   ## run model with Stan
 
   rescale <- getOption("RBesT.MC.rescale", TRUE)
-  control_user <- getOption("RBesT.MC.control", list())
-  control <- modifyList(
-    list(adapt_delta = 0.99, stepsize = 0.01, max_treedepth = 20),
-    control_user
-  )
+  control <- .gmap_sampler_control(use_s2z)
   verbose <- getOption("RBesT.verbose", FALSE)
 
   assert_flag(rescale)
@@ -914,7 +922,7 @@ gMAP <- function(
     dataL$beta_raw_guess[2, ] <- 1
   }
 
-  exclude_pars <- c("beta_raw", "tau_raw", "xi_eta")
+  exclude_pars <- c("beta_raw", "tau_raw", "xi_eta", "xi_abar")
   ## in absence of an overall intercept we drop the MAP posterior
   if (!has_intercept) {
     exclude_pars <- c(exclude_pars, "theta_pred", "theta_resp_pred")
@@ -1132,7 +1140,7 @@ gMAP <- function(
     warning(paste(
       "In total",
       n_divergent,
-      "divergent transitions occured during the sampling phase.\nPlease consider increasing adapt_delta closer to 1 with the following command prior to gMAP:\noptions(RBesT.MC.control=list(adapt_delta=0.999))"
+      "divergent transitions occured during the sampling phase.\nPlease consider increasing adapt_delta closer to 1 with the following command prior to gMAP:\noptions(RBesT.MC.control=list(adapt_delta=0.99))"
     ))
   }
 
@@ -1204,7 +1212,7 @@ print.gMAP <- function(x, digits = 3, probs = c(0.025, 0.5, 0.975), ...) {
       num_sim,
       " transitions ending in a divergence after warmup.\n",
       "Increasing 'adapt_delta' closer to 1 may help to avoid these. Use for example: \n",
-      paste0("options(RBesT.MC.control=list(adapt_delta=0.999))"),
+      paste0("options(RBesT.MC.control=list(adapt_delta=0.99))"),
       call. = FALSE
     )
   }
@@ -1395,4 +1403,29 @@ square_root_gamma_stats <- function(a, b) {
   m <- sqrt(b) * exp(lgamma(0.5 + a) - lgamma(a))
   v <- b * a - m^2
   c(mean = m, sd = sqrt(v))
+}
+
+#' Stan sampler control settings for a gMAP fit
+#'
+#' The lower target acceptance rate is justified by the sum-to-zero
+#' geometry; opting out restores the legacy default as well, since the legacy
+#' geometry needs the more conservative target. User settings from
+#' `RBesT.MC.control` always win.
+#'
+#' @param use_s2z whether the sum-to-zero parametrization is active
+#' @param control_user user supplied control list
+#' @return the control list handed to `rstan::sampling()`
+#' @noRd
+.gmap_sampler_control <- function(
+  use_s2z,
+  control_user = getOption("RBesT.MC.control", list())
+) {
+  modifyList(
+    list(
+      adapt_delta = if (use_s2z) 0.95 else 0.99,
+      stepsize = 0.01,
+      max_treedepth = 20
+    ),
+    control_user
+  )
 }

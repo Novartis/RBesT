@@ -34,9 +34,12 @@ Option \tab Default \tab Description \cr
 \code{RBesT.MC.chains} \tab 4 \tab MCMC chains\cr
 \code{RBesT.MC.thin} \tab 4 \tab MCMC thinning \cr
 \code{RBesT.MC.save_warmup} \tab \code{FALSE} \tab MCMC warmup samples saving \cr
-\code{RBesT.MC.control} \tab \verb{list(adapt_delta=0.99,} \tab sets \code{control} argument for Stan call\cr
-\tab \verb{stepsize=0.01,} \tab \cr
-\tab \verb{max_treedepth=20)} \tab \cr
+\code{RBesT.MC.control} \tab \verb{list(adapt_delta=0.95,} \tab sets \code{control} argument for Stan call.\cr
+\tab \verb{stepsize=0.01,} \tab \code{adapt_delta} defaults to \code{0.99} whenever\cr
+\tab \verb{max_treedepth=20)} \tab \code{RBesT.MC.s2z} is \code{FALSE}\cr
+\code{RBesT.MC.s2z} \tab \code{TRUE} \tab sum-to-zero parametrization of the group\cr
+\tab \tab random effects; \code{FALSE} recovers the legacy\cr
+\tab \tab sampling scheme\cr
 \code{RBesT.MC.ncp} \tab 1 \tab parametrization: 0=CP, 1=NCP, 2=Automatic  \cr
 \code{RBesT.MC.init} \tab 1 \tab range of initial uniform \eqn{[-1,1]} is the default  \cr
 \code{RBesT.MC.rescale} \tab \code{TRUE} \tab Automatic rescaling of raw parameters  \cr
@@ -77,6 +80,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Sebastian Weber \email{sebastian.weber@novartis.com}
+
+Authors:
+\itemize{
+  \item Sebastian Weber \email{sebastian.weber@novartis.com}
+}
 
 Other contributors:
 \itemize{

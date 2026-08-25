@@ -164,9 +164,9 @@ decL3(post2, post1)
 \insertRef{gsponer2014}{RBesT}
 }
 \seealso{
-Other design2S: 
-\code{\link{decision2S_boundary}()},
-\code{\link{oc2S}()},
-\code{\link{pos2S}()}
+Other design2S:
+\code{\link[=decision2S_boundary]{decision2S_boundary()}},
+\code{\link[=oc2S]{oc2S()}},
+\code{\link[=pos2S]{pos2S()}}
 }
 \concept{design2S}

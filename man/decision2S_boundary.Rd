@@ -172,9 +172,9 @@ futilityCrit(postmix(priorP, m = y1c - 1E-3, n = 10), postmix(priorT, m = -10, n
 
 }
 \seealso{
-Other design2S: 
-\code{\link{decision2S}()},
-\code{\link{oc2S}()},
-\code{\link{pos2S}()}
+Other design2S:
+\code{\link[=decision2S]{decision2S()}},
+\code{\link[=oc2S]{oc2S()}},
+\code{\link[=pos2S]{pos2S()}}
 }
 \concept{design2S}

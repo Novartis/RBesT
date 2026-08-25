@@ -207,31 +207,43 @@ import(methods)
 import(mvtnorm)
 import(rstantools)
 import(stats)
-importFrom(RcppParallel,CxxFlags)
-importFrom(RcppParallel,RcppParallelLibs)
+importFrom(RcppParallel,
+  CxxFlags,
+  RcppParallelLibs
+)
 importFrom(Rdpack,reprompt)
-importFrom(jsonlite,fromJSON)
-importFrom(jsonlite,toJSON)
+importFrom(jsonlite,
+  fromJSON,
+  toJSON
+)
 importFrom(lifecycle,deprecated)
-importFrom(matrixStats,colLogSumExps)
-importFrom(matrixStats,colSums2)
-importFrom(matrixStats,logSumExp)
-importFrom(matrixStats,rowLogSumExps)
-importFrom(matrixStats,rowMins)
-importFrom(matrixStats,rowRanks)
-importFrom(posterior,as_draws)
-importFrom(posterior,as_draws_array)
-importFrom(posterior,as_draws_df)
-importFrom(posterior,as_draws_list)
-importFrom(posterior,as_draws_matrix)
-importFrom(posterior,as_draws_rvars)
-importFrom(posterior,subset_draws)
+importFrom(matrixStats,
+  colLogSumExps,
+  colSums2,
+  logSumExp,
+  rowLogSumExps,
+  rowMins,
+  rowRanks
+)
+importFrom(posterior,
+  as_draws,
+  as_draws_array,
+  as_draws_df,
+  as_draws_list,
+  as_draws_matrix,
+  as_draws_rvars,
+  subset_draws
+)
 importFrom(rlang,.data)
-importFrom(rstan,extract)
-importFrom(rstan,get_sampler_params)
-importFrom(rstan,sampling)
-importFrom(rstan,summary)
+importFrom(rstan,
+  extract,
+  get_sampler_params,
+  sampling,
+  summary
+)
 importFrom(stats, sigma)
-importFrom(utils,capture.output)
-importFrom(utils,modifyList)
+importFrom(utils,
+  capture.output,
+  modifyList
+)
 useDynLib(RBesT, .registration = TRUE)

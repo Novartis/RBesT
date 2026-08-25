@@ -159,9 +159,9 @@ decision1S_boundary(flat_prior, nL, dec2)
 
 }
 \seealso{
-Other design1S: 
-\code{\link{decision1S}()},
-\code{\link{oc1S}()},
-\code{\link{pos1S}()}
+Other design1S:
+\code{\link[=decision1S]{decision1S()}},
+\code{\link[=oc1S]{oc1S()}},
+\code{\link[=pos1S]{pos1S()}}
 }
 \concept{design1S}

@@ -118,13 +118,13 @@ summary(bm)
 \seealso{
 \code{\link[=plot.mix]{plot.mix()}}
 
-Other mixdist: 
-\code{\link{mixbeta}()},
-\code{\link{mixcombine}()},
-\code{\link{mixgamma}()},
+Other mixdist:
+\code{\link[=mixbeta]{mixbeta()}},
+\code{\link[=mixcombine]{mixcombine()}},
+\code{\link[=mixgamma]{mixgamma()}},
 \code{\link{mixjson}},
-\code{\link{mixmvnorm}()},
-\code{\link{mixnorm}()},
+\code{\link[=mixmvnorm]{mixmvnorm()}},
+\code{\link[=mixnorm]{mixnorm()}},
 \code{\link{mixplot}}
 }
 \concept{mixdist}

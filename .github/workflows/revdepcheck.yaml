@@ -62,10 +62,17 @@ jobs:
       - name: Fail on new reverse dependency problems
         if: always()
         run: |
-          if [ -s revdep/problems.md ]; then
-            echo "::error::New reverse dependency problems detected."
-            cat revdep/problems.md
-            exit 1
+          if [ ! -f revdep/problems.md ]; then
+            echo "No revdep/problems.md produced; treating as no problems."
+            exit 0
           fi
-          echo "No new reverse dependency problems."
+          # revdepcheck always writes problems.md; when there are no
+          # problems it contains the sentinel "Wow, no problems at all. :)".
+          if grep -qiF "no problems at all" revdep/problems.md; then
+            echo "No new reverse dependency problems."
+            exit 0
+          fi
+          echo "::error::New reverse dependency problems detected."
+          cat revdep/problems.md
+          exit 1
         shell: bash

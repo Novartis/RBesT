@@ -71,7 +71,7 @@ default a data-dependent centering of covariates leading to a shift
 of the overall intercept. This is commonly not desirable in
 applications of this functionality. It is therefore strongly
 recommended to pass the option \code{center=FALSE} as argument to
-the \code{brms} formula created with the \code{\link[brms:brmsformula]{brms::bf()}}
+the \code{brms} formula created with the \code{\link[brms:bf]{brms::bf()}}
 function as demonstrated with the example below.
 }
 \examples{

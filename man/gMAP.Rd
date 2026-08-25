@@ -95,7 +95,7 @@ data). Defaults to \code{FALSE}.}
 \code{t}.}
 
 \item{contrasts}{an optional list; See \code{contrasts.arg} from
-\code{\link[stats:model.matrix]{stats::model.matrix.default()}}.}
+\code{\link[stats:model.matrix.default]{stats::model.matrix.default()}}.}
 
 \item{iter}{number of iterations (including warmup).}
 
@@ -276,7 +276,7 @@ the response or the link scale.
 
 \item \code{as.matrix(gMAP)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 extracts the posterior sample of the model. Use
-\code{\link[posterior:draws_matrix]{posterior::as_draws_matrix()}} instead.
+\code{\link[posterior:as_draws_matrix]{posterior::as_draws_matrix()}} instead.
 
 \item \code{summary(gMAP)}: returns the summaries of a gMAP.
 analysis. Output is a \code{gMAPsummary} object, which is a list containing
@@ -369,7 +369,7 @@ and b.
  The MAP analysis is performed using
 Markov-Chain-Monte-Carlo (MCMC) in \code{\link[rstan:rstan]{rstan::rstan()}}. MCMC
 is a stochastic algorithm. To obtain exactly reproducible results
-you must use the \code{\link[base:Random]{base::set.seed()}} function
+you must use the \code{\link[base:set.seed]{base::set.seed()}} function
 before calling \code{gMAP}. See \code{\link[=RBesT-package]{RBesT()}}
 overview page for global options on setting further MCMC simulation
 parameters.

@@ -125,7 +125,7 @@ AIC(bfit)
 \insertRef{dempster1977}{RBesT}
 }
 \seealso{
-Other EM: 
-\code{\link{plot.EM}()}
+Other EM:
+\code{\link[=plot.EM]{plot.EM()}}
 }
 \concept{EM}

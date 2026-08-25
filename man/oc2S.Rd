@@ -171,9 +171,9 @@ curve(design_rob(0.2 + x, 0.2), lty = 3, add = TRUE)
 \insertRef{schmidli2014}{RBesT}
 }
 \seealso{
-Other design2S: 
-\code{\link{decision2S}()},
-\code{\link{decision2S_boundary}()},
-\code{\link{pos2S}()}
+Other design2S:
+\code{\link[=decision2S]{decision2S()}},
+\code{\link[=decision2S_boundary]{decision2S_boundary()}},
+\code{\link[=pos2S]{pos2S()}}
 }
 \concept{design2S}

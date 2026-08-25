@@ -145,9 +145,9 @@ pos_ia(post_ia)
 
 }
 \seealso{
-Other design1S: 
-\code{\link{decision1S}()},
-\code{\link{decision1S_boundary}()},
-\code{\link{oc1S}()}
+Other design1S:
+\code{\link[=decision1S]{decision1S()}},
+\code{\link[=decision1S_boundary]{decision1S_boundary()}},
+\code{\link[=oc1S]{oc1S()}}
 }
 \concept{design1S}

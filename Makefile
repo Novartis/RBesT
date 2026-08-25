@@ -40,6 +40,13 @@ R_HOME ?= $(shell R RHOME)
 PKG_VERSION ?= $(patsubst ‘%’, %, $(word 2, $(shell grep ^Version DESCRIPTION)))
 GIT_TAG ?= v$(PKG_VERSION)
 
+## Refresh the git export whenever HEAD moves. Wrapped in $(wildcard ...)
+## because the branch ref may be packed away or HEAD may be detached.
+GIT_DIR := $(shell git rev-parse --git-dir 2>/dev/null)
+GIT_EXPORT_DEPS := $(wildcard $(GIT_DIR)/HEAD $(GIT_DIR)/packed-refs \
+  $(GIT_DIR)/$(shell git symbolic-ref --quiet HEAD 2>/dev/null))
+GIT_EXPORT := build/$(RPKG)-$(GIT_TAG).tar.gz
+
 MD5 ?= md5sum
 TMPDIR := $(realpath $(shell mktemp -d))
 
@@ -186,12 +193,18 @@ vignettes/REFERENCES.bib : inst/REFERENCES.bib
 PHONY := $(TARGET)
 $(TARGET): build/r-source-fast
 
-build/r-source-fast : $(BIN_OBJS) man/package-doc $(SRCS) DESCRIPTION vignettes/REFERENCES.bib
+## Standalone target so that the git export is one of the first artifacts to
+## appear in build/, ahead of the expensive documentation and vignette
+## prerequisites. Both source targets below consume it rather than rolling
+## their own copy.
+$(GIT_EXPORT) : $(GIT_EXPORT_DEPS)
 	install -d build
-	git archive --format=tar.gz --prefix $(RPKG)-$(GIT_TAG)/ HEAD > build/$(RPKG)-$(GIT_TAG).tar.gz
+	git archive --format=tar.gz --prefix $(RPKG)-$(GIT_TAG)/ HEAD > $@
+
+build/r-source-fast : $(GIT_EXPORT) $(BIN_OBJS) man/package-doc $(SRCS) DESCRIPTION vignettes/REFERENCES.bib
+	install -d build
 	rm -rf build/$(RPKG)-$(GIT_TAG)
 	cd build; tar x -C $(TMPDIR) -f $(RPKG)-$(GIT_TAG).tar.gz
-	rm -f build/$(RPKG)-$(GIT_TAG).tar.gz
 	cp -v NAMESPACE $(TMPDIR)/$(RPKG)-$(GIT_TAG)
 	## Overlay the working-tree DESCRIPTION so the built tarball reflects the
 	## current (possibly uncommitted) version -- PKG_VERSION is derived from the
@@ -210,11 +223,14 @@ build/r-source-fast : $(BIN_OBJS) man/package-doc $(SRCS) DESCRIPTION vignettes/
 	mv $(TMPDIR)/$(RPKG)_$(PKG_VERSION).tar.gz build/$(RPKG)-source.tar.gz
 	touch build/r-source-fast
 
-build/r-source-release : $(BIN_OBJS) $(DOC_OBJS) $(SRCS) DESCRIPTION vignettes/REFERENCES.bib inst/sbc/sbc_report.html
+build/r-source-release : $(GIT_EXPORT) $(BIN_OBJS) $(DOC_OBJS) $(SRCS) DESCRIPTION vignettes/REFERENCES.bib inst/sbc/sbc_report.html
 	install -d build
-	git archive --format=tar.gz --prefix $(RPKG)-$(GIT_TAG)/ HEAD > build/$(RPKG)-$(GIT_TAG).tar.gz
 	rm -rf build/$(RPKG)-$(GIT_TAG)
-	cd build; tar xf $(RPKG)-$(GIT_TAG).tar.gz
+	## -P disables tar's delayed-symlink handling, which extracts relative
+	## symlinks such as vignettes/articles/REFERENCES.bib via a mode 0000
+	## placeholder file. That placeholder cannot be reopened on shared
+	## (virtiofs/9p) working directories, making extraction fail there.
+	cd build; tar -Pxf $(RPKG)-$(GIT_TAG).tar.gz
 	cp -v NAMESPACE build/$(RPKG)-$(GIT_TAG)
 	install -d build/$(RPKG)-$(GIT_TAG)/inst/doc
 	cp -v inst/doc/$(RPKG).pdf build/$(RPKG)-$(GIT_TAG)/inst/doc

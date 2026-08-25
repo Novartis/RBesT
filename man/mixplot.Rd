@@ -109,13 +109,13 @@ pl + ggtitle("Normal 2-Component Mixture")
 
 }
 \seealso{
-Other mixdist: 
+Other mixdist:
 \code{\link{mix}},
-\code{\link{mixbeta}()},
-\code{\link{mixcombine}()},
-\code{\link{mixgamma}()},
+\code{\link[=mixbeta]{mixbeta()}},
+\code{\link[=mixcombine]{mixcombine()}},
+\code{\link[=mixgamma]{mixgamma()}},
 \code{\link{mixjson}},
-\code{\link{mixmvnorm}()},
-\code{\link{mixnorm}()}
+\code{\link[=mixmvnorm]{mixmvnorm()}},
+\code{\link[=mixnorm]{mixnorm()}}
 }
 \concept{mixdist}

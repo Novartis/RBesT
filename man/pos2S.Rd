@@ -177,9 +177,9 @@ pos_final(postP_interim, postT_interim)
 
 }
 \seealso{
-Other design2S: 
-\code{\link{decision2S}()},
-\code{\link{decision2S_boundary}()},
-\code{\link{oc2S}()}
+Other design2S:
+\code{\link[=decision2S]{decision2S()}},
+\code{\link[=decision2S_boundary]{decision2S_boundary()}},
+\code{\link[=oc2S]{oc2S()}}
 }
 \concept{design2S}

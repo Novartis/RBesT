@@ -27,9 +27,12 @@
 #' `RBesT.MC.chains` \tab 4 \tab MCMC chains\cr
 #' `RBesT.MC.thin` \tab 4 \tab MCMC thinning \cr
 #' `RBesT.MC.save_warmup` \tab `FALSE` \tab MCMC warmup samples saving \cr
-#' `RBesT.MC.control` \tab `list(adapt_delta=0.99,` \tab sets `control` argument for Stan call\cr
-#'  \tab `stepsize=0.01,` \tab \cr
-#'  \tab `max_treedepth=20)` \tab \cr
+#' `RBesT.MC.control` \tab `list(adapt_delta=0.95,` \tab sets `control` argument for Stan call.\cr
+#'  \tab `stepsize=0.01,` \tab `adapt_delta` defaults to `0.99` whenever\cr
+#'  \tab `max_treedepth=20)` \tab `RBesT.MC.s2z` is `FALSE`\cr
+#' `RBesT.MC.s2z` \tab `TRUE` \tab sum-to-zero parametrization of the group\cr
+#' \tab \tab random effects; `FALSE` recovers the legacy\cr
+#' \tab \tab sampling scheme\cr
 #' `RBesT.MC.ncp` \tab 1 \tab parametrization: 0=CP, 1=NCP, 2=Automatic  \cr
 #' `RBesT.MC.init` \tab 1 \tab range of initial uniform \eqn{[-1,1]} is the default  \cr
 #' `RBesT.MC.rescale` \tab `TRUE` \tab Automatic rescaling of raw parameters  \cr

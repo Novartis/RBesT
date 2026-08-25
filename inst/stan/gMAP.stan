@@ -2,6 +2,36 @@
 #include /include/copyright_novartis.stan
 
 // gMAP Stan Analysis
+functions {
+  /*
+   * Orthonormal (Helmert) basis Q of the zero-sum subspace of R^J:
+   *
+   *   Q'Q = I_{J-1},   1'Q = 0,   QQ' = I_J - (1/J) 1 1'
+   *
+   * Used for the sum-to-zero (s2z) reparametrization which marginalizes the
+   * data-free common shift of the group random effects. The dedicated
+   * sum_to_zero_vector type requires Stan >= 2.36 while RBesT targets 2.32,
+   * hence the explicit basis.
+   *
+   * Column k has k entries 1/sqrt(k(k+1)), one entry -k/sqrt(k(k+1)) and is
+   * zero afterwards. For J = 1 the result is the 1 x 0 matrix.
+   *
+   * Building Q costs O(J^2) and applying it another O(J^2). J is the number
+   * of historical trials (typically < 30), so the O(J) cumulative-sum Helmert
+   * recursion is not worth the added complexity.
+   */
+  matrix zero_sum_basis(int J) {
+    matrix[J, J - 1] Q = rep_matrix(0.0, J, J - 1);
+    for (k in 1 : (J - 1)) {
+      real s = inv_sqrt(k * (k + 1.0));
+      for (i in 1 : k) {
+        Q[i, k] = s;
+      }
+      Q[k + 1, k] = -k * s;
+    }
+    return Q;
+  }
+}
 data {
   // number of input historical trials
   int<lower=1> H;
@@ -36,6 +66,14 @@ data {
   // design matrix
   matrix[H, mX] X;
   
+  // does the model include an overall intercept? (first column of X is then
+  // identically 1); required for the sum-to-zero reparametrization
+  int<lower=0, upper=1> has_intercept;
+  
+  // user switch enabling the sum-to-zero reparametrization (option
+  // RBesT.MC.s2z, default on); set to 0 to recover the legacy sampling scheme
+  int<lower=0, upper=1> use_s2z;
+  
   // design matrix prediction (not used, only intercept prediction)
   //matrix[H,mX] Xpred;
   
@@ -68,6 +106,38 @@ transformed data {
   array[n_groups] int<lower=1, upper=n_tau_strata> tau_strata_gindex = rep_array(tau_strata_pred,
                                                                     n_groups);
   
+  /*
+   * Sum-to-zero (s2z) reparametrization.
+   *
+   * The data see the group effects only through beta[1] + eps_j, so the common
+   * shift mean(eps) is conditionally data-free and is marginalized out here.
+   * This removes the beta[1]/mean(eps) ridge; the super-population beta[1] is
+   * recovered exactly (not approximately) in transformed parameters.
+   *
+   * Only applicable when
+   *   - the random effects are normal (a vector of iid Student-t values is not
+   *     spherically symmetric, so the shift is not data-free),
+   *   - there is a single tau stratum (with heterogeneous scales the exact
+   *     decomposition is the precision-weighted one, which needs a basis
+   *     rebuilt per gradient evaluation; see
+   *     design/issue-s2z-multi-tau-strata.md), and
+   *   - the model has an overall intercept which can absorb the shift.
+   * Otherwise the legacy parametrization is used unchanged.
+   *
+   * use_s2z is a user escape hatch rather than a correctness condition: the
+   * two parametrizations describe the same model, so switching it off changes
+   * only the sampling geometry. It exists so that a user who hits pathological
+   * behaviour in the new geometry can fall back without downgrading.
+   */
+  int s2z = use_s2z && (re_dist == 0) && (n_tau_strata == 1) && has_intercept;
+  // number of sampled group coordinates: J-1 free subspace coordinates under
+  // s2z, J group effects otherwise
+  int n_re = s2z ? n_groups - 1 : n_groups;
+  // dimension of the data-free recovery direction zeta (0 or 1)
+  int n_rec = s2z ? 1 : 0;
+  real inv_sqrt_J = inv_sqrt(n_groups);
+  matrix[s2z ? n_groups : 0, s2z ? n_groups - 1 : 0] Q;
+  
   for (i in 1 : mX) {
     beta_prior_stan[1, i] = beta_prior[i, 1];
     beta_prior_stan[2, i] = beta_prior[i, 2];
@@ -80,6 +150,31 @@ transformed data {
   
   for (i in 1 : H) {
     tau_strata_gindex[group_index[i]] = tau_strata_index[i];
+  }
+  
+  if (s2z) {
+    /*
+     * Absorbing the common shift into the intercept is only valid if the first
+     * design column is *identically* one: a shift delta moves theta[h] by
+     * delta * (1 - X[h,1]) otherwise, which is a different model. This holds
+     * whenever has_intercept is set, since model.matrix() then emits an
+     * all-ones (Intercept) column, but assert it so that a future change to
+     * how X is built cannot break shift absorption silently.
+     *
+     * NOTE: this is a *different* invariant from the treatment-contrast guard
+     * of the legacy centered parametrization below; do not conflate them.
+     */
+    for (i in 1 : H) {
+      if (X[i, 1] != 1) {
+        reject("s2z requires an all-ones intercept column!");
+      }
+    }
+    // sd_alpha = hypot(s1, tau/sqrt(J)) must be strictly positive, which can
+    // fail for s1 = 0 combined with a fixed tau = 0
+    if (beta_prior_stan[2, 1] <= 0) {
+      reject("s2z requires a strictly positive intercept prior sd!");
+    }
+    Q = zero_sum_basis(n_groups);
   }
   
   /*
@@ -127,6 +222,18 @@ transformed data {
   if (re_dist == 1) 
     print("random effects:  Student-t, df = ", re_dist_t_df);
   
+  /*
+   * X_param is LEGACY-ONLY: its centered branch zeroes the intercept column so
+   * that the intercept can be folded into the group effects. The s2z path
+   * builds theta from X directly and must NOT wire the intercept through
+   * X_param.
+   *
+   * The treatment-contrast guard below still executes for s2z fits, but can
+   * never trigger for them: the s2z precondition already rules out
+   * X[i,1] != 1.
+   * That is not a user-visible behaviour change: it fires only when
+   * X[i,1] != 1, which the s2z precondition above already rules out.
+   */
   if (ncp) {
     X_param = X;
     print("parametrization: Non-Centered");
@@ -139,13 +246,18 @@ transformed data {
       X_param[i, 1] = 0;
     }
   }
+  
   if (prior_PD) 
     print("Info: Sampling from prior predictive distribution.");
 }
 parameters {
   vector[mX] beta_raw;
   vector[n_tau_strata] tau_raw;
-  vector[n_groups] xi_eta;
+  // under s2z these are the J-1 free coordinates inside the zero-sum subspace,
+  // otherwise the J group effects
+  vector[n_re] xi_eta;
+  // data-free recovery direction zeta ~ N(0,1); length 0 unless s2z
+  vector[n_rec] xi_abar;
 }
 transformed parameters {
   vector[H] theta;
@@ -161,7 +273,45 @@ transformed parameters {
     tau = exp(tau_raw_guess[1] + tau_raw_guess[2] * tau_raw);
   
   // expand random effect to groups in loop for performance reasons
-  if (ncp) {
+  if (s2z) {
+    /*
+     * Sum-to-zero path. beta[1] holds the *sampled* intercept
+     * alpha = beta[1] + mean(eps) until the very end of this block, where it
+     * is overwritten with the recovered super-population intercept. This
+     * sequencing is load-bearing: theta must be formed while beta[1] still
+     * holds alpha.
+     */
+    real alpha = beta[1]; // local, NOT an output
+    real m1 = beta_prior_stan[1, 1];
+    real s1 = beta_prior_stan[2, 1];
+    real sd_a = tau[1] * inv_sqrt_J; // sd of the common shift
+    real sd_alpha = hypot(s1, sd_a); // widened intercept prior sd
+    // r of the design doc, renamed since `r` is the binomial response data
+    real r_shift = sd_a / sd_alpha; // in (0, 1)
+    /*
+     * Recovery of the common shift. With zeta = xi_abar[1] ~ N(0,1) entering
+     * no other density statement, this reproduces
+     *   mean(eps) | alpha, tau ~ N(r^2 (alpha - m1), (s1 r)^2)
+     * exactly, so beta[1] is an exact draw from its conditional. Written via
+     * hypot and the ratio r so that neither s1^2 nor tau^2/J materializes.
+     */
+    real abar = r_shift * (r_shift * (alpha - m1) + s1 * xi_abar[1]);
+    // group effects inside the zero-sum subspace; marginal sd is
+    // tau * sqrt(1 - 1/J), which is exactly the distribution of
+    // eps - mean(eps). Do NOT rescale by (1 - 1/J)^-1/2.
+    vector[n_groups] re = Q
+                          * (ncp ? tau[1] * xi_eta
+                             : beta_raw_guess[2, 1] * xi_eta);
+    
+    // note: X, not X_param -- the intercept column must be kept here
+    for (h in 1 : H) {
+      theta[h] = X[h] * beta + re[group_index[h]];
+    }
+    
+    // super-population intercept; must never receive a `~` statement, see
+    // the model block
+    beta[1] = alpha - abar;
+  } else if (ncp) {
     if (n_tau_strata == 1) {
       // most common case of just one stratum which simplifies things
       // and in ncp mode
@@ -183,26 +333,63 @@ transformed parameters {
   }
 }
 model {
-  if (ncp) {
-    // standardized random effect distribution (aka Matt trick)
-    if (re_dist == 0) 
-      xi_eta ~ normal(0, 1);
-    if (re_dist == 1) 
-      xi_eta ~ student_t(re_dist_t_df, 0, 1);
+  if (s2z) {
+    /*
+     * alpha is recomputed from the raw parameter: beta[1] now holds the
+     * RECOVERED super-population intercept, which must never appear in any
+     * density statement. That is exactly what makes zeta = xi_abar[1] an
+     * exact N(0,1) draw and beta[1] an exact draw from its conditional.
+     * A test asserts the N(0,1) marginal of xi_abar to catch any regression
+     * here (e.g. re-adding a vectorized `beta ~ normal(...)`).
+     */
+    real alpha = beta_raw_guess[1, 1] + beta_raw_guess[2, 1] * beta_raw[1];
+    
+    xi_abar ~ std_normal();
+    
+    // free subspace coordinates; centered and non-centered are the same
+    // target, no Jacobian is needed since the density is stated on the
+    // sampled variable itself
+    if (ncp) {
+      xi_eta ~ std_normal();
+    } else {
+      xi_eta ~ normal(0, tau[1] / beta_raw_guess[2, 1]);
+    }
+    
+    // widened intercept prior, alpha | tau ~ N(m1, s1^2 + tau^2/J).
+    // The `~` form drops only genuinely constant terms; the -log(sd) here
+    // depends on tau and is therefore retained, which is what the tau
+    // marginal needs. A log_prob test over a tau grid asserts this.
+    alpha ~ normal(beta_prior_stan[1, 1],
+                   hypot(beta_prior_stan[2, 1], tau[1] * inv_sqrt_J));
+    
+    // remaining coefficients keep their original priors
+    if (mX > 1) {
+      beta[2 : mX] ~ normal(beta_prior_stan[1][2 : mX],
+                            beta_prior_stan[2][2 : mX]);
+    }
   } else {
-    // random effect distribution
-    if (re_dist == 0) 
-      xi_eta ~ normal((beta[1] - beta_raw_guess[1, 1]) / beta_raw_guess[2, 1],
-                      tau[tau_strata_gindex] / beta_raw_guess[2, 1]);
-    if (re_dist == 1) 
-      xi_eta ~ student_t(re_dist_t_df,
-                         (beta[1] - beta_raw_guess[1, 1])
-                         / beta_raw_guess[2, 1],
-                         tau[tau_strata_gindex] / beta_raw_guess[2, 1]);
+    if (ncp) {
+      // standardized random effect distribution (aka Matt trick)
+      if (re_dist == 0) 
+        xi_eta ~ normal(0, 1);
+      if (re_dist == 1) 
+        xi_eta ~ student_t(re_dist_t_df, 0, 1);
+    } else {
+      // random effect distribution
+      if (re_dist == 0) 
+        xi_eta ~ normal((beta[1] - beta_raw_guess[1, 1])
+                        / beta_raw_guess[2, 1],
+                        tau[tau_strata_gindex] / beta_raw_guess[2, 1]);
+      if (re_dist == 1) 
+        xi_eta ~ student_t(re_dist_t_df,
+                           (beta[1] - beta_raw_guess[1, 1])
+                           / beta_raw_guess[2, 1],
+                           tau[tau_strata_gindex] / beta_raw_guess[2, 1]);
+    }
+    
+    // assign priors to coefficients
+    beta ~ normal(beta_prior_stan[1], beta_prior_stan[2]);
   }
-  
-  // assign priors to coefficients
-  beta ~ normal(beta_prior_stan[1], beta_prior_stan[2]);
   
   // fixed (needs fake assignment)
   if (tau_prior_dist == -1) 
