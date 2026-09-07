@@ -79,14 +79,14 @@ options(pkg.sysreqs = FALSE)
 
 stopifnot(file.exists("DESCRIPTION"))
 
-## Look `package` up in the PACKAGES index of each repository and return a
-## pinned `<pkg>=url::<artifact>` ref for the highest
-## version found anywhere. This is what removes the hardcoded versions: the
+## Look `package` up in the PACKAGES index of each repository and return the
+## highest-version source candidate. This is what removes the hardcoded
+## versions: the
 ## r-universe rebuilds rstan continuously and deletes the superseded tarball,
 ## so a literal URL 404s within days. Taking the maximum across repositories
 ## also means no edit is needed once CRAN ships an rstan new enough for the
 ## wasm build -- CRAN simply starts winning the comparison.
-wasm_pkg_url <- function(package, repos) {
+wasm_pkg_candidate <- function(package, repos) {
   best <- NULL
   for (repo in repos) {
     db <- tryCatch(
@@ -121,7 +121,7 @@ wasm_pkg_url <- function(package, repos) {
             file
           )
         }
-        best <- list(version = version, url = url)
+        best <- list(version = version, url = url, repo = repo)
       }
     }
   }
@@ -140,7 +140,11 @@ wasm_pkg_url <- function(package, repos) {
       "; the webR build requires >= ", stan_min_versions[[package]]
     )
   }
-  sprintf("%s=url::%s", package, best$url)
+  best
+}
+
+wasm_pkg_ref <- function(package, candidate) {
+  sprintf("%s=url::%s", package, candidate$url)
 }
 
 ## Which packages need an explicit ref, and why, is declared in
@@ -167,7 +171,29 @@ dcf_field <- function(name) {
 }
 
 lookup_repos <- c(cran_mirror, stan_repo)
-pinned_ref <- function(name) wasm_pkg_url(name, lookup_repos)
+
+## rstan and StanHeaders are one source-compatible pair. Resolving their
+## versions independently selected rstan 2.39.0.9000 from stan-dev alongside
+## CRAN's newer StanHeaders 2.39.1; those releases use different RNG APIs and
+## rstan then fails to compile. Select rstan first and take StanHeaders from
+## the same repository.
+rstan_candidate <- wasm_pkg_candidate("rstan", lookup_repos)
+stanheaders_candidate <- wasm_pkg_candidate(
+  "StanHeaders",
+  rstan_candidate$repo
+)
+stan_candidates <- list(
+  rstan = rstan_candidate,
+  StanHeaders = stanheaders_candidate
+)
+pinned_ref <- function(name) {
+  candidate <- if (name %in% names(stan_candidates)) {
+    stan_candidates[[name]]
+  } else {
+    wasm_pkg_candidate(name, lookup_repos)
+  }
+  wasm_pkg_ref(name, candidate)
+}
 
 ## Overrides for packages already in RBesT's dependency graph go to `remotes`,
 ## which redirects the download source of a matching row. Adding them as direct
@@ -256,7 +282,7 @@ resolve_rwasm_packages <- function(packages, remotes, dependencies) {
     if (anyDuplicated(remote_info$package)) {
       stop("remote resolution returned duplicate package names")
     }
-    columns <- c("sources", "target", "ref", "status")
+    columns <- c("version", "sources", "target", "ref", "status")
     matched <- match(package_info$package, remote_info$package)
     replace <- !is.na(matched)
     package_info[replace, columns] <-
@@ -310,7 +336,7 @@ dir.create(image_dir, recursive = TRUE, showWarnings = FALSE)
 ## uses, before that happens.
 host_refs <- dcf_field("Host-Refs")
 for (pkg in host_refs) {
-  ref <- wasm_pkg_url(pkg, lookup_repos)
+  ref <- pinned_ref(pkg)
   url <- sub("^[^=]*=url::", "", ref)
   installed <- tryCatch(packageVersion(pkg), error = function(e) NULL)
   archive <- basename(sub("[?].*$", "", url))
@@ -350,6 +376,23 @@ rwasm_add_pkg(
   dependencies = "hard",
   compress = TRUE
 )
+
+required_binaries <- c("RBesT", "rstan", "StanHeaders")
+built <- list.files(repo_dir, pattern = "\\.tgz$", recursive = TRUE)
+missing_binaries <- required_binaries[
+  !vapply(
+    required_binaries,
+    function(package) any(startsWith(basename(built), paste0(package, "_"))),
+    logical(1)
+  )
+]
+if (length(missing_binaries)) {
+  stop(
+    "required wasm binaries were not produced: ",
+    paste(missing_binaries, collapse = ", "),
+    ". Inspect the earlier package build errors."
+  )
+}
 
 stanheaders_tgz <- list.files(
   repo_dir,
@@ -392,11 +435,7 @@ webr_write_patch_manifest(
   stub_file
 )
 
-built <- list.files(repo_dir, pattern = "\\.tgz$", recursive = TRUE)
 message("\n== built ", length(built), " wasm binaries ==")
-if (!any(grepl("^RBesT_", basename(built)))) {
-  stop("no RBesT wasm binary was produced")
-}
 message("== image ==")
 for (f in list.files(image_dir, full.names = TRUE)) {
   message("  ", basename(f), " (", round(file.size(f) / 1e6, 2), " MB)")

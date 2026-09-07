@@ -4,8 +4,10 @@
 #
 # Deliberately version-free. `build-rwasm.R` looks each name up in the
 # `PACKAGES` index of the configured repositories and creates a pinned
-# `<pkg>=url::<artifact>` reference for the highest version it finds, retaining
-# a repository's content-addressed artifact URL when one is advertised.
+# `<pkg>=url::<artifact>` reference, retaining a repository's content-addressed
+# artifact URL when one is advertised. rstan is selected first at the highest
+# compatible version, and StanHeaders is selected from the same repository so
+# the two packages use the same Stan API.
 # Nothing here has to be edited when r-universe
 # rebuilds rstan, and nothing has to be edited when CRAN eventually catches
 # up either -- whichever repository carries the higher version wins.
@@ -27,8 +29,8 @@
 # already present in the dependency graph.
 #
 #   StanHeaders, rstan  The webR build requires both at >= 2.39. The highest
-#                       version across CRAN and the stan-dev r-universe wins;
-#                       they need not come from the same repository.
+#                       rstan version across CRAN and the stan-dev r-universe
+#                       wins; StanHeaders then comes from the same repository.
 #
 # These must be overrides rather than direct references. Both are already hard
 # dependencies of RBesT, and a package that is *both* a direct reference and a
