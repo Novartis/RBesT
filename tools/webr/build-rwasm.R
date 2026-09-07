@@ -221,6 +221,75 @@ extra <- c(
 ## wasm library anyway.
 packages <- c(extra, "local::.")
 
+## rwasm 0.3.0.9000 documents `remotes` as a character vector, but its
+## internal `prefer_remotes()` uses `if (is.na(remotes))` and fails when the
+## vector has length greater than one. Resolve the graph and overrides exactly
+## as `rwasm::add_pkg()` does, replace matching rows, then give the completed
+## graph to its repository builder with remote preference disabled.
+resolve_rwasm_packages <- function(packages, remotes, dependencies) {
+  config <- list(
+    cran_mirror = "https://packagemanager.posit.co/cran/latest",
+    platforms = "source",
+    dependencies = dependencies
+  )
+  proposal <- pkgdepends::new_pkg_download_proposal(packages, config = config)
+  proposal$resolve()
+  package_info <- proposal$get_resolution()
+  package_info <- package_info[
+    !grepl("/Recommended/", package_info$target) &
+      package_info$platform == "source",
+  ]
+
+  if (length(remotes)) {
+    remote_config <- config
+    remote_config$dependencies <- NULL
+    proposal <- pkgdepends::new_pkg_download_proposal(
+      remotes,
+      config = remote_config
+    )
+    proposal$resolve()
+    remote_info <- proposal$get_resolution()
+    remote_info <- remote_info[
+      remote_info$direct & !grepl("/Recommended/", remote_info$target),
+    ]
+
+    if (anyDuplicated(remote_info$package)) {
+      stop("remote resolution returned duplicate package names")
+    }
+    columns <- c("sources", "target", "ref", "status")
+    matched <- match(package_info$package, remote_info$package)
+    replace <- !is.na(matched)
+    package_info[replace, columns] <-
+      remote_info[matched[replace], columns, drop = FALSE]
+  }
+
+  failed <- package_info$status == "FAILED"
+  if (any(failed, na.rm = TRUE)) {
+    stop(
+      "The following package references cannot be found: ",
+      paste(package_info$ref[failed], collapse = ", ")
+    )
+  }
+
+  package_info
+}
+
+rwasm_add_pkg <- function(
+  packages,
+  repo_dir,
+  remotes,
+  dependencies,
+  compress
+) {
+  package_info <- resolve_rwasm_packages(packages, remotes, dependencies)
+  rwasm:::update_repo(
+    package_info,
+    remotes = NULL,
+    repo_dir = repo_dir,
+    compress = compress
+  )
+}
+
 message("== rwasm ", as.character(packageVersion("rwasm")), " ==")
 message("== ", R.version.string, " (host) ==")
 message("== packages ==")
@@ -274,7 +343,7 @@ patch_stanheaders_charconv(
   file.path(find.package("StanHeaders"), "include")
 )
 
-rwasm::add_pkg(
+rwasm_add_pkg(
   packages,
   repo_dir = repo_dir,
   remotes = remotes,
