@@ -17,7 +17,7 @@
 ##   RBEST_REMOTES    comma separated webR-patched package refs
 ##   RBEST_WASM_PKGS  package list  (default tools/webr/wasm-packages.dcf)
 ##   CRAN_MIRROR      CRAN mirror                        (default cloud.r-project.org)
-##   STAN_REPO        repo carrying rstan >= 2.36 (default stan-dev.r-universe.dev)
+##   STAN_REPO        repo carrying rstan >= 2.39 (default stan-dev.r-universe.dev)
 ##
 ## This deliberately does *not* use `r-wasm/actions/build-rwasm`. That action
 ## calls `rwasm::add_pkg()` with the package defaults, and two of them are
@@ -66,6 +66,7 @@ options(
 )
 Sys.setenv(PKG_USE_BIOCONDUCTOR = "false")
 options(pkg.use_bioconductor = FALSE)
+source("tools/webr/patch-stanheaders.R")
 
 ## pkgdepends auto-installs OS system requirements (e.g. `apt-get install`)
 ## whenever it runs as root, which it does inside the webR container. wasm
@@ -79,7 +80,7 @@ options(pkg.sysreqs = FALSE)
 stopifnot(file.exists("DESCRIPTION"))
 
 ## Look `package` up in the PACKAGES index of each repository and return a
-## pinned `<pkg>=url::<contrib>/<pkg>_<version>.tar.gz` ref for the highest
+## pinned `<pkg>=url::<artifact>` ref for the highest
 ## version found anywhere. This is what removes the hardcoded versions: the
 ## r-universe rebuilds rstan continuously and deletes the superseded tarball,
 ## so a literal URL 404s within days. Taking the maximum across repositories
@@ -103,7 +104,24 @@ wasm_pkg_url <- function(package, repos) {
       ## 0.2-20 becomes 0.2.20), which would 404.
       version <- rows[i, "Version"]
       if (is.null(best) || package_version(version) > package_version(best$version)) {
-        best <- list(version = version, repo = sub("/+$", "", repo))
+        file <- paste0(package, "_", version, ".tar.gz")
+        repository <- unname(rows[i, "Repository"])
+        if (is.na(repository) || !nzchar(repository)) {
+          stop(repo, " provided no download URL for ", package, " ", version)
+        }
+        url <- if (identical(
+          basename(sub("[?].*$", "", repository)),
+          file
+        )) {
+          repository
+        } else {
+          paste0(
+            sub("/+$", "", sub("[?].*$", "", repository)),
+            "/",
+            file
+          )
+        }
+        best <- list(version = version, url = url)
       }
     }
   }
@@ -113,17 +131,16 @@ wasm_pkg_url <- function(package, repos) {
       paste(repos, collapse = ", ")
     )
   }
-  ## Built from the repository base rather than the index's `Repository`
-  ## column: on CRAN that column is the contrib directory, but r-universe
-  ## returns a complete per-package URL carrying a `?sha256=...` query, and
-  ## appending a filename to it yields a 404.
-  sprintf(
-    "%s=url::%s/src/contrib/%s_%s.tar.gz",
-    package,
-    best$repo,
-    package,
-    best$version
-  )
+  stan_min_versions <- c(StanHeaders = "2.39", rstan = "2.39")
+  if (package %in% names(stan_min_versions) &&
+      package_version(best$version) <
+        package_version(stan_min_versions[[package]])) {
+    stop(
+      "resolved ", package, " ", best$version,
+      "; the webR build requires >= ", stan_min_versions[[package]]
+    )
+  }
+  sprintf("%s=url::%s", package, best$url)
 }
 
 ## Which packages need an explicit ref, and why, is declared in
@@ -161,6 +178,34 @@ remotes <- c(
   vapply(dcf_field("Remote-Refs"), pinned_ref, character(1), USE.NAMES = FALSE)
 )
 
+## rstan is not built from the upstream tarball as it stands: Stan math's
+## headers instantiate a TBB `task_scheduler_observer` as a namespace-scope
+## global, so every reverse-mode AD object imports two TBB runtime entry points
+## that nothing in the wasm ecosystem provides, and the module cannot be
+## `dlopen()`ed at all. The stubs are added to rstan's own `src/`, so that
+## `rstan.so` defines them itself: R loads package DLLs with
+## `dyn.load(local = TRUE)` and webR's loader gives each such module a private
+## symbol scope, so no package's DLL can satisfy another's undefined symbols.
+## RBesT's own binary carries the same stubs, guarded by `__EMSCRIPTEN__`:
+## `configure` copies inst/webr/tbb-stubs.cpp into its generated src/. See that
+## file and design/howto-build-rbest-webr.md section 9.
+source("tools/webr/tbb-patch-common.R")
+source("tools/webr/patch-rstan-tarball.R")
+stub_file <- webr_stub_source(".")
+rstan_ref <- grep("^rstan=", remotes)
+if (length(rstan_ref) != 1) {
+  stop(
+    "expected exactly one rstan ref in `remotes`, found ", length(rstan_ref),
+    ". The TBB patch below has nothing to attach to."
+  )
+}
+rstan_patch <- patch_rstan_tarball(
+  url = sub("^rstan=url::", "", remotes[rstan_ref]),
+  out_dir = Sys.getenv("RBEST_PATCH_DIR", "_rwasm/patched"),
+  stub_file = stub_file
+)
+remotes[rstan_ref] <- patched_ref(rstan_patch)
+
 ## Packages that are not in the graph at all have to be direct refs; `remotes`
 ## ignores names it does not match.
 extra <- c(
@@ -196,19 +241,38 @@ dir.create(image_dir, recursive = TRUE, showWarnings = FALSE)
 ## uses, before that happens.
 host_refs <- dcf_field("Host-Refs")
 for (pkg in host_refs) {
-  url <- sub("^[^=]*=url::", "", wasm_pkg_url(pkg, lookup_repos))
+  ref <- wasm_pkg_url(pkg, lookup_repos)
+  url <- sub("^[^=]*=url::", "", ref)
   installed <- tryCatch(packageVersion(pkg), error = function(e) NULL)
-  wanted <- package_version(sub("^.*_(.*)\\.tar\\.gz$", "\\1", url))
-  if (!is.null(installed) && installed >= wanted) {
-    message("  host ", pkg, " ", installed, " already satisfies ", wanted)
+  archive <- basename(sub("[?].*$", "", url))
+  wanted <- package_version(sub(
+    "\\.tar\\.gz$", "",
+    substring(archive, nchar(pkg) + 2L)
+  ))
+  if (!is.null(installed) && installed == wanted) {
+    message("  host ", pkg, " ", installed, " matches ", wanted)
     next
   }
   message("  installing host ", pkg, " ", wanted)
-  install.packages(url, repos = NULL, type = "source")
+  ## `pak::pkg_install()` rather than `install.packages(repos = NULL)`: the
+  ## latter cannot fetch dependencies, and StanHeaders needs RcppParallel and
+  ## RcppEigen built on the host first. pak resolves those from CRAN, and it is
+  ## what `rwasm:::wasm_build()` uses for its own host-side installs.
+  pak::pkg_install(ref, ask = FALSE)
   if (!requireNamespace(pkg, quietly = TRUE)) {
     stop("host install of '", pkg, "' failed")
   }
+  installed <- packageVersion(pkg)
+  if (installed != wanted) {
+    stop(
+      "host install of ", pkg, " produced ", installed,
+      "; expected exactly ", wanted
+    )
+  }
 }
+patch_stanheaders_charconv(
+  file.path(find.package("StanHeaders"), "include")
+)
 
 rwasm::add_pkg(
   packages,
@@ -217,6 +281,21 @@ rwasm::add_pkg(
   dependencies = "hard",
   compress = TRUE
 )
+
+stanheaders_tgz <- list.files(
+  repo_dir,
+  pattern = "^StanHeaders_.*[.]tgz$",
+  recursive = TRUE,
+  full.names = TRUE
+)
+if (length(stanheaders_tgz) != 1L) {
+  stop(
+    "expected exactly one StanHeaders wasm binary to patch; found ",
+    length(stanheaders_tgz)
+  )
+}
+stanheaders_patch <- patch_stanheaders_archive(stanheaders_tgz)
+rwasm::write_packages(repo_dir)
 
 message("\n== packing VFS library image ==")
 rwasm::make_vfs_library(
@@ -229,6 +308,20 @@ rwasm::make_vfs_library(
 
 ## `compress = TRUE` makes `rwasm` write `<name>.data.gz` and drop the
 ## uncompressed `.data` itself, so there is nothing further to clean up here.
+
+## Record both patched Stan packages next to the image, so neither artefact can
+## be mistaken for a stock build of the version it reports.
+webr_write_patch_manifest(
+  image_dir,
+  list(
+    stanheaders_patch_manifest_entry(
+      as.character(packageVersion("StanHeaders")),
+      stanheaders_patch
+    ),
+    patch_manifest_entry(rstan_patch)
+  ),
+  stub_file
+)
 
 built <- list.files(repo_dir, pattern = "\\.tgz$", recursive = TRUE)
 message("\n== built ", length(built), " wasm binaries ==")

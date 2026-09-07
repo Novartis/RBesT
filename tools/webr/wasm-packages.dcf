@@ -3,9 +3,10 @@
 # design/howto-build-rbest-webr.md section 3.1 for the full background.
 #
 # Deliberately version-free. `build-rwasm.R` looks each name up in the
-# `PACKAGES` index of the configured repositories and synthesizes a
-# `<pkg>=url::<repo>/src/contrib/<pkg>_<version>.tar.gz` reference for the
-# highest version it finds. Nothing here has to be edited when r-universe
+# `PACKAGES` index of the configured repositories and creates a pinned
+# `<pkg>=url::<artifact>` reference for the highest version it finds, retaining
+# a repository's content-addressed artifact URL when one is advertised.
+# Nothing here has to be edited when r-universe
 # rebuilds rstan, and nothing has to be edited when CRAN eventually catches
 # up either -- whichever repository carries the higher version wins.
 #
@@ -14,7 +15,7 @@
 #   * A plain name resolves to *one candidate per repository*, and
 #     `rwasm:::update_repo()` builds every resolved row -- so rstan would be
 #     cross-compiled once for CRAN and once for r-universe.
-#   * A version floor (`rstan@>=2.36.0`) is not an option: pkgdepends rejects
+#   * A version floor (`rstan@>=2.39`) is not an option: pkgdepends rejects
 #     it with "Version ranges are not implemented yet."
 #   * A GitHub reference is not an option either. `stan-dev/rstan` keeps the
 #     Stan library in a git submodule (`StanHeaders/inst/include/upstream`),
@@ -25,9 +26,9 @@
 # `rwasm::add_pkg(remotes = )`, which rewrites the download source of a package
 # already present in the dependency graph.
 #
-#   StanHeaders, rstan  RBesT needs rstan >= 2.36 for the wasm build; CRAN has
-#                       been on 2.32 for about a year, so these normally come
-#                       from the stan-dev r-universe.
+#   StanHeaders, rstan  The webR build requires both at >= 2.39. The highest
+#                       version across CRAN and the stan-dev r-universe wins;
+#                       they need not come from the same repository.
 #
 # These must be overrides rather than direct references. Both are already hard
 # dependencies of RBesT, and a package that is *both* a direct reference and a
