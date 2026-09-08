@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Checkout RBesT
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # The webR development container carries the emscripten toolchain, a wasm
       # R build and `rwasm`. It is amd64-only, which is precisely why this runs
@@ -95,12 +95,25 @@ jobs:
           echo "::group::library image"
           ls -l _rwasm/image
           echo "::endgroup::"
+          echo "::group::applied patches"
+          cat _rwasm/image/PATCHES.txt
+          echo "::endgroup::"
           echo "::group::wasm binaries"
           find _rwasm/repo -name '*.tgz' -printf '%10s  %f\n' | sort -k2
           echo "::endgroup::"
 
+      # The image that gets verified must provably be the image that gets
+      # uploaded and released. The checksums travel inside the artifact and are
+      # re-checked in both downstream jobs.
+      - name: Checksum the image
+        run: |
+          cd _rwasm/image
+          find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%P\n' \
+            | sort | xargs sha256sum > SHA256SUMS
+          cat SHA256SUMS
+
       - name: Upload library image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: rbest-webr-image
           path: _rwasm/image/
@@ -109,7 +122,7 @@ jobs:
       # Kept deliberately: this holds the RBesT wasm binary itself, which is
       # what you unpack when the image builds but will not load.
       - name: Upload wasm package repository
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: rbest-wasm-repo
           path: _rwasm/repo/
@@ -123,27 +136,60 @@ jobs:
 
     steps:
       - name: Checkout RBesT
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
-      - name: Install webR
-        run: npm install --no-package-lock "webr@${WEBR_NPM_VERSION}"
+      # The whole point of the exercise is that the image loads in *stock*
+      # webR: the feasibility work proved the TBB diagnosis by patching
+      # `resolveSymbol` in node_modules/webr/dist/R.js, and shipping a patched
+      # webR is not an acceptable deliverable (shinylive serves stock webR).
+      # So webR is installed into a throwaway directory outside the checkout,
+      # where nothing in this repository can reach it, and the installed tree is
+      # compared file by file against the published tarball.
+      - name: Install a pristine webR
+        run: |
+          webr_dir="$(mktemp -d)"
+          echo "WEBR_DIR=${webr_dir}" >> "$GITHUB_ENV"
+          cd "$webr_dir"
+          npm install --no-package-lock --no-audit --no-fund "webr@${WEBR_NPM_VERSION}"
+          npm pack "webr@${WEBR_NPM_VERSION}" >/dev/null
+          tar xzf "webr-${WEBR_NPM_VERSION}.tgz"
+          diff -r package/dist node_modules/webr/dist
+          echo "webr@${WEBR_NPM_VERSION} matches the published tarball, byte for byte"
 
       - name: Download library image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: rbest-webr-image
           path: _rwasm/image
+
+      - name: Check the image is the one that was built
+        run: |
+          cd _rwasm/image
+          sha256sum -c SHA256SUMS
+          echo "::group::applied patches"
+          cat PATCHES.txt
+          echo "::endgroup::"
+
+      # Mechanical, not by eye: nearly every `tbb::` symbol these modules
+      # import is a header-defined weak symbol they also export, so only the
+      # difference between the import and export sections means anything.
+      # Anything left here is a `dlopen()` failure waiting to happen.
+      - name: Scan the image for unresolved TBB symbols
+        run: |
+          metadata=$(ls _rwasm/image/*.js.metadata)
+          node tools/webr/wasm-tbb-symbols.cjs "${metadata%.js.metadata}"
 
       - name: Run a real gMAP fit against the image
         run: |
           metadata=$(ls _rwasm/image/*.js.metadata)
           base="${metadata%.js.metadata}"
           echo "Mounting image base: ${base}"
-          WEBR_VFS="${base}" node tools/webr/run-webr-vfs.cjs tools/webr/verify-rbest.R
+          NODE_PATH="${WEBR_DIR}/node_modules" \
+            WEBR_VFS="${base}" node tools/webr/run-webr-vfs.cjs tools/webr/verify-rbest.R
 
   release:
     name: Attach image to release
@@ -155,10 +201,15 @@ jobs:
 
     steps:
       - name: Download library image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: rbest-webr-image
           path: _rwasm/image
+
+      - name: Check the image is the one that was verified
+        run: |
+          cd _rwasm/image
+          sha256sum -c SHA256SUMS
 
       - name: Upload image to release
         uses: svenstaro/upload-release-action@v2
