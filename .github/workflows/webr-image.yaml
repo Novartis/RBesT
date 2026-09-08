@@ -102,6 +102,21 @@ jobs:
           find _rwasm/repo -name '*.tgz' -printf '%10s  %f\n' | sort -k2
           echo "::endgroup::"
 
+      # The image-wide gate lives in the `verify` job, but by then the compile
+      # log is a job away and a broken image has already been uploaded. This is
+      # the same check narrowed to the one binary that depends on `configure`
+      # having copied inst/webr/tbb-stubs.cpp into the generated src/: if that
+      # copy is skipped, RBesT.so builds and installs perfectly well and only
+      # fails when webR tries to `dlopen()` it. Catch it here, next to the
+      # compile output that explains it.
+      - name: Check the RBesT binary carries the TBB stubs
+        run: |
+          tgz=$(find _rwasm/repo -name 'RBesT_*.tgz' | head -1)
+          echo "RBesT wasm binary: ${tgz}"
+          tmp=$(mktemp -d)
+          tar xzf "$tgz" -C "$tmp"
+          node tools/webr/wasm-tbb-symbols.cjs "$tmp/RBesT/libs/RBesT.so"
+
       # The image that gets verified must provably be the image that gets
       # uploaded and released. The checksums travel inside the artifact and are
       # re-checked in both downstream jobs.
