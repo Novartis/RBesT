@@ -330,11 +330,17 @@ dir.create(image_dir, recursive = TRUE, showWarnings = FALSE)
 
 ## `rwasm:::wasm_build()` also installs each package's *host* dependencies, via
 ## `pak::pkg_install("deps::<tarball>")`, so rstan's configure and build
-## scripts can find StanHeaders' headers. That call consults only
-## `getOption("repos")` -- which is CRAN-only here, and CRAN's StanHeaders is
-## too old for rstan 2.39. Install it from the same resolved URL the wasm build
-## uses, before that happens.
+## scripts can find StanHeaders' headers, and so RBesT's `configure` can run
+## `rstantools::rstan_config()`. That call consults only `getOption("repos")`
+## -- which is CRAN-only here, and CRAN's Stan pair is not the one the wasm
+## build uses: its rstan 2.32.7 would be compiled against the pinned
+## StanHeaders >= 2.39 and fail on `boost::ecuyer1988`, which Stan 2.39
+## replaced with `stan::rng_t`. Install both from the same resolved URLs the
+## wasm build uses, in the declared order, before that happens.
 host_refs <- dcf_field("Host-Refs")
+if (!"StanHeaders" %in% host_refs) {
+  stop("Host-Refs must contain StanHeaders; the charconv patch hangs off it")
+}
 for (pkg in host_refs) {
   ref <- pinned_ref(pkg)
   url <- sub("^[^=]*=url::", "", ref)
@@ -346,28 +352,35 @@ for (pkg in host_refs) {
   ))
   if (!is.null(installed) && installed == wanted) {
     message("  host ", pkg, " ", installed, " matches ", wanted)
-    next
+  } else {
+    message("  installing host ", pkg, " ", wanted)
+    ## `pak::pkg_install()` rather than `install.packages(repos = NULL)`: the
+    ## latter cannot fetch dependencies, and StanHeaders needs RcppParallel and
+    ## RcppEigen built on the host first. pak resolves those from CRAN, and it
+    ## is what `rwasm:::wasm_build()` uses for its own host-side installs.
+    pak::pkg_install(ref, ask = FALSE)
+    ## Deliberately not `requireNamespace()`: attaching rstan into the build
+    ## session is neither needed to confirm the install nor free of side
+    ## effects.
+    if (!length(find.package(pkg, quiet = TRUE))) {
+      stop("host install of '", pkg, "' failed")
+    }
+    installed <- packageVersion(pkg)
+    if (installed != wanted) {
+      stop(
+        "host install of ", pkg, " produced ", installed,
+        "; expected exactly ", wanted
+      )
+    }
   }
-  message("  installing host ", pkg, " ", wanted)
-  ## `pak::pkg_install()` rather than `install.packages(repos = NULL)`: the
-  ## latter cannot fetch dependencies, and StanHeaders needs RcppParallel and
-  ## RcppEigen built on the host first. pak resolves those from CRAN, and it is
-  ## what `rwasm:::wasm_build()` uses for its own host-side installs.
-  pak::pkg_install(ref, ask = FALSE)
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    stop("host install of '", pkg, "' failed")
-  }
-  installed <- packageVersion(pkg)
-  if (installed != wanted) {
-    stop(
-      "host install of ", pkg, " produced ", installed,
-      "; expected exactly ", wanted
+  if (identical(pkg, "StanHeaders")) {
+    ## Before the host rstan is built against these headers, as
+    ## tools/webr/docker/install-host-deps.R does for the local route.
+    patch_stanheaders_charconv(
+      file.path(find.package("StanHeaders"), "include")
     )
   }
 }
-patch_stanheaders_charconv(
-  file.path(find.package("StanHeaders"), "include")
-)
 
 rwasm_add_pkg(
   packages,

@@ -68,7 +68,8 @@ Source-Refs: codetools
 #                       tarball of its own -- hence the pairing.
 Extra-Refs: codetools=?source
 
-# Installed into the *host* R library before the wasm build starts.
+# Installed into the *host* R library before the wasm build starts, in the
+# order given.
 #
 #   StanHeaders   `rwasm:::wasm_build()` additionally installs each package's
 #                 dependencies into the host library via
@@ -80,4 +81,19 @@ Extra-Refs: codetools=?source
 #                 CRAN and the stan-dev r-universe (bayesplot, loo, posterior,
 #                 rstan, rstantools, StanHeaders) from resolving twice and
 #                 being cross-compiled twice.
-Host-Refs: StanHeaders
+#
+#   rstan         For the same reason, and it must be pinned for the same
+#                 reason the wasm build pins it: the CRAN-only `deps::` install
+#                 would otherwise build rstan 2.32.7 against the >= 2.39
+#                 StanHeaders just installed, and 2.32's `Module.cpp` still
+#                 names `boost::ecuyer1988`, which Stan 2.39 replaced with
+#                 `stan::rng_t` -- "'ecuyer1988' is not a member of 'boost'".
+#                 The pak install plan then aborts, RBesT's host dependencies
+#                 stay missing, and `R CMD INSTALL` of the wasm binary fails
+#                 with "dependencies 'rstan', 'bayesplot' are not available".
+#                 Installed after StanHeaders so it compiles against the
+#                 already-pinned headers. The host build is native, so it takes
+#                 the upstream tarball -- neither the TBB stubs nor the libc++
+#                 charconv patch, both of which are wasm-only concerns.
+Host-Refs: StanHeaders,
+    rstan
