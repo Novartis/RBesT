@@ -477,11 +477,22 @@ if (!any(results$status == "SUCCESS")) {
 ## ---------------------------------------------------------------------------
 ## Self-contained delivery: the whole library as one mountable image.
 ## ---------------------------------------------------------------------------
+## `include` and `lib` carry the C++ headers and static archives that the
+## `LinkingTo` packages exist for, and nothing in the browser compiles: they are
+## 141.7 MB of the 204 MB image, 122 MB of it Boost headers from BH, which is a
+## `LinkingTo`-only dependency and therefore never even loaded at runtime. The
+## `system.file("include", ...)` callers are all compile-flag helpers
+## (`StanHeaders:::CxxFlags()` and friends) reached only from a `Makevars`.
+##
+## `StanHeaders/stanc.js` must survive: `rstan:::.onLoad()` sources it with
+## `mustWork = TRUE`, so losing it breaks `library(RBesT)` at load. It is a
+## file rather than a directory, so `strip` cannot reach it -- do not "tidy"
+## that by stripping `exec`, which would take `rstan/exec/stanc.js` with it.
 if (!identical(Sys.getenv("RBEST_VFS", "true"), "false")) {
   strip <- trimws(strsplit(
     Sys.getenv(
       "RBEST_STRIP",
-      "demo,doc,examples,help,html,tests,vignette"
+      "demo,doc,examples,help,html,include,lib,tests,vignette"
     ),
     ","
   )[[1]])

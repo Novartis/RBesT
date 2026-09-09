@@ -25,7 +25,7 @@ browser-verification harness left behind (still git-ignored, disposable);
 | toolchain self-checks (native LLVM, emcc 5.0.7, hello-world link) | ✅ |
 | prebuilt wasm dependency closure | ✅ 64 prebuilt, only RBesT and rstan compiled |
 | RBesT `.so` cross-compiled | ✅ `RBesT_1.12-0.tgz`, 1.36 MB (`notbb` variant) |
-| VFS library image | ✅ 213.9 MB raw / 46.6 MB gz, 17 251 files, mounts in 1.0 s |
+| VFS library image | ✅ 213.9 MB raw / 46.6 MB gz, 17 251 files, mounts in 1.0 s — **projected 62.3 MB raw / ~28.8 MB gz** once `include,lib` stripping is rebuilt (see below) |
 | unresolved TBB symbols | ✅ 33 modules scanned, **0** unresolved `tbb::` imports |
 | `gMAP()` in webR under node | ✅ 5.4 s, `Rhat` = 1, agrees with native |
 | amd64 | designed for, **not** verified locally (no amd64 host); the GitHub Actions workflow is what exercises it |
@@ -49,6 +49,16 @@ Two things are worth recording because they were the open risks of the switch:
 
 The image is also smaller than the r-universe/rstan 2.39 one it replaces:
 46.6 MB gzipped against 54.7 MB, i.e. about 15% less to download.
+
+**Header stripping.** `include` and `lib` are now in the default `RBEST_STRIP`
+set. They hold the C++ headers and static archives that the `LinkingTo`
+packages exist for, and nothing in a browser compiles: measured on the 204 MB
+image above they are 141.7 MB of it — 122 MB Boost headers from `BH`, 8.4 MB
+`RcppEigen`, 7.2 MB `StanHeaders` — taking the image to a projected 62.3 MB
+unpacked and 28.8 MB gzipped. That is 69% off what the browser holds in memory
+and 37% off the download. `StanHeaders/stanc.js` must *not* be removed:
+`rstan:::.onLoad()` sources it with `mustWork = TRUE`. It is a file, and
+`strip` removes only directories, so it survives. See the how-to, §7.
 
 The rows above are all from branch `issue-webr-cran-stan`, whose versions were
 still pins at the time; the derivation now in `install-host-deps.R` resolves the
@@ -485,6 +495,9 @@ docker buildx build --platform linux/amd64,linux/arm64 .
 ```
 
 ## Verification numbers (arm64, colima, 10 CPU / 32 GB)
+
+Recorded before `include,lib` entered the strip set, so the mount figures below
+are the 204 MB image; the posterior comparison is unaffected by stripping.
 
 ```
 webR ready                    0.6 s

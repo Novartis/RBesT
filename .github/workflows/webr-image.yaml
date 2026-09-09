@@ -44,9 +44,10 @@ on:
         type: string
       strip:
         description: >-
-          Library subdirectories to drop from the image. `include` is
-          deliberately absent; see the how-to, section 7.
-        default: demo,doc,examples,help,html,tests,vignette
+          Library subdirectories to drop from the image. `include` and `lib`
+          hold LinkingTo headers and static archives and are 69% of the
+          unstripped image; see the how-to, section 7.
+        default: demo,doc,examples,help,html,include,lib,tests,vignette
         type: string
   # Any tag, not just release tags: a tag is the only thing a release asset can
   # hang off, and the artefacts are wanted for pre-release tags too. Creating a
@@ -79,7 +80,7 @@ env:
   WEBR_TAG: ${{ inputs.webr-tag || 'v0.6.0' }}
   EMSDK_VERSION: ${{ inputs.emsdk-version || '5.0.7' }}
   R_VERSION: ${{ inputs.r-version || '4.6.0' }}
-  RBEST_STRIP: ${{ inputs.strip || 'demo,doc,examples,help,html,tests,vignette' }}
+  RBEST_STRIP: ${{ inputs.strip || 'demo,doc,examples,help,html,include,lib,tests,vignette' }}
   # Where the container's /out mount lands on the runner.
   RBEST_OUT: ${{ github.workspace }}/build/webr/output
 

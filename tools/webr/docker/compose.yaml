@@ -56,7 +56,7 @@ services:
       RBEST_VARIANTS: ${RBEST_VARIANTS:-baseline}
       RBEST_VFS: ${RBEST_VFS:-true}
       RBEST_DEPS: ${RBEST_DEPS:-true}
-      RBEST_STRIP: ${RBEST_STRIP:-demo,doc,examples,help,html,tests,vignette}
+      RBEST_STRIP: ${RBEST_STRIP:-demo,doc,examples,help,html,include,lib,tests,vignette}
       http_proxy: ${http_proxy:-}
       https_proxy: ${https_proxy:-}
       no_proxy: ${no_proxy:-}
