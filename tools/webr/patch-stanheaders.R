@@ -35,14 +35,14 @@ patch_stanheaders_charconv <- function(root) {
   if (sum(lines == new_call) == 1L && sum(lines == new_end) == 1L &&
       !any(lines %in% c(old_call, old_end))) {
     message("  StanHeaders charconv patch already present: ", header)
-    return(invisible(FALSE))
+    return(invisible(list(changed = FALSE, parser = "std-from-chars")))
   }
   if (sum(lines == "#include <boost/lexical_cast.hpp>") == 1L &&
       sum(lines == boost_call) == 1L &&
       sum(lines == boost_catch) == 1L &&
       !any(grepl("from_chars", lines, fixed = TRUE))) {
     message("  StanHeaders uses the libc++-compatible Boost parser: ", header)
-    return(invisible(FALSE))
+    return(invisible(list(changed = FALSE, parser = "boost-lexical-cast")))
   }
   if (sum(lines == old_call) != 1L || sum(lines == old_end) != 1L ||
       any(lines %in% c(new_call, new_end))) {
@@ -56,7 +56,7 @@ patch_stanheaders_charconv <- function(root) {
   lines[lines == old_end] <- new_end
   writeLines(lines, header)
   message("  patched StanHeaders charconv pointer range: ", header)
-  invisible(TRUE)
+  invisible(list(changed = TRUE, parser = "std-from-chars"))
 }
 
 patch_stanheaders_archive <- function(archive) {
@@ -68,7 +68,8 @@ patch_stanheaders_archive <- function(archive) {
   dir.create(td)
   on.exit(unlink(td, recursive = TRUE), add = TRUE)
   utils::untar(archive, exdir = td)
-  source_changed <- patch_stanheaders_charconv(td)
+  charconv <- patch_stanheaders_charconv(td)
+  source_changed <- charconv[["changed"]]
 
   entries <- list.files(td, all.files = TRUE, no.. = TRUE)
   if (!length(entries)) {
@@ -78,12 +79,18 @@ patch_stanheaders_archive <- function(archive) {
   if (!dir.exists(package_root)) {
     stop("StanHeaders archive does not contain a StanHeaders/ package root")
   }
+  ## The `parser:` line is the machine-readable half of this marker. The VFS
+  ## image strips `include/`, so the header this was decided from is not in the
+  ## delivered library and cannot be re-inspected downstream; the marker is a
+  ## file and survives. tools/webr/verify-rbest.R reads it.
   marker <- c(
     "StanHeaders -- CHECKED/PATCHED for the RBesT webR build",
     "",
     "stan/math/prim/core/init_threadpool_tbb.hpp is libc++ compatible. The",
     "build accepts upstream's boost::lexical_cast parser or ensures that",
-    "std::from_chars receives raw pointers from std::string_view::data()."
+    "std::from_chars receives raw pointers from std::string_view::data().",
+    "",
+    paste0("parser: ", charconv[["parser"]])
   )
   marker_path <- file.path(package_root, "WEBR-PATCHES")
   marker_changed <- !file.exists(marker_path) ||

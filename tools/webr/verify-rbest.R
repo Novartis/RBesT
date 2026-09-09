@@ -46,33 +46,61 @@ if (!nzchar(stanheaders_marker)) {
     "the libc++ header fix is not proven"
   )
 }
+marker_lines <- readLines(stanheaders_marker, warn = FALSE)
+
+## Which STAN_NUM_THREADS parser this StanHeaders carries is decided when the
+## archive is patched and recorded in the marker, because the header it was
+## decided from lives under `include/`, which the VFS image strips. Prefer the
+## header when it is there -- an unstripped image is a stronger proof -- and
+## fall back to the recorded value otherwise.
+known_parsers <- c("std-from-chars", "boost-lexical-cast")
+recorded_parser <- sub("^parser:[[:space:]]*", "", grep(
+  "^parser:", marker_lines, value = TRUE
+))
 stanheaders_header <- system.file(
   "include", "stan", "math", "prim", "core", "init_threadpool_tbb.hpp",
   package = "StanHeaders"
 )
-stanheaders_lines <- readLines(stanheaders_header, warn = FALSE)
-stan_charconv_fixed <- any(grepl(
-  "std::from_chars(value.data(), value.data() + value.size(), num_threads)",
-  stanheaders_lines,
-  fixed = TRUE
-)) && any(grepl(
-  "end != value.data() + value.size()",
-  stanheaders_lines,
-  fixed = TRUE
-))
-stan_boost_parser <- any(
-  stanheaders_lines ==
-    "          = boost::lexical_cast<int>(env_stan_num_threads);"
-) && any(
-  stanheaders_lines == "    } catch (const boost::bad_lexical_cast&) {"
-)
-if (!xor(stan_charconv_fixed, stan_boost_parser)) {
-  stop("StanHeaders does not contain a recognized libc++-compatible parser")
+if (nzchar(stanheaders_header)) {
+  stanheaders_lines <- readLines(stanheaders_header, warn = FALSE)
+  stan_charconv_fixed <- any(grepl(
+    "std::from_chars(value.data(), value.data() + value.size(), num_threads)",
+    stanheaders_lines,
+    fixed = TRUE
+  )) && any(grepl(
+    "end != value.data() + value.size()",
+    stanheaders_lines,
+    fixed = TRUE
+  ))
+  stan_boost_parser <- any(
+    stanheaders_lines ==
+      "          = boost::lexical_cast<int>(env_stan_num_threads);"
+  ) && any(
+    stanheaders_lines == "    } catch (const boost::bad_lexical_cast&) {"
+  )
+  if (!xor(stan_charconv_fixed, stan_boost_parser)) {
+    stop("StanHeaders does not contain a recognized libc++-compatible parser")
+  }
+  header_parser <- if (stan_charconv_fixed) known_parsers[1] else known_parsers[2]
+  if (length(recorded_parser) == 1L && !identical(recorded_parser, header_parser)) {
+    stop(
+      "StanHeaders WEBR-PATCHES records parser '", recorded_parser,
+      "' but the shipped header implements '", header_parser, "'"
+    )
+  }
+  report("StanHeaders parser (from header):", header_parser)
+} else {
+  if (length(recorded_parser) != 1L || !recorded_parser %in% known_parsers) {
+    stop(
+      "StanHeaders ships no include/ (stripped) and its WEBR-PATCHES marker ",
+      "records no recognized libc++-compatible parser; got: ",
+      if (length(recorded_parser)) paste(recorded_parser, collapse = ", ")
+      else "no 'parser:' line"
+    )
+  }
+  report("StanHeaders parser (from WEBR-PATCHES, include/ stripped):", recorded_parser)
 }
-report(
-  "StanHeaders compatibility marker:",
-  readLines(stanheaders_marker, warn = FALSE)[1]
-)
+report("StanHeaders compatibility marker:", marker_lines[1])
 
 ## 3. There is no forking and detectCores() is NA in webR, so chains run
 ##    sequentially. Assert it rather than letting a future webR silently

@@ -43,6 +43,20 @@ GIT_TAG ?= v$(PKG_VERSION)
 MD5 ?= md5sum
 TMPDIR := $(realpath $(shell mktemp -d))
 
+# webR/WebAssembly cross-compile build (r-binary-webr, manual only).
+WEBR_DIR := tools/webr
+WEBR_DOCKER_DIR := tools/webr/docker
+WEBR_TAG ?= v0.6.0
+WEBR_VARIANT ?= notbb
+# Corporate CA roots for TLS-intercepting proxies (see
+# design/design-corporate-ca-docker-pattern.md); the repo ships only the
+# empty placeholder. Point this at a real directory of *.pem files, e.g.
+# `make CORP_CERTS_DIR=/path/to/certs r-binary-webr`. Resolved to an
+# absolute path below because the recipe `cd`s into $(WEBR_DOCKER_DIR)
+# before invoking docker compose, which would otherwise mis-resolve a
+# relative override given relative to the repo root.
+CORP_CERTS_DIR ?= $(WEBR_DOCKER_DIR)/certs.d
+
 # When rendering vignettes/articles the recipes cd into the source
 # directory, where R no longer picks up the repo-root .Renviron that puts
 # the dev-installed RBesT on the library path. Point R_ENVIRON_USER at it,
@@ -213,28 +227,135 @@ build/r-source-fast : $(BIN_OBJS) man/package-doc $(SRCS) DESCRIPTION vignettes/
 build/r-source-release : $(BIN_OBJS) $(DOC_OBJS) $(SRCS) DESCRIPTION vignettes/REFERENCES.bib inst/sbc/sbc_report.html
 	install -d build
 	git archive --format=tar.gz --prefix $(RPKG)-$(GIT_TAG)/ HEAD > build/$(RPKG)-$(GIT_TAG).tar.gz
-	rm -rf build/$(RPKG)-$(GIT_TAG)
-	cd build; tar xf $(RPKG)-$(GIT_TAG).tar.gz
-	cp -v NAMESPACE build/$(RPKG)-$(GIT_TAG)
-	install -d build/$(RPKG)-$(GIT_TAG)/inst/doc
-	cp -v inst/doc/$(RPKG).pdf build/$(RPKG)-$(GIT_TAG)/inst/doc
-	cp -v inst/REFERENCES.bib build/$(RPKG)-$(GIT_TAG)/inst
-	cp -v inst/sbc/sbc_report.html build/$(RPKG)-$(GIT_TAG)/inst/sbc/sbc_report.html
-	install -d build/$(RPKG)-$(GIT_TAG)/vignettes
-	cp -v vignettes/REFERENCES.bib build/$(RPKG)-$(GIT_TAG)/vignettes
-	cd build/$(RPKG)-$(GIT_TAG); "${R_HOME}/bin/R" --slave --file=tools/make-ds.R
-	install -d build/$(RPKG)-$(GIT_TAG)/man
-	cp -v man/*.Rd build/$(RPKG)-$(GIT_TAG)/man
+	rm -rf $(TMPDIR)/$(RPKG)-$(GIT_TAG)
+	# Extract into $(TMPDIR) rather than build/: on some filesystems (e.g.
+	# virtiofs-backed mounts) `tar` fails to recreate the symlinks tracked in
+	# git (such as vignettes/REFERENCES.bib) when extracting directly onto
+	# them, so extraction is staged on a plain local filesystem instead.
+	tar x -C $(TMPDIR) -f build/$(RPKG)-$(GIT_TAG).tar.gz
+	cp -v NAMESPACE $(TMPDIR)/$(RPKG)-$(GIT_TAG)
+	install -d $(TMPDIR)/$(RPKG)-$(GIT_TAG)/inst/doc
+	cp -v inst/doc/$(RPKG).pdf $(TMPDIR)/$(RPKG)-$(GIT_TAG)/inst/doc
+	cp -v inst/REFERENCES.bib $(TMPDIR)/$(RPKG)-$(GIT_TAG)/inst
+	cp -v inst/sbc/sbc_report.html $(TMPDIR)/$(RPKG)-$(GIT_TAG)/inst/sbc/sbc_report.html
+	install -d $(TMPDIR)/$(RPKG)-$(GIT_TAG)/vignettes
+	cp -v vignettes/REFERENCES.bib $(TMPDIR)/$(RPKG)-$(GIT_TAG)/vignettes
+	cd $(TMPDIR)/$(RPKG)-$(GIT_TAG); "${R_HOME}/bin/R" --slave --file=tools/make-ds.R
+	install -d $(TMPDIR)/$(RPKG)-$(GIT_TAG)/man
+	cp -v man/*.Rd $(TMPDIR)/$(RPKG)-$(GIT_TAG)/man
 	# set NOT_CRAN=true to get vignettes render with full sampling
-	cd build; NOT_CRAN=true $(RCMD) CMD build --compact-vignettes=both $(RPKG)-$(GIT_TAG)
-	#cd build; NOT_CRAN=false "${R_HOME}/bin/R" CMD build $(RPKG)-$(GIT_TAG) --no-build-vignettes --no-manual
-	rm -rf build/$(RPKG)-$(GIT_TAG)
+	cd $(TMPDIR); NOT_CRAN=true $(RCMD) CMD build --compact-vignettes=both $(RPKG)-$(GIT_TAG)
+	#cd $(TMPDIR); NOT_CRAN=false "${R_HOME}/bin/R" CMD build $(RPKG)-$(GIT_TAG) --no-build-vignettes --no-manual
+	rm -rf $(TMPDIR)/$(RPKG)-$(GIT_TAG)
+	mv $(TMPDIR)/$(RPKG)_$(PKG_VERSION).tar.gz build/$(RPKG)_$(PKG_VERSION).tar.gz
 	cd build; $(MD5) $(RPKG)-$(GIT_TAG).tar.gz > $(RPKG)-$(GIT_TAG).md5
 	cd build; $(MD5) $(RPKG)_$(PKG_VERSION).tar.gz > $(RPKG)_$(PKG_VERSION).md5
 	touch build/r-source-release
 
 PHONY += r-source-release
 r-source-release : build/r-source-release
+
+# webR/WebAssembly cross-compile of RBesT (manual only: `make r-binary-webr`,
+# not part of `all`/`derived`/any other target). Builds from the
+# r-source-release tarball -- not the working tree -- via the Docker setup in
+# $(WEBR_DOCKER_DIR). Behind a TLS-intercepting corporate proxy, also set
+# CORP_CERTS_DIR to a directory of *.pem CA roots (see
+# tools/webr/docker/README.md); the repo ships no real certs.
+#
+# The image is tagged rbest-wasm-native:$(WEBR_TAG) (see compose.yaml) and
+# persists in the local Docker image store/layer cache across runs and across
+# `make clean` (which only removes build/, not Docker's own state) -- so a
+# rebuild after the first is normally seconds, not the tens of minutes the
+# first cross-compile of the dependency closure takes. WEBR_DOCKER_FILES lists
+# everything actually COPYed into the image (Dockerfile's COPY instructions),
+# so build/webr/.image-built only re-invokes `docker compose build` -- and
+# only then does Docker's own cache decide what, if anything, must actually
+# rebuild -- when one of those files (or WEBR_TAG/EMSDK_VERSION/R_VERSION)
+# changes. To force a rebuild regardless, `rm build/webr/.image-built` or
+# `docker compose build --no-cache` directly in $(WEBR_DOCKER_DIR).
+WEBR_DOCKER_FILES := $(WEBR_DOCKER_DIR)/Dockerfile $(WEBR_DOCKER_DIR)/compose.yaml \
+  $(WEBR_DOCKER_DIR)/webr-host-shims.sh $(WEBR_DOCKER_DIR)/proxy-env.R \
+  $(WEBR_DOCKER_DIR)/install-rwasm.R $(WEBR_DOCKER_DIR)/install-host-deps.R \
+  $(WEBR_DOCKER_DIR)/check-toolchain.sh $(WEBR_DOCKER_DIR)/fetch-wasm-deps.R \
+  $(WEBR_DIR)/patch-stanheaders.R \
+  $(WEBR_DIR)/tbb-patch-common.R \
+  $(WEBR_DIR)/patch-rstan-tarball.R \
+  $(WEBR_DOCKER_DIR)/build-rbest-wasm.R
+
+PHONY += webr-docker-ready
+webr-docker-ready :
+	@docker info >/dev/null 2>&1 || \
+	  { echo "docker daemon not reachable; is Docker running?" >&2; exit 1; }
+
+build/webr/.image-built : $(WEBR_DOCKER_FILES) | webr-docker-ready
+	install -d build/webr
+	cd $(WEBR_DOCKER_DIR); \
+	  CORP_CERTS_DIR=$(abspath $(CORP_CERTS_DIR)) \
+	  WEBR_TAG=$(WEBR_TAG) \
+	  docker compose build
+	touch $@
+
+build/r-binary-webr : build/r-source-release build/webr/.image-built | webr-docker-ready
+	rm -rf build/webr/src-stage
+	install -d build/webr/src-stage
+	tar xzf build/$(RPKG)_$(PKG_VERSION).tar.gz -C build/webr/src-stage
+	cd $(WEBR_DOCKER_DIR); \
+	  RBEST_SRC=$(PROJROOT_ABS)/build/webr/src-stage/$(RPKG) \
+	  RBEST_OUT=$(PROJROOT_ABS)/build/webr/output \
+	  RBEST_VARIANTS=$(WEBR_VARIANT) \
+	  WEBR_TAG=$(WEBR_TAG) \
+	  docker compose run --rm build
+	@webr_tgz="$$(find build/webr/output/repo/bin/emscripten/contrib -maxdepth 2 -name '$(RPKG)_*.tgz' 2>/dev/null | head -n1)"; \
+	  if [ -z "$$webr_tgz" ]; then \
+	    echo "error: no $(RPKG)_*.tgz under build/webr/output/repo/bin/emscripten/contrib/ -- the container ran but did not leave a wasm binary behind." >&2; \
+	    echo "-- build/webr/output/build-summary.csv:" >&2; \
+	    cat build/webr/output/build-summary.csv >&2 2>/dev/null || echo "  (missing)" >&2; \
+	    echo "-- tail of build/webr/output/build-*.log:" >&2; \
+	    tail -n 60 build/webr/output/build-*.log >&2 2>/dev/null || echo "  (missing)" >&2; \
+	    echo "-- actual contents of build/webr/output/repo/bin/emscripten/contrib/:" >&2; \
+	    find build/webr/output/repo/bin/emscripten/contrib -maxdepth 2 >&2 2>/dev/null || echo "  (directory missing)" >&2; \
+	    exit 1; \
+	  fi; \
+	  cp -v "$$webr_tgz" build/$(RPKG)-webr_$(PKG_VERSION).tgz
+	cp -v build/webr/output/vfs/rbest-library.data.gz \
+	  build/$(RPKG)-webr-library_$(PKG_VERSION).data.gz
+	cp -v build/webr/output/vfs/rbest-library.js.metadata \
+	  build/$(RPKG)-webr-library_$(PKG_VERSION).js.metadata
+	cp -v build/webr/output/vfs/PATCHES.txt \
+	  build/$(RPKG)-webr-library_$(PKG_VERSION).PATCHES.txt
+	@echo "== scanning the image for unresolved TBB symbols =="
+	@command -v node >/dev/null 2>&1 || \
+	  { echo "node is needed to scan the image for unresolved TBB symbols (see design/howto-build-rbest-webr.md section 9); install it, or run tools/webr/wasm-tbb-symbols.cjs by hand elsewhere." >&2; exit 1; }
+	node $(WEBR_DIR)/wasm-tbb-symbols.cjs \
+	  build/$(RPKG)-webr-library_$(PKG_VERSION)
+	touch build/r-binary-webr
+
+PHONY += r-binary-webr
+r-binary-webr : build/r-binary-webr
+
+# End-to-end demonstration of the built image: a MAP analysis of the AS data
+# set, fitted by gMAP() inside webR against build/$(RPKG)-webr-library_*.
+# `webr-demo-compare` runs the same script under native R as well and checks
+# that the two agree to Monte Carlo error. Needs node, and network the first
+# time (to fetch the webr npm package into build/webr/node).
+PHONY += webr-demo webr-demo-native webr-demo-compare
+webr-demo :
+	WEBR_TAG=$(WEBR_TAG) $(WEBR_DIR)/demo/run-webr-demo.sh
+
+webr-demo-native :
+	$(WEBR_DIR)/demo/run-webr-demo.sh --native
+
+webr-demo-compare :
+	WEBR_TAG=$(WEBR_TAG) $(WEBR_DIR)/demo/run-webr-demo.sh --compare
+
+# The provenance and environment assertions that the GitHub `verify` job runs
+# (patch markers, the StanHeaders parser, no forking, a real gMAP fit). The
+# demo above exercises the numbers; this exercises everything else, and it is
+# the same script CI runs -- so a local failure here is a CI failure.
+PHONY += webr-verify
+webr-verify :
+	DEMO_SCRIPT=$(WEBR_DIR)/verify-rbest.R WEBR_TAG=$(WEBR_TAG) \
+	  $(WEBR_DIR)/demo/run-webr-demo.sh
 
 PHONY += binary
 binary : NAMESPACE src/package-binary
@@ -412,6 +533,7 @@ help:
 	@echo "Build & install:"
 	@echo "  r-source              Build source package (fast, no vignettes)"
 	@echo "  r-source-release      Build release source package (with vignettes)"
+	@echo "  r-binary-webr         Build webR/WebAssembly binary from r-source-release (manual only, needs Docker)"
 	@echo "  binary                Compile Stan models and shared library"
 	@echo "  derived               Generate NAMESPACE, binary, and docs"
 	@echo "  dev-install           Install from source into build/installed/"
@@ -448,6 +570,7 @@ help:
 	@echo ""
 	@echo "Variables:"
 	@echo "  FIXTURE_FORCE=true    Force rebuild of fixtures"
+	@echo "  CORP_CERTS_DIR=path   r-binary-webr: dir of *.pem CA roots for TLS-intercepting proxies"
 	@echo "  print-VARNAME         Print value of any Makefile variable"
 
 ##
