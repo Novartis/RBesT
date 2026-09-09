@@ -61,11 +61,12 @@ on:
     # workflow at all: the Docker route has never been exercised on amd64, and
     # a push is a more reliable way to see the run start than
     # `workflow_dispatch`, which GitHub only offers once the workflow file is
-    # on the default branch. Drop this list once the route is proven -- a
-    # multi-hour cross-compile has no business running on every push, and this
-    # repository's CI is GitLab.
+    # on the default branch. `**` rather than a named branch because the
+    # mirror this is pushed to names it differently. Remove this list before
+    # merging -- a multi-hour cross-compile has no business running on every
+    # push, and this repository's CI is GitLab.
     branches:
-      - issue-webr-cran-stan
+      - '**'
 
 concurrency:
   group: webr-image-${{ github.ref }}
