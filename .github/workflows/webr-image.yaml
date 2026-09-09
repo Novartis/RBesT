@@ -4,38 +4,68 @@ name: webR image
 # pack them into a mountable webR library image, then prove the image works by
 # running a real gMAP() fit inside webR under Node.
 #
-# See design/howto-build-rbest-webr.md for the background, the toolchain
-# constraint (the webR container is amd64-only, hence GitHub's runners), and
-# the troubleshooting notes.
+# This drives *the same build as `make r-binary-webr`* -- the Docker route in
+# tools/webr/docker -- rather than a second, Actions-only build script. That
+# route takes RBesT's dependency closure as prebuilt wasm binaries from
+# repo.r-wasm.org and cross-compiles only rstan (patched, see section 9 of the
+# how-to) and RBesT itself, with the Stan sources coming from CRAN. See
+# design/howto-build-rbest-webr.md for the background and the troubleshooting
+# notes, and tools/webr/docker/README.md for the route itself.
 #
-# The primary trigger is manual: this repository's CI is GitLab, so this
-# workflow is expected to be dispatched by hand after mirroring the branch to
-# GitHub. On a published release the same image is additionally attached to
-# the release as an asset.
+# The GitHub runner is used because it is amd64 and free, not because the build
+# needs it: the route's toolchain image is architecture-independent and is
+# built and run locally on arm64 as well.
+
+# The workflow runs on demand and on tags. This repository's CI is GitLab, so
+# an ordinary branch push must never start a multi-hour cross-compile: the run
+# is either dispatched by hand after mirroring a branch to GitHub, or triggered
+# by a tag, in which case the image and the wasm package repository are
+# attached to that tag's release as assets.
 
 on:
-  # TEMPORARY, remove before merging. A `push` trigger runs workflows that are
-  # not on the default branch, which `workflow_dispatch` cannot do — see the
-  # how-to, section 3.2. It is here so the first wasm builds can be iterated on
-  # this branch without repointing anyone's default branch. Both dispatch
-  # inputs below have `||` fallbacks, so the defaults apply on a push.
-  push:
-    branches:
-      - issue-webr-gh-action
   workflow_dispatch:
     inputs:
-      webr-image:
-        description: webR development container image (pin it; `:main` moves)
-        default: ghcr.io/r-wasm/webr:v0.6.0
+      webr-tag:
+        description: >-
+          webR release supplying the wasm R tree and the Emscripten sysroot
+          cache (pin it; `main` moves).
+        default: v0.6.0
+        type: string
+      emsdk-version:
+        description: >-
+          Emscripten SDK version. Must match the emcc inside the webR image
+          above, i.e. its
+          /opt/emsdk/upstream/emscripten/emscripten-version.txt.
+        default: 5.0.7
+        type: string
+      r-version:
+        description: Host R version (rocker/r-ver tag) the cross-compile runs under.
+        default: 4.6.0
         type: string
       strip:
         description: >-
           Library subdirectories to drop from the image. `include` is
           deliberately absent; see the how-to, section 7.
-        default: demo, doc, examples, help, html, tests, vignette
+        default: demo,doc,examples,help,html,tests,vignette
         type: string
-  release:
-    types: [published]
+  # Any tag, not just release tags: a tag is the only thing a release asset can
+  # hang off, and the artefacts are wanted for pre-release tags too. Creating a
+  # release and pushing its tag in one step fires this once, not twice -- the
+  # `release` event is deliberately not a trigger here. Every dispatch input
+  # has a `||` fallback below, so a tag run uses the same defaults as the UI
+  # form, and so does a branch run.
+  push:
+    tags:
+      - '*'
+    # TEMPORARY, and the only reason an ordinary branch push fires this
+    # workflow at all: the Docker route has never been exercised on amd64, and
+    # a push is a more reliable way to see the run start than
+    # `workflow_dispatch`, which GitHub only offers once the workflow file is
+    # on the default branch. Drop this list once the route is proven -- a
+    # multi-hour cross-compile has no business running on every push, and this
+    # repository's CI is GitLab.
+    branches:
+      - issue-webr-cran-stan
 
 concurrency:
   group: webr-image-${{ github.ref }}
@@ -45,73 +75,133 @@ permissions:
   contents: read
 
 env:
-  WEBR_IMAGE: ${{ inputs.webr-image || 'ghcr.io/r-wasm/webr:v0.6.0' }}
-  # The npm `webr` version must match the container image used to build the
-  # library, otherwise the image is loaded by a different R.
-  WEBR_NPM_VERSION: 0.6.0
+  WEBR_TAG: ${{ inputs.webr-tag || 'v0.6.0' }}
+  EMSDK_VERSION: ${{ inputs.emsdk-version || '5.0.7' }}
+  R_VERSION: ${{ inputs.r-version || '4.6.0' }}
+  RBEST_STRIP: ${{ inputs.strip || 'demo,doc,examples,help,html,tests,vignette' }}
+  # Where the container's /out mount lands on the runner.
+  RBEST_OUT: ${{ github.workspace }}/build/webr/output
 
 jobs:
   build:
     name: Build wasm image
     runs-on: ubuntu-24.04
-    # Cross-compiling the closure from source is slow; rstan alone is large.
-    timeout-minutes: 300
+    # Only rstan and RBesT are compiled, but rstan is large, and the toolchain
+    # image is rebuilt from scratch on every run (see below).
+    timeout-minutes: 180
 
     steps:
       - name: Checkout RBesT
         uses: actions/checkout@v5
 
-      # The webR development container carries the emscripten toolchain, a wasm
-      # R build and `rwasm`. It is amd64-only, which is precisely why this runs
-      # on a GitHub runner rather than a developer machine.
-      - name: Pull webR container
-        run: docker pull "$WEBR_IMAGE"
-
-      # NOTE: `r-wasm/actions/build-rwasm` is deliberately not used here. It
-      # calls `rwasm::add_pkg()` with the package defaults, and two of them are
-      # wrong for this package: `dependencies = FALSE` would build RBesT alone
-      # and yield an image with none of ggplot2/dplyr/posterior in it, and
-      # `remotes = NA` resolves rwasm's full `webr-remotes` list, which aborts
-      # pkgdepends on refs unrelated to RBesT. tools/webr/build-rwasm.R sets
-      # both explicitly; see the comments there.
-      - name: Build wasm packages and library image
+      # The toolchain image, the prebuilt dependency closure and the wasm
+      # builds together outgrow what an ubuntu-24.04 runner has free once its
+      # preinstalled toolchains are counted.
+      - name: Reclaim runner disk space
         run: |
-          docker run --rm \
-            -v "$PWD":/github/workspace \
-            -w /github/workspace \
-            -e RBEST_STRIP \
-            --entrypoint Rscript \
-            "$WEBR_IMAGE" tools/webr/build-rwasm.R
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
+            /usr/local/share/boost /usr/local/.ghcup
+          df -h /
+
+      # data/*.rda and R/sysdata.rda are *generated*, not tracked, so a bare
+      # checkout has neither. That is not cosmetic: .onAttach() reads pkg_sha
+      # and pkg_create_date out of R/sysdata.rda, so an RBesT built without
+      # them installs cleanly and then fails on `library(RBesT)` -- inside
+      # webR, in the verify job. The Makefile runs tools/make-ds.R on the
+      # staged tree before every `R CMD build` for exactly this reason; a
+      # developer's working tree has already been through that, which is why
+      # the local route never needed the step. Run it here, in the checkout,
+      # while `git rev-parse` can still resolve the sha.
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Generate the package's derived data
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libgit2-dev
+          Rscript -e 'install.packages("usethis")'
+          Rscript tools/make-ds.R
+          ls -l data R/sysdata.rda
+
+      # Deliberately no registry and no cache backend: this workflow runs on
+      # manual dispatch and on tags only, so a cached image would cost storage
+      # the whole time to save wall-clock time a few times a year -- and a
+      # from-scratch build is the reproducible one. `docker compose build`
+      # rather than a bare `docker build` because compose.yaml is what declares
+      # the `corpcerts` and `webrtools` additional build contexts (the latter
+      # carries the patch helpers, which live one directory above the build
+      # context) and the pins as build args. It is also exactly what
+      # `make r-binary-webr` runs, so CI and a developer machine build the same
+      # image from the same command.
+      - name: Build the webR toolchain image
+        working-directory: tools/webr/docker
+        run: docker compose build
+
+      # /src is the checkout, mounted read-only. build-rbest-wasm.R stages the
+      # subset of it that `R CMD INSTALL` reads, so no source tarball has to be
+      # built first. The container writes the repository, the VFS image and its
+      # logs to /out.
+      - name: Cross-compile RBesT and pack the library image
+        working-directory: tools/webr/docker
         env:
-          RBEST_STRIP: ${{ inputs.strip || 'demo, doc, examples, help, html, tests, vignette' }}
+          RBEST_SRC: ${{ github.workspace }}
+        run: |
+          mkdir -p "$RBEST_OUT"
+          docker compose run --rm build
 
       # The container writes as root.
       - name: Take ownership of build output
         if: always()
-        run: sudo chown -R "$(id -u):$(id -g)" _rwasm || true
+        run: sudo chown -R "$(id -u):$(id -g)" "$RBEST_OUT" || true
 
+      # The Docker route's own diagnostics. Emitted on failure too: which
+      # dependency versions were resolved, and the rstan compile log, are the
+      # first things wanted when the build breaks.
       - name: Inspect build output
+        if: always()
         run: |
+          echo "::group::dependency closure"
+          cat "$RBEST_OUT/wasm-deps.csv" || true
+          echo "::endgroup::"
+          echo "::group::build summary"
+          cat "$RBEST_OUT/build-summary.csv" || true
+          echo "::endgroup::"
           echo "::group::library image"
-          ls -l _rwasm/image
+          ls -l "$RBEST_OUT/vfs" || true
           echo "::endgroup::"
           echo "::group::applied patches"
-          cat _rwasm/image/PATCHES.txt
+          cat "$RBEST_OUT/vfs/PATCHES.txt" || true
           echo "::endgroup::"
           echo "::group::wasm binaries"
-          find _rwasm/repo -name '*.tgz' -printf '%10s  %f\n' | sort -k2
+          find "$RBEST_OUT/repo" -name '*.tgz' -printf '%10s  %f\n' | sort -k2 || true
           echo "::endgroup::"
+          echo "::group::tail of the rstan cross-compile log"
+          tail -n 100 "$RBEST_OUT/build-rstan.log" || true
+          echo "::endgroup::"
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: rbest-webr-logs
+          path: |
+            ${{ env.RBEST_OUT }}/*.csv
+            ${{ env.RBEST_OUT }}/*.log
+          if-no-files-found: warn
 
       # The image-wide gate lives in the `verify` job, but by then the compile
       # log is a job away and a broken image has already been uploaded. This is
-      # the same check narrowed to the one binary that depends on `configure`
-      # having copied inst/webr/tbb-stubs.cpp into the generated src/: if that
-      # copy is skipped, RBesT.so builds and installs perfectly well and only
-      # fails when webR tries to `dlopen()` it. Catch it here, next to the
-      # compile output that explains it.
+      # the same check narrowed to the one binary that depends on the TBB stubs
+      # having reached RBesT's generated src/: if that copy is skipped, RBesT.so
+      # builds and installs perfectly well and only fails when webR tries to
+      # `dlopen()` it. Catch it here, next to the compile output that explains
+      # it.
       - name: Check the RBesT binary carries the TBB stubs
         run: |
-          tgz=$(find _rwasm/repo -name 'RBesT_*.tgz' | head -1)
+          tgz=$(find "$RBEST_OUT/repo" -name 'RBesT_*.tgz' | head -1)
+          test -n "$tgz"
           echo "RBesT wasm binary: ${tgz}"
           tmp=$(mktemp -d)
           tar xzf "$tgz" -C "$tmp"
@@ -122,7 +212,7 @@ jobs:
       # re-checked in both downstream jobs.
       - name: Checksum the image
         run: |
-          cd _rwasm/image
+          cd "$RBEST_OUT/vfs"
           find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%P\n' \
             | sort | xargs sha256sum > SHA256SUMS
           cat SHA256SUMS
@@ -131,7 +221,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: rbest-webr-image
-          path: _rwasm/image/
+          path: ${{ env.RBEST_OUT }}/vfs/
           if-no-files-found: error
 
       # Kept deliberately: this holds the RBesT wasm binary itself, which is
@@ -140,7 +230,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: rbest-wasm-repo
-          path: _rwasm/repo/
+          path: ${{ env.RBEST_OUT }}/repo/
           if-no-files-found: error
 
   verify:
@@ -156,6 +246,11 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+
+      # The npm `webr` version must match the release the library was built
+      # against, otherwise the image is loaded by a different R.
+      - name: Derive the npm webR version from the image tag
+        run: echo "WEBR_NPM_VERSION=${WEBR_TAG#v}" >> "$GITHUB_ENV"
 
       # The whole point of the exercise is that the image loads in *stock*
       # webR: the feasibility work proved the TBB diagnosis by patching
@@ -179,11 +274,11 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: rbest-webr-image
-          path: _rwasm/image
+          path: image
 
       - name: Check the image is the one that was built
         run: |
-          cd _rwasm/image
+          cd image
           sha256sum -c SHA256SUMS
           echo "::group::applied patches"
           cat PATCHES.txt
@@ -195,21 +290,21 @@ jobs:
       # Anything left here is a `dlopen()` failure waiting to happen.
       - name: Scan the image for unresolved TBB symbols
         run: |
-          metadata=$(ls _rwasm/image/*.js.metadata)
+          metadata=$(ls image/*.js.metadata)
           node tools/webr/wasm-tbb-symbols.cjs "${metadata%.js.metadata}"
 
       - name: Run a real gMAP fit against the image
         run: |
-          metadata=$(ls _rwasm/image/*.js.metadata)
+          metadata=$(ls image/*.js.metadata)
           base="${metadata%.js.metadata}"
           echo "Mounting image base: ${base}"
           NODE_PATH="${WEBR_DIR}/node_modules" \
             WEBR_VFS="${base}" node tools/webr/run-webr-vfs.cjs tools/webr/verify-rbest.R
 
   release:
-    name: Attach image to release
+    name: Attach artefacts to the tag
     needs: verify
-    if: github.event_name == 'release'
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -219,18 +314,44 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: rbest-webr-image
-          path: _rwasm/image
+          path: image
+
+      - name: Download wasm package repository
+        uses: actions/download-artifact@v7
+        with:
+          name: rbest-wasm-repo
+          path: rbest-wasm-repo
 
       - name: Check the image is the one that was verified
         run: |
-          cd _rwasm/image
+          cd image
           sha256sum -c SHA256SUMS
 
-      - name: Upload image to release
+      # The repository is a directory tree of .tgz binaries, which release
+      # assets cannot represent, so it travels as a single tarball. It is the
+      # thing to reach for when the image will not load: it holds the
+      # individual wasm builds, RBesT's among them.
+      - name: Pack the wasm package repository
+        run: |
+          tar czf rbest-wasm-repo.tar.gz rbest-wasm-repo
+          sha256sum rbest-wasm-repo.tar.gz
+
+      # svenstaro/upload-release-action creates a release for the tag if none
+      # exists yet, so this works for a plain tag as well as for one pushed
+      # together with a release.
+      - name: Upload artefacts to the release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: _rwasm/image/*
+          file: image/*
           file_glob: true
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Upload the wasm package repository to the release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: rbest-wasm-repo.tar.gz
           tag: ${{ github.ref }}
           overwrite: true

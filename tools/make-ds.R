@@ -115,7 +115,10 @@ make_internal_ds <- function() {
   )
 }
 
-library(devtools)
+## `use_data()` is a usethis function that devtools only re-exports, and it is
+## the only thing needed here. Depending on usethis directly keeps this script
+## runnable in the webR build's CI job without pulling in devtools.
+library(usethis)
 
 ## cleanup first
 if (file.exists("R/sysdata.rda")) {

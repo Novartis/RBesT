@@ -41,7 +41,7 @@ if [ ! -s src/webr-tbb-stubs.cpp ]; then
 fi
 echo "configure: installed src/webr-tbb-stubs.cpp (TBB stubs, active under Emscripten only)"
 
-# When cross-compiling for WebAssembly (see tools/webr/build-rwasm.R and
+# When cross-compiling for WebAssembly (see tools/webr/docker/README.md and
 # design/howto-build-rbest-webr.md), rwasm always invokes this script under
 # emconfigure with --host=wasm32-unknown-emscripten -- regardless of any
 # Makevars override it may also apply, since it backs up and replaces this
@@ -63,6 +63,43 @@ for arg; do
       sed -i.bak -e 's/^PKG_LIBS *=.*/PKG_LIBS =/' src/Makevars
       rm -f src/Makevars.bak
       echo "configure: blanked PKG_LIBS in src/Makevars for the wasm host triplet"
+
+      # Pin the object list as well. R CMD INSTALL globs src/ for sources
+      # after this script runs and passes the result to make as `OBJECTS=...`,
+      # which should already pick up webr-tbb-stubs.o -- the generated
+      # src/Makevars sets no OBJECTS of its own, so R's list is what gets
+      # linked. The wasm build is the one place where being wrong about that
+      # is invisible: the module links, installs and ships, and only fails
+      # when webR dlopen()s it. tools/webr/patch-rstan-tarball.R names exactly
+      # this remedy for rstan's side of the same problem ("add
+      # webr-tbb-stubs.o to OBJECTS here and re-check, rather than assuming").
+      # R defers to an OBJECTS defined in Makevars, so from here on the list
+      # below is the one that is linked, and it is built from the files that
+      # are actually present rather than hard-coded.
+      objects=""
+      for source in src/*; do
+        case "$source" in
+          *.c | *.cc | *.cpp)
+            objects="$objects $(basename "$source" | sed -e 's/\.[^.]*$/.o/')"
+            ;;
+          *.f | *.f90 | *.f95 | *.m | *.mm)
+            # R would compile these too. Rather than drop them silently and
+            # fail at link time with a missing symbol, say so here.
+            echo "configure: unexpected source $source in the generated src/;" >&2
+            echo "configure: extend the OBJECTS list in configure to cover it." >&2
+            exit 1
+            ;;
+        esac
+      done
+      case "$objects" in
+        *" webr-tbb-stubs.o"*) ;;
+        *)
+          echo "configure: webr-tbb-stubs.o is not in the wasm object list." >&2
+          exit 1
+          ;;
+      esac
+      printf 'OBJECTS =%s\n' "$objects" >>src/Makevars
+      echo "configure: pinned OBJECTS =$objects"
       ;;
   esac
 done

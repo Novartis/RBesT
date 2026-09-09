@@ -1,15 +1,12 @@
 ##
 ## Add the TBB no-op stubs to rstan's `src/` before it is cross-compiled.
 ##
-## Used by both build routes:
+## Called by tools/webr/docker/build-rbest-wasm.R with the CRAN tarball the
+## image already resolved and validated at image build time (kept at
+## /usr/local/share/rbest/rstan-source.tar.gz by install-host-deps.R).
 ##
-##   * tools/webr/build-rwasm.R (GitHub Actions) resolves rstan to a `url::`
-##     ref against the stan-dev r-universe and hands that URL here;
-##   * tools/webr/docker/build-rbest-wasm.R hands over the tarball the image
-##     already resolved and validated at image build time.
-##
-## Either way the patched tarball is written next to the build output and built
-## from there, so the wasm rstan that ends up in the image defines
+## The patched tarball is written next to the build output and built from
+## there, so the wasm rstan that ends up in the image defines
 ##
 ##   tbb::detail::r1::observe(tbb::detail::d1::task_scheduler_observer&, bool)
 ##   tbb::detail::r1::deallocate_memory(void*)

@@ -1,0 +1,66 @@
+# Build RBesT for WebAssembly on the *native* host architecture (option C).
+#
+#   cd tools/webr/docker
+#   RBEST_SRC="$(git rev-parse --show-toplevel)" docker compose build
+#   RBEST_SRC="$(git rev-parse --show-toplevel)" docker compose run --rm build
+#
+# Unlike design/wasm-build/compose.yaml (the amd64/qemu prototype) there is no
+# `platform:` pin: the image is built for whatever architecture the daemon
+# runs on, and both the R base image and the Emscripten SDK image resolve to
+# that architecture through their manifest lists.
+#
+# If your network intercepts TLS (self-signed certificate errors), point
+# CORP_CERTS_DIR at a directory of *.pem CA roots; see
+# ../../../design/wasm-build/README.md ("Optional corporate CA interception")
+# for details. Left unset, it defaults to ./certs.d, which is empty -- a no-op.
+#
+# Optional:
+#   RBEST_VARIANTS=nolto,nolto-notbb   after classifying a baseline failure
+#   RBEST_VFS=false                    skip the VFS library image
+#   RBEST_DEPS=false                   reuse an already-populated output/repo
+#   RBEST_OUT=./output                 where the /out mount lands on the host
+#   WEBR_TAG=v0.6.0                    webR release providing the wasm tree
+#   EMSDK_VERSION=5.0.7                must match that image's Emscripten
+#   CRAN_MIRROR / RWASM_REF / APT_PROXY
+services:
+  build:
+    build:
+      context: .
+      additional_contexts:
+        corpcerts: ${CORP_CERTS_DIR:-./certs.d}
+        # tools/webr, for the patch helpers: tbb-patch-common.R and
+        # patch-rstan-tarball.R. They cannot be COPYed from the build context
+        # above, and they do not reach the container through /src either when
+        # that mount is a *staged source package* -- `tools/` is
+        # .Rbuildignore'd. (The stub source itself lives under `inst/`, so it
+        # does arrive via /src.)
+        webrtools: ..
+      args:
+        WEBR_TAG: ${WEBR_TAG:-v0.6.0}
+        EMSDK_VERSION: ${EMSDK_VERSION:-5.0.7}
+        R_VERSION: ${R_VERSION:-4.6.0}
+        CRAN_MIRROR: ${CRAN_MIRROR:-https://cloud.r-project.org}
+        RWASM_REF: ${RWASM_REF:-HEAD}
+        APT_PROXY: ${APT_PROXY:-}
+        http_proxy: ${http_proxy:-}
+        https_proxy: ${https_proxy:-}
+        no_proxy: ${no_proxy:-}
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-}
+    image: rbest-wasm-native:${WEBR_TAG:-v0.6.0}
+    volumes:
+      - ${RBEST_SRC:-../../..}:/src:ro
+      - ${RBEST_OUT:-./output}:/out
+    environment:
+      RBEST_VARIANTS: ${RBEST_VARIANTS:-baseline}
+      RBEST_VFS: ${RBEST_VFS:-true}
+      RBEST_DEPS: ${RBEST_DEPS:-true}
+      RBEST_STRIP: ${RBEST_STRIP:-demo,doc,examples,help,html,tests,vignette}
+      http_proxy: ${http_proxy:-}
+      https_proxy: ${https_proxy:-}
+      no_proxy: ${no_proxy:-}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      NO_PROXY: ${NO_PROXY:-}
+    working_dir: /out

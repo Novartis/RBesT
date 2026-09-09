@@ -59,7 +59,6 @@ NeedsCompilation: yes
 UseLTO: true
 URL: https://opensource.nibr.com/RBesT/
 BugReports: https://github.com/Novartis/RBesT/issues
-Additional_repositories: https://stan-dev.r-universe.dev
 Suggests:
     rmarkdown,
     knitr,
