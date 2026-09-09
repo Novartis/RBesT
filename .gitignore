@@ -86,3 +86,18 @@ brms-cache/
 
 # Generated SBC reports
 /inst/sbc/sbc*html
+
+# webR/wasm scoping harness (throwaway; see design/design-webr-gmap-backends.md)
+/design/wasm-build/
+# The Docker cross-compile setup itself moved to tools/webr/docker/ (tracked);
+# this now only holds the e2e/ manual browser-verification harness and its
+# generated artifacts (throwaway).
+/design/wasm-build-native/
+# tools/webr/docker/ is the promoted, tracked cross-compile setup (see
+# tools/webr/docker/README.md); its generated output is still ignored.
+/tools/webr/docker/output/
+
+# webR/wasm build output (.github/workflows/webr-image.yaml writes it under
+# /build/, which is already ignored above)
+/node_modules/
+/package-lock.json

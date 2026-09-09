@@ -1,0 +1,300 @@
+# =============================================================================
+# Option D -- build the ENTIRE webR toolchain from source, natively.
+#
+#   *** THIS RECIPE HAS NOT BEEN BUILT. It is a documented, ready-to-run
+#   *** recipe, verified only to parse (`docker build --check`) and to match
+#   *** the upstream build files it is derived from (checked 2026-08-31,
+#   *** webR v0.6.0). Expect to debug it. `Dockerfile` -- which copies the
+#   *** architecture-independent half of the published amd64 webR image -- is
+#   *** the tested path and stays the default.
+#
+# Why this exists
+# ---------------
+# `Dockerfile` gets its webR tree with
+# `COPY --from=--platform=linux/amd64 ghcr.io/r-wasm/webr`. Nothing amd64 is
+# ever executed there and the payload is wasm, so it is sound -- but it is a
+# shortcut: two amd64 launchers ride along and have to be shimmed
+# (webr-host-shims.sh), the build options are whatever r-wasm chose, and an
+# amd64 image must be pullable.
+#
+# This file removes the shortcut. Everything is compiled for -- and by -- the
+# host architecture. There is no `--platform`, no shim, and no cross-arch copy.
+#
+# Why it is not the default: cost.
+#
+#   LLVM (clang;flang;mlir, WebAssembly target, MinSizeRel)   1.5-4 h, 25-40 GB
+#   make -C libs all (gdal, hdf5, poppler, imagemagick, ...)  1-2 h + downloads
+#   stage-1 native R + stage-2 wasm R + src (npm)             30-60 min
+#
+# versus roughly ten minutes for `Dockerfile`. Check free disk *first*:
+# the LLVM build alone will fill a 100 GB VM that is already two-thirds used.
+#
+# Build it with, e.g.:
+#
+#   docker build -f Dockerfile.source -t rbest-wasm-source:v0.6.0 \
+#     --build-context corpcerts=./certs.d \
+#     --build-arg NPROCS=10 \
+#     --build-arg http_proxy="$http_proxy" \
+#     --build-arg https_proxy="$https_proxy" .
+#
+# Knobs: NPROCS (R build parallelism), MAKE_LIBS_TARGET (`all` matches the
+# official build; `default` is far cheaper but risky -- see below), WASM_OPT
+# (-Oz upstream), FLANG_WASM_CMAKE_VARS (passed through to LLVM's cmake).
+#
+# Facts this recipe rests on (all read from upstream on 2026-08-31)
+# -----------------------------------------------------------------
+#   * r-wasm/flang-wasm's Dockerfile is `ubuntu:26.04` + emsdk + LLVM from
+#     source, with no x86 assumptions -- but `ghcr.io/r-wasm/flang-wasm:main`
+#     is published for amd64 only, hence "build, don't pull".
+#   * webR's ./configure with EMFC *unset* symlinks tools/fortran-flang.mk,
+#     which builds flang from the tools/flang submodule during `make`. So no
+#     separate flang image is needed at all -- one `make` does everything.
+#   * webR's R/Makefile builds a stage-1 *native* R (clang/clang++/gfortran,
+#     installed to $WEBR_ROOT/host/R-<ver>) before cross-building stage-2 wasm
+#     R, and then literally copies $R_HOST/lib/R/bin/{R,Rscript} over the wasm
+#     tree's own launchers (R/Makefile lines 223-225). That is exactly why
+#     those two files are amd64 in the published image -- and why a native
+#     build needs no host-R shims at all.
+#   * libs/Makefile's default target is small (pcre2, xz, ...); `all` adds
+#     openssl, curl, gdal, hdf5, poppler, imagemagick, proj, ... Prebuilt CRAN
+#     wasm binaries were linked against the official (`all`) build, so a
+#     missing library shows up only as an unresolved symbol at load time.
+#     Prefer `all`.
+#   * `ubuntu:26.04` and `emscripten/emsdk:5.0.7` are both multi-arch, so this
+#     Dockerfile has no architecture branching at all.
+#   * Rust is *not* needed to build webR. webR's own Dockerfile installs it
+#     (plus fake rustc/cargo debs to mask the distro toolchain) for
+#     cross-compiling Rust-using R *packages*.
+# =============================================================================
+
+ARG UBUNTU_TAG=26.04
+ARG EMSDK_VERSION=5.0.7
+ARG WEBR_TAG=v0.6.0
+ARG R_VERSION=4.6.0
+
+# --- Emscripten, native for this architecture ------------------------------
+# Multi-arch manifest -> resolves to the *build* platform automatically.
+FROM emscripten/emsdk:${EMSDK_VERSION} AS emsdk
+
+# =============================================================================
+# Stage 1: build webR itself, from source, natively.
+# =============================================================================
+FROM ubuntu:${UBUNTU_TAG} AS webr
+
+ARG EMSDK_VERSION
+ARG WEBR_TAG
+ARG NPROCS=4
+ARG MAKE_LIBS_TARGET=all
+ARG WASM_OPT=-Oz
+ARG FLANG_WASM_CMAKE_VARS=""
+
+ENV DEBIAN_FRONTEND=noninteractive TZ=UTC
+
+ARG http_proxy=""
+ARG https_proxy=""
+ARG no_proxy=""
+ARG HTTP_PROXY=""
+ARG HTTPS_PROXY=""
+ARG NO_PROXY=""
+ENV http_proxy=${http_proxy} \
+    https_proxy=${https_proxy} \
+    no_proxy=${no_proxy} \
+    HTTP_PROXY=${HTTP_PROXY} \
+    HTTPS_PROXY=${HTTPS_PROXY} \
+    NO_PROXY=${NO_PROXY}
+
+# Corporate TLS interception (optional): same mechanism as Dockerfile. Without
+# corporate roots every https fetch in this stage fails -- and this stage does
+# a *lot* of fetching (LLVM, R, and every libs recipe). CA material is supplied
+# via an optional, named build context (`corpcerts`); a no-op if none is given.
+COPY --from=corpcerts . /tmp/corporate-certs/
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates; \
+    for cert in /tmp/corporate-certs/*.pem; do \
+      [ -e "$cert" ] || continue; \
+      install -m 0644 "$cert" \
+        "/usr/local/share/ca-certificates/$(basename "$cert" .pem).crt"; \
+    done; \
+    rm -rf /tmp/corporate-certs; \
+    update-ca-certificates --fresh
+
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
+    NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt \
+    GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt
+
+# Build prerequisites. The first block is copied from r-wasm/flang-wasm's
+# Dockerfile (LLVM + the wasm system libraries); `quilt` is required by webR's
+# R/Makefile to apply its R patches; node/npm build webR's `src` (dist/);
+# gfortran is the *native* Fortran compiler for stage-1 R.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      build-essential clang lld cmake ninja-build \
+      ca-certificates curl wget git gnupg gperf jq \
+      gfortran quilt pkg-config python3 python3-setuptools \
+      sqlite3 sudo tzdata unzip xz-utils file \
+      libbz2-dev libcurl4-openssl-dev libglib2.0-dev-bin liblzma-dev \
+      libpcre2-dev libssl-dev libxml2-dev libz-dev \
+      nodejs npm; \
+    rm -rf /var/lib/apt/lists/*
+
+# Emscripten, relocated to /opt/emsdk: webR bakes absolute /opt/emsdk paths
+# into the wasm Makeconf, so the prefix is load-bearing downstream.
+COPY --from=emsdk /emsdk /opt/emsdk
+ENV EMSDK=/opt/emsdk \
+    EM_CONFIG=/opt/emsdk/.emscripten \
+    EMSDK_QUIET=1 \
+    EM_NODE_JS=/usr/bin/node \
+    PATH=/opt/emsdk:/opt/emsdk/upstream/emscripten:/opt/emsdk/upstream/bin:${PATH}
+
+ENV WEBR_ROOT=/opt/webr
+RUN git clone https://github.com/r-wasm/webr.git ${WEBR_ROOT}
+WORKDIR /opt/webr
+RUN git checkout ${WEBR_TAG} && git submodule update --init
+
+# ./configure with EMFC unset selects tools/fortran-flang.mk, i.e. "build LLVM
+# flang from source". This is the expensive step: cmake -G Ninja over
+# clang;flang;mlir with LLVM_TARGETS_TO_BUILD=WebAssembly, MinSizeRel.
+#
+# Note: upstream's flang-wasm Makefile runs `cmake --build $(BUILD)` over *all*
+# targets. Restricting it to `--target flang` would cut this build
+# substantially, but requires patching that Makefile, so the upstream
+# behaviour is kept here deliberately.
+RUN ./configure
+
+# Supporting wasm system libraries. The retry loop is upstream's: these fetch
+# from many different origins and fail transiently.
+RUN set -eux; \
+    cd libs; \
+    for i in 1 2 3 4 5; do \
+      make ${MAKE_LIBS_TARGET} WASM_OPT=${WASM_OPT} && exit 0; \
+      rm -rf download; \
+      sleep 60; \
+    done; \
+    exit 1
+
+# flang (from the submodule), stage-1 native R, stage-2 wasm R, and dist/.
+RUN make NPROCS=${NPROCS} WASM_OPT=${WASM_OPT} \
+      FLANG_WASM_CMAKE_VARS="${FLANG_WASM_CMAKE_VARS}"
+
+# Trim the build scratch that is not needed downstream. R/build is *kept*:
+# webr-vars.mk puts its build/include and src/include on CPPFLAGS.
+RUN rm -rf libs/download libs/build src/node_modules R/download \
+      tools/flang/build tools/flang/llvm-project
+
+# =============================================================================
+# Stage 2: the RBesT cross-compile environment.
+#
+# Same distro as stage 1 on purpose -- the stage-1 R and every *-config helper
+# in $WEBR_ROOT/host/bin are native ELF binaries linked against this image's
+# glibc. Copying them into a different distro (e.g. rocker/r-ver, Ubuntu 24.04)
+# would risk a glibc-too-new failure.
+# =============================================================================
+FROM ubuntu:${UBUNTU_TAG}
+
+ARG R_VERSION
+ENV DEBIAN_FRONTEND=noninteractive TZ=UTC
+
+ARG http_proxy=""
+ARG https_proxy=""
+ARG no_proxy=""
+ARG HTTP_PROXY=""
+ARG HTTPS_PROXY=""
+ARG NO_PROXY=""
+ENV http_proxy=${http_proxy} \
+    https_proxy=${https_proxy} \
+    no_proxy=${no_proxy} \
+    HTTP_PROXY=${HTTP_PROXY} \
+    HTTPS_PROXY=${HTTPS_PROXY} \
+    NO_PROXY=${NO_PROXY}
+
+# Corporate TLS interception (optional): same mechanism as stage 1 above.
+COPY --from=corpcerts . /tmp/corporate-certs/
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates; \
+    for cert in /tmp/corporate-certs/*.pem; do \
+      [ -e "$cert" ] || continue; \
+      install -m 0644 "$cert" \
+        "/usr/local/share/ca-certificates/$(basename "$cert" .pem).crt"; \
+    done; \
+    rm -rf /tmp/corporate-certs; \
+    update-ca-certificates --fresh
+
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
+    NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt \
+    GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      build-essential gfortran git curl xz-utils file make cmake \
+      pkg-config python3 \
+      libcurl4-openssl-dev libssl-dev libxml2-dev zlib1g-dev \
+      libbz2-dev liblzma-dev libpcre2-dev; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=emsdk /emsdk /opt/emsdk
+COPY --from=webr /opt/webr /opt/webr
+COPY --from=webr /opt/emsdk/upstream/emscripten/cache \
+                 /opt/emsdk/upstream/emscripten/cache
+
+ENV EMSDK=/opt/emsdk \
+    EM_CONFIG=/opt/emsdk/.emscripten \
+    EMSDK_QUIET=1 \
+    EM_NODE_JS=/usr/bin/node \
+    WEBR_ROOT=/opt/webr \
+    PKG_USE_BIOCONDUCTOR=false
+
+# The host R is webR's own stage-1 build -- native, and exactly the R version
+# the wasm tree was built for. rwasm falls back to this path anyway when
+# `Sys.which("R")` is empty; putting it on PATH makes that explicit.
+#
+# Caveat: stage-1 R is configured `--with-recommended-packages=no
+# --enable-byte-compiled-packages=no --without-readline`, so Matrix/MASS/etc.
+# are absent and must be installed from CRAN like any other dependency.
+#
+# Alternative, if that leanness causes trouble: install a stock R 4.6.0 and let
+# rwasm pick it up from PATH instead. Note that `rig add 4.6.0` -- which
+# webR's own Dockerfile uses -- pulls Posit r-builds debs, and the arm64 prefix
+# on cdn.posit.co was *not* serving builds when this was written (HTTP 403 for
+# every version tried), so on arm64 that route may mean building R from source.
+ENV PATH=/opt/webr/host/R-${R_VERSION}/bin:/opt/emsdk:/opt/emsdk/upstream/emscripten:/opt/emsdk/upstream/bin:${PATH}
+
+# NOTE: no webr-host-shims.sh here, by design. In `Dockerfile` the shims exist
+# only to replace the amd64 launchers that came with the copied image; here
+# $WEBR_ROOT/wasm/R-<ver>/lib/R/bin/{R,Rscript} were produced by this build and
+# already point at a native host R.
+
+ARG CRAN_MIRROR=https://cloud.r-project.org
+ARG RWASM_REF=HEAD
+ENV CRAN_MIRROR=${CRAN_MIRROR} \
+    RWASM_REF=${RWASM_REF}
+
+# webR's own R helper package, as upstream's Dockerfile does. R/Makefile does
+# not need it to *build* webR, but it is expected to be present when building
+# R packages afterwards.
+RUN R CMD INSTALL /opt/webr/packages/webr
+
+COPY proxy-env.R /usr/local/bin/proxy-env.R
+COPY install-rwasm.R /usr/local/bin/install-rwasm.R
+RUN R -q -f /usr/local/bin/install-rwasm.R
+
+COPY --from=webrtools patch-stanheaders.R /usr/local/bin/patch-stanheaders.R
+COPY install-host-deps.R /usr/local/bin/install-host-deps.R
+RUN R -q -f /usr/local/bin/install-host-deps.R
+
+# check-toolchain.sh gate 5 checks for the amd64 image's directory layout; it
+# should pass unchanged here, but if the from-source tree differs, fix the
+# check rather than the tree.
+COPY check-toolchain.sh /usr/local/bin/check-toolchain.sh
+RUN /usr/local/bin/check-toolchain.sh
+
+WORKDIR /out
+COPY fetch-wasm-deps.R /usr/local/bin/fetch-wasm-deps.R
+COPY build-rbest-wasm.R /usr/local/bin/build-rbest-wasm.R
+
+CMD ["R", "-q", "-f", "/usr/local/bin/build-rbest-wasm.R"]
