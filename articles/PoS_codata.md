@@ -831,7 +831,7 @@ base_map_2
     ## Mixture Components:
     ##   comp1       comp2       comp3       comp4       comp5      
     ## w  0.43259608  0.19622143  0.16670357  0.13157991  0.07289901
-    ## m -0.30121984 -0.62120757  0.08847830  0.05924736 -0.83695837
+    ## m -0.30121984 -0.62120757  0.08847829  0.05924736 -0.83695837
     ## s  0.22911188  0.36994778  0.31789110  0.87114040  0.96913829
 
 Now, combine the MAP prior (representing historical knowledge) with the
@@ -862,14 +862,14 @@ interim_A_allcombined_2
 ```
 
     ## EM for Normal Mixture Model
-    ## Log-Likelihood = 10708.05
+    ## Log-Likelihood = 10719.33
     ## 
     ## Univariate normal mixture
     ## Mixture Components:
     ##   comp1       comp2       comp3       comp4       comp5      
-    ## w  0.25274139  0.21176158  0.21063840  0.19370095  0.13115768
-    ## m -0.31915588 -0.10267129 -0.21254440 -0.30096796 -0.01355072
-    ## s  0.12185152  0.06724969  0.06044993  0.07790957  0.09912008
+    ## w  0.23616642  0.21408895  0.20947142  0.19741799  0.14285523
+    ## m -0.10017003 -0.10536081 -0.21237051 -0.30579858 -0.39250551
+    ## s  0.13468184  0.07571308  0.05791695  0.06513501  0.09312002
 
 Now let’s overlay the two posterior’s
 
@@ -898,7 +898,7 @@ interim_pos_A(interim_A_combined_2)
 interim_pos_A(interim_A_allcombined_2)
 ```
 
-    ## [1] 0.489807
+    ## [1] 0.4896834
 
 ### Formal MAP and MAC equivalence
 
