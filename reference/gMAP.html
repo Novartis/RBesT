@@ -13,7 +13,7 @@ stats::glm() conventions."><link rel="stylesheet" href="https://cdn.jsdelivr.net
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.12-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@ stats::glm() conventions."><link rel="stylesheet" href="https://cdn.jsdelivr.net
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Meta-Analytic-Predictive Analysis for Generalized Linear Models</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.11-0/R/gMAP.R" class="external-link"><code>R/gMAP.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/gMAP.R" class="external-link"><code>R/gMAP.R</code></a></small>
       <div class="d-none name"><code>gMAP.Rd</code></div>
     </div>
 
@@ -491,36 +491,36 @@ parameters.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Between-trial heterogeneity of tau prediction stratum</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean median    sd   q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.387  0.359 0.211 0.0476 0.359 0.899</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MAP Prior MCMC sample</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean median    sd  q2.5   q50 q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.258  0.248 0.089 0.112 0.248 0.472</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># obtain numerical summaries</span></span></span>
 <span class="r-in"><span><span class="va">map_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Heterogeneity parameter tau per stratum:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean median    sd   q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tau[1] 0.387  0.359 0.211 0.0476 0.359 0.899</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Regression coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              mean median    sd  q2.5   q50  q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.11  -1.11 0.186 -1.49 -1.11 -0.746</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             mean median    sd  q2.5   q50  q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.1  -1.11 0.192 -1.47 -1.11 -0.697</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean estimate MCMC sample:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp 0.25  0.248 0.0344 0.185 0.248 0.322</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             mean median     sd  q2.5   q50 q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp 0.251  0.249 0.0363 0.187 0.249 0.332</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MAP Prior MCMC sample:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean median    sd  q2.5   q50 q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.258  0.248 0.089 0.112 0.248 0.472</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">map_sum</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tau"        "beta"       "theta.pred" "theta"     </span>
 <span class="r-in"><span><span class="co"># [1] "tau"        "beta"       "theta.pred" "theta"</span></span></span>
 <span class="r-in"><span><span class="va">map_sum</span><span class="op">$</span><span class="va">theta.pred</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      mean    median         sd     q2.5       q50     q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.2553014 0.2471555 0.08641111 0.106254 0.2471555 0.4614115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      mean    median         sd      q2.5       q50     q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta_resp_pred 0.2581959 0.2480074 0.08904432 0.1118133 0.2480074 0.4718969</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># graphical model checks (returns list of ggplot2 plots)</span></span></span>
@@ -539,19 +539,19 @@ parameters.</p>
 <span class="r-in"><span><span class="co"># obtain shrinkage estimates</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              mean    median         sd       q2.5       q50     q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 1 0.2272763 0.2272746 0.03437691 0.16129771 0.2272746 0.2970245</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 2 0.2614755 0.2573530 0.04859589 0.17561527 0.2573530 0.3697573</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 3 0.3149371 0.3102982 0.05848813 0.21831293 0.3102982 0.4447326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 4 0.2414853 0.2401137 0.04789034 0.14958043 0.2401137 0.3448334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 5 0.2705909 0.2687609 0.03415781 0.20835876 0.2687609 0.3418956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 6 0.2677422 0.2601347 0.06281074 0.15929200 0.2601347 0.4106667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 7 0.1741634 0.1721971 0.04459800 0.09308034 0.1721971 0.2627560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Study 8 0.2675219 0.2620428 0.05365127 0.17487549 0.2620428 0.3866872</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 1 0.2272068 0.2274402 0.03455920 0.16086178 0.2274402 0.2966788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 2 0.2619048 0.2580853 0.04838363 0.17553531 0.2580853 0.3693645</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 3 0.3155442 0.3094521 0.05873338 0.21777378 0.3094521 0.4416955</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 4 0.2427073 0.2409834 0.04873043 0.15062566 0.2409834 0.3447459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 5 0.2710978 0.2693524 0.03371146 0.21088442 0.2693524 0.3416142</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 6 0.2677521 0.2608205 0.06274060 0.16052338 0.2608205 0.4100474</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 7 0.1722857 0.1694975 0.04429079 0.09465847 0.1694975 0.2590756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Study 8 0.2662103 0.2615448 0.05415005 0.17173337 0.2615448 0.3846066</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># regression coefficients</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">map_AS</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    median       sd      q2.5       q50      q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.109096 -1.108089 0.185939 -1.486111 -1.108089 -0.7455082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  mean    median        sd      q2.5       q50      q97.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -1.101586 -1.105148 0.1923713 -1.469655 -1.105148 -0.6969154</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># finally fit MAP prior with parametric mixture</span></span></span>
 <span class="r-in"><span><span class="va">map_mix</span> <span class="op">&lt;-</span> <span class="fu"><a href="mixfit.html">mixfit</a></span><span class="op">(</span><span class="va">map_AS</span>, Nc <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>

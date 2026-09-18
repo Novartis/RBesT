@@ -64,9 +64,10 @@ A data frame with 10 rows and 11 variables:
 
 ## References
 
-Holzhauer B, Wang C, Schmidli H (2018). “Historical control information
-for clinical trials with a recurrent event endpoint.” *Statistics in
-Medicine*, **37**(10), 1640–1657.
+Holzhauer B, Wang C, Schmidli H (2018). “Evidence synthesis from
+aggregate recurrent event data for clinical trial design and analysis.”
+*Statistics in Medicine*, **37**(6), 867–882.
+[doi:10.1002/sim.7549](https://doi.org/10.1002/sim.7549) .
 
 ## Examples
 

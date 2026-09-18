@@ -468,36 +468,36 @@ print(map_AS)
 #> 
 #> Between-trial heterogeneity of tau prediction stratum
 #>         mean median    sd   q2.5   q50 q97.5
-#> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897
+#> tau[1] 0.387  0.359 0.211 0.0476 0.359 0.899
 #> 
 #> MAP Prior MCMC sample
-#>                  mean median     sd  q2.5   q50 q97.5
-#> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461
+#>                  mean median    sd  q2.5   q50 q97.5
+#> theta_resp_pred 0.258  0.248 0.089 0.112 0.248 0.472
 
 # obtain numerical summaries
 map_sum <- summary(map_AS)
 print(map_sum)
 #> Heterogeneity parameter tau per stratum:
 #>         mean median    sd   q2.5   q50 q97.5
-#> tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897
+#> tau[1] 0.387  0.359 0.211 0.0476 0.359 0.899
 #> 
 #> Regression coefficients:
-#>              mean median    sd  q2.5   q50  q97.5
-#> (Intercept) -1.11  -1.11 0.186 -1.49 -1.11 -0.746
+#>             mean median    sd  q2.5   q50  q97.5
+#> (Intercept) -1.1  -1.11 0.192 -1.47 -1.11 -0.697
 #> 
 #> Mean estimate MCMC sample:
-#>            mean median     sd  q2.5   q50 q97.5
-#> theta_resp 0.25  0.248 0.0344 0.185 0.248 0.322
+#>             mean median     sd  q2.5   q50 q97.5
+#> theta_resp 0.251  0.249 0.0363 0.187 0.249 0.332
 #> 
 #> MAP Prior MCMC sample:
-#>                  mean median     sd  q2.5   q50 q97.5
-#> theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461
+#>                  mean median    sd  q2.5   q50 q97.5
+#> theta_resp_pred 0.258  0.248 0.089 0.112 0.248 0.472
 names(map_sum)
 #> [1] "tau"        "beta"       "theta.pred" "theta"     
 # [1] "tau"        "beta"       "theta.pred" "theta"
 map_sum$theta.pred
-#>                      mean    median         sd     q2.5       q50     q97.5
-#> theta_resp_pred 0.2553014 0.2471555 0.08641111 0.106254 0.2471555 0.4614115
+#>                      mean    median         sd      q2.5       q50     q97.5
+#> theta_resp_pred 0.2581959 0.2480074 0.08904432 0.1118133 0.2480074 0.4718969
 
 # \donttest{
 # graphical model checks (returns list of ggplot2 plots)
@@ -516,19 +516,19 @@ map_checks$densityThetaStarLink
 # obtain shrinkage estimates
 fitted(map_AS)
 #>              mean    median         sd       q2.5       q50     q97.5
-#> Study 1 0.2272763 0.2272746 0.03437691 0.16129771 0.2272746 0.2970245
-#> Study 2 0.2614755 0.2573530 0.04859589 0.17561527 0.2573530 0.3697573
-#> Study 3 0.3149371 0.3102982 0.05848813 0.21831293 0.3102982 0.4447326
-#> Study 4 0.2414853 0.2401137 0.04789034 0.14958043 0.2401137 0.3448334
-#> Study 5 0.2705909 0.2687609 0.03415781 0.20835876 0.2687609 0.3418956
-#> Study 6 0.2677422 0.2601347 0.06281074 0.15929200 0.2601347 0.4106667
-#> Study 7 0.1741634 0.1721971 0.04459800 0.09308034 0.1721971 0.2627560
-#> Study 8 0.2675219 0.2620428 0.05365127 0.17487549 0.2620428 0.3866872
+#> Study 1 0.2272068 0.2274402 0.03455920 0.16086178 0.2274402 0.2966788
+#> Study 2 0.2619048 0.2580853 0.04838363 0.17553531 0.2580853 0.3693645
+#> Study 3 0.3155442 0.3094521 0.05873338 0.21777378 0.3094521 0.4416955
+#> Study 4 0.2427073 0.2409834 0.04873043 0.15062566 0.2409834 0.3447459
+#> Study 5 0.2710978 0.2693524 0.03371146 0.21088442 0.2693524 0.3416142
+#> Study 6 0.2677521 0.2608205 0.06274060 0.16052338 0.2608205 0.4100474
+#> Study 7 0.1722857 0.1694975 0.04429079 0.09465847 0.1694975 0.2590756
+#> Study 8 0.2662103 0.2615448 0.05415005 0.17173337 0.2615448 0.3846066
 
 # regression coefficients
 coef(map_AS)
-#>                  mean    median       sd      q2.5       q50      q97.5
-#> (Intercept) -1.109096 -1.108089 0.185939 -1.486111 -1.108089 -0.7455082
+#>                  mean    median        sd      q2.5       q50      q97.5
+#> (Intercept) -1.101586 -1.105148 0.1923713 -1.469655 -1.105148 -0.6969154
 
 # finally fit MAP prior with parametric mixture
 map_mix <- mixfit(map_AS, Nc = 2)

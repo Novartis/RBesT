@@ -86,11 +86,11 @@ print(map_mcmc)
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
     ##        mean median   sd q2.5  q50 q97.5
-    ## tau[1] 14.3   12.2 9.99 1.35 12.2  38.4
+    ## tau[1] 14.5   12.5 9.96 1.35 12.5  40.1
     ## 
     ## MAP Prior MCMC sample
-    ##                 mean median   sd  q2.5   q50 q97.5
-    ## theta_resp_pred  -50  -48.6 19.3 -93.1 -48.6 -13.8
+    ##                  mean median   sd  q2.5   q50 q97.5
+    ## theta_resp_pred -49.8  -48.6 19.8 -93.2 -48.6 -10.8
 
 ``` r
 
@@ -128,15 +128,15 @@ print(map)
 ```
 
     ## EM for Normal Mixture Model
-    ## Log-Likelihood = -17062.45
+    ## Log-Likelihood = -17152.46
     ## 
     ## Univariate normal mixture
     ## Reference scale: 88
     ## Mixture Components:
-    ##   comp1        comp2        comp3       
-    ## w   0.50104846   0.41871594   0.08023561
-    ## m -51.42408665 -47.25917128 -55.07086416
-    ## s  19.04525409   7.85193726  44.57325000
+    ##   comp1        comp2        comp3        comp4       
+    ## w   0.41947919   0.38086525   0.09983051   0.09982505
+    ## m -54.24748106 -46.74973560 -53.40585020 -39.08029230
+    ## s  17.72099173   7.07360635  42.44598927  18.87401783
 
 ``` r
 
@@ -165,7 +165,7 @@ round(ess(map)) ## default elir method
 
     ## Using default prior reference scale 88
 
-    ## [1] 39
+    ## [1] 40
 
 ``` r
 
@@ -174,7 +174,7 @@ round(ess(map, method = "morita"))
 
     ## Using default prior reference scale 88
 
-    ## [1] 89
+    ## [1] 107
 
 ``` r
 
@@ -183,7 +183,7 @@ round(ess(map, method = "moment"))
 
     ## Using default prior reference scale 88
 
-    ## [1] 21
+    ## [1] 20
 
 ### Robustification of MAP Prior
 
@@ -216,10 +216,10 @@ print(map_robust)
     ## Univariate normal mixture
     ## Reference scale: 88
     ## Mixture Components:
-    ##   comp1        comp2        comp3        robust      
-    ## w   0.40083877   0.33497275   0.06418848   0.20000000
-    ## m -51.42408665 -47.25917128 -55.07086416 -50.00000000
-    ## s  19.04525409   7.85193726  44.57325000  88.00000000
+    ##   comp1        comp2        comp3        comp4        robust      
+    ## w   0.33558335   0.30469220   0.07986441   0.07986004   0.20000000
+    ## m -54.24748106 -46.74973560 -53.40585020 -39.08029230 -50.00000000
+    ## s  17.72099173   7.07360635  42.44598927  18.87401783  88.00000000
 
 ``` r
 
@@ -228,7 +228,7 @@ round(ess(map_robust))
 
     ## Using default prior reference scale 88
 
-    ## [1] 28
+    ## [1] 29
 
 ### Operating Characteristics of Design Options
 
@@ -437,7 +437,7 @@ p1 <- pmixdiff(post_act, post_pbo, 0)
 print(p1)
 ```
 
-    ## [1] 0.06270104
+    ## [1] 0.06322266
 
 ``` r
 
@@ -445,7 +445,7 @@ p2 <- pmixdiff(post_act, post_pbo, -50)
 print(p2)
 ```
 
-    ## [1] 3.827361e-06
+    ## [1] 3.90589e-06
 
 ``` r
 
@@ -467,15 +467,16 @@ poc(post_act, post_pbo)
 Hueber, Wolfgang, Bruce E. Sands, Steve Lewitzky, Marc
 Vandemeulebroecke, et al. 2012. “Secukinumab, a Human Anti-IL-17A
 Monoclonal Antibody, for Moderate to Severe Crohn’s Disease.” *Gut* 61
-(12): 1693–700.
+(12): 1693–700. <https://doi.org/10.1136/gutjnl-2011-301668>.
 
 Kass, Robert E., and Larry Wasserman. 1995. “A Reference Bayesian Test
 for Nested Hypotheses and Its Relationship to the Schwarz Criterion.”
 *Journal of the American Statistical Association* 90 (431): 928–34.
+<https://doi.org/10.1080/01621459.1995.10476592>.
 
 Morita, Satoshi, Peter F. Thall, and Peter Mueller. 2008. “Determining
 the Effective Sample Size of a Parametric Prior.” *Biometrics* 64 (2):
-595–602.
+595–602. <https://doi.org/10.1111/j.1541-0420.2007.00888.x>.
 
 Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
 J. Spiegelhalter. 2010. “Summarizing Historical Information on Controls
@@ -497,7 +498,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -516,31 +517,31 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
+    ## [1] ggplot2_4.0.3 knitr_1.52    RBesT_1.12-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
-    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.61           
+    ##  [4] bslib_0.12.0         QuickJSR_1.11.0      htmlwidgets_1.6.4   
     ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
     ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
     ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
-    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
     ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   
     ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
-    ## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         
+    ## [31] sass_0.4.10          bayesplot_1.16.0     yaml_2.3.12         
     ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
-    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.39.1  
     ## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
-    ## [43] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       
-    ## [46] stringi_1.8.7        dplyr_1.2.1          reshape2_1.4.5      
+    ## [43] tidyselect_1.2.1     digest_0.6.39        stringi_1.8.9       
+    ## [46] mvtnorm_1.4-2        dplyr_1.2.1          reshape2_1.4.5      
     ## [49] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
     ## [52] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
     ## [55] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
-    ## [58] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
+    ## [58] backports_1.5.1      rmarkdown_2.32       matrixStats_1.5.0   
     ## [61] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
-    ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
+    ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.1    
     ## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
     ## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
     ## [73] systemfonts_1.3.2    fs_2.1.0

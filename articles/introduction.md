@@ -115,11 +115,11 @@ print(map_mcmc)
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
     ##         mean median    sd   q2.5   q50 q97.5
-    ## tau[1] 0.387  0.359 0.215 0.0399 0.359 0.897
+    ## tau[1] 0.387  0.359 0.211 0.0476 0.359 0.899
     ## 
     ## MAP Prior MCMC sample
-    ##                  mean median     sd  q2.5   q50 q97.5
-    ## theta_resp_pred 0.255  0.247 0.0864 0.106 0.247 0.461
+    ##                  mean median    sd  q2.5   q50 q97.5
+    ## theta_resp_pred 0.258  0.248 0.089 0.112 0.248 0.472
 
 ``` r
 
@@ -171,12 +171,12 @@ print(map_mcmc_sens)
     ## Maximal Rhat              : 1 
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
-    ##         mean median    sd   q2.5  q50 q97.5
-    ## tau[1] 0.335   0.32 0.172 0.0397 0.32 0.718
+    ##         mean median    sd   q2.5   q50 q97.5
+    ## tau[1] 0.333  0.318 0.177 0.0332 0.318 0.719
     ## 
     ## MAP Prior MCMC sample
-    ##                  mean median     sd  q2.5  q50 q97.5
-    ## theta_resp_pred 0.259   0.25 0.0776 0.129 0.25 0.442
+    ##                  mean median     sd  q2.5   q50 q97.5
+    ## theta_resp_pred 0.254  0.247 0.0758 0.124 0.247 0.435
 
 ### Parametric Approximation
 
@@ -196,14 +196,14 @@ print(map)
 ```
 
     ## EM for Beta Mixture Model
-    ## Log-Likelihood = 4462.286
+    ## Log-Likelihood = 4402.723
     ## 
     ## Univariate beta mixture
     ## Mixture Components:
-    ##   comp1       comp2       comp3       comp4      
-    ## w   0.4612914   0.1917812   0.1893896   0.1575378
-    ## a  33.9513487  19.4400089  12.2692310   2.2521243
-    ## b 103.0146367  41.5205219  55.9202833   5.4812202
+    ##   comp1      comp2      comp3      comp4     
+    ## w  0.4723034  0.2187767  0.1773941  0.1315259
+    ## a 29.9536521 19.8356785 11.4688323  2.1945470
+    ## b 92.5626364 42.1699658 53.2523489  4.7800841
 
 ``` r
 
@@ -233,21 +233,21 @@ mixtures:
 round(ess(map, method = "elir")) ## default method
 ```
 
-    ## [1] 38
+    ## [1] 35
 
 ``` r
 
 round(ess(map, method = "moment"))
 ```
 
-    ## [1] 24
+    ## [1] 23
 
 ``` r
 
 round(ess(map, method = "morita"))
 ```
 
-    ## [1] 95
+    ## [1] 82
 
 The Morita approach uses the curvature of the prior at the mode and has
 been found to be sensitive to a large number of mixture components. From
@@ -271,17 +271,17 @@ print(map_robust)
 
     ## Univariate beta mixture
     ## Mixture Components:
-    ##   comp1       comp2       comp3       comp4       robust     
-    ## w   0.3690331   0.1534249   0.1515117   0.1260303   0.2000000
-    ## a  33.9513487  19.4400089  12.2692310   2.2521243   1.0000000
-    ## b 103.0146367  41.5205219  55.9202833   5.4812202   1.0000000
+    ##   comp1      comp2      comp3      comp4      robust    
+    ## w  0.3778427  0.1750213  0.1419153  0.1052207  0.2000000
+    ## a 29.9536521 19.8356785 11.4688323  2.1945470  1.0000000
+    ## b 92.5626364 42.1699658 53.2523489  4.7800841  1.0000000
 
 ``` r
 
 round(ess(map_robust))
 ```
 
-    ## [1] 27
+    ## [1] 25
 
 Adding a robust mixture component does reduce the ESS of the MAP prior
 to an extent which depends on the weight of the robust component.
@@ -406,7 +406,7 @@ summary(map)
 ```
 
     ##       mean         sd       2.5%      50.0%      97.5% 
-    ## 0.25545885 0.08662045 0.10730400 0.24758768 0.46276759
+    ## 0.25827811 0.08897468 0.11123296 0.24820263 0.47286365
 
 Hence, it is resonable to restrict the response rates $`\theta`$ for
 which we evaluate the type I error to a a range of plausible values:
@@ -483,7 +483,7 @@ knitr::kable(target_effect, digits = 3)
 
 | delta | prior         |
 |------:|:--------------|
-| 0.302 | non-robust    |
+| 0.310 | non-robust    |
 | 0.341 | uniform 24:24 |
 | 0.368 | robust        |
 | 0.529 | uniform       |
@@ -565,7 +565,7 @@ prob_smaller <- pmixdiff(post_treat, post_placebo, 0, lower.tail = FALSE)
 prob_smaller
 ```
 
-    ## [1] 0.9917197
+    ## [1] 0.9914633
 
 ``` r
 
@@ -587,11 +587,11 @@ decision(post_treat, post_placebo)
 Baeten, Dominique et al. 2013. “Anti-Interleukin-17A Monoclonal Antibody
 Secukinumab in Treatment of Ankylosing Spondylitis: A Randomised,
 Double-Blind, Placebo-Controlled Trial.” *The Lancet* 382 (9906):
-1705–13.
+1705–13. <https://doi.org/10.1016/S0140-6736(13)61134-4>.
 
 Morita, Satoshi, Peter F. Thall, and Peter Mueller. 2008. “Determining
 the Effective Sample Size of a Parametric Prior.” *Biometrics* 64 (2):
-595–602.
+595–602. <https://doi.org/10.1111/j.1541-0420.2007.00888.x>.
 
 Neuenschwander, Beat, Gorana Capkun-Niggli, Michael Branson, and David
 J. Spiegelhalter. 2010. “Summarizing Historical Information on Controls
@@ -617,7 +617,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -636,31 +636,31 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
+    ## [1] ggplot2_4.0.3 knitr_1.52    RBesT_1.12-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
-    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.61           
+    ##  [4] bslib_0.12.0         QuickJSR_1.11.0      htmlwidgets_1.6.4   
     ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
     ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
     ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
-    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
     ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   
     ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
-    ## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         
+    ## [31] sass_0.4.10          bayesplot_1.16.0     yaml_2.3.12         
     ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
-    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.39.1  
     ## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
-    ## [43] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       
-    ## [46] stringi_1.8.7        dplyr_1.2.1          reshape2_1.4.5      
+    ## [43] tidyselect_1.2.1     digest_0.6.39        stringi_1.8.9       
+    ## [46] mvtnorm_1.4-2        dplyr_1.2.1          reshape2_1.4.5      
     ## [49] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
     ## [52] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
     ## [55] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
-    ## [58] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
+    ## [58] backports_1.5.1      rmarkdown_2.32       matrixStats_1.5.0   
     ## [61] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
-    ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
+    ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.1    
     ## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
     ## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
     ## [73] systemfonts_1.3.2    fs_2.1.0

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.12-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,11 +39,30 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/v1.11-0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/Novartis/RBesT/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.11-0" id="rbest-111-0---august-3rd-2026">RBesT 1.11-0 - August 3rd, 2026<a class="anchor" aria-label="anchor" href="#rbest-111-0---august-3rd-2026"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.12-0" id="rbest-112-0---17th-september-2026">RBesT 1.12-0 - 17th September, 2026<a class="anchor" aria-label="anchor" href="#rbest-112-0---17th-september-2026"></a></h2>
+<div class="section level3">
+<h3 id="enhancements-1-12-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-12-0"></a></h3>
+<ul><li>A WebAssembly/webR build of <code>RBesT</code> and its dependency closure is now produced as a mountable library image.</li>
+<li>
+<code>gMAP</code> now samples the group random effects in a sum-to-zero parametrization whenever the model has an intercept, normal random effects and a single <code>tau</code> stratum. The data-free common shift shared by the intercept and the random effects is marginalized analytically using an orthonormal basis of the sum-to-zero subspace, which removes the ridge between <code>beta[1]</code> and <code>mean(eps)</code> that made the posterior hard to explore. The model is mathematically unchanged and all outputs keep their previous meaning; only the sampling geometry differs. Student-t random effects, several <code>tau</code> strata and intercept-free models continue to use the previous parametrization. Set <code>options(RBesT.MC.s2z = FALSE)</code> to use the conventional parametrization. Many thanks to Sean Pinkney and Nikolai Vetr for presenting the approch at StanCon 2026.</li>
+<li>Automatic partial centering is now the default for all <code>gMAP</code> model variants (<code>options(RBesT.MC.ncp = 3)</code>). Before sampling, fixed-effort Gaussian quadrature estimates the posterior median of each heterogeneity stratum and converts it to per-group Fisher-information centering fractions. If the fixed numerical checks do not agree, <code>gMAP</code> warns and uses the exact non-centered model parametrization. <code>RBesT.MC.ncp = 0</code> and <code>1</code> keep their existing meanings (centered / non-centered); <code>RBesT.MC.ncp = 2</code> keeps its existing endpoint threshold but now bases its centered/non-centered decision on the same quadrature fractions instead of a cruder scalar heterogeneity guess (see below). Partial centering is independent of whether the model is eligible for the sum-to-zero representation. To restore the pre-1.12 sampling scheme, set <code>options(RBesT.MC.s2z = FALSE, RBesT.MC.ncp = 1)</code>. Man thanks to Sean Pinkney for the implementation in <code>brms</code> used as template.</li>
+<li>Reuse the partial-centering quadrature to scale <code>log(tau)</code>, fixed effects, and group effects for sampling. Fixed-effect locations remain pooled-GLM estimates, while group locations and scales enter an exact affine reparametrization. If quadrature is unavailable, <code>gMAP</code> warns and uses heuristic sampler-scaling estimates. The statistical model, reported summaries, and numeric <code>init</code> argument are unchanged.</li>
+<li>Lower the default <code>adapt_delta</code> for <code>gMAP</code> from <code>0.99</code> to <code>0.95</code> (<code>options(RBesT.MC.control)</code>). The sum-to-zero parametrization no longer needs the very conservative target acceptance rate that the old geometry required, and the lower target draws the same effective sample size from substantially fewer gradient evaluations. Should divergent transitions still occur, the reported warning now recommends raising <code>adapt_delta</code> to <code>0.99</code>. Setting <code>options(RBesT.MC.s2z = FALSE)</code> also restores the previous <code>adapt_delta</code> default of <code>0.99</code>, since the legacy geometry needs the more conservative target acceptance rate.</li>
+<li>The variables of the posterior draws of a <code>gMAP</code> object are now ordered <code>theta</code>, <code>tau</code>, <code>beta</code>, <code>theta_pred</code>, <code>theta_resp_pred</code>, <code>lp__</code>. Their names, dimensions and meaning are unchanged and all <code>RBesT</code> functions access them by name, such that only code relying on the column order of <code>as_draws*()</code> output is affected.</li>
+<li>
+<code>write_mix_json</code> now warns whenever the requested precision (argument <code>digits</code>) is so low that a mixture weight is written as zero and it aborts with an error in case all mixture weights are written as zero. Reading a mixture with zero weighted components with <code>read_mix_json</code> works as before and keeps all components of the mixture.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-1-12-0">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-1-12-0"></a></h3>
+<ul><li>Make <code>read_mix_json</code> robust against <code>jsonlite</code> 2.0.0 simplification behavior by using deterministic JSON parsing, fixing reads of normal mixtures with three or more components.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.11-0" id="rbest-111-0---august-3rd-2026">RBesT 1.11-0 - August 3rd, 2026<a class="anchor" aria-label="anchor" href="#rbest-111-0---august-3rd-2026"></a></h2><p class="text-muted">CRAN release: 2026-08-04</p>
 <div class="section level3">
 <h3 id="enhancements-1-11-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-11-0"></a></h3>
 <ul><li>Decision boundary estimation is now substantially faster. The fixed uniform grid sweep in <code>decision2S_boundary</code> / <code>decision1S_boundary</code> (and hence <code>oc1S</code>, <code>oc2S</code>, <code>pos1S</code>, <code>pos2S</code>) is replaced by an adaptive scheme that only solves where the boundary bends (normal) or fills provably constant runs of the monotone integer boundary without further root searches (binomial, Poisson). Boundary construction is roughly <code>10x</code> faster for normal endpoints and up to orders of magnitude faster for near-flat discrete boundaries (e.g. large-<code>n</code> Poisson); normal <code>oc2S</code>/<code>pos2S</code> run about <code>2-3x</code> faster. Boundary values are unchanged (identical for discrete, within <code>~1e-5</code> for normal). Set <code>options(RBesT.decision2S_boundary = "grid")</code> to restore the legacy sweep.</li>

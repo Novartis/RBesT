@@ -130,6 +130,8 @@ dispersion only.
 
 Morita S, Thall PF, Mueller P (2008). “Determining the effective sample
 size of a parametric prior.” *Biometrics*, **64**(2), 595–602.
+[doi:10.1111/j.1541-0420.2007.00888.x](https://doi.org/10.1111/j.1541-0420.2007.00888.x)
+.
 
 Neuenschwander B, Weber S, Schmidli H, O'Hagan A (2020). “Predictively
 consistent prior effective sample sizes.” *Biometrics*, **76**(2),

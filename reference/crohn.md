@@ -33,6 +33,8 @@ A data frame with 4 rows and 3 variables:
 Hueber W, Sands BE, Lewitzky S, Vandemeulebroecke M, others (2012).
 “Secukinumab, a human anti-IL-17A monoclonal antibody, for moderate to
 severe Crohn's disease.” *Gut*, **61**(12), 1693–1700.
+[doi:10.1136/gutjnl-2011-301668](https://doi.org/10.1136/gutjnl-2011-301668)
+.
 
 ## Examples
 

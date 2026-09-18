@@ -1,6 +1,75 @@
 # Changelog
 
+## RBesT 1.12-0 - 17th September, 2026
+
+### Enhancements
+
+- A WebAssembly/webR build of `RBesT` and its dependency closure is now
+  produced as a mountable library image.
+- `gMAP` now samples the group random effects in a sum-to-zero
+  parametrization whenever the model has an intercept, normal random
+  effects and a single `tau` stratum. The data-free common shift shared
+  by the intercept and the random effects is marginalized analytically
+  using an orthonormal basis of the sum-to-zero subspace, which removes
+  the ridge between `beta[1]` and `mean(eps)` that made the posterior
+  hard to explore. The model is mathematically unchanged and all outputs
+  keep their previous meaning; only the sampling geometry differs.
+  Student-t random effects, several `tau` strata and intercept-free
+  models continue to use the previous parametrization. Set
+  `options(RBesT.MC.s2z = FALSE)` to use the conventional
+  parametrization. Many thanks to Sean Pinkney and Nikolai Vetr for
+  presenting the approch at StanCon 2026.
+- Automatic partial centering is now the default for all `gMAP` model
+  variants (`options(RBesT.MC.ncp = 3)`). Before sampling, fixed-effort
+  Gaussian quadrature estimates the posterior median of each
+  heterogeneity stratum and converts it to per-group Fisher-information
+  centering fractions. If the fixed numerical checks do not agree,
+  `gMAP` warns and uses the exact non-centered model parametrization.
+  `RBesT.MC.ncp = 0` and `1` keep their existing meanings (centered /
+  non-centered); `RBesT.MC.ncp = 2` keeps its existing endpoint
+  threshold but now bases its centered/non-centered decision on the same
+  quadrature fractions instead of a cruder scalar heterogeneity guess
+  (see below). Partial centering is independent of whether the model is
+  eligible for the sum-to-zero representation. To restore the pre-1.12
+  sampling scheme, set
+  `options(RBesT.MC.s2z = FALSE, RBesT.MC.ncp = 1)`. Man thanks to Sean
+  Pinkney for the implementation in `brms` used as template.
+- Reuse the partial-centering quadrature to scale `log(tau)`, fixed
+  effects, and group effects for sampling. Fixed-effect locations remain
+  pooled-GLM estimates, while group locations and scales enter an exact
+  affine reparametrization. If quadrature is unavailable, `gMAP` warns
+  and uses heuristic sampler-scaling estimates. The statistical model,
+  reported summaries, and numeric `init` argument are unchanged.
+- Lower the default `adapt_delta` for `gMAP` from `0.99` to `0.95`
+  (`options(RBesT.MC.control)`). The sum-to-zero parametrization no
+  longer needs the very conservative target acceptance rate that the old
+  geometry required, and the lower target draws the same effective
+  sample size from substantially fewer gradient evaluations. Should
+  divergent transitions still occur, the reported warning now recommends
+  raising `adapt_delta` to `0.99`. Setting
+  `options(RBesT.MC.s2z = FALSE)` also restores the previous
+  `adapt_delta` default of `0.99`, since the legacy geometry needs the
+  more conservative target acceptance rate.
+- The variables of the posterior draws of a `gMAP` object are now
+  ordered `theta`, `tau`, `beta`, `theta_pred`, `theta_resp_pred`,
+  `lp__`. Their names, dimensions and meaning are unchanged and all
+  `RBesT` functions access them by name, such that only code relying on
+  the column order of `as_draws*()` output is affected.
+- `write_mix_json` now warns whenever the requested precision (argument
+  `digits`) is so low that a mixture weight is written as zero and it
+  aborts with an error in case all mixture weights are written as zero.
+  Reading a mixture with zero weighted components with `read_mix_json`
+  works as before and keeps all components of the mixture.
+
+### Bugfixes
+
+- Make `read_mix_json` robust against `jsonlite` 2.0.0 simplification
+  behavior by using deterministic JSON parsing, fixing reads of normal
+  mixtures with three or more components.
+
 ## RBesT 1.11-0 - August 3rd, 2026
+
+CRAN release: 2026-08-04
 
 ### Enhancements
 

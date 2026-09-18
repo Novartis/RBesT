@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.12-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Predictions from gMAP analyses</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.11-0/R/predict_gMAP.R" class="external-link"><code>R/predict_gMAP.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/predict_gMAP.R" class="external-link"><code>R/predict_gMAP.R</code></a></small>
       <div class="d-none name"><code>predict.gMAP.Rd</code></div>
     </div>
 
@@ -152,17 +152,17 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.207  0.207 0.0416 0.123 0.207 0.291</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.203  0.203 0.0384 0.129 0.203 0.280</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.221  0.218 0.0349 0.157 0.218 0.297</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.242  0.238 0.0360 0.180 0.238 0.322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.200  0.200 0.0287 0.144 0.200 0.257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.186  0.184 0.0387 0.114 0.184 0.263</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.226  0.222 0.0406 0.157 0.222 0.316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.175  0.175 0.0385 0.100 0.175 0.252</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.228  0.223 0.0518 0.135 0.223 0.351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.182  0.182 0.0349 0.116 0.182 0.250</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.235  0.234 0.0277 0.184 0.234 0.292</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.206  0.206 0.0417 0.121 0.206 0.293</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.202  0.203 0.0393 0.123 0.203 0.280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.222  0.220 0.0350 0.159 0.220 0.297</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.242  0.239 0.0354 0.180 0.239 0.319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.200  0.200 0.0283 0.144 0.200 0.256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.185  0.185 0.0390 0.110 0.185 0.264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.226  0.222 0.0405 0.157 0.222 0.314</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.175  0.175 0.0391 0.101 0.175 0.251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.227  0.222 0.0494 0.138 0.222 0.339</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.183  0.183 0.0341 0.117 0.183 0.248</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.236  0.235 0.0271 0.185 0.235 0.294</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract sample as matrix</span></span></span>
 <span class="r-in"><span><span class="va">samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">pred_cov</span><span class="op">)</span></span></span>
@@ -175,33 +175,33 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mean median     sd   q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.218  0.213 0.0604 0.1130 0.213 0.357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.217  0.213 0.0582 0.1130 0.213 0.347</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.217  0.212 0.0610 0.1130 0.212 0.359</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.219  0.215 0.0610 0.1130 0.215 0.357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.219  0.214 0.0596 0.1160 0.214 0.364</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.198  0.193 0.0603 0.0933 0.193 0.343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.198  0.193 0.0597 0.0972 0.193 0.337</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.198  0.193 0.0625 0.0933 0.193 0.339</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.219  0.214 0.0652 0.1070 0.214 0.369</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.217  0.212 0.0643 0.1040 0.212 0.369</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.217  0.211 0.0653 0.1070 0.211 0.381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.218  0.213 0.0600 0.1170 0.213 0.364</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.217  0.213 0.0583 0.1100 0.213 0.349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.217  0.212 0.0596 0.1110 0.212 0.357</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.220  0.213 0.0610 0.1170 0.213 0.364</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.219  0.215 0.0599 0.1110 0.215 0.363</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.201  0.195 0.0642 0.0919 0.195 0.349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.201  0.194 0.0628 0.0958 0.194 0.351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.200  0.195 0.0621 0.0922 0.195 0.341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.220  0.213 0.0671 0.1060 0.213 0.387</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.218  0.213 0.0642 0.1050 0.213 0.369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.218  0.213 0.0629 0.1060 0.213 0.364</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># a summary function returns the results as matrix</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pred_cov</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean    median         sd      q2.5       q50     q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.2065430 0.2068254 0.04164911 0.1231897 0.2068254 0.2906691</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.2032181 0.2032065 0.03844876 0.1288859 0.2032065 0.2798751</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.2206000 0.2182938 0.03486121 0.1567846 0.2182938 0.2969690</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.2418891 0.2384320 0.03597107 0.1804723 0.2384320 0.3219211</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.1997706 0.2000837 0.02866866 0.1439139 0.2000837 0.2565522</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.1855770 0.1844776 0.03869977 0.1141460 0.1844776 0.2634910</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.2261279 0.2220795 0.04056395 0.1568187 0.2220795 0.3161546</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.1751656 0.1752809 0.03848595 0.1000778 0.1752809 0.2519715</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.2276877 0.2229155 0.05180018 0.1349640 0.2229155 0.3506505</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.1822711 0.1820796 0.03487839 0.1158106 0.1820796 0.2501153</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.2354901 0.2342259 0.02767388 0.1842712 0.2342259 0.2922140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.2062488 0.2062227 0.04174574 0.1214406 0.2062227 0.2930378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.2020430 0.2031260 0.03926258 0.1228433 0.2031260 0.2802455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.2215977 0.2195194 0.03497005 0.1588652 0.2195194 0.2972463</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.2423708 0.2392820 0.03543783 0.1801468 0.2392820 0.3189910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.1995879 0.1999883 0.02828960 0.1440262 0.1999883 0.2558488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.1853129 0.1848818 0.03901433 0.1101961 0.1848818 0.2642492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.2259685 0.2224310 0.04054221 0.1570393 0.2224310 0.3135865</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.1748746 0.1747496 0.03906731 0.1011184 0.1747496 0.2511657</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.2269397 0.2224007 0.04939518 0.1382642 0.2224007 0.3388369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.1828821 0.1825474 0.03411280 0.1167423 0.1825474 0.2478503</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0.2357563 0.2346353 0.02714248 0.1850796 0.2346353 0.2937389</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># obtain a prediction for new data with specific covariates</span></span></span>
 <span class="r-in"><span><span class="va">pred_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">map</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"CH"</span>, study <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -211,7 +211,7 @@ to <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    mean median     sd  q2.5   q50 q97.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.218  0.213 0.0611 0.113 0.213 0.366</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.218  0.213 0.0598 0.112 0.213 0.359</span>
 <span class="r-in"><span><span class="co">## Recover user set sampling defaults</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">.user_mc_options</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

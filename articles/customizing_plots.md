@@ -43,7 +43,7 @@ library(tidyr)
 library(bayesplot)
 ```
 
-    ## This is bayesplot version 1.15.0
+    ## This is bayesplot version 1.16.0
 
     ## - Online documentation and vignettes at mc-stan.org/bayesplot
 
@@ -86,11 +86,11 @@ print(map_crohn)
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
     ##        mean median   sd q2.5  q50 q97.5
-    ## tau[1]   14   12.1 9.44 1.27 12.1  38.7
+    ## tau[1] 14.3   12.4 9.61 1.42 12.4    39
     ## 
     ## MAP Prior MCMC sample
     ##                  mean median   sd  q2.5   q50 q97.5
-    ## theta_resp_pred -50.3  -48.7 19.1 -90.8 -48.7 -14.3
+    ## theta_resp_pred -49.8  -48.7 19.2 -89.7 -48.7 -11.7
 
 ## Forest plot
 
@@ -220,8 +220,8 @@ print(fp_data, digits = 2)
     ## Gastr01a    -47 19.7    -47  -86  -8.4 Gastr01a stratified
     ## APhTh04     -90 17.6    -90 -124 -55.5  APhTh04 stratified
     ## Gastr01b    -54 11.6    -54  -77 -31.4 Gastr01b stratified
-    ## theta.pred  -50 19.1    -49  -91 -14.3      MAP       meta
-    ## theta       -50  8.3    -49  -68 -35.8     Mean       meta
+    ## theta.pred  -50 19.2    -49  -90 -11.7      MAP       meta
+    ## theta       -50  8.4    -49  -67 -33.8     Mean       meta
 
 ``` r
 
@@ -356,7 +356,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -375,30 +375,30 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] bayesplot_1.15.0 tidyr_1.3.2      dplyr_1.2.1      ggplot2_4.0.3   
-    ## [5] knitr_1.51       RBesT_1.11-0    
+    ## [1] bayesplot_1.16.0 tidyr_1.3.2      dplyr_1.2.1      ggplot2_4.0.3   
+    ## [5] knitr_1.52       RBesT_1.12-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
-    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.61           
+    ##  [4] bslib_0.12.0         QuickJSR_1.11.0      htmlwidgets_1.6.4   
     ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
     ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
     ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
-    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.1      
-    ## [25] farver_2.1.2         textshaping_1.0.5    codetools_0.2-20    
-    ## [28] htmltools_0.5.9      sass_0.4.10          yaml_2.3.12         
-    ## [31] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
-    ## [34] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
-    ## [37] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
-    ## [40] tidyselect_1.2.1     digest_0.6.39        mvtnorm_1.4-2       
-    ## [43] purrr_1.2.2          labeling_0.4.3       fastmap_1.2.0       
-    ## [46] grid_4.6.1           cli_3.6.6            magrittr_2.0.5      
-    ## [49] loo_2.10.1           pkgbuild_1.4.8       withr_3.0.3         
-    ## [52] scales_1.4.0         backports_1.5.1      rmarkdown_2.31      
-    ## [55] matrixStats_1.5.0    otel_0.2.0           gridExtra_2.3.1     
-    ## [58] ragg_1.5.2           evaluate_1.0.5       rbibutils_2.4.1     
-    ## [61] rstantools_2.7.0     rlang_1.3.0          Rcpp_1.1.2          
-    ## [64] glue_1.8.1           jsonlite_2.0.0       R6_2.6.1            
-    ## [67] systemfonts_1.3.2    fs_2.1.0
+    ## [25] farver_2.1.2         textshaping_1.0.5    statmod_1.5.2       
+    ## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         
+    ## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       
+    ## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        
+    ## [37] StanHeaders_2.39.1   abind_1.4-8          posterior_1.7.0     
+    ## [40] rstan_2.32.7         tidyselect_1.2.1     digest_0.6.39       
+    ## [43] mvtnorm_1.4-2        purrr_1.2.2          labeling_0.4.3      
+    ## [46] fastmap_1.2.0        grid_4.6.1           cli_3.6.6           
+    ## [49] magrittr_2.0.5       loo_2.10.1           pkgbuild_1.4.8      
+    ## [52] withr_3.0.3          scales_1.4.0         backports_1.5.1     
+    ## [55] rmarkdown_2.32       matrixStats_1.5.0    otel_0.2.0          
+    ## [58] gridExtra_2.3.1      ragg_1.5.2           evaluate_1.0.5      
+    ## [61] rbibutils_2.4.1      rstantools_2.7.1     rlang_1.3.0         
+    ## [64] Rcpp_1.1.2           glue_1.8.1           jsonlite_2.0.0      
+    ## [67] R6_2.6.1             systemfonts_1.3.2    fs_2.1.0

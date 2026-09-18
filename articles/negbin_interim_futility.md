@@ -313,11 +313,11 @@ print(map_mcmc)
     ## 
     ## Between-trial heterogeneity of tau prediction stratum
     ##         mean median    sd    q2.5    q50 q97.5
-    ## tau[1] 0.119 0.0893 0.109 0.00349 0.0893 0.409
+    ## tau[1] 0.117 0.0873 0.107 0.00384 0.0873 0.406
     ## 
     ## MAP Prior MCMC sample
     ##                  mean median    sd  q2.5   q50 q97.5
-    ## theta_resp_pred 0.649  0.644 0.191 0.281 0.644  1.08
+    ## theta_resp_pred 0.643  0.641 0.189 0.242 0.641  1.02
 
 ``` r
 
@@ -375,7 +375,7 @@ info_frac_with_map <- info_ia_with_map / info_final
 
 | Quantity                             | Value        |
 |:-------------------------------------|:-------------|
-| MAP prior ESS                        | 163 patients |
+| MAP prior ESS                        | 164 patients |
 | Info fraction at IA (no borrowing)   | 30.2%        |
 | Info fraction at IA (with MAP prior) | 45.2%        |
 | Info fraction gained                 | +15.0 pp     |
@@ -720,8 +720,8 @@ cp_at_obs <- cp_fn(ia_log_mu_treat, ia_log_mu_ctrl)
 
 | Metric                               | Value |
 |:-------------------------------------|:------|
-| Conditional power at observed effect | 0.738 |
-| Predictive power (PoS)               | 0.606 |
+| Conditional power at observed effect | 0.735 |
+| Predictive power (PoS)               | 0.603 |
 
 The predictive power is typically lower than the conditional power
 evaluated at the observed effect, because it accounts for the
@@ -838,6 +838,7 @@ Bayesian Group Sequential Designs.” *Pharmaceutical Statistics* 13 (1):
 Holzhauer, Bjoern, Chunyan Wang, and Heinz Schmidli. 2018. “Evidence
 Synthesis from Aggregate Recurrent Event Data for Clinical Trial Design
 and Analysis.” *Statistics in Medicine* 37 (6): 867–82.
+<https://doi.org/10.1002/sim.7549>.
 
 Mütze, Tobias, Ekkehard Glimm, Heinz Schmidli, and Tim Friede. 2018.
 “Group Sequential Designs for Negative Binomial Outcomes.” *Statistical
@@ -865,7 +866,7 @@ Control Information.” *Biometrics* 70 (4): 1023–32.
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -884,31 +885,31 @@ Control Information.” *Biometrics* 70 (4): 1023–32.
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] MASS_7.3-65   dplyr_1.2.1   ggplot2_4.0.3 knitr_1.51    RBesT_1.11-0 
+    ## [1] MASS_7.3-65   dplyr_1.2.1   ggplot2_4.0.3 knitr_1.52    RBesT_1.12-0 
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
-    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.61           
+    ##  [4] bslib_0.12.0         QuickJSR_1.11.0      htmlwidgets_1.6.4   
     ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
     ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
     ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
-    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       
     ## [25] compiler_4.6.1       farver_2.1.2         textshaping_1.0.5   
     ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
-    ## [31] sass_0.4.10          bayesplot_1.15.0     yaml_2.3.12         
+    ## [31] sass_0.4.10          bayesplot_1.16.0     yaml_2.3.12         
     ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
-    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.32.10 
+    ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.39.1  
     ## [40] abind_1.4-8          posterior_1.7.0      rstan_2.32.7        
-    ## [43] tidyselect_1.2.1     digest_0.6.39        stringi_1.8.7       
+    ## [43] tidyselect_1.2.1     digest_0.6.39        stringi_1.8.9       
     ## [46] mvtnorm_1.4-2        reshape2_1.4.5       labeling_0.4.3      
     ## [49] fastmap_1.2.0        grid_4.6.1           cli_3.6.6           
     ## [52] magrittr_2.0.5       loo_2.10.1           pkgbuild_1.4.8      
     ## [55] withr_3.0.3          scales_1.4.0         backports_1.5.1     
-    ## [58] rmarkdown_2.31       matrixStats_1.5.0    otel_0.2.0          
+    ## [58] rmarkdown_2.32       matrixStats_1.5.0    otel_0.2.0          
     ## [61] gridExtra_2.3.1      ragg_1.5.2           evaluate_1.0.5      
-    ## [64] rbibutils_2.4.1      rstantools_2.7.0     rlang_1.3.0         
+    ## [64] rbibutils_2.4.1      rstantools_2.7.1     rlang_1.3.0         
     ## [67] Rcpp_1.1.2           glue_1.8.1           jsonlite_2.0.0      
     ## [70] plyr_1.8.9           R6_2.6.1             systemfonts_1.3.2   
     ## [73] fs_2.1.0

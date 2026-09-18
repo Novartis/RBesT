@@ -18,6 +18,10 @@ recommend starting with the [Getting started with `RBesT`
 (binary)](https://opensource.nibr.com/RBesT/articles/introduction.html)
 vignette as a first read.
 
+For a brief 15 minute introduction to using `RBesT`, have a look at the
+[ESMARConf 2023
+tutoral](https://youtu.be/w90j-PLwWDc?si=coN1t1emYPGlT5mT).
+
 # Package index
 
 ## Package overview

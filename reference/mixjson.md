@@ -67,6 +67,14 @@ necessarily equal to the mixtures passed to the `write_mix_json`
 function. This is a consequence of the limited precision of the textual
 representation as defined by the `digits` argument.
 
+Whenever the requested precision is so low that a mixture weight is
+written as zero, then `write_mix_json` issues a warning, but still
+writes the mixture. Such a mixture can be read back without problems,
+since `read_mix_json` rescales the weights by default and zero weighted
+components are maintained. However, in case all mixture weights are
+written as zero, then `write_mix_json` aborts with an error as the
+mixture cannot be recovered any more from such a representation.
+
 ## See also
 
 Other mixdist:

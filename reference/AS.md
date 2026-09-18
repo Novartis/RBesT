@@ -34,6 +34,8 @@ Baeten D, others (2013). “Anti-interleukin-17A monoclonal antibody
 secukinumab in treatment of ankylosing spondylitis: a randomised,
 double-blind, placebo-controlled trial.” *The Lancet*, **382**(9906),
 1705–1713.
+[doi:10.1016/S0140-6736(13)61134-4](https://doi.org/10.1016/S0140-6736%2813%2961134-4)
+.
 
 ## Examples
 

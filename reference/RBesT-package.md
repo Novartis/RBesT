@@ -30,10 +30,15 @@ it's help page for a detailed description of the statistical model.
 | `RBesT.MC.chains` | 4 | MCMC chains |
 | `RBesT.MC.thin` | 4 | MCMC thinning |
 | `RBesT.MC.save_warmup` | `FALSE` | MCMC warmup samples saving |
-| `RBesT.MC.control` | `list(adapt_delta=0.99,` | sets `control` argument for Stan call |
-|  | `stepsize=0.01,` |  |
-|  | `max_treedepth=20)` |  |
-| `RBesT.MC.ncp` | 1 | parametrization: 0=CP, 1=NCP, 2=Automatic |
+| `RBesT.MC.control` | `list(adapt_delta=0.95,` | sets `control` argument for Stan call. |
+|  | `stepsize=0.01,` | `adapt_delta` defaults to `0.99` whenever |
+|  | `max_treedepth=20)` | `RBesT.MC.s2z` is `FALSE` |
+| `RBesT.MC.s2z` | `TRUE` | sum-to-zero parametrization of the group |
+|  |  | random effects; `FALSE` uses the conventional representation; |
+|  |  | see the references |
+| `RBesT.MC.ncp` | 3 | group-effect parametrization: 0=CP, 1=NCP, |
+|  |  | 2=automatic CP/NCP endpoint from quadrature-derived |
+|  |  | per-group fractions, 3=automatic partial centering |
 | `RBesT.MC.init` | 1 | range of initial uniform \\\[-1,1\]\\ is the default |
 | `RBesT.MC.rescale` | `TRUE` | Automatic rescaling of raw parameters |
 | `RBesT.verbose` | `FALSE` | requests outputs to be more verbose |
@@ -58,8 +63,14 @@ See `NEWS.md` file.
 
 ## References
 
-Stan Development Team (2020). *RStan: the R interface to Stan*. R
-package version 2.19.3, <https://mc-stan.org>.
+Stan Development Team (2020). *RStan: the R interface to Stan*.
+[doi:10.32614/CRAN.package.rstan](https://doi.org/10.32614/CRAN.package.rstan)
+. R package version 2.19.3, <https://mc-stan.org>.
+
+Pinkney S, Vetr N (2026). “Population effect estimation in Bayesian
+hierarchical models using sum-to-zero constraints.” In *StanCon 2026*.
+Contributed talk, Uppsala University, Uppsala, Sweden, August 18, 2026,
+<https://github.com/spinkney/open-talks/tree/main/sum-to-zero-stancon26>.
 
 ## See also
 

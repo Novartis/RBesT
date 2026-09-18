@@ -9,7 +9,7 @@ These functions write and read a mixture object in the JSON format."><link rel="
 
     <a class="navbar-brand me-2" href="../index.html">RBesT</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.11-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.12-0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@ These functions write and read a mixture object in the JSON format."><link rel="
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Write and Read a Mixture Object with JSON</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/v1.11-0/R/mixjson.R" class="external-link"><code>R/mixjson.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Novartis/RBesT/blob/main/R/mixjson.R" class="external-link"><code>R/mixjson.R</code></a></small>
       <div class="d-none name"><code>mixjson.Rd</code></div>
     </div>
 
@@ -111,6 +111,14 @@ human readable.</p>
 necessarily equal to the mixtures passed to the <code>write_mix_json</code>
 function. This is a consequence of the limited precision of the
 textual representation as defined by the <code>digits</code> argument.</p>
+<p>Whenever the requested precision is so low that a mixture weight is
+written as zero, then <code>write_mix_json</code> issues a warning, but
+still writes the mixture. Such a mixture can be read back
+without problems, since <code>read_mix_json</code> rescales the weights
+by default and zero weighted components are maintained. However,
+in case all mixture weights are written as zero, then
+<code>write_mix_json</code> aborts with an error as the mixture cannot be
+recovered any more from such a representation.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

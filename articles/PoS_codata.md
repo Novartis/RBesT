@@ -430,15 +430,15 @@ base_map
 ```
 
     ## EM for Normal Mixture Model
-    ## Log-Likelihood = -3045.725
+    ## Log-Likelihood = -3068.821
     ## 
     ## Univariate normal mixture
     ## Reference scale: 2
     ## Mixture Components:
     ##   comp1      comp2      comp3     
-    ## w  0.5120402  0.3842310  0.1037289
-    ## m -0.3102860 -0.2863639 -0.3285249
-    ## s  0.2706592  0.6293296  1.1087960
+    ## w  0.5370909  0.2875932  0.1753159
+    ## m -0.2714475 -0.3236208 -0.2210027
+    ## s  0.2745412  0.5836677  1.0484848
 
 At the interim we have even more knowledge available on the treatment
 effect through the interim data itself which we can include into the MAP
@@ -457,7 +457,7 @@ interim data collected) is:
 interim_pos_A(interim_A_combined)
 ```
 
-    ## [1] 0.4937129
+    ## [1] 0.4808305
 
 Note that we have not redefined `interim_pos_A`, such that this
 calculates the PoS for the phase III A trial taking into account that
@@ -471,7 +471,7 @@ interim_B_combined <- postmix(base_map, m = trials$logHR[4], se = trials$sem[4])
 interim_pos_B(interim_B_combined)
 ```
 
-    ## [1] 0.6762344
+    ## [1] 0.6635749
 
 ### Use of historical information - MAC approach
 
@@ -492,10 +492,10 @@ kable(fitted(interim_map_mc), digits = 3)
 
 |         |   mean | median |    sd |   q2.5 |    q50 | q97.5 |
 |:--------|-------:|-------:|------:|-------:|-------:|------:|
-| PoC     | -0.253 | -0.245 | 0.243 | -0.772 | -0.245 | 0.233 |
-| PhII    | -0.254 | -0.251 | 0.150 | -0.561 | -0.251 | 0.031 |
-| PhIII_A | -0.214 | -0.216 | 0.126 | -0.456 | -0.216 | 0.040 |
-| PhIII_B | -0.239 | -0.239 | 0.128 | -0.492 | -0.239 | 0.009 |
+| PoC     | -0.244 | -0.237 | 0.240 | -0.770 | -0.237 | 0.245 |
+| PhII    | -0.253 | -0.252 | 0.148 | -0.562 | -0.252 | 0.032 |
+| PhIII_A | -0.217 | -0.217 | 0.123 | -0.452 | -0.217 | 0.033 |
+| PhIII_B | -0.238 | -0.239 | 0.129 | -0.492 | -0.239 | 0.016 |
 
 which we can extract as:
 
@@ -525,10 +525,10 @@ head(interim_map_post, n = 3)
 ```
 
     ##     variable
-    ## draw   theta[1]   theta[2]   theta[3]    theta[4]
-    ##    1 -0.4277097 -0.1835350 -0.1678440 -0.07992145
-    ##    2 -0.3229801 -0.3425734 -0.2638770 -0.35817687
-    ##    3 -0.3251523 -0.2242466 -0.1748201 -0.25177923
+    ## draw    theta[1]   theta[2]   theta[3]   theta[4]
+    ##    1 -0.01665558 -0.2564359 -0.1737861 -0.1059531
+    ##    2 -0.36081153 -0.2311935 -0.3130678 -0.1630083
+    ##    3 -0.33486830 -0.3720989 -0.3532420 -0.3177357
 
 2.  turn MCMC posterior sample into parametric mixture
 
@@ -544,7 +544,7 @@ interim_A_allcombined <- automixfit(interim_map_post[, "theta[3]"])
 interim_pos_A(interim_A_allcombined)
 ```
 
-    ## [1] 0.5010266
+    ## [1] 0.5075935
 
 which aligns with the published result under the assumption of full
 exchangeability.
@@ -557,7 +557,7 @@ interim_B_allcombined <- automixfit(interim_map_post[, "theta[4]"])
 interim_pos_B(interim_B_allcombined)
 ```
 
-    ## [1] 0.6431324
+    ## [1] 0.6416843
 
 ## Differential discounting
 
@@ -601,14 +601,14 @@ interim_B_diff_allcombined <- automixfit(interim_diff_map_post[, "theta[4]"])
 interim_pos_A(interim_A_diff_allcombined)
 ```
 
-    ## [1] 0.498148
+    ## [1] 0.4890978
 
 ``` r
 
 interim_pos_B(interim_B_diff_allcombined)
 ```
 
-    ## [1] 0.6459292
+    ## [1] 0.6348286
 
 ## PoS for both phase III trials being successful
 
@@ -685,7 +685,7 @@ case)
 mean(interim_oc_A(interim_diff_map_post[, "theta[3]"]) * interim_oc_B(interim_diff_map_post[, "theta[4]"]))
 ```
 
-    ## [1] 0.3472287
+    ## [1] 0.3371281
 
 which is slightly larger than assuming independence:
 
@@ -704,8 +704,8 @@ cor(interim_diff_map_post[, c("theta[3]", "theta[4]")])
 ```
 
     ##           theta[3]  theta[4]
-    ## theta[3] 1.0000000 0.2844492
-    ## theta[4] 0.2844492 1.0000000
+    ## theta[3] 1.0000000 0.3119379
+    ## theta[4] 0.3119379 1.0000000
 
 For the full exchangeability case we have
 
@@ -714,7 +714,7 @@ For the full exchangeability case we have
 mean(interim_oc_A(interim_map_post[, "theta[3]"]) * interim_oc_B(interim_map_post[, "theta[4]"]))
 ```
 
-    ## [1] 0.351044
+    ## [1] 0.3558283
 
 ## Summary
 
@@ -742,7 +742,7 @@ interim_pos_A(interim_A)
 interim_pos_A(interim_A_combined)
 ```
 
-    ## [1] 0.4937129
+    ## [1] 0.4808305
 
 ``` r
 
@@ -750,7 +750,7 @@ interim_pos_A(interim_A_combined)
 interim_pos_A(interim_A_allcombined)
 ```
 
-    ## [1] 0.5010266
+    ## [1] 0.5075935
 
 Phase III trial B:
 
@@ -768,7 +768,7 @@ interim_pos_B(interim_B)
 interim_pos_B(interim_B_combined)
 ```
 
-    ## [1] 0.6762344
+    ## [1] 0.6635749
 
 ``` r
 
@@ -776,7 +776,7 @@ interim_pos_B(interim_B_combined)
 interim_pos_B(interim_B_allcombined)
 ```
 
-    ## [1] 0.6431324
+    ## [1] 0.6416843
 
 ## Appendix: MAP and MAC equivalence
 
@@ -824,15 +824,15 @@ base_map_2
 ```
 
     ## EM for Normal Mixture Model
-    ## Log-Likelihood = -15194.35
+    ## Log-Likelihood = -15027.63
     ## 
     ## Univariate normal mixture
     ## Reference scale: 2
     ## Mixture Components:
-    ##   comp1        comp2        comp3        comp4        comp5       
-    ## w  0.422805992  0.193045120  0.180150391  0.136953059  0.067045438
-    ## m -0.294295380  0.030002665 -0.640006757 -0.005626679 -0.895903411
-    ## s  0.239643807  0.363653776  0.363772982  0.921427263  0.873766906
+    ##   comp1       comp2       comp3       comp4       comp5      
+    ## w  0.43259608  0.19622143  0.16670357  0.13157991  0.07289901
+    ## m -0.30121984 -0.62120757  0.08847830  0.05924736 -0.83695837
+    ## s  0.22911188  0.36994778  0.31789110  0.87114040  0.96913829
 
 Now, combine the MAP prior (representing historical knowledge) with the
 interim data of trial A:
@@ -848,19 +848,6 @@ interim_A_combined_2 <- postmix(base_map_2, m = trials$logHR[3], se = trials$sem
 ``` r
 
 interim_map_mc_2 <- update(base_map_mc_2, data = trials[-4, ])
-```
-
-    ## Warning: There were 1 divergent transitions after warmup. See
-    ## https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
-    ## to find out why this is a problem and how to eliminate them.
-
-    ## Warning: Examine the pairs() plot to diagnose sampling problems
-
-    ## Warning in gMAP(formula = cbind(logHR, sem) ~ 1 | study, family = gaussian, : In total 1 divergent transitions occured during the sampling phase.
-    ## Please consider increasing adapt_delta closer to 1 with the following command prior to gMAP:
-    ## options(RBesT.MC.control=list(adapt_delta=0.999))
-
-``` r
 
 interim_map_post_2 <- as.matrix(interim_map_mc_2)[, 1:3]
 ```
@@ -875,14 +862,14 @@ interim_A_allcombined_2
 ```
 
     ## EM for Normal Mixture Model
-    ## Log-Likelihood = 10809.89
+    ## Log-Likelihood = 10708.05
     ## 
     ## Univariate normal mixture
     ## Mixture Components:
     ##   comp1       comp2       comp3       comp4       comp5      
-    ## w  0.22013922  0.21952316  0.21758666  0.21256836  0.13018259
-    ## m -0.20357325 -0.09400614 -0.30634332 -0.10229635 -0.40626966
-    ## s  0.05801008  0.13048141  0.06090041  0.07378704  0.08626407
+    ## w  0.25274139  0.21176158  0.21063840  0.19370095  0.13115768
+    ## m -0.31915588 -0.10267129 -0.21254440 -0.30096796 -0.01355072
+    ## s  0.12185152  0.06724969  0.06044993  0.07790957  0.09912008
 
 Now let’s overlay the two posterior’s
 
@@ -904,14 +891,14 @@ The PoS is essentially the same
 interim_pos_A(interim_A_combined_2)
 ```
 
-    ## [1] 0.4900712
+    ## [1] 0.4936733
 
 ``` r
 
 interim_pos_A(interim_A_allcombined_2)
 ```
 
-    ## [1] 0.487749
+    ## [1] 0.489807
 
 ### Formal MAP and MAC equivalence
 
@@ -963,7 +950,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -982,31 +969,31 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] purrr_1.2.2      dplyr_1.2.1      bayesplot_1.15.0 ggplot2_4.0.3   
-    ## [5] knitr_1.51       RBesT_1.11-0    
+    ## [1] purrr_1.2.2      dplyr_1.2.1      bayesplot_1.16.0 ggplot2_4.0.3   
+    ## [5] knitr_1.52       RBesT_1.12-0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.60           
-    ##  [4] bslib_0.12.0         QuickJSR_1.10.0      htmlwidgets_1.6.4   
+    ##  [1] gtable_0.3.6         tensorA_0.36.2.1     xfun_0.61           
+    ##  [4] bslib_0.12.0         QuickJSR_1.11.0      htmlwidgets_1.6.4   
     ##  [7] inline_0.3.21        vctrs_0.7.3          tools_4.6.1         
     ## [10] Rdpack_2.6.6         generics_0.1.4       stats4_4.6.1        
     ## [13] parallel_4.6.1       tibble_3.3.1         pkgconfig_2.0.3     
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
-    ## [19] desc_1.4.3           distributional_0.8.1 RcppParallel_6.2.0  
+    ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       
     ## [25] compiler_4.6.1       farver_2.1.2         textshaping_1.0.5   
-    ## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         
-    ## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       
-    ## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        
-    ## [37] StanHeaders_2.32.10  abind_1.4-8          posterior_1.7.0     
-    ## [40] rstan_2.32.7         tidyselect_1.2.1     digest_0.6.39       
-    ## [43] stringi_1.8.7        mvtnorm_1.4-2        reshape2_1.4.5      
-    ## [46] labeling_0.4.3       fastmap_1.2.0        grid_4.6.1          
-    ## [49] cli_3.6.6            magrittr_2.0.5       loo_2.10.1          
-    ## [52] pkgbuild_1.4.8       withr_3.0.3          scales_1.4.0        
-    ## [55] backports_1.5.1      rmarkdown_2.31       matrixStats_1.5.0   
-    ## [58] otel_0.2.0           gridExtra_2.3.1      ragg_1.5.2          
-    ## [61] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.0    
-    ## [64] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
-    ## [67] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
-    ## [70] systemfonts_1.3.2    fs_2.1.0
+    ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
+    ## [31] sass_0.4.10          yaml_2.3.12          Formula_1.2-6       
+    ## [34] pillar_1.11.1        pkgdown_2.2.1        jquerylib_0.1.4     
+    ## [37] cachem_1.1.0         StanHeaders_2.39.1   abind_1.4-8         
+    ## [40] posterior_1.7.0      rstan_2.32.7         tidyselect_1.2.1    
+    ## [43] digest_0.6.39        stringi_1.8.9        mvtnorm_1.4-2       
+    ## [46] reshape2_1.4.5       labeling_0.4.3       fastmap_1.2.0       
+    ## [49] grid_4.6.1           cli_3.6.6            magrittr_2.0.5      
+    ## [52] loo_2.10.1           pkgbuild_1.4.8       withr_3.0.3         
+    ## [55] scales_1.4.0         backports_1.5.1      rmarkdown_2.32      
+    ## [58] matrixStats_1.5.0    otel_0.2.0           gridExtra_2.3.1     
+    ## [61] ragg_1.5.2           evaluate_1.0.5       rbibutils_2.4.1     
+    ## [64] rstantools_2.7.1     rlang_1.3.0          Rcpp_1.1.2          
+    ## [67] glue_1.8.1           jsonlite_2.0.0       plyr_1.8.9          
+    ## [70] R6_2.6.1             systemfonts_1.3.2    fs_2.1.0
