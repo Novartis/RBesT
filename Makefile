@@ -178,10 +178,12 @@ R/sysdata.rda: inst/sbc/calibration.rds
 # the *installed* RBesT (system.file("REFERENCES.bib", package = "RBesT")), so
 # the manual must be built against a dev-install that ships inst/REFERENCES.bib
 # -- otherwise the \references sections render empty. Depend on the dev-install
-# target and point R_LIBS_USER at it so \insertRef finds the bibliography.
+# target and put it first on the library path via R_LIBS so \insertRef finds
+# the bibliography. (R_LIBS rather than R_LIBS_USER: a user's ~/.Renviron that
+# sets R_LIBS_USER would override it, and an older installed RBesT would win.)
 inst/doc/$(RPKG).pdf : man/package-doc build/installed/$(RPKG)/DESCRIPTION
 	install -d inst/doc
-	R_LIBS_USER="$(CURDIR)/build/installed" "${R_HOME}/bin/R" CMD Rd2pdf --batch --no-preview --force --output=inst/doc/$(RPKG).pdf .
+	R_LIBS="$(CURDIR)/build/installed" "${R_HOME}/bin/R" CMD Rd2pdf --batch --no-preview --force --output=inst/doc/$(RPKG).pdf .
 	"${R_HOME}/bin/R" --vanilla --slave -e 'library(tools); tools::compactPDF("inst/doc/$(RPKG).pdf")'
 
 
@@ -433,16 +435,37 @@ build/installed/$(RPKG)/DESCRIPTION : build/r-source-fast
 	install -d build/installed
 	cd build; $(RCMD) CMD INSTALL --library=./installed --no-docs --no-multiarch --no-test-load --no-clean-on-error $(RPKG)-source.tar.gz
 
+# The agent skill under $(SKILL_DIR) documents the package API with runnable R
+# snippets. Verify them against a dev install of the *working tree* (same
+# R_LIBS trick as the reference manual above), so a signature change here
+# breaks the skill loudly instead of silently teaching the wrong call. Manual
+# only, like revdepcheck: it needs the dev install and runs real gMAP MCMC.
+SKILL_DIR = inst/skills/rbest-assistant
+SKILL_REFS = $(wildcard $(SKILL_DIR)/references/*.md)
+SKILL_VERIFY_SCRIPT = tools/skill-verify.R
+
+build/skill-verify : $(SKILL_REFS) $(SKILL_VERIFY_SCRIPT) $(SKILL_DIR)/SKILL.md build/installed/$(RPKG)/DESCRIPTION
+	install -d build
+	R_LIBS="$(CURDIR)/build/installed" NOT_CRAN=true \
+	  $(RCMD) --slave --file=$(SKILL_VERIFY_SCRIPT) --args $(SKILL_DIR)
+	touch $@
+
+PHONY += skill-verify
+skill-verify : build/skill-verify
+
 docs/index.html : doc $(SRCS) vignettes/REFERENCES.bib
 	## Render the reference examples with the package default (full) sampling
 	## so the embedded website plots and output look appropriate. The shipped
 	## slim example template is temporarily replaced by the full-sampling
 	## variant, the Rd files are regenerated, the site is built, and finally
 	## the slim template and Rd are restored -- even if the build fails.
+	## tools/pandoc-shim silences pandoc's "Deprecated: --mathml" warnings
+	## caused by pkgdown <= 2.2.1 passing legacy math flags.
 	cp -f man-roxygen/example-start.R man-roxygen/example-start.R.slim.bak; \
 	cp -f man-roxygen/example-start-full.R man-roxygen/example-start.R; \
 	"${R_HOME}/bin/Rscript" -e 'roxygen2::roxygenize(roclets="rd")'; \
-	status=0; NOT_CRAN=true $(RCMD) -e 'pkgdown::build_site()' || status=$$?; \
+	status=0; REAL_PANDOC="$$(command -v pandoc)" RSTUDIO_PANDOC="$(CURDIR)/tools/pandoc-shim" \
+	  NOT_CRAN=true $(RCMD) -e 'pkgdown::build_site()' || status=$$?; \
 	mv -f man-roxygen/example-start.R.slim.bak man-roxygen/example-start.R; \
 	"${R_HOME}/bin/Rscript" -e 'roxygen2::roxygenize(roclets="rd")'; \
 	exit $$status
@@ -586,6 +609,7 @@ help:
 	@echo "  r-source-release-check  R CMD check on release package"
 	@echo "  revdepcheck           Reverse dependency check locally (REVDEP_WORKERS, REVDEP_JOBS)"
 	@echo "  revdepcheck-ci        Reverse dependency check on GitHub runners (pushed tip of current branch)"
+	@echo "  skill-verify          Verify agent skill R snippets against the dev install"
 	@echo "  check-winbuilder      Submit to winbuilder (devel+release+old)"
 	@echo ""
 	@echo "Documentation:"

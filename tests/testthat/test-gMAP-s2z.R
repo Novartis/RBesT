@@ -1,7 +1,5 @@
 ## Tests for the sum-to-zero (S2Z) reparametrization of the gMAP Stan model.
 ##
-## See design/design-sum-to-zero-gmap.md, section 7 (validation ladder).
-##
 ## Three tiers, cheapest first:
 ##
 ##   1. Pure R arithmetic and the analytic derivation. CRAN-safe.
@@ -136,7 +134,7 @@ test_that("the sampler control defaults follow the parametrization", {
   ## The default was lowered from 0.99 to 0.95 once the sum-to-zero
   ## reparametrization removed the beta[1]/mean(eps) ridge: benchmarked
   ## divergence free over 900 chains and 15 non-centered scenarios while
-  ## sampling ~1.6x faster (design/s2z/benchmark-ncp-adapt-delta.R). Opting
+  ## sampling ~1.6x faster. Opting
   ## out restores the legacy 0.99, since the legacy geometry needs the more
   ## conservative target.
   ##
@@ -237,7 +235,7 @@ test_that("the s2z identities hold for every parameter vector", {
   ##
   ## The recovery of the common shift is *not* checked here: it is an RNG draw
   ## in `generated quantities`, which `constrain_pars()` does not run. That is
-  ## by design -- see design/design-s2z-gq-recovery.md -- and it is precisely
+  ## by design and it is precisely
   ## what guarantees that the fit cannot interfere with it. The recovery is
   ## held to its closed form by the prior-marginal test below, which is the
   ## assertion with teeth in any case.
@@ -320,7 +318,7 @@ test_that("the draws skeleton keeps the reported variable layout", {
 
   ## The reported variable set, order and dimension. `beta` is a generated
   ## quantity (the s2z intercept recovery is an RNG draw), so it follows `tau`
-  ## in the Stan output; see design/design-s2z-gq-recovery.md. The layout is
+  ## in the Stan output. The layout is
   ## the same whether or not s2z is active, and the sampled counterpart is
   ## asserted in the summaries test below.
   reported <- c(

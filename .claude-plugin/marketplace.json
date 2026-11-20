@@ -1,0 +1,31 @@
+{
+  "name": "rbest",
+  "owner": {
+    "name": "Novartis",
+    "url": "https://github.com/Novartis/RBesT"
+  },
+  "description": "Agent skills for the RBesT R package (Bayesian evidence synthesis)",
+  "metadata": {
+    "description": "Agent skills for the RBesT R package (Bayesian evidence synthesis)"
+  },
+  "plugins": [
+    {
+      "name": "rbest",
+      "description": "MAP priors from historical controls, robustification, ESS, decision rules, operating characteristics and PoS with RBesT. AI-generated advice and code: review all results before use.",
+      "version": "0.1.0",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://opensource.nibr.com/RBesT/",
+      "source": "./",
+      "strict": false,
+      "skills": ["./inst/skills/rbest-assistant"]
+    },
+    {
+      "name": "rbest-r",
+      "description": "Optional: let your AI agent run R code in your local R session via the btw MCP server (requires R with RBesT and btw installed). Runs R code on your machine; review all results before use.",
+      "version": "0.1.0",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://opensource.nibr.com/RBesT/",
+      "source": "./claude-plugins/rbest-r"
+    }
+  ]
+}

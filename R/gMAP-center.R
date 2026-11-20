@@ -315,10 +315,8 @@
 #' conditional posterior mean/variance of every group effect (the pure,
 #' zero-mean random deviation Stan calls `re`; marginal over both the
 #' residual sampling variance and the `beta` uncertainty, via the law of
-#' total variance). This is the same reduction validated against
-#' `design/design-gmap-quadrature-initialization.md`'s benchmark, folded into
-#' the production quadrature so no second, independent implementation of the
-#' Woodbury step exists.
+#' total variance). This reduction is part of the production quadrature
+#' so no second, independent implementation of the Woodbury step exists.
 #'
 #' @inheritParams .gmap_working_marginal
 #' @return A function of one heterogeneity node (a numeric vector, one entry

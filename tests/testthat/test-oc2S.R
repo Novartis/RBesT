@@ -275,6 +275,64 @@ test_that("Ensure that repeated oc2S evaluation works for normal case", {
 
 ## test against Schmidli et. al, "Robust Meta-Analytic-Predictive
 ## Priors", Table 2, unif and beta case
+## Mixture prior in sample 2: the decision boundary is curved between the
+## regime where the informative component dominates and the tails. The
+## operating characteristics must not depend on which truths were requested
+## before.
+oc2S_curved_boundary_scenario <- function() {
+  prior1 <- mixnorm(c(1, 0, 100), sigma = 1)
+  prior2 <- mixnorm(c(0.8, 0, 1), c(0.2, 0, 2), sigma = 1)
+  decision <- decision2S(c(0.95, 0.5), c(0, 2.5), FALSE)
+  list(
+    make_oc = function() oc2S(prior1, prior2, 1, 1, decision, 1, 1),
+    ## independent deterministic integration over directly solved roots
+    ref_m3 = 0.31863073,
+    ref_p3 = 0.8866051
+  )
+}
+
+test_that("Normal mixture oc2S is accurate when requested with a broad vector of truths", {
+  s <- oc2S_curved_boundary_scenario()
+  design <- s$make_oc()
+  broad <- design(c(-17, 0, 23), c(-20, -3, 20))[2]
+  cached <- design(0, -3)
+  fresh <- s$make_oc()(0, -3)
+  grid <- withr::with_options(
+    list(RBesT.decision2S_boundary = "grid"),
+    s$make_oc()(0, -3)
+  )
+  expect_lt(abs(broad - s$ref_m3), 2e-4)
+  expect_lt(abs(cached - s$ref_m3), 2e-4)
+  expect_lt(abs(fresh - s$ref_m3), 2e-4)
+  expect_lt(abs(broad - grid), 5e-4)
+})
+
+test_that("Normal mixture oc2S stays accurate when the probability mass moves", {
+  s <- oc2S_curved_boundary_scenario()
+  design <- s$make_oc()
+  ## request far apart truths first, then truths in between
+  design(c(-37, 43), c(-40, 40))
+  expect_lt(abs(design(0, -3) - s$ref_m3), 2e-4)
+  expect_lt(abs(design(6, 3) - s$ref_p3), 2e-4)
+  ## the first result is unchanged by the later request
+  expect_lt(abs(design(0, -3) - s$ref_m3), 2e-4)
+})
+
+test_that("Normal mixture oc2S does not depend on the order of requests", {
+  s <- oc2S_curved_boundary_scenario()
+  theta2 <- c(-3, 3, 10, -12, 0, 400, -400)
+  at_once <- s$make_oc()(theta2 + 3, theta2)
+  design <- s$make_oc()
+  one_by_one <- rev(vapply(
+    rev(theta2),
+    function(t2) design(t2 + 3, t2),
+    numeric(1)
+  ))
+  fresh <- vapply(theta2, function(t2) s$make_oc()(t2 + 3, t2), numeric(1))
+  expect_lt(max(abs(at_once - one_by_one)), 2e-4)
+  expect_lt(max(abs(at_once - fresh)), 2e-4)
+})
+
 test_that("Schmidli et al. results (binary end-point)", {
   skip_on_cran()
 

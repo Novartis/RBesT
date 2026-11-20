@@ -157,6 +157,26 @@ test_that("Normal PoS 2 sample function matches MC integration", {
   ))
 })
 
+test_that("Normal mixture PoS 2 sample agrees between adaptive and grid boundary", {
+  ## curved decision boundary from a mixture prior in sample 2, broad
+  ## predictive distribution for sample 2
+  prior1 <- mixnorm(c(1, 0, 100), sigma = 1)
+  prior2 <- mixnorm(c(0.8, 0, 1), c(0.2, 0, 2), sigma = 1)
+  decision <- decision2S(c(0.95, 0.5), c(0, 2.5), FALSE)
+  truth1 <- mixnorm(c(1, 1, 2), sigma = 1)
+  truth2 <- mixnorm(c(0.9, -3, 0.5), c(0.1, 0, 8), sigma = 1)
+  pos_with <- function(method) {
+    withr::with_options(
+      list(RBesT.decision2S_boundary = method),
+      pos2S(prior1, prior2, 1, 1, decision, sigma1 = 1, sigma2 = 1)(
+        truth1,
+        truth2
+      )
+    )
+  }
+  expect_lt(abs(pos_with("adaptive") - pos_with("grid")), 5e-4)
+})
+
 test_that("Binomial PoS 2 sample function matches MC integration of CPO", {
   sc <- pos2S_beta_scenario()
   test_pos2S(

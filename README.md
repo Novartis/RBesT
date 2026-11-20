@@ -20,3 +20,20 @@ starting with the [Getting started with `RBesT`
 For a brief 15 minute introduction to using `RBesT`, have a look at
 the [ESMARConf 2023
 tutoral](https://youtu.be/w90j-PLwWDc?si=coN1t1emYPGlT5mT).
+
+The `rbest-assistant` AI skill helps assistants such as Claude, Posit
+Assistant, GitHub Copilot or ChatGPT Codex guide RBesT workflows, from
+MAP priors to operating characteristics. See the [AI assistant
+skill](https://opensource.nibr.com/RBesT/articles/rbest-assistant.html)
+article for installation. Then try:
+
+> Using the RBesT assistant skill: give me a short introduction to MAP
+> priors. How can I use historical control data for a new trial? No
+> analysis yet, just an overview. Then briefly tell me what else you can
+> help me with in RBesT.
+
+The agent's output is not validated by `RBesT` and can differ between
+runs; check the code and results, and have any analysis or design
+reviewed by a qualified statistician. The assistant is an experimental
+feature and may change; watch for updates, and we welcome your feedback
+via [GitHub issues](https://github.com/Novartis/RBesT/issues).

@@ -308,18 +308,26 @@ oc2S.normMix <- function(
     # Simple case of one-sided boundary.
     assert_function(crit_y1)
     lower.tail <- attr(decision, "lower.tail")
+    ## design_fun resolves the boundary where sample 2 has its mass; the
+    ## integrand then only reads the interpolant.
+    crit_y1_cache <- boundary2S_cache(crit_y1)
     function(theta1, theta2) {
       sem1_t <- if (is.null(sigma_fun1)) sem1 else sigma_fun1(theta1) / sqrt(n1)
       sem2_t <- if (is.null(sigma_fun2)) sem2 else sigma_fun2(theta2) / sqrt(n2)
       lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1_t)
       if (n2 == 0) {
-        pnorm(crit_y1(theta2), theta1, sem1_t, lower.tail = lower.tail)
+        pnorm(
+          crit_y1(theta2, lim1 = lim1),
+          theta1,
+          sem1_t,
+          lower.tail = lower.tail
+        )
       } else {
         integrate_density_log(
           mixnorm(c(1, theta2, sem2_t), sigma = sem2_t),
           function(x) {
             pnorm(
-              crit_y1(x, lim1 = lim1),
+              crit_y1_cache$eval(x),
               theta1,
               sem1_t,
               lower.tail = lower.tail,
@@ -336,6 +344,10 @@ oc2S.normMix <- function(
     assert_list(crit_y1, len = 2, types = "function")
     crit_y1_lower_or_equal_than <- crit_y1$lower_or_equal_than
     crit_y1_higher_than <- crit_y1$higher_than
+    cache_lower_or_equal_than <- boundary2S_cache(
+      crit_y1_lower_or_equal_than
+    )
+    cache_higher_than <- boundary2S_cache(crit_y1_higher_than)
     function(theta1, theta2) {
       assert_scalar(theta1)
       assert_scalar(theta2)
@@ -343,8 +355,11 @@ oc2S.normMix <- function(
       sem2_t <- if (is.null(sigma_fun2)) sem2 else sigma_fun2(theta2) / sqrt(n2)
       lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1_t)
       if (n2 == 0) {
-        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(theta2)
-        bound_higher_than <- crit_y1_higher_than(theta2)
+        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+          theta2,
+          lim1 = lim1
+        )
+        bound_higher_than <- crit_y1_higher_than(theta2, lim1 = lim1)
         if (bound_lower_or_equal_than <= bound_higher_than) {
           0
         } else {
@@ -353,24 +368,23 @@ oc2S.normMix <- function(
         }
       } else {
         integrand <- function(x) {
-          bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
-            x,
-            lim1 = lim1
-          )
-          bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
+          bound_lower_or_equal_than <- cache_lower_or_equal_than$eval(x)
+          bound_higher_than <- cache_higher_than$eval(x)
           # We need to expect here a vector x.
           ifelse(
             bound_lower_or_equal_than <= bound_higher_than,
             -Inf,
-            log(
+            ## both branches are evaluated, hence avoid a negative argument
+            log(pmax(
               pnorm(
                 bound_lower_or_equal_than,
                 theta1,
                 sem1_t,
                 lower.tail = TRUE
               ) -
-                pnorm(bound_higher_than, theta1, sem1_t, lower.tail = TRUE)
-            )
+                pnorm(bound_higher_than, theta1, sem1_t, lower.tail = TRUE),
+              0
+            ))
           )
         }
         integrate_density_log(
@@ -385,45 +399,109 @@ oc2S.normMix <- function(
 
   Vfreq <- Vectorize(freq)
 
-  design_fun <- function(theta1, theta2, y2) {
-    if (!missing(y2)) {
-      theta2 <- y2
+  ## With a family-based sigma the sampling standard error grows without
+  ## bound for extreme outcomes, where the posterior reverts to the prior
+  ## and the decision can change a second time along y1. The boundary
+  ## holds a single critical value of y1 per y2 and ignores this. Estimate
+  ## the probability mass of the outcomes under a truth for which the
+  ## decision itself disagrees with the boundary on a coarse grid.
+  Vmisfit <- NULL
+  if (!is.null(sigma_fun1)) {
+    boundary_success <- if (is(decision, "decision2S_1sided")) {
+      lower.tail <- attr(decision, "lower.tail")
+      function(y1, crit) {
+        if (lower.tail) y1 <= crit[[1]] else y1 > crit[[1]]
+      }
+    } else {
+      function(y1, crit) y1 > crit[[2]] & y1 <= crit[[1]]
     }
-
-    ## in case n2==0, then theta2 is irrelevant
-    if (n2 == 0 && missing(theta2)) {
-      theta2 <- theta1
+    boundary_at <- function(y2, lim1) {
+      if (is(decision, "decision2S_1sided")) {
+        if (n2 == 0) {
+          return(list(crit_y1(y2, lim1 = lim1)))
+        }
+        return(list(crit_y1_cache$eval(y2)))
+      }
+      if (n2 == 0) {
+        return(list(
+          crit_y1_lower_or_equal_than(y2, lim1 = lim1),
+          crit_y1_higher_than(y2, lim1 = lim1)
+        ))
+      }
+      list(cache_lower_or_equal_than$eval(y2), cache_higher_than$eval(y2))
     }
+    ## stay inside the region of sample 2 in which the boundary is resolved
+    z <- seq(-1, 1, length.out = 5) * min(3, qnorm(1 - eps / 2))
+    weight <- dnorm(z) / sum(dnorm(z))
+    misfit <- function(theta1, theta2) {
+      sem1_t <- sigma_fun1(theta1) / sqrt(n1)
+      y1 <- theta1 + sem1_t * z
+      post1 <- lapply(y1, function(m) {
+        postmix(prior1, m = m, se = sigma_fun1(m) / sqrt(n1))
+      })
+      if (n2 == 0) {
+        y2 <- theta2
+        weight2 <- 1
+        post2 <- list(prior2)
+      } else {
+        y2 <- theta2 + sigma_fun2(theta2) / sqrt(n2) * z
+        weight2 <- weight
+        post2 <- lapply(y2, function(m) {
+          postmix(prior2, m = m, se = sigma_fun2(m) / sqrt(n2))
+        })
+      }
+      lim1 <- qnorm(c(eps / 2, 1 - eps / 2), theta1, sem1_t)
+      crit <- boundary_at(y2, lim1)
+      mass <- 0
+      for (j in seq_along(y2)) {
+        crit_j <- lapply(crit, "[", j)
+        for (i in seq_along(y1)) {
+          ## an outcome on the boundary disagrees by the accuracy of the
+          ## boundary only
+          if (any(abs(y1[i] - unlist(crit_j)) < 0.1 * sem1_t)) {
+            next
+          }
+          disagree <- (decision(post1[[i]], post2[[j]]) == 1) !=
+            boundary_success(y1[i], crit_j)
+          if (disagree) {
+            mass <- mass + weight[i] * weight2[j]
+          }
+        }
+      }
+      mass
+    }
+    Vmisfit <- Vectorize(misfit)
+  }
 
-    ## Use reference sem for precomputing boundary range
+  ## Evaluates fun (Vfreq or Vmisfit) for the truths after resolving the
+  ## boundary(s) where needed. Used by pos2S as well, which integrates
+  ## both over the distributions of the truths.
+  design_eval <- function(theta1, theta2, fun) {
+    ## Use reference sem for the range in which critical values of
+    ## sample 1 are searched
     sem1_ref <- sem1
-    sem2_ref <- sem2
-
-    lim2 <- c(
-      qnorm(p = eps / 2, mean = min(theta2), sd = sem2_ref),
-      qnorm(p = 1 - eps / 2, mean = max(theta2), sd = sem2_ref)
-    )
-
-    ## ensure that boundary is calculated for the full range
-    ## needed
     lim1 <- c(
       qnorm(eps / 2, min(theta1), sem1_ref),
       qnorm(1 - eps / 2, max(theta1), sem1_ref)
     )
-    lim2 <- c(
-      qnorm(eps / 2, min(theta2), sem2_ref),
-      qnorm(1 - eps / 2, max(theta2), sem2_ref)
-    )
 
-    ## Call boundary function(s) to cache all results for all
-    ## requested computations.
-    if (is(decision, "decision2S_1sided")) {
-      crit_y1(lim2, lim1 = lim1)
-    } else {
-      ## The caching is in the closures, therefore we don't need to
-      ## worry about conflicts between the caches.
-      crit_y1$lower_or_equal_than(lim2, lim1 = lim1)
-      crit_y1$higher_than(lim2, lim1 = lim1)
+    ## Resolve the boundary(s) where sample 2 has its probability mass
+    ## under each requested truth. Regions of nearby truths merge, while
+    ## the gap between truths far apart is left alone.
+    if (n2 > 0) {
+      sem2_t <- if (is.null(sigma_fun2)) sem2 else sigma_fun2(theta2) / sqrt(n2)
+      mass2 <- cbind(
+        qnorm(eps / 2, theta2, sem2_t),
+        qnorm(1 - eps / 2, theta2, sem2_t)
+      )
+      if (is(decision, "decision2S_1sided")) {
+        crit_y1_cache$resolve(mass2, lim1)
+      } else {
+        ## The caching is in the closures, therefore we don't need to
+        ## worry about conflicts between the caches.
+        cache_lower_or_equal_than$resolve(mass2, lim1)
+        cache_higher_than$resolve(mass2, lim1)
+      }
     }
 
     theta_df <- try(data.frame(
@@ -435,7 +513,34 @@ oc2S.normMix <- function(
       stop("theta1 and theta2 need to be of same size")
     }
 
-    do.call(Vfreq, theta_df)
+    do.call(fun, theta_df)
+  }
+
+  design_fun <- function(theta1, theta2, y2) {
+    if (!missing(y2)) {
+      theta2 <- y2
+    }
+
+    ## in case n2==0, then theta2 is irrelevant
+    if (n2 == 0 && missing(theta2)) {
+      theta2 <- theta1
+    }
+
+    res <- design_eval(theta1, theta2, Vfreq)
+
+    if (!is.null(Vmisfit)) {
+      mass <- design_eval(theta1, theta2, Vmisfit)
+      flagged <- mass > boundary2S_misfit_tol
+      if (any(flagged)) {
+        warn_boundary2S_misfit(
+          paste("for", sum(flagged), "of", length(mass), "truths"),
+          "Results for these truths are",
+          max(mass)
+        )
+      }
+    }
+
+    res
   }
 
   design_fun
