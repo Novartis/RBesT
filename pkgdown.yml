@@ -8,8 +8,9 @@ articles:
   articles/negbin_interim_futility: negbin_interim_futility.html
   articles/PoS_codata: PoS_codata.html
   articles/PoS_interim: PoS_interim.html
+  articles/rbest-assistant: rbest-assistant.html
   articles/variances_MAP: variances_MAP.html
-last_built: 2026-09-18T08:04Z
+last_built: 2026-11-20T17:43Z
 urls:
   reference: https://opensource.nibr.com/RBesT/reference
   article: https://opensource.nibr.com/RBesT/articles

@@ -1,6 +1,47 @@
 # Changelog
 
+## RBesT 1.12-1 - November 20th, 2026
+
+### Enhancements
+
+- New experimental `rbest-assistant` AI agent skill, which helps
+  assistants such as Claude, Posit Assistant, GitHub Copilot or ChatGPT
+  Codex guide RBesT workflows, from MAP priors to operating
+  characteristics. It ships with the package under `inst/skills/` (see
+  `system.file("skills/rbest-assistant", package = "RBesT")`), and the
+  repository is a plugin marketplace that offers the skill (`rbest`) and
+  an optional R connector (`rbest-r`). See the new “AI assistant skill”
+  article for installation and updates. The agent’s output is not
+  validated by `RBesT` and can differ between runs; check the code and
+  results, and have any analysis or design reviewed by a qualified
+  statistician. The skill may change; feedback is welcome via GitHub
+  issues.
+
+### Bugfixes
+
+- Fix `decision2S_boundary`, `oc2S` and `pos2S` for normal endpoints
+  using the `family` argument whenever the decision does not depend on
+  the outcome of sample 1 for some or all outcomes of sample 2. Such
+  outcomes were dropped and extrapolated, which could give entirely
+  wrong results (e.g. operating characteristics of `0` instead of `1`).
+  The decision is still represented by a single critical value of the
+  outcome of sample 1. It can change a second time at extreme outcomes
+  (e.g. response rates close to 0 or 1), in which case results are
+  inaccurate; `oc2S` and `pos2S` now warn if such outcomes have a
+  probability of more than roughly `0.005`.
+- Fix `decision2S_boundary`, `oc2S` and `pos2S` for normal endpoints
+  with mixture priors under the default
+  `options(RBesT.decision2S_boundary = "adaptive")`. The boundary could
+  be traced too coarsely over a wide range of outcomes of sample 2,
+  e.g. when a long vector of truths was evaluated, such that results
+  depended on previous calls to the design object (by up to `0.2` in the
+  reported case, now about `5e-4`). The `"grid"` scheme,
+  single-component priors and binomial or Poisson endpoints were not
+  affected. Many thanks to Saverio Fontana for reporting the issue.
+
 ## RBesT 1.12-0 - 17th September, 2026
+
+CRAN release: 2026-09-18
 
 ### Enhancements
 

@@ -110,6 +110,9 @@ example(AS)
 #> AS+   beta.prior = 2
 #> AS+ )
 #> Assuming default prior location   for beta: 0
+#> Warning: The largest R-hat is 1.05, indicating chains have not mixed.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#r-hat
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#bulk-ess
@@ -132,7 +135,7 @@ forest_plot(map_AS, est = c("Mean"), model = "stratified")
 
 # to further customize these plots, first load bayesplot and ggplot2
 library(bayesplot)
-#> This is bayesplot version 1.16.0
+#> This is bayesplot version 1.17.0
 #> - Online documentation and vignettes at mc-stan.org/bayesplot
 #> - bayesplot theme set to bayesplot::theme_default()
 #>    * Does _not_ affect other ggplot2 plots

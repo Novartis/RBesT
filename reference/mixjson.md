@@ -25,9 +25,9 @@ read_mix_json(con, ..., rescale = TRUE)
 - ...:
 
   Additional arguments passed to the
-  [`jsonlite::toJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
+  [`jsonlite::toJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html)
   and
-  [`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
+  [`jsonlite::fromJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html)
   function for writing and reading, respectively.
 
 - rescale:
@@ -59,7 +59,7 @@ function), then the mixture object will be cast to a simple mixture
 object such that diagnostics from the `"EM"` fitting procedure are
 dropped from the object. For easier readability the user is encouraged
 to set the argument `pretty=TRUE`, which is passed to the
-[`jsonlite::toJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
+[`jsonlite::toJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html)
 function and makes the output more human readable.
 
 Note that when reading in mixture objects, then these are not

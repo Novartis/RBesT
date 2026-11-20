@@ -14,5 +14,7 @@
   Co-Data](https://opensource.nibr.com/RBesT/articles/PoS_codata.md):
 - [Probability of Success at an Interim
   Analysis](https://opensource.nibr.com/RBesT/articles/PoS_interim.md):
+- [AI assistant
+  skill](https://opensource.nibr.com/RBesT/articles/rbest-assistant.md):
 - [Meta-Analytic-Predictive Priors for
   Variances](https://opensource.nibr.com/RBesT/articles/variances_MAP.md):
