@@ -52,7 +52,7 @@
 #' `RBesT.GQ_max_nodes` \tab `240` \tab upper cap on the GQ node count during refinement \cr
 #' `RBesT.GQ_node_growth` \tab `2` \tab multiplicative growth factor for the GQ node count between refinement steps \cr
 #' `RBesT.GQ_on_nonconvergence` \tab `"adaptive"` \tab behaviour when GQ refinement reaches `RBesT.GQ_max_nodes` without meeting tolerance: `"adaptive"` (fall through to adaptive integration), `"warn"` (warn and return best estimate), `"error"`, or `"silent"` \cr
-#' `RBesT.decision2S_boundary` \tab `"adaptive"` \tab tracing scheme for the decision boundary in [decision2S_boundary()] (and hence `oc2S`/`pos2S`): `"adaptive"` (recursive subdivision of the `y2` range with early stop where the boundary is linear for the normal case, and monotone constant-run filling for the binomial/Poisson cases) or `"grid"` (legacy exhaustive/uniform sweep). Boundary values are unchanged (identical for the discrete families, within solver tolerance for the normal case); `"adaptive"` needs far fewer root solves. \cr
+#' `RBesT.decision2S_boundary` \tab `"adaptive"` \tab tracing scheme for the decision boundary in [decision2S_boundary()] (and hence `oc2S`/`pos2S`): `"adaptive"` (for the normal case recursive subdivision of the requested `y2` regions, with at least one evaluation per reference standard error of the sample 2 mean and early stop where the boundary is linear; monotone constant-run filling for the binomial/Poisson cases) or `"grid"` (legacy exhaustive/uniform sweep). Boundary values are identical for the discrete families. For the normal case both schemes typically locate the boundary within a few percent of the standard error of the sample 1 mean; `"adaptive"` needs fewer root solves. \cr
 #' }
 #'
 #' @section Version History:

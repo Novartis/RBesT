@@ -817,8 +817,7 @@ gMAP <- function(
   ## Resolve the quadrature approximation once. Its outputs drive the
   ## tau/beta/group sampler-scaling data below and both automatic
   ## centering policies (RBesT.MC.ncp 2 and 3); no output re-runs the
-  ## tensor-product quadrature independently (see
-  ## design/design-gmap-quadrature-initialization.md).
+  ## tensor-product quadrature independently.
   quadrature <- .gmap_quadrature_approximation(
     family = family$family,
     y = y,
@@ -899,9 +898,9 @@ gMAP <- function(
   }
 
   ## Hybrid beta scaling: keep the pooled-GLM coefficients as the location
-  ## (design/design-gmap-quadrature-initialization.md found these more
-  ## accurate than the quadrature-aggregated location in weak-information
-  ## binomial scenarios) but use the quadrature-derived per-coefficient
+  ## (these were found to be more accurate than the quadrature-aggregated
+  ## location in weak-information binomial scenarios) but use the
+  ## quadrature-derived per-coefficient
   ## scale, which is calibrated far better than the legacy shared scale.
   beta_raw_guess <- rbind(
     mean = fit.pooled$coefficients,
@@ -932,8 +931,7 @@ gMAP <- function(
   ## same quadrature fractions (quadrature$center), not by the legacy
   ## scalar tau_guess: ncp = 2 selects the CP endpoint iff every
   ## *informative* group's fraction exceeds 400/401, the fraction implied
-  ## by the legacy rule's "tau_guess / se > 20" threshold (see
-  ## design/design-gmap-quadrature-initialization.md sec. 3). Both fall
+  ## by the legacy rule's "tau_guess / se > 20" threshold. Both fall
   ## back to the non-centered parametrization when the quadrature is
   ## unavailable.
   re_center <- numeric(n.groups)

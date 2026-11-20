@@ -1,0 +1,39 @@
+#!/bin/sh
+# Temporary shim around pandoc for local pkgdown builds.
+#
+# pkgdown (<= 2.2.1) hardcodes the legacy math flags (--mathml, --mathjax,
+# --katex, --webtex, --gladtex) when it converts Markdown to HTML. Pandoc >= 3.x
+# deprecates them and prints
+#   [WARNING] Deprecated: --mathml. Use --math-method=mathml instead.
+# once per converted file. This shim rewrites the flags to the --math-method=
+# form and forwards everything else unchanged.
+#
+# Activated via RSTUDIO_PANDOC (honoured by rmarkdown/pkgdown); the real pandoc
+# binary is given by REAL_PANDOC (see the pkgdown rule in the Makefile).
+# Remove once pkgdown emits --math-method itself.
+real=${REAL_PANDOC:?REAL_PANDOC must point to the real pandoc binary}
+
+# Only rewrite if this pandoc understands --math-method.
+if ! "$real" --help 2>/dev/null | grep -q -e '--math-method'; then
+  exec "$real" "$@"
+fi
+
+n=$#
+while [ "$n" -gt 0 ]; do
+  arg=$1
+  shift
+  n=$((n - 1))
+  case $arg in
+    --mathml | --gladtex | --mathjax | --katex | --webtex)
+      set -- "$@" "--math-method=${arg#--}"
+      ;;
+    --mathjax=* | --katex=* | --webtex=*)
+      m=${arg#--}
+      set -- "$@" "--math-method=${m%%=*}:${m#*=}"
+      ;;
+    *)
+      set -- "$@" "$arg"
+      ;;
+  esac
+done
+exec "$real" "$@"

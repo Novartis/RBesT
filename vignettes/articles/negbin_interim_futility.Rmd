@@ -139,7 +139,7 @@ oc_fixed <- oc2S(uninf_treat, uninf_ctrl,
 )
 ```
 
-```{r fixed-power, fig.cap="Power curve — fixed-sample design (no IA)", echo = FALSE}
+```{r fixed-power, fig.cap="Power curve - fixed-sample design (no IA)", echo = FALSE}
 log_mu_ctrl <- log(lambda_ctrl)
 log_rr <- seq(0, -0.8, by = -0.025)
 
@@ -163,7 +163,7 @@ ggplot(power_df, aes(exp(log_rr), power)) +
            hjust = 1, size = 3, colour = "steelblue") +
   labs(x = "Rate ratio (treatment vs control)",
        y = "Power",
-       title = "Power curve — no interim analysis") +
+       title = "Power curve - no interim analysis") +
   scale_x_log10(breaks = c(0.5, rr_alt, 0.8, 1.0)) +
   scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 0.8, 1.0))
 ```

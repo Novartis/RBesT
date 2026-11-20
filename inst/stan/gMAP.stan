@@ -210,8 +210,8 @@ transformed data {
    *     spherically symmetric, so the shift is not data-free),
    *   - there is a single tau stratum (with heterogeneous scales the exact
    *     decomposition is the precision-weighted one, which needs a basis
-   *     rebuilt per gradient evaluation; see
-   *     design/issue-s2z-multi-tau-strata.md), and
+   *     rebuilt per gradient evaluation and is therefore not
+   *     implemented), and
    *   - the model has an overall intercept which can absorb the shift.
    * Otherwise the legacy parametrization is used unchanged.
    *
@@ -432,10 +432,10 @@ transformed parameters {
        *
        *   det(Q' diag(d) Q) = (prod d_j) (sum 1/d_j) / J,
        *
-       * for *any* positive diagonal d (homogeneous or not; verified
-       * numerically for heterogeneous d in
-       * design/design-gmap-quadrature-initialization.md), so no
-       * factorization is needed and the parametrization stays O(J). Writing
+       * for *any* positive diagonal d (homogeneous or not; this was
+       * verified numerically for heterogeneous d as well), so no
+       * factorization is needed and the parametrization stays
+       * O(J). Writing
        * the target as the quadratic form in `re` rather than in `xi_eta`
        * absorbs the (J-1) log(tau) of the prior against the same term in the
        * determinant, which is why only mean(sc) survives below -- computed

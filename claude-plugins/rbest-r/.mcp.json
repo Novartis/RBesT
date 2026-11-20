@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "r-btw": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "PATH=\"$PATH:/usr/local/bin:/opt/homebrew/bin:/Library/Frameworks/R.framework/Resources/bin:$HOME/.local/bin\"; exec Rscript -e \"btw::btw_mcp_server(btw::btw_tools('docs', 'env', 'sessioninfo', 'run'))\""
+      ]
+    }
+  }
+}

@@ -1,7 +1,6 @@
 ## Generalized quadrature-based sampler-scaling initialization.
 ##
-## See design/design-gmap-quadrature-initialization.md for the assessment
-## gate this implementation follows. These tests are deterministic (no MCMC
+## These tests are deterministic (no MCMC
 ## sampling); they cover `.gmap_quadrature_approximation()` directly and the
 ## `chains = 0` skeleton `gMAP()` produces from it. Sampled/geometry
 ## behaviour (endpoint identities, Jacobian exactness) is covered by
@@ -129,8 +128,7 @@ test_that("gMAP() populates the new per-stratum/per-group Stan data fields", {
   expect_true(d$tau_raw_guess["scale", ] > 0)
 
   ## hybrid beta scaling: the pooled-GLM coefficient is kept as the location
-  ## exactly (decision 2 of design/design-gmap-quadrature-initialization.md);
-  ## only the scale is quadrature-derived.
+  ## exactly; only the scale is quadrature-derived.
   pooled <- glm.fit(
     d$X, RBesT::AS$r / RBesT::AS$n,
     weights = as.vector(RBesT::AS$n),
@@ -145,8 +143,8 @@ test_that("gMAP() populates the new per-stratum/per-group Stan data fields", {
 
   ## per-group posterior location guess for the same affine map: consumed by
   ## both the conventional and s2z Stan partial-centering paths (see
-  ## partial_center_loc() / the s2z branch in inst/stan/gMAP.stan and
-  ## design/design-gmap-quadrature-initialization.md). It must match the
+  ## partial_center_loc() / the s2z branch in inst/stan/gMAP.stan).
+  ## It must match the
   ## quadrature approximation's own `group.location` output exactly, i.e.
   ## gMAP() must actually consume it, not merely compute and discard it.
   expect_identical(length(d$group_location_guess), d$n_groups)

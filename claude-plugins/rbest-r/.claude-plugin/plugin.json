@@ -1,0 +1,5 @@
+{
+  "name": "rbest-r",
+  "description": "Optional: let your AI agent run R code in your local R installation via the btw MCP server. Requires a local R with RBesT, btw and ideally ragg (macOS/Linux).",
+  "author": { "name": "Novartis" }
+}

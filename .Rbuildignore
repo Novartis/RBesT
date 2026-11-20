@@ -48,3 +48,5 @@ src/stan_files/.*\.hpp$
 ^index\.html$
 ^node_modules
 ^package-lock\.json$
+^\.claude-plugin$
+^claude-plugins$
