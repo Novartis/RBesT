@@ -274,26 +274,49 @@ pos2S.normMix <- function(
     oc_fn <- oc2S(prior1, prior2, n1, n2, decision,
          family = family, offset1 = offset1, offset2 = offset2, eps = eps, Ngrid = Ngrid)
 
+    oc_eval <- environment(oc_fn)$design_eval
+    oc_freq <- environment(oc_fn)$Vfreq
+    oc_misfit <- environment(oc_fn)$Vmisfit
+
     design_fun <- function(mix1, mix2) {
-      # Integrate oc_fn(theta1, theta2) over theta1 ~ mix1, theta2 ~ mix2
-      # Inner: for a SCALAR theta2, integrate over theta1 ~ mix1
-      inner_for_theta2 <- function(theta2_scalar) {
-        inner_log_integrand <- function(theta1) {
-          # theta1 can be a vector from integrate
-          log(pmax(vapply(theta1, function(t1) oc_fn(t1, theta2_scalar), numeric(1)),
-                   .Machine$double.xmin))
+      # Integrate fun(theta1, theta2) over theta1 ~ mix1, theta2 ~ mix2
+      integrate_truths <- function(fun) {
+        # Inner: for a SCALAR theta2, integrate over theta1 ~ mix1
+        inner_for_theta2 <- function(theta2_scalar) {
+          inner_log_integrand <- function(theta1) {
+            # theta1 can be a vector from integrate
+            log(pmax(vapply(theta1, function(t1) oc_eval(t1, theta2_scalar, fun), numeric(1)),
+                     .Machine$double.xmin))
+          }
+          integrate_density_log(mix1, inner_log_integrand, logit(eps / 2), logit(1 - eps / 2))
         }
-        integrate_density_log(mix1, inner_log_integrand, logit(eps / 2), logit(1 - eps / 2))
+        # Outer: integrate inner result over theta2 ~ mix2
+        outer_log_integrand <- function(theta2) {
+          # theta2 can be a vector from integrate
+          log(pmax(vapply(theta2, inner_for_theta2, numeric(1)), .Machine$double.xmin))
+        }
+        integrate_density_log(
+          mix2, outer_log_integrand,
+          logit(eps / 2), logit(1 - eps / 2)
+        )
       }
-      # Outer: integrate inner result over theta2 ~ mix2
-      outer_log_integrand <- function(theta2) {
-        # theta2 can be a vector from integrate
-        log(pmax(vapply(theta2, inner_for_theta2, numeric(1)), .Machine$double.xmin))
-      }
-      integrate_density_log(
-        mix2, outer_log_integrand,
-        logit(eps / 2), logit(1 - eps / 2)
+      res <- integrate_truths(oc_freq)
+      # Probability of the outcomes for which the decision disagrees
+      # with the boundary, see oc2S. As this is a coarse check only, the
+      # truths are represented by the centers of ten equally likely bins.
+      truths <- expand.grid(
+        theta1 = qmix(mix1, (1:10 - 0.5) / 10),
+        theta2 = qmix(mix2, (1:10 - 0.5) / 10)
       )
+      mass <- mean(oc_eval(truths$theta1, truths$theta2, oc_misfit))
+      if (mass > boundary2S_misfit_tol) {
+        warn_boundary2S_misfit(
+          "for outcomes which are likely under the given distributions",
+          "The result is",
+          mass
+        )
+      }
+      res
     }
     return(design_fun)
   }
@@ -318,23 +341,25 @@ pos2S.normMix <- function(
       assert_that(inherits(pred_mix2_mean, "normMix"))
 
       lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
-      lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
-      crit_y1(lim2, lim1)
 
       if (n2 == 0) {
         mean_prior2 <- summary(prior2, probs = c())["mean"]
         pmix(
           pred_mix1_mean,
-          crit_y1(mean_prior2),
+          crit_y1(mean_prior2, lim1 = lim1),
           lower.tail = lower.tail
         )
       } else {
+        ## resolve the boundary where the predictive of sample 2 has its
+        ## mass; the integrand then only reads the interpolant
+        crit_y1_cache <- boundary2S_cache(crit_y1)
+        crit_y1_cache$resolve(mass_intervals(pred_mix2_mean, eps), lim1)
         integrate_density_log(
           pred_mix2_mean,
           function(x) {
             pmix(
               pred_mix1_mean,
-              crit_y1(x, lim1 = lim1),
+              crit_y1_cache$eval(x),
               lower.tail = lower.tail,
               log.p = TRUE
             )
@@ -364,15 +389,14 @@ pos2S.normMix <- function(
       assert_that(inherits(pred_mix2_mean, "normMix"))
 
       lim1 <- qmix(pred_mix1_mean, c(eps / 2, 1 - eps / 2))
-      lim2 <- qmix(pred_mix2_mean, c(eps / 2, 1 - eps / 2))
-
-      crit_y1_lower_or_equal_than(lim2, lim1)
-      crit_y1_higher_than(lim2, lim1)
 
       if (n2 == 0) {
         mean_prior2 <- summary(prior2, probs = c())["mean"]
-        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(mean_prior2)
-        bound_higher_than <- crit_y1_higher_than(mean_prior2)
+        bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
+          mean_prior2,
+          lim1 = lim1
+        )
+        bound_higher_than <- crit_y1_higher_than(mean_prior2, lim1 = lim1)
         if (bound_lower_or_equal_than <= bound_higher_than) {
           0
         } else {
@@ -380,12 +404,18 @@ pos2S.normMix <- function(
             pmix(pred_mix1_mean, bound_higher_than, lower.tail = TRUE)
         }
       } else {
+        ## resolve the boundaries where the predictive of sample 2 has its
+        ## mass; the integrand then only reads the interpolants
+        mass2 <- mass_intervals(pred_mix2_mean, eps)
+        cache_lower_or_equal_than <- boundary2S_cache(
+          crit_y1_lower_or_equal_than
+        )
+        cache_higher_than <- boundary2S_cache(crit_y1_higher_than)
+        cache_lower_or_equal_than$resolve(mass2, lim1)
+        cache_higher_than$resolve(mass2, lim1)
         integrand <- function(x) {
-          bound_lower_or_equal_than <- crit_y1_lower_or_equal_than(
-            x,
-            lim1 = lim1
-          )
-          bound_higher_than <- crit_y1_higher_than(x, lim1 = lim1)
+          bound_lower_or_equal_than <- cache_lower_or_equal_than$eval(x)
+          bound_higher_than <- cache_higher_than$eval(x)
           # We need to expect here a vector x.
           ifelse(
             bound_lower_or_equal_than <= bound_higher_than,

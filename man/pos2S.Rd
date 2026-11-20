@@ -142,7 +142,31 @@ continuous decision function is evaluated at a discrete grid, which
 is determined by a spacing with \eqn{\delta_2 =
 \sigma_2/\sqrt{N_{grid}}}. Once the decision boundary is evaluated
 at the discrete steps, a spline is used to inter-polate the
-decision boundary at intermediate points.
+decision boundary at intermediate points. With the default adaptive
+scheme (see option \code{RBesT.decision2S_boundary} in
+\code{\link{RBesT}}) the boundary is evaluated at least once per
+standard error \eqn{\sigma_2/\sqrt{n_2}} of the mean of sample 2
+(using the reference scale \eqn{\sigma_2} of prior 2 if
+\code{family} is given) wherever it is requested and refined further
+only where it bends, down to the spacing \eqn{\delta_2}. For single
+component priors with fixed \eqn{\sigma} the boundary is instead an
+exact line. Operating characteristics and
+probability of success request the boundary in the regions which
+hold the probability mass \code{1-eps} of \eqn{y_2}. The decision
+is represented by a single critical value of \eqn{y_1} for each
+\eqn{y_2}. If \code{family} is given, then the sampling standard
+deviation grows without bound for extreme outcomes (e.g.\ response
+rates close to 0 or 1) such that the posterior reverts to the prior
+there and the decision can change a second time along \eqn{y_1}.
+This second change is ignored and results are inaccurate whenever
+sample 1 has relevant probability mass at such extreme outcomes,
+which is the case for small expected event counts. The normal
+approximation is questionable in these settings and the exact
+designs for the respective endpoint should be used instead. The
+operating characteristics and the probability of success issue a
+warning if the affected outcomes have a probability of more than
+roughly \eqn{0.005}. This probability is estimated on a coarse grid
+of outcomes and can differ from the actual error by a multiple.
 
 \item \code{pos2S(gammaMix)}: Applies for the Poisson model with a gamma
 mixture prior for the rate parameter.  The function

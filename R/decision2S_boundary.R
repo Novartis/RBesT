@@ -373,6 +373,40 @@ decision2S_boundary_betaMix_atomic <- function(
 }
 
 
+boundary_extreme_value <- 1e100
+
+constant_boundary_value <- function(decision_true, lower.tail) {
+  if (identical(isTRUE(decision_true), isTRUE(lower.tail))) {
+    boundary_extreme_value
+  } else {
+    -boundary_extreme_value
+  }
+}
+
+is_constant_boundary <- function(x) {
+  is.finite(x) & abs(x) >= boundary_extreme_value
+}
+
+## With a family-based sigma the decision can change more than once along
+## the outcome of sample 1, while the boundary holds a single critical
+## value. Designs warn if the outcomes for which the decision disagrees
+## with the boundary have a probability exceeding this tolerance.
+boundary2S_misfit_tol <- 0.005
+
+warn_boundary2S_misfit <- function(where, what, mass) {
+  warning(
+    "The decision changes more than once along the outcome of sample 1 ",
+    where,
+    ", which the decision boundary does not account for. ",
+    what,
+    " inaccurate by a probability of roughly ",
+    signif(mass, 1),
+    " as estimated on a coarse grid of outcomes. ",
+    "Consider to use the exact design for the endpoint.",
+    call. = FALSE
+  )
+}
+
 ## Adaptive boundary tracer for the normal endpoint.
 ##
 ## Recursively bisects the y2 interval instead of sweeping a fixed grid.
@@ -388,19 +422,19 @@ decision2S_boundary_betaMix_atomic <- function(
 ## Lagrange interpolant Q through those three points, solve the two quarter
 ## points q1 = (a+m)/2, q3 = (m+b)/2, and accept the subinterval when
 ## max(|rq1 - Q(q1)|, |rq3 - Q(q3)|) < lin_tol; otherwise we subdivide.
-## Because acceptance is decided at points Q never saw, a boundary that is
-## straight at the midpoint but bent between samples cannot alias as
-## linear -- this removes the need for an explicit minimum-subdivision
-## floor. The quarter points q1, q3 of a parent are exactly the midpoints
-## of its two children, so with memoization no y2 is ever solved twice.
+## The quarter points q1, q3 of a parent are exactly the midpoints of its
+## two children, so with memoization no y2 is ever solved twice.
 ##
-## The exact solved roots are fed to the downstream cubic splinefun. This
-## is interpolation-consistent: recursive bisection produces a smoothly
-## graded (dyadic) point density -- dense where the boundary bends, coarse
-## where it is linear -- and the quadratic-at-quarter-points accept test is
-## a faithful proxy for the cubic consumer, so lin_tol caps the residual
-## curvature over any accepted subinterval. The cost saving is fewer root
-## solves; accuracy matches or beats the uniform grid at the same delta2.
+## The residual test alone can alias: on a wide interval all five samples
+## may fall on a common line while the boundary bends in between (mixture
+## priors change the slope between the regime of the informative component
+## and the tails). The coverage guard max_gap therefore forbids accepting
+## an interval while its knot spacing (b - a) / 4 exceeds max_gap; the
+## caller sets it to the scale below which the boundary has no features,
+## so that the residual test only ever decides at feature scale.
+##
+## known is an optional cbind(y2, crit) of already solved roots; those
+## inside lim2 seed the memo and are not solved again.
 ##
 ## Returns cbind(grid, crit), sorted and de-duplicated for splinefun, or
 ## NULL if a constant/no-root (NA) region is hit -- the caller then falls
@@ -411,13 +445,22 @@ trace_boundary2S_adaptive <- function(
   lim2,
   delta2,
   scale1,
-  lin_tol
+  lin_tol,
+  max_gap = Inf,
+  known = NULL
 ) {
   ## memoized solver: one uniroot per distinct y2, ever -- a quarter point
   ## of a parent interval is reused as the midpoint of a child interval.
   cache_y <- numeric(0)
   cache_r <- numeric(0)
-  bad <- FALSE
+  if (!is.null(known)) {
+    seed <- known[, 1] >= lim2[1] - 1e-9 & known[, 1] <= lim2[2] + 1e-9
+    cache_y <- known[seed, 1]
+    cache_r <- known[seed, 2]
+  }
+  ## a constant-decision knot carried over from an earlier request is no
+  ## root either and must send the caller to the grid sweep just the same
+  bad <- any(is_constant_boundary(cache_r))
 
   solve_memo <- function(y2, bracket) {
     hit <- which(abs(cache_y - y2) < 1e-9)
@@ -425,7 +468,7 @@ trace_boundary2S_adaptive <- function(
       return(cache_r[hit[1L]])
     }
     r <- solve_at(y2, bracket)
-    if (is.na(r)) {
+    if (is.na(r) || is_constant_boundary(r)) {
       bad <<- TRUE
     }
     cache_y[[length(cache_y) + 1L]] <<- y2
@@ -473,7 +516,7 @@ trace_boundary2S_adaptive <- function(
       abs(rq1 - quad(q1, a, ra, m, rm, b, rb)),
       abs(rq3 - quad(q3, a, ra, m, rm, b, rb))
     )
-    if (err > lin_tol) {
+    if (err > lin_tol || (b - a) / 4 > max_gap) {
       ## q1, q3 become the midpoints of the two children.
       recurse(a, ra, q1, rq1, m, rm)
       recurse(m, rm, q3, rq3, b, rb)
@@ -517,7 +560,9 @@ solve_boundary2S_normMix <- function(
   delta2,
   sigma_fun1 = NULL,
   sigma_fun2 = NULL,
-  y2_at = NULL
+  y2_at = NULL,
+  max_gap = Inf,
+  known = NULL
 ) {
   assert_class(decision, "decision2S_atomic")
 
@@ -540,23 +585,60 @@ solve_boundary2S_normMix <- function(
     sem1 <- sigma1 / sqrt(n1)
     scale1 <- sigma1 / (n1^0.25)
 
-    ## Use the reference data sigma (sigma_fun evaluated at the prior
-    ## mean) to set the search domain.  The boundary can only exist
-    ## where the data is informative, i.e. where sigma_fun1(m1) is of
-    ## similar magnitude to sigma1.  A factor of 8 is generous enough
-    ## to never clip a genuine boundary.
-    max_half_width <- max(8 * sigma1, diff(lim1))
+    ## Search window for the critical value. It must not depend on the
+    ## call (lim1), since the solved knots are cached for all later calls.
+    ## An outcome m1 is uninformative once its standard error exceeds the
+    ## prior standard deviation by far; the posterior is the prior from
+    ## there on and so is the decision. Such an edge bounds the window. A
+    ## side without such an edge (e.g. large counts) is informative
+    ## throughout and the objective is monotone beyond the prior means.
+    ## Only the non-monotone part between the edge and the prior means is
+    ## scanned on such a side.
+    prior1_mean <- summary(mix1)[["mean"]]
+    uninformative_se <- 100 * max(mix1[3, ])
+    uninformative <- function(m1) {
+      se_m1 <- sigma_fun1(m1) / sqrt(n1)
+      is.na(se_m1) || se_m1 >= uninformative_se
+    }
+    informative_edge <- function(direction) {
+      inner <- prior1_mean
+      for (k in 0:60) {
+        outer <- prior1_mean + direction * sigma1 * 2^k
+        if (uninformative(outer)) {
+          for (i in 1:30) {
+            mid <- (inner + outer) / 2
+            if (uninformative(mid)) outer <- mid else inner <- mid
+          }
+          ## the standard error approaches the limit continuously at an
+          ## edge; a jump is a numerical breakdown of the family functions
+          if (sigma_fun1(inner) / sqrt(n1) < uninformative_se / 2) {
+            break
+          }
+          return(inner)
+        }
+        inner <- outer
+      }
+      direction * Inf
+    }
+    if (uninformative(prior1_mean)) {
+      window1 <- prior1_mean + c(-8, 8) * sigma1
+      edge_found <- c(TRUE, TRUE)
+    } else {
+      window1 <- c(informative_edge(-1), informative_edge(1))
+      edge_found <- is.finite(window1)
+    }
+    ## An informative side is limited generously with respect to the prior;
+    ## the decision counts as constant if it changes only beyond.
+    far1 <- range(mix1[2, ]) + c(-8, 8) * max(sigma1, mix1[3, ])
+    window1 <- ifelse(edge_found, window1, far1)
+    scan1 <- range(mix1[2, ]) + c(-8, 8) * sem1
+    scan1 <- ifelse(edge_found, window1, scan1)
 
     cond_decisionStep <- function(post2) {
-      ## Family path: bound uniroot's interval extension to the region
-      ## where the data is informative. Returning NA outside that window
-      ## (centred on the current bracket) stops the extension cheaply; a
-      ## genuinely constant decision then yields no root and the grid
-      ## point is dropped. center is fixed per grid point because
-      ## cond_decisionStep() is called with the current lim1.
-      center <- mean(lim1)
+      ## Bound uniroot's interval extension to the search window. Returning
+      ## NA outside it stops extension; the fallback scans within it.
       function(m1) {
-        if (abs(m1 - center) > max_half_width) {
+        if (m1 < window1[1] || m1 > window1[2]) {
           return(NA_real_)
         }
         se_m1 <- sigma_fun1(m1) / sqrt(n1)
@@ -567,17 +649,15 @@ solve_boundary2S_normMix <- function(
 
   tol <- min(delta2 / 100, .Machine$double.eps^0.25)
 
-  ## Direction of the (continuous) decision objective as a function of
-  ## m1. min(decision(..., dist = TRUE)) is monotone in m1 and shares
-  ## the atomic's lower.tail: for lower.tail = TRUE the objective
-  ## decreases through the root ("downX"), for lower.tail = FALSE it
-  ## increases ("upX"). We provide good starting limits and let uniroot
-  ## extend the bracket itself instead of expanding lim1 by hand.
+  ## Direction of the requested crossing: decreasing for lower.tail = TRUE,
+  ## increasing otherwise. With constant sigma the objective is monotone;
+  ## family-based sigma can require the non-monotone fallback below.
   extend_dir <- if (isTRUE(attr(decision, "lower.tail"))) "downX" else "upX"
 
   ## Root-find the critical y1 for a second-sample outcome y2 within a
   ## warm bracket (extendInt widens it if the boundary moved out).
-  ## Returns NA where the decision is constant (no sign change).
+  ## If there is no sign change, retain whether the decision is always true
+  ## or always false as a tail-aware extreme boundary.
   solve_at <- function(y2, bracket) {
     if (n2 == 0) {
       post2 <- mix2
@@ -590,9 +670,111 @@ solve_boundary2S_normMix <- function(
       post2 <- postmix(mix2, m = y2, se = se2)
     }
     ind_fun <- cond_decisionStep(post2)
-    tryCatch(
+    if (!is.null(sigma_fun1)) {
+      bracket <- pmin(pmax(bracket, window1[1]), window1[2])
+    }
+    root <- tryCatch(
       uniroot(ind_fun, bracket, extendInt = extend_dir, tol = tol)$root,
       error = function(e) NA_real_
+    )
+    if (!is.na(root)) {
+      return(root)
+    }
+
+    ## With a family-based standard error the objective can revert toward the
+    ## prior in the tails and is not globally monotone. A warm bracket may
+    ## therefore miss the crossing in the requested direction. Scan the
+    ## window on a uniform grid before classifying the decision as constant.
+    ## This is a numerical search, not proof that no narrower excursion
+    ## exists.
+    if (!is.null(sigma_fun1)) {
+      m1 <- seq(scan1[1], scan1[2], length.out = 65L)
+      val <- vapply(m1, ind_fun, numeric(1))
+      if (anyNA(val)) {
+        ## a dropped knot would be replaced by its neighbours silently
+        stop(
+          "The decision is undefined in the search window of sample 1 for ",
+          "the outcome ",
+          signif(y2, 6),
+          " of sample 2.",
+          call. = FALSE
+        )
+      }
+      n_scan <- length(m1)
+      up <- extend_dir == "upX"
+      cross <- which(
+        if (up) {
+          val[-n_scan] <= 0 & val[-1L] >= 0
+        } else {
+          val[-n_scan] >= 0 & val[-1L] <= 0
+        }
+      )
+      if (length(cross)) {
+        k <- if (up) cross[length(cross)] else cross[1L]
+        return(uniroot(ind_fun, m1[k + 0:1], tol = tol)$root)
+      }
+      ## An excursion between two grid points shows as the extremum of the
+      ## scan which is closest to zero; look for it there. This is done
+      ## only if the scan sees no change of sign at all: a further narrow
+      ## excursion next to a crossing seen by the scan is not searched for,
+      ## as a single critical value cannot represent it anyway.
+      if (all(val < 0) || all(val > 0)) {
+        bump <- val[1L] < 0
+        k <- if (bump) which.max(val) else which.min(val)
+        cell <- m1[c(max(k - 1L, 1L), min(k + 1L, n_scan))]
+        extremum <- optimize(ind_fun, cell, maximum = bump, tol = tol)
+        if (bump == (extremum$objective > 0)) {
+          bracket <- if (up == bump) {
+            c(cell[1L], extremum[[1L]])
+          } else {
+            c(extremum[[1L]], cell[2L])
+          }
+          return(uniroot(ind_fun, bracket, tol = tol)$root)
+        }
+      }
+      ## No crossing inside the scanned range. On a side which is
+      ## informative throughout the objective is monotone beyond the scan,
+      ## so a crossing there is found between the end of the scan and the
+      ## window if the objective has not crossed yet.
+      at_end <- val[c(1L, n_scan)]
+      not_crossed <- if (extend_dir == "upX") at_end < 0 else at_end > 0
+      for (side in 1:2) {
+        ## below the scan the crossing lies behind, above it lies ahead
+        pending <- if (side == 1) !not_crossed[1] else not_crossed[2]
+        if (edge_found[side] || !pending) {
+          next
+        }
+        outward <- sort(c(scan1[side], window1[side]))
+        root <- tryCatch(
+          uniroot(ind_fun, outward, tol = tol)$root,
+          error = function(e) NA_real_
+        )
+        if (!is.na(root)) {
+          return(root)
+        }
+      }
+      ## Without a crossing in the requested direction the decision is
+      ## constant if both ends agree; otherwise it changes in the reverse
+      ## direction only, which a critical value cannot represent.
+      if (sign(at_end[1]) != sign(at_end[2])) {
+        return(NA_real_)
+      }
+      return(constant_boundary_value(
+        at_end[1] > 0,
+        attr(decision, "lower.tail")
+      ))
+    }
+
+    decision_at_center <- ind_fun(mean(lim1))
+    if (
+      length(decision_at_center) != 1L ||
+        is.na(decision_at_center)
+    ) {
+      return(NA_real_)
+    }
+    constant_boundary_value(
+      decision_at_center > 0,
+      attr(decision, "lower.tail")
     )
   }
 
@@ -611,11 +793,9 @@ solve_boundary2S_normMix <- function(
   ## options(RBesT.decision2S_boundary = "grid"). lin_tol is the accepted
   ## deviation of the boundary from its quadratic fit at the quarter points
   ## of a subinterval; it is set relative to sem1, the posterior scale of
-  ## the arm-1 mean that governs the boundary's own resolution. The nested
-  ## quarter-point accept test is aliasing-resistant, so sem1/100
-  ## ("boundary located to ~1% of its natural sem1 scale") caps the
-  ## worst-case error at grid level without the over-tight sem1/1000 the
-  ## curvature-blind single-midpoint test required.
+  ## the arm-1 mean that governs the boundary's own resolution ("boundary
+  ## located to ~1% of its natural sem1 scale"). The test is only reliable
+  ## at feature scale, which the coverage guard max_gap enforces.
   if (getOption("RBesT.decision2S_boundary", "adaptive") == "adaptive") {
     adaptive <- trace_boundary2S_adaptive(
       solve_at,
@@ -623,7 +803,9 @@ solve_boundary2S_normMix <- function(
       lim2,
       delta2,
       scale1,
-      lin_tol = sem1 / 100
+      lin_tol = sem1 / 100,
+      max_gap = max_gap,
+      known = known
     )
     if (!is.null(adaptive)) {
       return(adaptive)
@@ -631,24 +813,88 @@ solve_boundary2S_normMix <- function(
   }
 
   ## Uniform grid sweep: a fixed grid of y2 points, warm-started with a
-  ## symmetric +/-2*scale1 bracket around the previous root.
-  grid <- seq(lim2[1], lim2[2], length = diff(lim2) / delta2)
+  ## symmetric +/-2*scale1 bracket around the previous finite root.
+  grid <- if (diff(lim2) == 0) {
+    lim2[1]
+  } else {
+    seq(lim2[1], lim2[2], length = max(2, diff(lim2) / delta2))
+  }
   crit <- rep(NA_real_, length(grid))
+  solved <- rep(FALSE, length(grid))
+  ## A first pass visits points which are max_gap apart, the scale below
+  ## which the boundary has no features. The decision is taken as constant
+  ## in between two such points whenever it is the same constant at both,
+  ## which saves the costly search for a crossing at the points in between.
+  stride <- 1L
+  if (length(grid) > 2 && is.finite(max_gap)) {
+    stride <- max(1L, floor(max_gap / (grid[2] - grid[1])))
+  }
+  coarse <- unique(c(seq(1L, length(grid), by = stride), length(grid)))
   bracket <- lim1
-  for (i in seq_along(grid)) {
-    y1c <- solve_at(grid[i], bracket)
-    if (is.na(y1c)) {
-      bracket <- lim1
+  for (i in c(coarse, setdiff(seq_along(grid), coarse))) {
+    if (solved[i]) {
       next
     }
-    crit[i] <- y1c
-    bracket <- c(y1c - 2 * scale1, y1c + 2 * scale1)
+    if (i > 1 && solved[i - 1] && is.finite(crit[i - 1]) &&
+          !is_constant_boundary(crit[i - 1])) {
+      bracket <- crit[i - 1] + c(-2, 2) * scale1
+    } else {
+      bracket <- lim1
+    }
+    crit[i] <- solve_at(grid[i], bracket)
+    solved[i] <- TRUE
+    if (i == coarse[length(coarse)] && stride > 1L) {
+      for (k in seq_len(length(coarse) - 1L)) {
+        ends <- crit[coarse[k + 0:1]]
+        between <- seq_len(coarse[k + 1L] - coarse[k] - 1L) + coarse[k]
+        if (
+          length(between) &&
+            !anyNA(ends) &&
+            all(is_constant_boundary(ends)) &&
+            ends[1] == ends[2]
+        ) {
+          crit[between] <- ends[1]
+          solved[between] <- TRUE
+        }
+      }
+    }
   }
 
-  ## Drop grid points where no boundary was found (crit is NA).
-  ## The spline / approxfun covers only the range with real boundaries;
-  ## extrapolation at the tails produces extreme values that give the
-  ## correct pnorm result (~ 0 or 1).
+  ## Locate transitions between finite-root and constant-decision runs more
+  ## accurately than the base grid. This keeps the piecewise consumer from
+  ## assigning a whole grid cell to the wrong constant state.
+  transition_tol <- delta2 / 100
+  repeat {
+    status <- ifelse(is_constant_boundary(crit), sign(crit), 0)
+    transition <- which(
+      !is.na(crit[-length(crit)]) &
+        !is.na(crit[-1L]) &
+        status[-length(status)] != status[-1L] &
+        diff(grid) > transition_tol
+    )
+    if (!length(transition)) {
+      break
+    }
+    midpoint <- (grid[transition] + grid[transition + 1L]) / 2
+    midpoint_crit <- vapply(
+      midpoint,
+      solve_at,
+      numeric(1),
+      bracket = lim1
+    )
+    classified <- !is.na(midpoint_crit)
+    if (!any(classified)) {
+      break
+    }
+    grid <- c(grid, midpoint[classified])
+    crit <- c(crit, midpoint_crit[classified])
+    ord <- order(grid)
+    grid <- grid[ord]
+    crit <- crit[ord]
+  }
+
+  ## Drop only unclassifiable failures. Constant-decision points are retained
+  ## as extreme values and handled piecewise by fit_boundary_consumer().
   keep <- !is.na(crit)
   cbind(grid[keep], crit[keep])
 }
@@ -806,33 +1052,106 @@ decision2S_boundary_normMix_1sided <- function(
   )
 }
 
+## Union of intervals given as rows (lower, upper) of a 2-column matrix;
+## returns sorted, disjoint intervals.
+merge_intervals <- function(iv) {
+  n <- nrow(iv)
+  if (n < 2) {
+    return(iv)
+  }
+  iv <- iv[order(iv[, 1]), , drop = FALSE]
+  upper <- cummax(iv[, 2])
+  start <- c(TRUE, iv[-1, 1] > upper[-n])
+  cbind(iv[start, 1], upper[c(start[-1], TRUE)])
+}
+
+## Parts of the interval lim = c(lower, upper) which are not covered by the
+## sorted, disjoint intervals in resolved; slivers narrower than tol count
+## as covered.
+uncovered_intervals <- function(lim, resolved, tol) {
+  lower <- pmax(c(-Inf, resolved[, 2]), lim[1])
+  upper <- pmin(c(resolved[, 1], Inf), lim[2])
+  keep <- upper - lower > tol
+  cbind(lower[keep], upper[keep])
+}
+
+## Regions of a normal mixture which hold all but eps of the probability
+## mass of each component, as rows (lower, upper).
+mass_intervals <- function(mix, eps) {
+  z <- qnorm(1 - eps / 2)
+  cbind(mix[2, ] - z * mix[3, ], mix[2, ] + z * mix[3, ])
+}
+
+## The cache (resolve / eval functions) behind a normal boundary function
+## returned by decision2S_boundary_normMix_atomic.
+boundary2S_cache <- function(boundary_fun) {
+  environment(boundary_fun)$cache
+}
+
 ## Build the interpolating boundary function from the solved (y2, y1c)
 ## points produced by solve_boundary2S_normMix. This is the single seam
 ## through which the boundary consumer is chosen:
-##   - empty input  -> constant extreme-value function (decision never/always
-##     satisfied); the sign follows the decision's lower.tail so pnorm ~ 0/1.
+##   - constant-decision runs -> exact extreme-value function on that run.
 ##   - `linear`     -> piecewise-linear approxfun for the provably-linear
 ##     single-component / constant-sigma case.
 ##   - otherwise    -> smooth spline through the (non-uniformly graded) points.
 fit_boundary_consumer <- function(boundary_discrete, linear, decision) {
   if (nrow(boundary_discrete) == 0) {
-    lower.tail <- attr(decision, "lower.tail")
-    const_val <- if (lower.tail) -1e100 else 1e100
-    return(function(y2) rep(const_val, length(y2)))
+    stop("No classifiable decision boundary points were found.")
   }
-  if (linear) {
-    approxfun(boundary_discrete[, 1], boundary_discrete[, 2], rule = 2)
-  } else {
+
+  boundary_discrete <- boundary_discrete[
+    order(boundary_discrete[, 1]),
+    ,
+    drop = FALSE
+  ]
+  keep <- !duplicated(boundary_discrete[, 1], fromLast = TRUE)
+  boundary_discrete <- boundary_discrete[keep, , drop = FALSE]
+
+  status <- ifelse(
+    is_constant_boundary(boundary_discrete[, 2]),
+    sign(boundary_discrete[, 2]),
+    0
+  )
+  run_id <- cumsum(c(TRUE, diff(status) != 0))
+  runs <- split(seq_len(nrow(boundary_discrete)), run_id)
+
+  consumers <- lapply(runs, function(idx) {
+    x <- boundary_discrete[idx, 1]
+    y <- boundary_discrete[idx, 2]
+    if (status[idx[1]] != 0 || length(idx) == 1L) {
+      value <- y[1]
+      return(function(y2) rep(value, length(y2)))
+    }
+    if (linear) {
+      return(approxfun(x, y, rule = 2))
+    }
     ## Shape-preserving monotone Hermite (Fritsch-Carlson): matches the
     ## adaptive tracer's curvature-controlled point placement, avoids the
     ## overshoot a global cubic ("fmm") exhibits over the non-uniformly
     ## graded points, and respects the boundary's monotonicity where it
     ## holds without imposing it where it does not.
-    splinefun(
-      boundary_discrete[, 1],
-      boundary_discrete[, 2],
-      method = "monoH.FC"
-    )
+    splinefun(x, y, method = "monoH.FC")
+  })
+
+  breaks <- if (length(runs) == 1L) {
+    numeric(0)
+  } else {
+    vapply(seq_len(length(runs) - 1L), function(i) {
+      left <- runs[[i]][length(runs[[i]])]
+      right <- runs[[i + 1L]][1]
+      mean(boundary_discrete[c(left, right), 1])
+    }, numeric(1))
+  }
+
+  function(y2) {
+    selected_run <- findInterval(y2, breaks) + 1L
+    value <- numeric(length(y2))
+    for (i in seq_along(consumers)) {
+      use <- selected_run == i
+      value[use] <- consumers[[i]](y2[use])
+    }
+    value
   }
 }
 
@@ -893,32 +1212,42 @@ decision2S_boundary_normMix_atomic <- function(
   ## the boundary function depends only on the samples sizes n1, n2,
   ## the priors and the decision, but not the assumed truths
 
-  clim2 <- c(Inf, -Inf)
+  ## Cache of the boundary:
+  ##   knots    -- all solved roots (y2, y1c), sorted in y2
+  ##   resolved -- sorted disjoint y2 intervals (lower, upper) in which the
+  ##               knots are dense, i.e. traced with the coverage guard
+  ##               max_gap. Knots outside are never relied upon.
+  ## sem2 is the scale over which the outcome of sample 2 can change the
+  ## posterior mixture weights, hence the boundary has no features below it.
+  max_gap <- sem2
+  knots <- matrix(NA_real_, nrow = 0, ncol = 2)
+  resolved <- matrix(NA_real_, nrow = 0, ncol = 2)
 
   ## the boundary function which gives conditional on the second
   ## variable the critical value where the decision changes
   boundary <- NA
-  boundary_discrete <- matrix(NA, nrow = 0, ncol = 2)
   exact_line_built <- FALSE
   linear_fallback <- FALSE
 
-  decision_boundary <- function(y2, lim1) {
+  ## Ensure that the boundary is resolved on the y2 intervals given as rows
+  ## (lower, upper); only parts not resolved before are solved.
+  resolve <- function(intervals, lim1) {
+    if (exact_line_built) {
+      return(invisible())
+    }
+    if (missing(lim1)) {
+      lim1 <- qmix(mean_prior1, c(eps / 2, 1 - eps / 2))
+    }
     ## Exact linear fast path (C1/C2/C3): for single-component priors with
     ## constant sigma the boundary y1_c(y2) is provably a straight line, and
     ## for multi-criteria decisions the per-criterion lines are parallel, so
     ## their min/max envelope is still a single line (no kink). We therefore
     ## solve at just two anchor points, fit the exact line, and cache it as a
-    ## closed-form function valid for all y2 -- bypassing the grid sweep and
-    ## the lazy caching/extension machinery entirely. n2 == 0 collapses to a
-    ## horizontal line (two equal anchors -> slope 0) automatically.
-    if (exact_line_built) {
-      return(boundary(y2))
-    }
+    ## closed-form function valid for all y2 -- bypassing the tracing and
+    ## the resolved intervals entirely. n2 == 0 collapses to a horizontal
+    ## line (two equal anchors -> slope 0) automatically.
     if (linear_boundary && !linear_fallback) {
-      if (missing(lim1)) {
-        lim1 <- qmix(mean_prior1, c(eps / 2, 1 - eps / 2))
-      }
-      anchor2 <- range(y2)
+      anchor2 <- range(intervals)
       if (diff(anchor2) == 0) {
         anchor2 <- anchor2 + c(-1, 1) * max(delta2, abs(anchor2[1]), 1)
       }
@@ -935,8 +1264,11 @@ decision2S_boundary_normMix_atomic <- function(
         sigma_fun2 = sigma_fun2,
         y2_at = anchor2
       )
-      if (nrow(pts) == 2 && pts[2, 1] != pts[1, 1]) {
-        boundary_discrete <<- pts
+      if (
+        nrow(pts) == 2 &&
+          pts[2, 1] != pts[1, 1] &&
+          !any(is_constant_boundary(pts[, 2]))
+      ) {
         slope <- (pts[2, 2] - pts[1, 2]) / (pts[2, 1] - pts[1, 1])
         intercept <- pts[1, 2] - slope * pts[1, 1]
         boundary <<- local({
@@ -944,89 +1276,77 @@ decision2S_boundary_normMix_atomic <- function(
           b <- intercept
           function(y2) b + m * y2
         })
-        clim2 <<- c(-Inf, Inf)
         exact_line_built <<- TRUE
-        return(boundary(y2))
+        return(invisible())
       }
       ## Two-anchor solve failed (e.g. a root did not exist at an anchor);
-      ## fall through to the general grid/adaptive path, which stays linear
-      ## via the approxfun consumer. Latch so later calls skip the retry.
+      ## fall through to the general path, which stays linear via the
+      ## approxfun consumer. Latch so later calls skip the retry.
       linear_fallback <<- TRUE
     }
 
-    lim2 <- range(y2)
-
-    ## check if boundary function must be recomputed
-    if (lim2[1] < clim2[1] | lim2[2] > clim2[2]) {
-      new_lim2 <- clim2
-      ## note: the <<- assignment is needed to set the variable in the enclosure
-      if (missing(lim1)) {
-        lim1 <- qmix(mean_prior1, c(eps / 2, 1 - eps / 2))
-      }
-      if (nrow(boundary_discrete) == 0) {
-        ## boundary hasn't been calculated before, do it all
-        boundary_discrete <<- solve_boundary2S_normMix(
+    ## Pad by max_gap: the interpolant slope at the outermost knot of a
+    ## resolved interval depends on the next knot beyond it, which a later
+    ## request may add far away. The padding keeps the affected
+    ## sub-interval (at most max_gap wide) out of the requested range.
+    todo <- merge_intervals(
+      cbind(intervals[, 1] - max_gap, intervals[, 2] + max_gap)
+    )
+    changed <- FALSE
+    for (i in seq_len(nrow(todo))) {
+      ## A gap narrower than the refinement floor delta2 is bounded by
+      ## knots which are closer than the floor already. Tracing it would
+      ## only add knots so close that their secant is solver noise.
+      pieces <- uncovered_intervals(
+        todo[i, ],
+        resolved,
+        tol = min(delta2, max_gap)
+      )
+      for (j in seq_len(nrow(pieces))) {
+        extra <- solve_boundary2S_normMix(
           decision,
           prior1,
           prior2,
           n1,
           n2,
           lim1,
-          lim2,
+          pieces[j, ],
           delta2,
           sigma_fun1 = sigma_fun1,
-          sigma_fun2 = sigma_fun2
+          sigma_fun2 = sigma_fun2,
+          max_gap = max_gap,
+          known = knots
         )
-        new_lim2 <- lim2
-      } else {
-        if (lim2[1] < clim2[1]) {
-          ## the lower bound is not low enough... only add the region which is missing
-          new_left_lim2 <- min(lim2[1], clim2[1] - 2 * delta2)
-          boundary_extra <- solve_boundary2S_normMix(
-            decision,
-            prior1,
-            prior2,
-            n1,
-            n2,
-            lim1,
-            c(new_left_lim2, clim2[1] - delta2),
-            delta2,
-            sigma_fun1 = sigma_fun1,
-            sigma_fun2 = sigma_fun2
-          )
-          new_lim2[1] <- new_left_lim2
-          boundary_discrete <<- rbind(boundary_extra, boundary_discrete)
-        }
-        if (lim2[2] > clim2[2]) {
-          ## the upper bound is not large enough.. again only add what's missing
-          new_right_lim2 <- max(lim2[2], clim2[2] + 2 * delta2)
-          boundary_extra <- solve_boundary2S_normMix(
-            decision,
-            prior1,
-            prior2,
-            n1,
-            n2,
-            lim1,
-            c(clim2[2] + delta2, new_right_lim2),
-            delta2,
-            sigma_fun1 = sigma_fun1,
-            sigma_fun2 = sigma_fun2
-          )
-          new_lim2[2] <- new_right_lim2
-          boundary_discrete <<- rbind(boundary_discrete, boundary_extra)
-        }
+        knots <<- rbind(knots, extra)
+        changed <- TRUE
       }
-      ## only for debugging
-      ## assert_that(all(order(boundary_discrete[,1]) == 1:nrow(boundary_discrete)), msg="x grid must stay ordered!")
-      boundary <<- fit_boundary_consumer(
-        boundary_discrete,
-        linear_boundary,
-        decision
-      )
-      clim2 <<- new_lim2
     }
+    if (changed) {
+      ## no knots at all if the decision could not be classified anywhere
+      if (nrow(knots) > 1) {
+        knots <<- knots[order(knots[, 1]), , drop = FALSE]
+        knots <<- knots[c(TRUE, diff(knots[, 1]) > 1e-9), , drop = FALSE]
+      }
+      resolved <<- merge_intervals(rbind(resolved, todo))
+      boundary <<- fit_boundary_consumer(knots, linear_boundary, decision)
+    }
+    invisible()
+  }
 
-    return(boundary(y2))
+  ## resolve decides where the boundary must be accurate, eval only
+  ## reads the interpolant. Consumers knowing the distribution of y2
+  ## (oc2S, pos2S) resolve the regions holding its mass and then
+  ## integrate using eval. This split ensures that the function is
+  ## accurate in regions where a high precision is needed and avoids
+  ## additional calls to resolve in regions where the boundary is not
+  ## needed with high precision due to low density of the integrand.
+  cache <- list(resolve = resolve, eval = function(y2) boundary(y2))
+
+  ## Without knowledge about the distribution of y2 the boundary is
+  ## resolved at every requested point.
+  decision_boundary <- function(y2, lim1) {
+    resolve(cbind(y2, y2), lim1)
+    boundary(y2)
   }
 
   decision_boundary

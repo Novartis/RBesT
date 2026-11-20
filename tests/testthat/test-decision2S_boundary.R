@@ -61,6 +61,110 @@ test_that("Adaptive normal boundary matches the uniform grid fallback", {
   expect_equal(result_adaptive, result_grid, tolerance = 1e-3)
 })
 
+## Mixture priors: the boundary follows one slope where the informative
+## component dominates and another one in the tails. On a broad, symmetric
+## range the samples of a coarse trace all fall on a common line, which the
+## adaptive tracer used to accept.
+boundary2S_curved_scenario <- function() {
+  list(
+    prior1 = mixnorm(c(1, 0, 100), sigma = 1),
+    prior2 = mixnorm(c(0.8, 0, 1), c(0.2, 0, 2), sigma = 1),
+    decisions = list(
+      median = decision2S(0.5, 2.5, FALSE),
+      dual = decision2S(c(0.95, 0.5), c(0, 2.5), FALSE),
+      dual_lower = decision2S(c(0.95, 0.5), c(0, -2.5), TRUE)
+    )
+  )
+}
+
+test_that("Adaptive normal boundary separates the posterior decisions on a broad range", {
+  s <- boundary2S_curved_scenario()
+  y2 <- c(-20, -3, 20)
+  for (decision in s$decisions) {
+    boundary <- decision2S_boundary(
+      s$prior1, s$prior2, 1, 1, decision, sigma1 = 1, sigma2 = 1
+    )
+    crit <- boundary(y2)
+    lower.tail <- attr(decision, "lower.tail")
+    for (i in seq_along(y2)) {
+      post2 <- postmix(s$prior2, m = y2[i], se = 1)
+      below <- decision(postmix(s$prior1, m = crit[i] - 0.02, se = 1), post2)
+      above <- decision(postmix(s$prior1, m = crit[i] + 0.02, se = 1), post2)
+      expect_equal(below, as.numeric(lower.tail))
+      expect_equal(above, as.numeric(!lower.tail))
+    }
+  }
+})
+
+test_that("Adaptive normal boundary matches directly solved roots on a broad range", {
+  s <- boundary2S_curved_scenario()
+  y2 <- seq(-40, 40, length.out = 81)
+  for (decision in s$decisions) {
+    boundary <- decision2S_boundary(
+      s$prior1, s$prior2, 1, 1, decision, sigma1 = 1, sigma2 = 1
+    )
+    direct <- vapply(
+      y2,
+      function(y) {
+        post2 <- postmix(s$prior2, m = y, se = 1)
+        uniroot(
+          ## the decision is a step in y1; bisect to the jump
+          function(y1) {
+            2 * decision(postmix(s$prior1, m = y1, se = 1), post2) - 1
+          },
+          c(-100, 100),
+          tol = 1e-8
+        )$root
+      },
+      numeric(1)
+    )
+    ## accepted quarter-point residual is sem1 / 100 = 0.01
+    expect_lt(max(abs(boundary(y2) - direct)), 0.02)
+  }
+})
+
+test_that("Normal boundary in a resolved range is not altered by later requests", {
+  s <- boundary2S_curved_scenario()
+  boundary <- decision2S_boundary(
+    s$prior1, s$prior2, 1, 1, s$decisions$dual, sigma1 = 1, sigma2 = 1
+  )
+  y2 <- seq(-5, 5, by = 0.25)
+  first <- boundary(y2)
+  boundary(c(-300, 300))
+  boundary(seq(20, 60, by = 5))
+  expect_equal(boundary(y2), first, tolerance = 1e-10)
+})
+
+test_that("Normal boundary is not degraded by a tiny gap between resolved ranges", {
+  s <- boundary2S_curved_scenario()
+  decision <- s$decisions$dual
+  y2 <- seq(0, 2, by = 0.05)
+  fresh <- decision2S_boundary(
+    s$prior1, s$prior2, 1, 1, decision, sigma1 = 1, sigma2 = 1
+  )(y2)
+  for (gap in c(3e-9, 1e-6, 1e-4)) {
+    boundary <- decision2S_boundary(
+      s$prior1, s$prior2, 1, 1, decision, sigma1 = 1, sigma2 = 1
+    )
+    ## the padded ranges of these two requests miss each other by gap
+    boundary(0)
+    boundary(2 + gap)
+    expect_lt(max(abs(boundary(y2) - fresh)), 0.005)
+  }
+})
+
+test_that("Normal boundary without any critical value in the requested range is constant", {
+  ## family path at low rates: the decision does not change with y1
+  prior <- mixnorm(c(0.7, log(5), 0.3), c(0.3, log(5), 1.5), sigma = 1)
+  decision <- decision2S(0.95, 0, lower.tail = TRUE)
+  boundary <- decision2S_boundary(
+    prior, prior, 20, 20, decision, family = poisson()
+  )
+  expect_equal(boundary(-3), -1e100)
+  design <- oc2S(prior, prior, 20, 20, decision, family = poisson())
+  expect_true(is.finite(design(log(0.1) - 0.3, log(0.1))))
+})
+
 test_that("Constant-sigma normal boundary is exactly linear (single and multi-criteria)", {
   skip_on_cran()
 
@@ -120,6 +224,23 @@ test_that("Mixture normal boundary consumer (monoH.FC) does not overshoot", {
   ## discrimination check: the old global cubic really would overshoot here
   fmm <- splinefun(x, y, method = "fmm")
   expect_gt(max(fmm(xs)), 1 + 1e-3)
+})
+
+test_that("Normal boundary consumer keeps constant runs out of the spline", {
+  dec <- decision2S(0.95, 0, FALSE)
+  points <- cbind(
+    1:6,
+    c(-boundary_extreme_value, -boundary_extreme_value, 0, 1,
+      boundary_extreme_value, boundary_extreme_value)
+  )
+  consumer <- fit_boundary_consumer(points, linear = FALSE, decision = dec)
+
+  expect_equal(
+    consumer(c(1, 2.4, 4.6, 6)),
+    c(-1e100, -1e100, 1e100, 1e100)
+  )
+  expect_equal(consumer(c(3, 4)), c(0, 1))
+  expect_true(all(abs(consumer(seq(2.51, 4.49, length.out = 21))) < 1e100))
 })
 
 test_that("Mixed lower.tail usage works for normal decision boundary calculation", {

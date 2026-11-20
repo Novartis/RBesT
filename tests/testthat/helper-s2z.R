@@ -1,8 +1,7 @@
 ## Helpers for the sum-to-zero (S2Z) reparametrization tests.
 ##
-## See design/design-sum-to-zero-gmap.md. These helpers are intentionally
-## self-contained (they do not source anything from design/, which is not part
-## of the package build).
+## These helpers are intentionally self-contained (they do not source
+## anything from outside of the package build).
 ##
 ## The structural invariants of the reparametrization hold for *any* parameter
 ## vector, not only for posterior draws. They are therefore checked on
@@ -48,8 +47,8 @@ s2z_country_data <- function() {
 #' the table can cover the full contract: all three endpoints, both
 #' parametrizations, fixed tau, covariates, a non-zero prior mean, the `J = 1`
 #' and `J = 3` edges, and the documented fallbacks. The wide *sampled* scenario
-#' sweep (extreme response, no-rescale, legacy equivalence) lives in the
-#' equivalence harness under `design/s2z/`.
+#' sweep (extreme response, no-rescale, legacy equivalence) is not part of
+#' the test suite.
 #'
 #' `s2z` records whether the scenario is expected to activate the S2Z path.
 #' The negative entries are ordinary documented arguments, not opt-ins, so the
@@ -390,7 +389,7 @@ s2z_reference_log_prob <- function(d, upars) {
     ## whose
     ## determinant is det(Q' diag(d) Q) = (prod d_j)(sum 1/d_j)/J, computed
     ## directly from mean(sc) (exact for heterogeneous sc, i.e. a per-group
-    ## group_scale_guess; see design/design-gmap-quadrature-initialization.md)
+    ## group_scale_guess)
     lp <- -0.5 * sum(re^2) / tau[1]^2 -
       sum(log(sc)) +
       log(mean(sc)) -
