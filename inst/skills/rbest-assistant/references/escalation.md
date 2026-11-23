@@ -23,11 +23,15 @@
 10. Operating-characteristic grids are much cheaper since 1.11-0, but a large
     two-sample grid over mixture priors is still real computation. Measure a
     small grid first.
+11. For a confirmatory trial that borrows historical data, the prior, the
+    robust weight and the evaluation of the design have to be agreed with the
+    health authority. The skill helps to prepare that discussion; it does not
+    settle it.
 
 ## Escalate to the package authors
 
 Contact the maintainer, Sebastian Weber (<sebastian.weber@novartis.com>), by
-e-mail or MS Teams when any of the following holds:
+e-mail when any of the following holds:
 
 1. The endpoint, likelihood or link function is unsupported or unclear.
 2. Borrowing assumptions are ambiguous and consequential.
@@ -46,6 +50,14 @@ e-mail or MS Teams when any of the following holds:
     development infrastructure rather than a user-facing feature.
 12. The `tau.strata` assignment for a specific constellation of studies is not
     obvious.
+13. A result seems to need numerical code beyond RBesT's own functions and the
+    permitted exceptions listed in the skill — including an assurance where
+    the joint design prior exists only as posterior draws. Do not write that
+    code; ask.
+14. The historical data show a convincing time trend, or the user wants to
+    adjust for baseline characteristics beyond a study-level covariate in the
+    `gMAP` formula. These are advanced topics: point to the case studies at
+    <https://opensource.nibr.com/bamdd/> first, where such models are demonstrated.
 
 When escalating, ask the user to prepare a minimal reproducible example with the
 data schema, the intended decision rule, and their current RBesT code.

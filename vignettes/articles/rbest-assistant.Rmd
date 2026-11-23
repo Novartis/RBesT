@@ -42,13 +42,23 @@ installed the plugin (Claude Code, Claude Cowork, Posit Assistant, VS Code), or
 
 # Installation
 
-Install the skill straight from the GitHub repository; no package release
-is needed:
+Most routes install the skill straight from the GitHub repository; no
+package release is needed:
 
 - **Claude Cowork:** Customize → Plugins → Add marketplace →
   `Novartis/RBesT`, then install `rbest`.
 - **Claude Code:** `/plugin marketplace add Novartis/RBesT`, then
   `/plugin install rbest@rbest`.
+- **Claude Desktop and other apps that install skills by upload:**
+  download
+  [`rbest-assistant.zip`](https://github.com/Novartis/RBesT/releases/latest/download/rbest-assistant.zip)
+  from the [latest GitHub
+  release](https://github.com/Novartis/RBesT/releases/latest) and
+  upload it as a skill (in Claude Desktop under Customize → Skills).
+  Use this route if you cannot add a plugin marketplace. The zip holds
+  the skill of that release, which can be older than the copy in the
+  repository that the other routes install. Releases from `RBesT`
+  1.12-1 on have the zip attached.
 - **ChatGPT Codex** (CLI, IDE extension or app): Codex reads skills from
   `~/.agents/skills` (for you) or `.agents/skills` (for one project).
   Run `npx skills add Novartis/RBesT`, use the R snippet under "Without
@@ -87,8 +97,11 @@ this format. Paste this prompt into yours:
 - **Claude Cowork, Posit Assistant and VS Code:** use the update action of
   the app's plugin settings (details below for Posit Assistant and VS
   Code).
-- **Skill-only installs** (`npx skills`, Codex, a copied folder): repeat
-  the install. The copy bundled with `RBesT` updates with the package.
+- **Skill-only installs** (`npx skills`, Codex, a copied folder, an
+  uploaded zip): repeat the install; for the zip, download it again from
+  the [latest release](https://github.com/Novartis/RBesT/releases/latest)
+  and replace the uploaded skill. The copy bundled with `RBesT` updates
+  with the package.
 
 ## Positron, RStudio and VS Code
 
@@ -126,6 +139,33 @@ this format. Paste this prompt into yours:
 
 # Running the code
 
+**Results come from `RBesT` only.** The skill instructs the agent to
+compute exclusively with the `RBesT` package in an R session, and never
+to re-create its functionality in another language or with its own
+code. What the agent delivers therefore depends on whether it can reach
+an R with `RBesT`:
+
+- **It can:** it runs the analysis there and reports the results
+  together with the code.
+- **It cannot:** it says so and offers either to guide you through the
+  setup (R, `RBesT`, and a way for the agent to use them), or to write
+  one self-contained R script that you download and run yourself. In
+  that case it reports no results; you can bring the output back to
+  have it interpreted.
+
+If your organisation does not allow an agent to run R for you, or
+requires analyses to run on a dedicated computing platform, tell the
+agent. It then works in script-only mode from the start.
+
+The skill names the few cases in which the agent may add numerical code
+of its own in R on top of `RBesT`. At present there is one: assurance
+for a design prior that links the two arms, which `pos2S()` cannot
+express. It is obtained by quasi-Monte Carlo averaging of `oc2S()`
+results (using a QMC package such as `spacefillr`) and is always
+reported with its Monte Carlo standard error. Should an agent present results
+that it computed in any other way, discard them and please [let us
+know](https://github.com/Novartis/RBesT/issues).
+
 **Recommended ways to have the code actually run:** Posit Assistant in
 Positron or RStudio runs R in your live session, so it needs no
 connector. Coding agents such as Claude Code or Copilot agent mode can
@@ -135,10 +175,13 @@ call `Rscript` themselves.
 Claude Desktop, whose sandbox cannot reach your R. The `rbest-r` plugin
 from the same marketplace starts btw's MCP server so that the agent can run
 R code in your local R installation. It needs a local R with `RBesT`,
-`btw` and ideally `ragg`, and works on macOS and Linux. It runs R code
+`btw` and ideally `ragg`, and works on macOS and Linux. Install `RBesT`
+as a ready-built binary rather than from source, preferably from [Posit
+Public Package Manager](https://packagemanager.posit.co), which also
+serves Linux binaries; the agent can guide you through it. It runs R code
 without a sandbox; the app asks before each call. Organisations may
 disable local MCP servers; the skill still works then, and the agent hands
-over code instead. To get help with setup, ask your agent:
+over an R script instead. To get help with setup, ask your agent:
 
 > Help me set up the optional `rbest-r` plugin from the `Novartis/RBesT`
 > marketplace so my AI agent can run R code via the btw MCP server. I'm on
