@@ -11,8 +11,8 @@
   "plugins": [
     {
       "name": "rbest",
-      "description": "MAP priors from historical controls, robustification, ESS, decision rules, operating characteristics and PoS with RBesT. AI-generated advice and code: review all results before use.",
-      "version": "0.1.0",
+      "description": "MAP priors from historical controls, robustification, ESS, decision rules, operating characteristics and PoS with RBesT. Computes with the RBesT package itself, apart from exceptions the skill documents; where R with RBesT is not available it delivers an R script to run yourself. AI-generated advice and code: review all results before use.",
+      "version": "0.3.1",
       "license": "GPL-3.0-or-later",
       "homepage": "https://opensource.nibr.com/RBesT/",
       "source": "./",

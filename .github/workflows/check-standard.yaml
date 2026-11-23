@@ -116,15 +116,20 @@ jobs:
             texlive-fonts-extra \
             texlive-plain-generic \
             latexmk \
-            texinfo
+            texinfo \
+            zip
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck any::devtools any::roxygen2 any::rmarkdown any::knitr any::here
+          # spacefillr, qrng, randtoolbox: needed by `make skill-verify`, a prerequisite of r-source-release
+          extra-packages: any::rcmdcheck any::devtools any::roxygen2 any::rmarkdown any::knitr any::here any::spacefillr any::qrng any::randtoolbox
           needs: check
 
       - name: Build release artifacts
         run: make r-source-release
+
+      - name: Zip the agent skill for upload-based installs (e.g. Claude Desktop)
+        run: make skill-zip
 
       - name: Create GitHub Release and upload artifacts
         uses: softprops/action-gh-release@v3
@@ -132,8 +137,9 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
             build/RBesT_*md5
             build/RBesT_*tar.gz
             build/RBesT-v*md5
-            build/RBesT-v*tar.gz
+            build/RBesT-v*tar.gz            build/rbest-assistant.zip

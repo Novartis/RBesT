@@ -10,10 +10,31 @@ protect against prior-data conflict. The `weight` is the prior probability given
 to that vague component and is a substantive modelling choice, not a default to
 pick silently. Ask for it, or show a sensitivity grid.
 
+Starting points to offer, for the user to confirm — they are examples, not
+defaults:
+
+- **10–20%** when the historical data are strongly relevant: same disease,
+  similar population and study design.
+- **30–50%** when relevance is moderate: a different population (adult to
+  pediatric, say) or a related disease.
+
+The weight is the *prior* probability of the vague component; the trial data
+re-weight the components. `1 - weight` is therefore **not** the amount
+borrowed, which depends on the trial data; the operating characteristics show
+it. Plan a
+sensitivity analysis that moves the weight from the chosen value towards 1 (no
+borrowing); the weight at which the conclusion changes is the tipping point.
+
 Set `mean` explicitly — it should sit at the null hypothesis. The defaults are
 deliberately unexciting and `robustify` tells you when it falls back on them:
 `1/2` for beta mixtures, the prior mean for gamma and normal ones. For normal
 mixtures also pass `sigma`.
+
+The vague component must be weakly informative, not flat: about one
+observation's worth of information (the default `n = 1`, a unit-information
+prior), with its mean chosen explicitly. A normal component with a very large
+variance gives practically **no** robustification — the data favour it over the informative
+part only under extreme conflict, far too late (Lindley's paradox). Do not widen it "to be safe".
 
 ```r
 library(RBesT)
@@ -27,6 +48,11 @@ size, so the default robust part is the uniform `Beta(1, 1)` instead of the
 strictly unit-information `Beta(1/2, 1/2)`.
 
 ## Effective sample size
+
+The ESS measures how informative a prior is. It is **not** a number of patients
+to subtract from, or add to, a sample size or power calculation: what the prior
+contributes depends on the control data the trial observes — see
+[borrowing-design](./borrowing-design.md).
 
 `ess(mix, method = c("elir", "moment", "morita"))` — `elir` is the default and
 the recommended choice. `moment` is conservative; `morita` can be optimistic for
@@ -117,7 +143,8 @@ hand, as above, before any `postmix`, `oc*` or `pos*` call.
 ## Sanity checks
 
 1. Does `plot(mix)$mix` overlay the sample well? (For `mixfit`/`automixfit` output.)
-2. Does the ESS match intuition about how many historical patients are borrowed?
+2. Is the ESS plausible against the number of historical patients and the
+   heterogeneity between the studies?
 3. Does the robust component sit at the null, and is its weight defensible?
 
 ## Next steps

@@ -52,7 +52,7 @@ read_mix_json(con, ..., rescale = TRUE)
 |---|---|
 | `plot(gmap_fit)$tau_forest` | No such element. The list is `traceBeta`, `traceTau`, `traceLogTau`, `densityBeta`, `densityTau`, `densityLogTau`, `densityThetaStar`, `densityThetaStarLink`, `forest_model` |
 | `oc1S(...)` returns numbers | It returns a **function**; call it with θ |
-| `pos2S(...)` arguments | Priors passed to `pos2S` are the analysis priors; the returned function takes the current knowledge distributions |
+| `pos2S(...)` arguments | Priors passed to `pos2S` are the analysis priors; the returned function takes the design priors (at an interim: the current posteriors), independent per arm |
 | `sigma` must be global | It is a formal argument of the normal `oc*`/`pos*`/`preddist`/`decision*_boundary` methods, defaulting to `sigma(prior)` |
 | `update()` is cheap | `stats::update.default` re-runs the full MCMC from the stored `$call`; there is no `update.gMAP` method |
 | `tau.prior = c(a, b)` means two strata | With a *single* stratum it is read as the parameter pair (a, b). Multiple strata need one entry per stratum |
