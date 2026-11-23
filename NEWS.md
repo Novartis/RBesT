@@ -8,8 +8,10 @@
   characteristics. It ships with the package under `inst/skills/` (see
   `system.file("skills/rbest-assistant", package = "RBesT")`), and the
   repository is a plugin marketplace that offers the skill (`rbest`) and
-  an optional R connector (`rbest-r`). See the new "AI assistant skill"
-  article for installation and updates. The agent's output is not
+  an optional R connector (`rbest-r`). Each GitHub release also has
+  the skill attached as `rbest-assistant.zip`, for apps that install
+  skills by upload, such as Claude Desktop. See the new "AI assistant
+  skill" article for installation and updates. The agent's output is not
   validated by `RBesT` and can differ between runs; check the code and
   results, and have any analysis or design reviewed by a qualified
   statistician. The skill may change; feedback is welcome via GitHub

@@ -102,6 +102,10 @@ unlink(f)
 component weight to zero, and errors if every weight rounds to zero. Set
 `digits` explicitly. Reading keeps zero-weight components.
 
+The file is the record of the pre-specified prior. From then on work with the
+mixture read back from it — for the design evaluation as much as for the final
+analysis — and not with the object it was written from.
+
 ## Multivariate normal mixtures
 
 `mixmvnorm` supports a mean/SD/correlation parametrization through

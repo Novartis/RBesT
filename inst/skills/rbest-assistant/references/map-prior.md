@@ -29,11 +29,16 @@ per-study sample sizes, set it by hand afterwards with `sigma(mix) <- ...`.
 
 ## Prior defaults to offer
 
-- **Binary, response rate roughly 20–80%**: `tau.dist = "HalfNormal", tau.prior = 1`.
-- **Normal**: `HalfNormal(0, σ/2)` is the conservative choice, `σ/4` a less
+- **Binary, response rate roughly 20–80%**: `tau.dist = "HalfNormal"` with
+  `tau.prior = 1` is the very conservative choice, `tau.prior = 1/2` a
+  conservative one.
+- **Normal**: `HalfNormal(0, σ/2)` is the very conservative choice, `σ/4` a
   conservative one.
 - **Log variance**: sampling SD of a log variance is √2, so `HalfNormal(0, √2/2)`
-  is very conservative and `√2/4` mildly so.
+  is very conservative and `√2/4` conservative.
+- With few historical studies the data say little about τ, so this prior
+  largely decides how much is borrowed: show the sensitivity. With a single
+  study τ is not estimable at all and the prior needs an external rationale.
 - **`beta.prior`**: a single number is the SD with mean 0; `cbind(mean, SD)` sets
   both. For the intercept a unit-information prior — precision of a single
   observation — is the usual recommendation.
@@ -143,6 +148,26 @@ them their own heterogeneity parameter:
 - `tau.strata` assigns each study to a stratum.
 - `tau.prior` then needs one entry per stratum, e.g. `c(0.5, 1)` for two strata.
 - `tau.strata.pred` (default `1`) picks the stratum the MAP prediction targets.
+
+## Covariates (meta-regression)
+
+`gMAP` accepts study-level covariates on the right-hand side of the formula,
+e.g. `cbind(r, n - r) ~ 1 + country | study`; a runnable example with the
+prediction for a new study is in [analysis](./analysis.md). Use it when a
+characteristic that drives the control outcome is known for **every**
+historical study and for the new trial. Limits to state:
+
+- The regression coefficients are common to all studies; the only random
+  effect is the study intercept.
+- Each coefficient needs its own row in `beta.prior`.
+- With summary data a covariate describes a whole study or arm (a region, a
+  mean age), not individual patients.
+
+Anything beyond this — adjustment for patient-level baseline characteristics,
+subgroup summaries reported by only some studies, a trend or random-walk model
+for extrapolation — is an advanced topic. Recommend the worked case studies at
+<https://opensource.nibr.com/bamdd/>, where such models are demonstrated, and
+[escalate](./escalation.md) rather than constructing one yourself.
 
 ## Diagnostics before anything else
 

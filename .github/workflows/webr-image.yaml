@@ -340,7 +340,12 @@ jobs:
 
       # svenstaro/upload-release-action creates a release for the tag if none
       # exists yet, so this works for a plain tag as well as for one pushed
-      # together with a release.
+      # together with a release. A release it creates for a tag that is not a
+      # v* release tag is marked as a pre-release: GitHub never treats a
+      # pre-release as the latest release, so the article's
+      # releases/latest/download/rbest-assistant.zip link keeps pointing to
+      # the last v* release, which check-standard.yaml gives the skill zip. The
+      # flag only applies when this step creates the release.
       - name: Upload artefacts to the release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -349,6 +354,7 @@ jobs:
           file_glob: true
           tag: ${{ github.ref }}
           overwrite: true
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
       - name: Upload the wasm package repository to the release
         uses: svenstaro/upload-release-action@v2

@@ -239,7 +239,21 @@ build/r-source-fast : $(GIT_EXPORT) $(BIN_OBJS) man/package-doc $(SRCS) DESCRIPT
 	mv $(TMPDIR)/$(RPKG)_$(PKG_VERSION).tar.gz build/$(RPKG)-source.tar.gz
 	touch build/r-source-fast
 
-build/r-source-release : $(GIT_EXPORT) $(BIN_OBJS) $(DOC_OBJS) $(SRCS) DESCRIPTION vignettes/REFERENCES.bib inst/sbc/sbc_report.html
+# build/skill-verify gates the release: it fails while the agent skill's target
+# version differs from the package version, so the skill has to be reviewed for
+# this release first (see "Agent Skill Release Review" in AGENTS.md). The
+# review is the last step of release preparation; release-candidate builds
+# before it (winbuilder, r-source-release-check) can skip the gate explicitly
+# with `make <target> SKILL_GATE=`. Never do that for the release itself.
+SKILL_GATE ?= build/skill-verify
+
+build/r-source-release : $(GIT_EXPORT) $(BIN_OBJS) $(DOC_OBJS) $(SRCS) DESCRIPTION vignettes/REFERENCES.bib inst/sbc/sbc_report.html $(SKILL_GATE)
+	# The tarball is built from HEAD, the gate verified the working tree: they
+	# must be the same skill.
+	@if [ -n "$(SKILL_GATE)" ] && [ -n "$$(git status --porcelain -- inst/skills)" ]; then \
+	  echo "ERROR: uncommitted changes under inst/skills; the release is built from HEAD. Commit the reviewed skill first."; \
+	  exit 1; \
+	fi
 	install -d build
 	rm -rf $(TMPDIR)/$(RPKG)-$(GIT_TAG)
 	# Extract into $(TMPDIR) rather than build/: on some filesystems (e.g.
@@ -438,8 +452,10 @@ build/installed/$(RPKG)/DESCRIPTION : build/r-source-fast
 # The agent skill under $(SKILL_DIR) documents the package API with runnable R
 # snippets. Verify them against a dev install of the *working tree* (same
 # R_LIBS trick as the reference manual above), so a signature change here
-# breaks the skill loudly instead of silently teaching the wrong call. Manual
-# only, like revdepcheck: it needs the dev install and runs real gMAP MCMC.
+# breaks the skill loudly instead of silently teaching the wrong call. Not part
+# of the regular checks, since it needs the dev install and runs real gMAP
+# MCMC: run it by hand after editing the skill. It is a prerequisite of
+# r-source-release only.
 SKILL_DIR = inst/skills/rbest-assistant
 SKILL_REFS = $(wildcard $(SKILL_DIR)/references/*.md)
 SKILL_VERIFY_SCRIPT = tools/skill-verify.R
@@ -452,6 +468,30 @@ build/skill-verify : $(SKILL_REFS) $(SKILL_VERIFY_SCRIPT) $(SKILL_DIR)/SKILL.md 
 
 PHONY += skill-verify
 skill-verify : build/skill-verify
+
+# Zip of the agent skill for apps that install skills by upload (e.g. Claude
+# Desktop), attached to each GitHub release under a fixed name so that
+# .../releases/latest/download/rbest-assistant.zip always points to the newest
+# copy. The zip holds a single top-level rbest-assistant/ folder, as the
+# upload expects. It packs the working-tree copies of the git-tracked skill
+# files only, so stray untracked files (.DS_Store, editor backups) never end
+# up in it, and it is rebuilt whenever one of them is newer than the zip.
+# build/skill-files.list records the set of files and is rewritten only when
+# that set changes, so adding or removing a tracked file rebuilds the zip too.
+SKILL_FILES := $(shell git ls-files $(SKILL_DIR) 2>/dev/null)
+
+build/skill-files.list : FORCE
+	@install -d build
+	@printf '%s\n' $(SKILL_FILES) | cmp -s - $@ 2>/dev/null || \
+	  printf '%s\n' $(SKILL_FILES) > $@
+
+build/rbest-assistant.zip : $(SKILL_FILES) build/skill-files.list
+	rm -f $@
+	cd $(dir $(SKILL_DIR)) && \
+	  zip -X -q $(abspath $@) $(patsubst $(dir $(SKILL_DIR))%,%,$(SKILL_FILES))
+
+PHONY += skill-zip
+skill-zip : build/rbest-assistant.zip
 
 docs/index.html : doc $(SRCS) vignettes/REFERENCES.bib
 	## Render the reference examples with the package default (full) sampling
@@ -583,7 +623,8 @@ help:
 	@echo ""
 	@echo "Build & install:"
 	@echo "  r-source              Build source package (fast, no vignettes)"
-	@echo "  r-source-release      Build release source package (with vignettes)"
+	@echo "  r-source-release      Build release source package (with vignettes; runs skill-verify first,"
+	@echo "                        SKILL_GATE= skips that for release candidates)"
 	@echo "  r-binary-webr         Build webR/WebAssembly binary from r-source-release (manual only, needs Docker)"
 	@echo "  binary                Compile Stan models and shared library"
 	@echo "  derived               Generate NAMESPACE, binary, and docs"
@@ -610,6 +651,7 @@ help:
 	@echo "  revdepcheck           Reverse dependency check locally (REVDEP_WORKERS, REVDEP_JOBS)"
 	@echo "  revdepcheck-ci        Reverse dependency check on GitHub runners (pushed tip of current branch)"
 	@echo "  skill-verify          Verify agent skill R snippets against the dev install"
+	@echo "  skill-zip             Zip the agent skill for upload (build/rbest-assistant.zip)"
 	@echo "  check-winbuilder      Submit to winbuilder (devel+release+old)"
 	@echo ""
 	@echo "Documentation:"
