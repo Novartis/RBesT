@@ -142,4 +142,5 @@ jobs:
             build/RBesT_*md5
             build/RBesT_*tar.gz
             build/RBesT-v*md5
-            build/RBesT-v*tar.gz            build/rbest-assistant.zip
+            build/RBesT-v*tar.gz
+            build/rbest-assistant.zip
