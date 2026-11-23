@@ -896,9 +896,9 @@ Control Information.” *Biometrics* 70 (4): 1023–32.
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_1.0.0            
     ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       
-    ## [25] compiler_4.6.2       farver_2.1.2         textshaping_1.0.5   
+    ## [25] compiler_4.6.2       farver_2.1.2         textshaping_1.1.0   
     ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
-    ## [31] sass_0.4.10          bayesplot_1.17.0     yaml_2.3.12         
+    ## [31] sass_0.5.0           bayesplot_1.17.0     yaml_2.3.12         
     ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
     ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.39.1.1
     ## [40] abind_1.4-8          posterior_1.8.0      rstan_2.32.7        
@@ -911,7 +911,7 @@ Control Information.” *Biometrics* 70 (4): 1023–32.
     ## [61] gridExtra_2.3.1      ragg_1.5.2           evaluate_1.0.5      
     ## [64] rbibutils_2.4.1      rstantools_2.7.1     rlang_1.3.0         
     ## [67] Rcpp_1.1.2           glue_1.8.1           jsonlite_2.0.0      
-    ## [70] plyr_1.8.9           R6_2.6.1             systemfonts_1.3.3   
+    ## [70] plyr_1.8.9           R6_2.6.1             systemfonts_1.3.4   
     ## [73] fs_2.1.0
 
 ## Exercise: calibrate to a fixed null-stopping probability

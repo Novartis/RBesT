@@ -387,8 +387,8 @@ sessionInfo()
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_1.0.0            
     ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.2      
-    ## [25] farver_2.1.2         textshaping_1.0.5    statmod_1.5.2       
-    ## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.4.10         
+    ## [25] farver_2.1.2         textshaping_1.1.0    statmod_1.5.2       
+    ## [28] codetools_0.2-20     htmltools_0.5.9      sass_0.5.0          
     ## [31] yaml_2.3.12          Formula_1.2-6        pillar_1.11.1       
     ## [34] pkgdown_2.2.1        jquerylib_0.1.4      cachem_1.1.0        
     ## [37] StanHeaders_2.39.1.1 abind_1.4-8          posterior_1.8.0     
@@ -401,4 +401,4 @@ sessionInfo()
     ## [58] gridExtra_2.3.1      ragg_1.5.2           evaluate_1.0.5      
     ## [61] rbibutils_2.4.1      rstantools_2.7.1     rlang_1.3.0         
     ## [64] Rcpp_1.1.2           glue_1.8.1           jsonlite_2.0.0      
-    ## [67] R6_2.6.1             systemfonts_1.3.3    fs_2.1.0
+    ## [67] R6_2.6.1             systemfonts_1.3.4    fs_2.1.0

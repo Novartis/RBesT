@@ -647,9 +647,9 @@ sessionInfo()
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_1.0.0            
     ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      compiler_4.6.2      
-    ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.0.5   
+    ## [25] farver_2.1.2         stringr_1.6.0        textshaping_1.1.0   
     ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
-    ## [31] sass_0.4.10          bayesplot_1.17.0     yaml_2.3.12         
+    ## [31] sass_0.5.0           bayesplot_1.17.0     yaml_2.3.12         
     ## [34] Formula_1.2-6        pillar_1.11.1        pkgdown_2.2.1       
     ## [37] jquerylib_0.1.4      cachem_1.1.0         StanHeaders_2.39.1.1
     ## [40] abind_1.4-8          posterior_1.8.0      rstan_2.32.7        
@@ -663,4 +663,4 @@ sessionInfo()
     ## [64] evaluate_1.0.5       rbibutils_2.4.1      rstantools_2.7.1    
     ## [67] rlang_1.3.0          Rcpp_1.1.2           glue_1.8.1          
     ## [70] jsonlite_2.0.0       plyr_1.8.9           R6_2.6.1            
-    ## [73] systemfonts_1.3.3    fs_2.1.0
+    ## [73] systemfonts_1.3.4    fs_2.1.0

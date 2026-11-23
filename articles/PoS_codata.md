@@ -869,7 +869,7 @@ interim_A_allcombined_2
     ##   comp1       comp2       comp3       comp4       comp5      
     ## w  0.23368304  0.22553534  0.21293255  0.21007582  0.11777325
     ## m -0.09844134 -0.21235731 -0.31343543 -0.10736880 -0.41157296
-    ## s  0.13244554  0.05797722  0.06451722  0.07655448  0.09513761
+    ## s  0.13244554  0.05797722  0.06451722  0.07655449  0.09513761
 
 Now let’s overlay the two posterior’s
 
@@ -981,9 +981,9 @@ sessionInfo()
     ## [16] checkmate_2.3.4      RColorBrewer_1.1-3   S7_1.0.0            
     ## [19] desc_1.4.3           distributional_0.9.0 RcppParallel_6.2.1  
     ## [22] assertthat_0.2.1     lifecycle_1.0.5      stringr_1.6.0       
-    ## [25] compiler_4.6.2       farver_2.1.2         textshaping_1.0.5   
+    ## [25] compiler_4.6.2       farver_2.1.2         textshaping_1.1.0   
     ## [28] statmod_1.5.2        codetools_0.2-20     htmltools_0.5.9     
-    ## [31] sass_0.4.10          yaml_2.3.12          Formula_1.2-6       
+    ## [31] sass_0.5.0           yaml_2.3.12          Formula_1.2-6       
     ## [34] pillar_1.11.1        pkgdown_2.2.1        jquerylib_0.1.4     
     ## [37] cachem_1.1.0         StanHeaders_2.39.1.1 abind_1.4-8         
     ## [40] posterior_1.8.0      rstan_2.32.7         tidyselect_1.2.1    
@@ -996,4 +996,4 @@ sessionInfo()
     ## [61] ragg_1.5.2           evaluate_1.0.5       rbibutils_2.4.1     
     ## [64] rstantools_2.7.1     rlang_1.3.0          Rcpp_1.1.2          
     ## [67] glue_1.8.1           jsonlite_2.0.0       plyr_1.8.9          
-    ## [70] R6_2.6.1             systemfonts_1.3.3    fs_2.1.0
+    ## [70] R6_2.6.1             systemfonts_1.3.4    fs_2.1.0
