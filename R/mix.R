@@ -441,15 +441,25 @@ qmix.normMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
 #' @export
 qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   assert_that(is.dlink_identity(attr(mix, "link")))
+  if (log.p) {
+    assert_that(all(p <= 0))
+    p <- exp(p)
+  } else {
+    assert_that(all(p >= 0 & p <= 1))
+  }
   ## numerical evaluation
   n <- attr(mix, "n")
-  dist <- pmix.betaBinomialMix(mix, seq(0, n - 1))
-  if (log.p) {
-    p <- exp(p)
+  if (n == 0) {
+    return(rep.int(0, length(p)))
   }
-  ind <- findInterval(p, dist)
-  if (!lower.tail) {
-    ind <- n - ind
+  dist <- pmix.betaBinomialMix(mix, seq(0, n - 1))
+  if (lower.tail) {
+    ind <- findInterval(p, dist, left.open = TRUE)
+    ind[p == 1] <- n
+  } else {
+    ccdf <- 1 - dist
+    ind <- findInterval(-p, -ccdf, left.open = TRUE)
+    ind[p == 0] <- n
   }
   ind
 }
@@ -472,27 +482,70 @@ qmix.betaBinomialMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
 #' @export
 qmix.gammaPoissonMix <- function(mix, p, lower.tail = TRUE, log.p = FALSE) {
   assert_that(is.dlink_identity(attr(mix, "link")))
-  ## numerical evaulation
-  n <- attr(mix, "n")
-  eps <- 1e-6
-  plow <- if (log.p) {
-    min(c(eps, exp(p), (1 - exp(p)))) / 2
-  } else {
-    min(c(eps, p, (1 - p))) / 2
-  }
-  phigh <- 1 - plow
-  Nc <- ncol(mix)
-  qhigh <- max(.qnbinomAB(rep.int(phigh, Nc), mix[2, ], mix[3, ], n = n))
-
-  dist <- pmix.gammaPoissonMix(mix, seq(0, qhigh - 1))
   if (log.p) {
-    p <- exp(p)
+    assert_that(all(p <= 0))
+  } else {
+    assert_that(all(p >= 0 & p <= 1))
   }
-  ind <- findInterval(p, dist)
-  if (!lower.tail) {
-    ind <- qhigh - ind
+  n <- attr(mix, "n")
+  Nc <- ncol(mix)
+  if (Nc == 1) {
+    return(.qnbinomAB(
+      p,
+      mix[2, 1],
+      mix[3, 1],
+      n = n,
+      lower.tail = lower.tail,
+      log.p = log.p
+    ))
   }
-  ind
+  res <- numeric(length(p))
+  if (length(p) == 0) {
+    return(res)
+  }
+  is_zero <- if (log.p) {
+    if (lower.tail) p == -Inf else p == 0
+  } else {
+    if (lower.tail) p == 0 else p == 1
+  }
+  is_inf <- if (log.p) {
+    if (lower.tail) p == 0 else p == -Inf
+  } else {
+    if (lower.tail) p == 1 else p == 0
+  }
+  res[is_zero] <- 0
+  res[is_inf] <- Inf
+  interior <- !(is_zero | is_inf)
+  if (!any(interior)) {
+    return(res)
+  }
+  p_int <- p[interior]
+  p_extreme <- if (lower.tail) max(p_int) else min(p_int)
+  active <- mix[1, ] > 0
+  qhigh <- max(.qnbinomAB(
+    rep.int(p_extreme, sum(active)),
+    mix[2, active],
+    mix[3, active],
+    n = n,
+    lower.tail = lower.tail,
+    log.p = log.p
+  ))
+  if (qhigh == 0) {
+    res[interior] <- 0
+    return(res)
+  }
+  dist <- pmix.gammaPoissonMix(
+    mix,
+    seq(0, qhigh - 1),
+    lower.tail = lower.tail,
+    log.p = log.p
+  )
+  res[interior] <- if (lower.tail) {
+    findInterval(p_int, dist, left.open = TRUE)
+  } else {
+    findInterval(-p_int, -dist, left.open = TRUE)
+  }
+  res
 }
 
 #' @export
