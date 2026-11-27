@@ -124,3 +124,60 @@ test_that("Predictive for a normal mixture evaluates correctly (normal)", {
     Teps = 1E-1
   )
 })
+
+test_that("qmix.betaBinomialMix handles lower.tail, log.p, and exact CDF jumps", {
+  probs <- c(0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99)
+  pd_single <- preddist(mixbeta(c(1, 10, 90)), n = 100)
+  pd_mix <- preddist(mixbeta(c(0.7, 10, 90), c(0.3, 2, 8)), n = 100)
+
+  for (pd in list(pd_single, pd_mix)) {
+    q_lo <- qmix(pd, 1 - probs, lower.tail = TRUE)
+    q_hi <- qmix(pd, probs, lower.tail = FALSE)
+    expect_equal(q_hi, q_lo)
+    expect_equal(qmix(pd, log(probs), lower.tail = FALSE, log.p = TRUE), q_hi)
+    expect_equal(qmix(pd, log(probs), lower.tail = TRUE, log.p = TRUE), qmix(pd, probs, lower.tail = TRUE))
+    expect_equal(qmix(pd, c(0, 1), lower.tail = TRUE), c(0, 100))
+    expect_equal(qmix(pd, c(0, 1), lower.tail = FALSE), c(100, 0))
+  }
+
+  pd_small <- preddist(mixbeta(c(0.6, 2, 5), c(0.4, 4, 2)), n = 10)
+  ks <- 0:10
+  expect_equal(qmix(pd_small, pmix(pd_small, ks, lower.tail = TRUE), lower.tail = TRUE), ks)
+  expect_equal(qmix(pd_small, pmix(pd_small, ks, lower.tail = FALSE), lower.tail = FALSE), ks)
+})
+
+test_that("qmix.gammaPoissonMix handles lower.tail, log.p, and exact CDF jumps", {
+  probs <- c(0.001, 0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99, 0.999)
+  gm <- mixgamma(c(1, 20, 10), likelihood = "poisson")
+  pd_single <- preddist(gm, n = 10)
+
+  expect_equal(
+    qmix(pd_single, probs, lower.tail = TRUE),
+    qnbinom(probs, size = 20, prob = 10 / 20, lower.tail = TRUE)
+  )
+  expect_equal(
+    qmix(pd_single, probs, lower.tail = FALSE),
+    qnbinom(probs, size = 20, prob = 10 / 20, lower.tail = FALSE)
+  )
+  expect_equal(
+    qmix(pd_single, log(probs), lower.tail = FALSE, log.p = TRUE),
+    qnbinom(log(probs), size = 20, prob = 10 / 20, lower.tail = FALSE, log.p = TRUE)
+  )
+  expect_equal(qmix(pd_single, c(0, 1), lower.tail = TRUE), c(0, Inf))
+  expect_equal(qmix(pd_single, c(0, 1), lower.tail = FALSE), c(Inf, 0))
+
+  gm_mix <- mixgamma(c(0.6, 15, 10), c(0.4, 30, 5), likelihood = "poisson")
+  pd_mix <- preddist(gm_mix, n = 10)
+  q_lo <- qmix(pd_mix, 1 - probs, lower.tail = TRUE)
+  q_hi <- qmix(pd_mix, probs, lower.tail = FALSE)
+  expect_equal(q_hi, q_lo)
+  expect_equal(qmix(pd_mix, log(probs), lower.tail = FALSE, log.p = TRUE), q_hi)
+  expect_true(all(pmix(pd_mix, q_hi, lower.tail = FALSE) <= probs))
+  expect_true(all(pmix(pd_mix, q_hi - 1, lower.tail = FALSE) > probs))
+  expect_equal(qmix(pd_mix, c(0, 1), lower.tail = TRUE), c(0, Inf))
+  expect_equal(qmix(pd_mix, c(0, 1), lower.tail = FALSE), c(Inf, 0))
+
+  ks <- 0:20
+  expect_equal(qmix(pd_mix, pmix(pd_mix, ks, lower.tail = TRUE), lower.tail = TRUE), ks)
+  expect_equal(qmix(pd_mix, pmix(pd_mix, ks, lower.tail = FALSE), lower.tail = FALSE), ks)
+})
